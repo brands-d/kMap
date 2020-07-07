@@ -7,3 +7,9 @@ run:
 
 test-all:
 	@python -m unittest discover
+
+test: data
+	python -m unittest map/tests/test_data.py
+
+update:
+	pip freeze > requirements.txt

@@ -58,10 +58,12 @@ class SlicedData():
         else:
             self.slice_axis = slice_axis
 
+        # If only one range is supplied, it applies to all slices
         if len(np.array(ranges).shape) == 2:
             self._slices = [PlotData(slice_, ranges) for slice_ in slices]
 
-        elif len(ranges) == len(self._slices):
+        # Each slices has its own range
+        elif len(ranges) == len(slices):
             self._slices = [PlotData(slice_, range_)
                             for slice_, range_ in zip(slices, ranges)]
         else:
