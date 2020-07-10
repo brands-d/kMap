@@ -4,7 +4,7 @@ setup:
 	rm -rf venv build dist *.egg-info
 	python -m venv venv
 	python -m pip install -r requirements.txt
-	python setup.py install --single-version-externally-managed --root=/
+	python setup.py install
 
 clean:
 	rm -rf build dist *.egg-info

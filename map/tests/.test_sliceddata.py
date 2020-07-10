@@ -1,22 +1,6 @@
 import unittest
 import numpy as np
-from map.model.data import PlotData, SlicedData
-
-
-class TestPlotData(unittest.TestCase):
-    def test_initialization(self):
-
-        data = [[1, 2, 3], [4, 5, 6]]
-        range_ = [[1, 2], [-1, 1]]
-
-        plot_data = PlotData(data, range_)
-
-        np.testing.assert_equal(plot_data.data, data)
-        np.testing.assert_equal(plot_data.range, range_)
-        np.testing.assert_equal(plot_data.shape, (2, 3))
-        np.testing.assert_equal(plot_data.x_axis, [1, 2])
-        np.testing.assert_equal(plot_data.y_axis, [-1, 0, 1])
-        np.testing.assert_equal(plot_data.step_size, [1, 1])
+from map.model.sliceddata import SlicedData
 
 
 class TestSlicedData(unittest.TestCase):
