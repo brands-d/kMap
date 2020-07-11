@@ -73,9 +73,9 @@ intended
 
 ## Configuration
 
-All configuration files can be found in ./map/config. They are outside
-the index of git, which means you can (and have to) edit and change them
-directly.
+All configuration files can be found in ./map/resources/config. They are
+outside the index of git, which means you can (and have to) edit and
+change them directly.
 
 ## Usage
 
