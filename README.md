@@ -62,10 +62,14 @@ in which we install all necessary dependencies
 
     python -m pip install -r requirements.txt
 
-Last but not least install the Map programmitself
+Next install the Map program itself
 
-    python setup.py install --single-version-externally-managed --root=/
-    
+    python setup.py install
+
+and last but not least run the test to check if everything works as intended
+
+    python -m unittest discover
+
 ## Usage
 
 ### Linux
