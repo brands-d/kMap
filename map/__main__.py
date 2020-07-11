@@ -5,8 +5,9 @@ from map import __directory__
 def main():
 
     logging.config.fileConfig(__directory__ + '/config/logging.conf')
+    root_logger = logging.getLogger('root')
 
-    print('Start Map.py')
+    root_logger.info('Starting Map')
 
 
 if __name__ == '__main__':
