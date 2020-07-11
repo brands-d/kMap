@@ -19,6 +19,14 @@ test-all:
 freeze:
 	pip freeze > requirements.txt
 
+# Pleae don't use unless you know what you are doing
+include-config:
+	git update-index --no-skip-worktree map/config/*
+
+# Pleae don't use unless you know what you are doing
+exclude-config:
+	git update-index --skip-worktree map/config/*
+
 help:
 	echo 'Usage:'   
 	echo '    make <command> [options]'

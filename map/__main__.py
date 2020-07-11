@@ -1,11 +1,10 @@
+import logging.config
+from map import __directory__
+
+
 def main():
 
-    import logging.config
-    from os.path import isfile
-    from map import abs_directory
-
-    logging_config_path = abs_directory + '/config/loggings.conf'
-    logging.config.fileConfig(abs_directory + '/config/loggings.conf')
+    logging.config.fileConfig(__directory__ + '/config/logging.conf')
 
     print('Start Map.py')
 

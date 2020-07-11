@@ -66,9 +66,16 @@ Next install the Map program itself
 
     python setup.py install
 
-and last but not least run the test to check if everything works as intended
+and last but not least run the test to check if everything works as
+intended
 
     python -m unittest discover
+
+## Configuration
+
+All configuration files can be found in ./map/config. They are outside
+the index of git, which means you can (and have to) edit and change them
+directly.
 
 ## Usage
 
@@ -78,4 +85,4 @@ and last but not least run the test to check if everything works as intended
     
 ### Windows & MacOS
 
-    python ./map/map.py
+    python -m map
