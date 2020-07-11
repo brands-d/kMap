@@ -64,19 +64,23 @@ class PlotData():
                            num=num, endpoint=True,
                            dtype=np.float64)
 
-
-'''UNDER CONSTRUCTION
     def interpolate(self, x_axis, y_axis, interpolator='rgi',
-                    bounds_error=False, *args, **kwargs):
+                    bounds_error=False, update=False, *args, **kwargs):
 
         if interpolator == 'rgi':
-            points = it.product(x_axis, y_axis)
+            points = list(it.product(x_axis, y_axis))
             rgi = RGI((self.x_axis, self.y_axis), self.data,
                       bounds_error=bounds_error, *args, **kwargs)
 
-            self.data = rgi(points)
+            new_data = np.array(rgi(points), dtype=np.float64).reshape(
+                len(x_axis), len(y_axis))
+
+        else:
+            ValueError('Chosen interpolator is unknown')
+
+        if update:
+            self.data = new_data
             self.x_axis = x_axis
             self.y_axis = y_axis
 
-        else:
-            ValueError('Chosen interpolator is unknown')'''
+        return new_data
