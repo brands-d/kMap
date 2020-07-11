@@ -10,7 +10,5 @@ def main():
     root_logger.info('Starting Map')
 
 
-
-
 if __name__ == '__main__':
     main()
