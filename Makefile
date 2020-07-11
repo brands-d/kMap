@@ -10,7 +10,7 @@ clean:
 	rm -rf build dist *.egg-info
 
 run:
-	python map/map.py
+	python -m map
 
 test-all:
 	python -m unittest discover

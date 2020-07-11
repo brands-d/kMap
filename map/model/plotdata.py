@@ -1,6 +1,6 @@
 """Define the PlotData class.
 
-This file defines a class named PlotData designed to be ploted in
+This file defines a class named PlotData designed to be plotted in
 arbitrary situations. For this purpose it holds a data matrix and axes
 data as well as some other useful properties. It also comes with
 interpolations methods.
@@ -20,14 +20,15 @@ class PlotData():
     Args:
         data (float): 2D array of numbers with at least 2 elements in
             each dimension. Can contain NaN values.
-        range(float): List of two lists containing the min and max value
-            of x_axis and y_axis. (E.g. [[x_min, x_max],[y_min, y_max]])
+        range_ (float): List of two lists containing the min and max
+            value of x_axis and y_axis.
 
     Attributes:
         data (float): See args.
         range (float): See args.
         x_axis (float): 1D array for the first axis of data.
         y_axis (float): 1D array for the first axis of data.
+        step_size (float) : List of step sizes for each axes.
     """
 
     def __init__(self, data, range_):
