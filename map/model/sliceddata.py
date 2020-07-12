@@ -60,6 +60,14 @@ class SlicedData(AbstractSlicedData):
         meta_data = {}
 
         with h5py.File(file_path, 'r') as f:
+
+            # First check if necessary datasets exist
+            if (file_keys['name'] not in f or
+                file_keys['slice_keys'] not in f or
+                    file_keys['range'] not in f):
+                raise AttributeError('Necessary dataset in hdf5 file missing')
+
+            # Read all datasets
             for key, value in f.items():
                 if key == file_keys['name']:
                     name = str(f[key][()])

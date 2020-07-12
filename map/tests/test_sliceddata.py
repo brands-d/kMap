@@ -42,6 +42,22 @@ class TestSlicedData(unittest.TestCase):
         npt.assert_equal(sliced_data.slice_from_idx(2).range, self.range)
         npt.assert_equal(sliced_data.meta_data, {'date': '2020/07/12'})
 
+    def test_initialization_from_hdf5_with_new_keys(self):
+
+        self.assertRaises(AttributeError, SlicedData.init_from_hdf5,
+                          __directory__ +
+                          '/resources/test_resources/basic_new_keys.hdf5')
+
+        new_keys = {'name': 'new_name', 'slice_keys': 'new_slice_keys'}
+        sliced_data = SlicedData.init_from_hdf5(
+            __directory__ + '/resources/test_resources/basic_new_keys.hdf5',
+            new_keys)
+
+        npt.assert_equal(sliced_data.name, 'basic')
+        npt.assert_equal(sliced_data.slice_from_idx(1).data, self.slices[1])
+        npt.assert_equal(sliced_data.slice_from_idx(2).range, self.range)
+        npt.assert_equal(sliced_data.meta_data, {'date': '2020/07/12'})
+
 
 if __name__ == '__main__':
     unittest.main()

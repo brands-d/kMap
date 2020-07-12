@@ -38,7 +38,7 @@ download the .zip file here:
     
 and extract the project into the local directory.
 
-### Linux
+### Linux & MacOS (probably)
 
 To install (or update if you downloaded a newer version of Map) just
 execute
@@ -52,7 +52,7 @@ dependencies and installs Map itself. Afterwards please run
 
 to test all modules and check if they come back passing.
 
-### Windows & MacOS
+### Windows
 
 First create a new virtual enviroment using
 
@@ -79,10 +79,10 @@ change them directly.
 
 ## Usage
 
-### Linux
+### Linux & MacOS (probably)
     
     make run
     
-### Windows & MacOS
+### Windows
 
     python -m map
