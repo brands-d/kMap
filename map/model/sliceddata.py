@@ -1,17 +1,40 @@
-class SlicedData():
+import numpy as np
+import h5py
+from map.model.plotdata import PlotData
+from abc import ABCMeta, abstractmethod
 
-    def __init__(self, slices, ranges, slice_axis):
+
+class AbstractSlicedData(metaclass=ABCMeta):
+
+    def __init__(self, slice_keys, name, meta_data):
 
         # Test for uniqueness in the slice_axis key list
-        if len(slice_axis) > len(set(slice_axis)):
+        if len(slice_keys) > len(set(slice_keys)):
             raise ValueError('slice_axis has to have only unique values')
+        else:
+            self.slice_keys = slice_keys
 
-        # Test if slice_axis matches slices
-        elif len(slice_axis) != len(slices):
+        self.name = name
+        self.meta_data = meta_data
+
+    @abstractmethod
+    def slice_from_idx(self, idx):
+        pass
+
+    @abstractmethod
+    def slice_from_key(self, key):
+        pass
+
+
+class SlicedData(AbstractSlicedData):
+
+    def __init__(self, slices, ranges, slice_keys, name='', meta_data={}):
+
+        # Test if slice_keys matches slices
+        if len(slice_keys) != len(slices):
             raise TypeError('slice_axis has to be the same length as slices')
 
-        else:
-            self.slice_axis = slice_axis
+        super().__init__(slice_keys, name, meta_data)
 
         # If only one range is supplied, it applies to all slices
         if len(np.array(ranges).shape) == 2:
@@ -23,17 +46,47 @@ class SlicedData():
                             for slice_, range_ in zip(slices, ranges)]
         else:
             raise TypeError(
-                'range_ needs to be specified either once for all or for all \
-                slices individually')
+                'range_ needs to be specified either once for all or for all' +
+                'slices individually')
+
+    @classmethod
+    def init_from_hdf5(cls, file_path, keys={}):
+
+        # Updates default file_keys with user defined keys
+        file_keys = {'name': 'name', 'slice_keys': 'slice_keys',
+                     'slices': 'slices', 'range': 'range'}
+        file_keys.update(keys)
+
+        meta_data = {}
+
+        with h5py.File(file_path, 'r') as f:
+            for key, value in f.items():
+                if key == file_keys['name']:
+                    name = str(f[key][()])
+
+                elif key == file_keys['slice_keys']:
+                    slice_keys = f[key][()]
+
+                elif key == file_keys['slices']:
+                    slices = f[key][()]
+
+                elif key == file_keys['range']:
+                    ranges = f[key][()]
+
+                else:
+                    meta_data.update({key: str(f[key][()])})
+
+        return cls(slices, ranges, slice_keys, name=name, meta_data=meta_data)
 
     def slice_from_idx(self, idx):
 
         return self._slices[idx]
 
-    def slice_from_value(self, value):
+    def slice_from_key(self, key):
 
-        for idx, key in enumerate(self.slice_axis):
-            if key == value:
-                return self._slices[idx]
+        try:
+            idx = self.slice_keys.index(key)
+            return self._slices[idx]
 
-        return None
+        except ValueError:
+            return None
