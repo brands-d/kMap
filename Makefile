@@ -21,11 +21,11 @@ freeze:
 
 # Pleae don't use unless you know what you are doing
 include-config:
-	git update-index --no-skip-worktree map/config/*
+	git update-index --no-skip-worktree map/resources/config/*
 
 # Pleae don't use unless you know what you are doing
 exclude-config:
-	git update-index --skip-worktree map/config/*
+	git update-index --skip-worktree map/resources/config/*
 
 help:
 	echo 'Usage:'   
