@@ -3,11 +3,17 @@
 setup:
 	rm -rf venv build dist *.egg-info
 	python -m venv venv
+
+install: 
 	python -m pip install -r requirements.txt
 	python setup.py install
 
 clean:
 	rm -rf build dist *.egg-info
+
+uninstall:
+	rm -rf venv build dist *.egg-info
+	find . -type d -name '__pycache__' -exec rm -r {} +
 
 run:
 	python -m map

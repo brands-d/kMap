@@ -85,6 +85,19 @@ class TestPlotData(unittest.TestCase):
         npt.assert_equal(new_data, [[3, 3.5, 4], [4.5, 5, 5.5]])
         npt.assert_equal(plot_data.data, [[3, 3.5, 4], [4.5, 5, 5.5]])
 
+    def test_increase_range(self):
+
+        plot_data = PlotData(self.data, self.range_)
+
+        new_x_axis = [0, 1, 2, 3]
+        new_y_axis = [-1, 0, 1, 2]
+        new_data = plot_data.interpolate(new_x_axis, new_y_axis, update=True)
+        npt.assert_equal(new_data, [[np.nan, np.nan, np.nan, np.nan],
+                                    [1, 2, 3, np.nan], [4, 5, 6, np.nan],
+                                    [np.nan, np.nan, np.nan, np.nan]])
+        npt.assert_equal(plot_data.x_axis, [0, 1, 2, 3])
+        npt.assert_equal(plot_data.y_axis, [-1, 0, 1, 2])
+
 
 if __name__ == '__main__':
     unittest.main()
