@@ -50,11 +50,75 @@ class Crosshair():
         else:
             return mask
 
-    def cut_from_data(self, plotdata, region='center', inverted=False,
-                      fill=np.nan):
+    def cut_from_data(self, plotdata, fill=np.nan, *args, **kwargs):
 
-        mask = self.mask(plotdata, region=region, inverted=inverted)
+        mask = self.mask(plotdata, *args, **kwargs)
         cut_data = np.copy(plotdata.data)
         cut_data[~mask] = fill
 
         return cut_data
+
+
+class CrosshairWithROI(Crosshair):
+
+    def __init__(self, x=0, y=0, radius=0):
+
+        if not np.isfinite(radius) or not radius >= 0:
+            raise ValueError('radius has to be positive finite')
+        else:
+            self.radius = radius
+
+        super().__init__(x, y)
+
+    def set_radius(self, radius):
+
+        if not np.isfinite(radius) or not radius >= 0:
+            raise ValueError('radius has to be positive finite')
+        else:
+            self.radius = radius
+
+    def mask(self, plotdata, region='center', inverted=False):
+
+        if region in ['center', 'x', 'y']:
+            mask = super().mask(plotdata, region=region, inverted=inverted)
+
+        else:
+            # Mesgrid of axis values shifted by center
+            X = np.copy(plotdata.x_axis).reshape(
+                len(plotdata.x_axis), 1) - self.x
+            Y = np.copy(plotdata.y_axis).reshape(
+                1, len(plotdata.y_axis)) - self.y
+
+            # Calculate distance from center for all values
+            dist_from_center = np.sqrt(X**2 + Y**2)
+            if region == 'roi':
+                mask = np.array(dist_from_center < self.radius, dtype=np.bool)
+
+            # region == 'border'
+            else:
+                '''"Pixel" is on the border if the border radius lies
+                inside (strictly) the pixels max and min radius'''
+
+                epsilon = plotdata.step_size / 2
+
+                sign_x = np.sign(X)
+                sign_y = np.sign(Y)
+                lower_bound = np.sqrt(
+                    (X - sign_x * epsilon[0])**2 +
+                    (Y - sign_y * epsilon[1])**2)
+
+                sign_x[sign_x == 0] = 1
+                sign_y[sign_y == 0] = 1
+                upper_bound = np.sqrt(
+                    (X + sign_x * epsilon[0])**2 +
+                    (Y + sign_y * epsilon[1])**2)
+
+                mask = np.array(
+                    (lower_bound < self.radius) & (
+                        self.radius < upper_bound),
+                    dtype=np.bool)
+
+            if inverted:
+                mask = ~mask
+
+        return mask

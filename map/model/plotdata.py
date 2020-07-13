@@ -56,8 +56,9 @@ class PlotData():
         self.y_axis = self.axis_from_range(self.range[1], self.data.shape[1])
 
         # Set step_size
-        self.step_size = [self.x_axis[1] - self.x_axis[0],
-                          self.y_axis[1] - self.y_axis[0]]
+        self.step_size = np.array([self.x_axis[1] - self.x_axis[0],
+                                   self.y_axis[1] - self.y_axis[0]],
+                                  dtype=np.float64)
 
     def axis_from_range(self, range_, num):
 

@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 import numpy.testing as npt
-from map.model.crosshair import Crosshair
+from map.model.crosshair import Crosshair, CrosshairWithROI
 from map.model.plotdata import PlotData
 
 
@@ -10,8 +10,6 @@ class TestCrosshair(unittest.TestCase):
     def setUp(self):
         self.x = 0
         self.y = 0
-        self.radius = 1
-        self.width = 1
         self.crosshair = Crosshair(self.x, self.y)
         self.plotdata = PlotData(
             [[1, 2, 3], [4, 5, 6], [7, 8, 9]], [[-1, 1], [-1, 1]])
@@ -100,6 +98,108 @@ class TestCrosshair(unittest.TestCase):
             self.plotdata, region='center', inverted=True, fill=-1)
         npt.assert_equal(
             data, [[1, 2, 3], [4, -1, 6], [7, 8, 9]])
+
+
+class TestCrosshairWithROI(unittest.TestCase):
+
+    def setUp(self):
+        self.x = 0
+        self.y = 0
+        self.radius = 1
+        self.plotdata = PlotData(
+            np.arange(25).reshape(5, 5), [[-2, 2], [-2, 2]])
+
+    def test_correct_initialization(self):
+
+        crosshair = CrosshairWithROI(self.x, self.y, self.radius)
+
+        self.assertEqual(crosshair.radius, self.radius)
+        self.assertEqual(crosshair.x, self.x)
+        self.assertEqual(crosshair.y, self.y)
+
+    def test_incorrect_initialization(self):
+
+        self.assertRaises(ValueError, CrosshairWithROI, self.x, self.y, -1)
+
+    def test_set_radius(self):
+
+        crosshair = CrosshairWithROI(self.x, self.y, self.radius)
+
+        new_radius = 2
+        crosshair.set_radius(new_radius)
+        self.assertEqual(crosshair.radius, new_radius)
+
+        new_radius = 0
+        crosshair.set_radius(new_radius)
+        self.assertEqual(crosshair.radius, new_radius)
+
+        new_radius = -1
+        self.assertRaises(ValueError, crosshair.set_radius, new_radius)
+
+    def test_basic_mask(self):
+
+        crosshair = CrosshairWithROI(self.x, self.y, 0)
+        mask = crosshair.mask(self.plotdata, region='roi', inverted=False)
+        expected = np.zeros((5, 5), dtype=np.bool)
+        npt.assert_equal(mask, expected)
+
+        crosshair = CrosshairWithROI(self.x, self.y, self.radius)
+        mask = crosshair.mask(self.plotdata, region='roi', inverted=False)
+        expected = np.zeros((5, 5), dtype=np.bool)
+        expected[2, 2] = True
+        npt.assert_equal(mask, expected)
+
+        crosshair = CrosshairWithROI(self.x, self.y, 1.5)
+        mask = crosshair.mask(self.plotdata, region='roi', inverted=False)
+        expected = np.zeros((5, 5), dtype=np.bool)
+        expected[1:4, 1:4] = True
+        npt.assert_equal(mask, expected)
+
+        crosshair = CrosshairWithROI(self.x, self.y, 1.5)
+        mask = crosshair.mask(self.plotdata, region='roi', inverted=True)
+        expected = np.zeros((5, 5), dtype=np.bool)
+        expected[[0, 4], :] = True
+        expected[:, [0, 4]] = True
+        npt.assert_equal(mask, expected)
+
+    def test_override_mask(self):
+
+        crosshair = CrosshairWithROI(self.x, self.y, 1.5)
+        mask = crosshair.mask(self.plotdata, region='x', inverted=False)
+        expected = np.zeros((5, 5), dtype=np.bool)
+        expected[2, :] = True
+        npt.assert_equal(mask, expected)
+
+    def test_border_mask(self):
+
+        crosshair = CrosshairWithROI(self.x, self.y, 1.5)
+        mask = crosshair.mask(self.plotdata, region='border', inverted=False)
+        expected = np.zeros((5, 5), dtype=np.bool)
+        expected[1:4, 1:4] = True
+        expected[2, 2] = False
+        npt.assert_equal(mask, expected)
+
+        crosshair = CrosshairWithROI(self.x, self.y, 0)
+        mask = crosshair.mask(self.plotdata, region='border', inverted=False)
+        expected = np.zeros((5, 5), dtype=np.bool)
+        npt.assert_equal(mask, expected)
+
+        crosshair = CrosshairWithROI(1, 1, 0.5)
+        mask = crosshair.mask(self.plotdata, region='border', inverted=False)
+        expected = np.zeros((5, 5), dtype=np.bool)
+        expected[3, 3] = True
+        npt.assert_equal(mask, expected)
+
+        crosshair = CrosshairWithROI(1, 1, 0.5)
+        mask = crosshair.mask(self.plotdata, region='border', inverted=True)
+        expected = np.ones((5, 5), dtype=np.bool)
+        expected[3, 3] = False
+        npt.assert_equal(mask, expected)
+
+        crosshair = CrosshairWithROI(1, 1, 10)
+        mask = crosshair.mask(self.plotdata, region='border', inverted=False)
+        expected = np.zeros((5, 5), dtype=np.bool)
+        npt.assert_equal(mask, expected)
 
 
 if __name__ == '__main__':
