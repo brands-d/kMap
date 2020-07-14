@@ -267,6 +267,16 @@ class TestCrosshairWithAnnulus(unittest.TestCase):
         expected = np.zeros((5, 5), dtype=np.bool)
         npt.assert_equal(mask, expected)
 
+    def test_border_mask(self):
+
+        crosshair = CrosshairWithAnnulus(self.x, self.y, 1, 0.5)
+        mask = crosshair.mask(
+            self.plotdata, region='outer_border', inverted=False)
+        expected = np.zeros((5, 5), dtype=np.bool)
+        expected[1:4, 1:4] = True
+        expected[2, 2] = False
+        npt.assert_equal(mask, expected)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -42,7 +42,7 @@ and extract the project into the local directory.
 Map comes with a complete setup of a virtual environment for Map only
 which is the cleanest and safest option to use. This, however,
 reinstalls packages you might already have in a distinct directory
-which can take up some space (currently about 170MB).
+which can take up some space (currently about 400MB).
 If you want to keep storage Map takes up down, or prefer using our own
 environment or program (like conda) you can skip 3. and 4. entirely.
 
