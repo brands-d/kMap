@@ -1,8 +1,9 @@
+from map.model.plotdata import PlotData
 import unittest
 import numpy as np
 import numpy.testing as npt
-from map.model.crosshair import Crosshair, CrosshairWithROI
-from map.model.plotdata import PlotData
+from map.model.crosshair import (Crosshair, CrosshairWithROI,
+                                 CrosshairWithAnnulus)
 
 
 class TestCrosshair(unittest.TestCase):
@@ -198,6 +199,71 @@ class TestCrosshairWithROI(unittest.TestCase):
 
         crosshair = CrosshairWithROI(1, 1, 10)
         mask = crosshair.mask(self.plotdata, region='border', inverted=False)
+        expected = np.zeros((5, 5), dtype=np.bool)
+        npt.assert_equal(mask, expected)
+
+    def test_cut_from_data(self):
+
+        crosshair = CrosshairWithROI(self.x, self.y, self.radius)
+        data = crosshair.cut_from_data(
+            self.plotdata, region='border', inverted=False, fill=-1)
+        expected = np.arange(25).reshape(5, 5)
+        expected[[0, 4], :] = -1
+        expected[:, [0, 4]] = -1
+        expected[2, 2] = -1
+        npt.assert_equal(data, expected)
+
+
+class TestCrosshairWithAnnulus(unittest.TestCase):
+
+    def setUp(self):
+        self.x = 0
+        self.y = 0
+        self.radius = 0.75
+        self.width = 0.75
+        self.plotdata = PlotData(
+            np.arange(25).reshape(5, 5), [[-2, 2], [-2, 2]])
+
+    def test_correct_initialization(self):
+
+        crosshair = CrosshairWithAnnulus(
+            self.x, self.y, self.radius, self.width)
+
+        self.assertEqual(crosshair.x, self.x)
+        self.assertEqual(crosshair.y, self.y)
+        self.assertEqual(crosshair.radius, self.radius)
+        self.assertEqual(crosshair.width, self.width)
+
+    def test_incorrect_initialization(self):
+
+        self.assertRaises(ValueError, CrosshairWithAnnulus, width=-1)
+
+    def test_set_width(self):
+
+        crosshair = CrosshairWithAnnulus(width=self.width)
+
+        new_width = 2
+        crosshair.set_width(new_width)
+        self.assertEqual(crosshair.width, new_width)
+
+        new_width = 0
+        crosshair.set_width(new_width)
+        self.assertEqual(crosshair.width, new_width)
+
+        new_width = -1
+        self.assertRaises(ValueError, crosshair.set_width, new_width)
+
+    def test_ring_mask(self):
+
+        crosshair = CrosshairWithAnnulus(self.x, self.y, 0.4, 1.9)
+        mask = crosshair.mask(self.plotdata, region='ring')
+        expected = np.ones((5, 5), dtype=np.bool)
+        expected[2, 2] = False
+        expected[[0, 0, 4, 4], [0, 4, 0, 4]] = False
+        npt.assert_equal(mask, expected)
+
+        crosshair = CrosshairWithAnnulus(self.x, self.y, 1.5, 0)
+        mask = crosshair.mask(self.plotdata, region='ring')
         expected = np.zeros((5, 5), dtype=np.bool)
         npt.assert_equal(mask, expected)
 

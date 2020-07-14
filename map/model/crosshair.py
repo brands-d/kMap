@@ -6,7 +6,8 @@ a corsshair class including a ROI and a ROI-annulus.
 """
 
 import numpy as np
-from map.library.library import idx_closest_value
+from map.library.library import (
+    idx_closest_value, centered_meshgrid, distance_in_meshgrid)
 
 
 class Crosshair():
@@ -84,15 +85,13 @@ class CrosshairWithROI(Crosshair):
 
         else:
             # Mesgrid of axis values shifted by center
-            X = np.copy(plotdata.x_axis).reshape(
-                len(plotdata.x_axis), 1) - self.x
-            Y = np.copy(plotdata.y_axis).reshape(
-                1, len(plotdata.y_axis)) - self.y
+            X, Y = centered_meshgrid(
+                plotdata.x_axis, self.x, plotdata.y_axis, self.y)
 
-            # Calculate distance from center for all values
-            dist_from_center = np.sqrt(X**2 + Y**2)
             if region == 'roi':
-                mask = np.array(dist_from_center < self.radius, dtype=np.bool)
+                # Calculate distance from center for all values
+                distance = distance_in_meshgrid(X, Y)
+                mask = np.array(distance < self.radius, dtype=np.bool)
 
             # region == 'border'
             else:
@@ -103,15 +102,13 @@ class CrosshairWithROI(Crosshair):
 
                 sign_x = np.sign(X)
                 sign_y = np.sign(Y)
-                lower_bound = np.sqrt(
-                    (X - sign_x * epsilon[0])**2 +
-                    (Y - sign_y * epsilon[1])**2)
+                lower_bound = distance_in_meshgrid(
+                    X - sign_x * epsilon[0], Y - sign_y * epsilon[1])
 
                 sign_x[sign_x == 0] = 1
                 sign_y[sign_y == 0] = 1
-                upper_bound = np.sqrt(
-                    (X + sign_x * epsilon[0])**2 +
-                    (Y + sign_y * epsilon[1])**2)
+                upper_bound = distance_in_meshgrid(
+                    X + sign_x * epsilon[0], Y + sign_y * epsilon[1])
 
                 mask = np.array(
                     (lower_bound < self.radius) & (
@@ -120,5 +117,51 @@ class CrosshairWithROI(Crosshair):
 
             if inverted:
                 mask = ~mask
+
+        return mask
+
+
+class CrosshairWithAnnulus(CrosshairWithROI):
+
+    def __init__(self, x=0, y=0, radius=0, width=0):
+
+        if not np.isfinite(width) or not width >= 0:
+            raise ValueError('width has to be positive finite')
+        else:
+            self.width = width
+
+        super().__init__(x, y, radius)
+
+    def set_width(self, width):
+
+        if not np.isfinite(width) or not width >= 0:
+            raise ValueError('width has to be positive finite')
+        else:
+            self.width = width
+
+    def mask(self, plotdata, region='center', inverted=False):
+
+        if region in ['center', 'x', 'y', 'roi', 'border']:
+            mask = super().mask(plotdata, region=region, inverted=inverted)
+
+        else:
+            # Utilize the CrosshairWithROI class
+            aux_crosshair = CrosshairWithROI(
+                x=self.x, y=self.y, radius=self.radius + self.width)
+
+            if region == 'outer_border':
+                mask = aux_crosshair.mask(
+                    plotdata, region='border', inverted=inverted)
+
+            # region == 'ring'
+            else:
+                mask = aux_crosshair.mask(plotdata, region='roi')
+                aux_crosshair.set_radius(self.radius)
+                inner_mask = aux_crosshair.mask(plotdata, region='roi')
+
+                mask[inner_mask] = False
+
+                if inverted:
+                    mask = ~mask
 
         return mask
