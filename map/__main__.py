@@ -1,15 +1,8 @@
-import logging.config
-from map import __directory__
-
-
-def main():
-
-    logging.config.fileConfig(__directory__ +
-                              '/resources/config/logging.conf')
-    root_logger = logging.getLogger('root')
-
-    root_logger.info('Starting Map')
+import sys
+from map.Map import Map
 
 
 if __name__ == '__main__':
-    main()
+    pass
+    #app = Map(sys.argv)
+    # sys.exit(app.exec_())
