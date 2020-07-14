@@ -3,6 +3,5 @@ from map.Map import Map
 
 
 if __name__ == '__main__':
-    pass
-    #app = Map(sys.argv)
-    # sys.exit(app.exec_())
+    app = Map(sys.argv)
+    sys.exit(app.run())

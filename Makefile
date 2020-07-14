@@ -5,6 +5,7 @@ setup:
 	python -m venv venv
 
 install: 
+	pip install --upgrade pip
 	python -m pip install -r requirements.txt
 	python setup.py install
 

@@ -84,7 +84,11 @@ To deactivate the environment simply call
 ### 4. Installation
 
 If you skipped section 3. please make sure you are in the environment
-you want the packages to be installed.
+you want the packages to be installed. Additionally, please make sure
+you are using the latest version of pip as PyQt5 is known to have
+trouble with older versions. You can (should) upgrade pip using
+
+    pip install --upgrade pip
 
 If you want to have more control over what is happening, please
 follow the "Manually" section. Recommend only if you know what
