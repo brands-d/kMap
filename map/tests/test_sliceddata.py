@@ -17,7 +17,7 @@ class TestSlicedData(unittest.TestCase):
         name = 'Test Data'
         meta_data = {'Test Key': 'Test Value'}
         sliced_data = SlicedData(self.slices, self.range,
-                                 self.slice_keys, name=name,
+                                 self.slice_keys, 0, name=name,
                                  meta_data=meta_data)
 
         npt.assert_equal(sliced_data.slice_from_idx(1).data, self.slices[1])
@@ -28,14 +28,14 @@ class TestSlicedData(unittest.TestCase):
 
         range_ = [[[-1, 2], [-1, -1.5]],
                   [[33, 2], [1, 2]], [[19, 24], [1, 10]]]
-        sliced_data = SlicedData(self.slices, range_, self.slice_keys)
+        sliced_data = SlicedData(self.slices, range_, self.slice_keys, 0)
         npt.assert_equal(sliced_data.slice_from_idx(1).range, range_[1])
         npt.assert_equal(sliced_data.slice_from_key(1).range, range_[0])
 
     def test_initialization_from_hdf5(self):
 
         sliced_data = SlicedData.init_from_hdf5(
-            __directory__ + '/resources/test_resources/basic.hdf5')
+            __directory__ + '/resources/test_resources/basic.hdf5', 0)
 
         npt.assert_equal(sliced_data.name, 'basic')
         npt.assert_equal(sliced_data.slice_from_idx(1).data, self.slices[1])
@@ -46,12 +46,12 @@ class TestSlicedData(unittest.TestCase):
 
         self.assertRaises(AttributeError, SlicedData.init_from_hdf5,
                           __directory__ +
-                          '/resources/test_resources/basic_new_keys.hdf5')
+                          '/resources/test_resources/basic_new_keys.hdf5', 0)
 
         new_keys = {'name': 'new_name', 'slice_keys': 'new_slice_keys'}
         sliced_data = SlicedData.init_from_hdf5(
             __directory__ + '/resources/test_resources/basic_new_keys.hdf5',
-            new_keys)
+            0, new_keys)
 
         npt.assert_equal(sliced_data.name, 'basic')
         npt.assert_equal(sliced_data.slice_from_idx(1).data, self.slices[1])

@@ -6,7 +6,7 @@ from abc import ABCMeta, abstractmethod
 
 class AbstractSlicedData(metaclass=ABCMeta):
 
-    def __init__(self, slice_keys, name, meta_data):
+    def __init__(self, slice_keys, ID, name, meta_data):
 
         # Test for uniqueness in the slice_axis key list
         if len(slice_keys) > len(set(slice_keys)):
@@ -15,6 +15,7 @@ class AbstractSlicedData(metaclass=ABCMeta):
             self.slice_keys = slice_keys
 
         self.name = name
+        self.ID = ID
         self.meta_data = meta_data
 
     @abstractmethod
@@ -28,13 +29,13 @@ class AbstractSlicedData(metaclass=ABCMeta):
 
 class SlicedData(AbstractSlicedData):
 
-    def __init__(self, slices, ranges, slice_keys, name='', meta_data={}):
+    def __init__(self, slices, ranges, slice_keys, ID, name='', meta_data={}):
 
         # Test if slice_keys matches slices
         if len(slice_keys) != len(slices):
             raise TypeError('slice_axis has to be the same length as slices')
 
-        super().__init__(slice_keys, name, meta_data)
+        super().__init__(slice_keys, ID, name, meta_data)
 
         # If only one range is supplied, it applies to all slices
         if len(np.array(ranges).shape) == 2:
@@ -50,7 +51,7 @@ class SlicedData(AbstractSlicedData):
                 'slices individually')
 
     @classmethod
-    def init_from_hdf5(cls, file_path, keys={}):
+    def init_from_hdf5(cls, file_path, ID, keys={}):
 
         # Updates default file_keys with user defined keys
         file_keys = {'name': 'name', 'slice_keys': 'slice_keys',
@@ -84,7 +85,8 @@ class SlicedData(AbstractSlicedData):
                 else:
                     meta_data.update({key: str(f[key][()])})
 
-        return cls(slices, ranges, slice_keys, name=name, meta_data=meta_data)
+        return cls(slices, ranges, slice_keys, ID, name=name,
+                   meta_data=meta_data)
 
     def slice_from_idx(self, idx):
 

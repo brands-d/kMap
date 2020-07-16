@@ -1,22 +1,25 @@
 from map.ui.abstract_ui import AbstractUI
-from PyQt5.QtWidgets import QTabWidget
+from PyQt5.QtWidgets import QWidget, QTabWidget, QVBoxLayout
 from PyQt5.QtGui import QIcon, QKeySequence
 from map import __directory__
 
 
 class MainWindowUI(AbstractUI):
 
-    def _initialize_geometry(self):
-
-        self.setGeometry(100, 100, 800, 600)
-
     def _initialize_misc(self):
 
+        self.setGeometry(100, 100, 800, 600)
         self.setWindowTitle('Map')
         self.setWindowIcon(
             QIcon(__directory__ + '/resources/images/icon.png'))
 
     def _initialize_content(self):
+
+        # Central widget
+        central_widget = QWidget()
+        layout = QVBoxLayout()
+        central_widget.setLayout(layout)
+        self.setCentralWidget(central_widget)
 
         self.menubar = self.menuBar()
         # File menu
@@ -28,11 +31,14 @@ class MainWindowUI(AbstractUI):
         help_menu = self.menubar.addMenu('Help')
         help_menu.addAction('About Map', self.open_about)
         help_menu.addAction('Open README', self.open_readme)
-        # Settings sub-menu
-        settings_menu = help_menu.addMenu('Open Settings')
+        # Preferences menu
+        settings_menu = self.menubar.addMenu('Preferences')
         settings_menu.addAction('General', self.open_general_settings)
         settings_menu.addAction('Logging', self.open_logging_settings)
 
         # Tab widget
         self.tab_widget = QTabWidget()
-        self.setCentralWidget(self.tab_widget)
+        self.tab_widget.setMovable(True)
+        self.tab_widget.setTabsClosable(True)
+        self.tab_widget.setUsesScrollButtons(True)
+        layout.addWidget(self.tab_widget)

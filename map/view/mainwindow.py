@@ -1,6 +1,7 @@
 import logging
 from PyQt5.QtWidgets import QMainWindow, QFileDialog
 from map.ui.mainwindow_ui import MainWindowUI
+from map.view.sliceddatatab import SlicedDataTab
 from map import __directory__
 
 
@@ -32,6 +33,11 @@ class MainWindow(QMainWindow, MainWindowUI):
         ''' UNDER CONSTRUCTION '''
         print('Open Logging Settings')
 
+    def add_sliced_data_tab(self, data):
+
+        tab_title = data.name + ' (' + str(data.ID) + ')'
+        self.tab_widget.addTab(SlicedDataTab(self.model, data), tab_title)
+
     def open_file(self):
 
         self.root_log.info('Loading new file(s)...')
@@ -43,4 +49,10 @@ class MainWindow(QMainWindow, MainWindowUI):
 
         if file_paths:
             for file_path in file_paths:
-                self.model.load_sliced_data_from_filepath(file_path)
+                new_data = self.model.load_sliced_data_from_filepath(file_path)
+
+                if new_data:
+                    self.add_sliced_data_tab(new_data)
+
+        else:
+            self.root_log.info('No file chosen')
