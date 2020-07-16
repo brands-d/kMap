@@ -1,7 +1,8 @@
-import logging.config
+import logging
 from PyQt5.QtWidgets import QApplication
 from map.view.mainwindow import MainWindow
 from map import __version__, __project__
+from map.model.model import Model
 from map.config.config import config
 
 
@@ -9,9 +10,9 @@ class Map(QApplication):
 
     def __init__(self, sysarg):
 
-        # Initialize logging
+        # Create config
+        config.setup()
 
-        logging.config.fileConfig(config.get_config('logging'))
         self.root_log = logging.getLogger('root')
         self.root_log.debug('Initializing Map')
 
@@ -25,7 +26,10 @@ class Map(QApplication):
 
         self.root_log.info('Starting up Map')
 
-        # Creating MainWindow()
-        self.main_window = MainWindow()
+        # Creating model
+        self.model = Model()
+
+        # Creating mainwindow
+        self.main_window = MainWindow(self.model)
 
         super().exec_()

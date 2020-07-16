@@ -1,5 +1,5 @@
 from map.ui.abstract_ui import AbstractUI
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QTabWidget
 from PyQt5.QtGui import QIcon, QKeySequence
 from map import __directory__
 
@@ -18,8 +18,6 @@ class MainWindowUI(AbstractUI):
 
     def _initialize_content(self):
 
-        self.setCentralWidget(QWidget())
-
         self.menubar = self.menuBar()
         # File menu
         file_menu = self.menubar.addMenu('File')
@@ -29,8 +27,12 @@ class MainWindowUI(AbstractUI):
         # Help menu
         help_menu = self.menubar.addMenu('Help')
         help_menu.addAction('About Map', self.open_about)
-        help_menu.addAction('Open README', self.open_about)
+        help_menu.addAction('Open README', self.open_readme)
         # Settings sub-menu
         settings_menu = help_menu.addMenu('Open Settings')
         settings_menu.addAction('General', self.open_general_settings)
         settings_menu.addAction('Logging', self.open_logging_settings)
+
+        # Tab widget
+        self.tab_widget = QTabWidget()
+        self.setCentralWidget(self.tab_widget)

@@ -1,6 +1,8 @@
 class AbstractUI():
 
-    def setupUi(self):
+    def setupUi(self, model):
+
+        self.model = model
 
         self._initialize_geometry()
         self._initialize_misc()
