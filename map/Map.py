@@ -1,8 +1,8 @@
 import logging.config
-from configparser import ConfigParser
 from PyQt5.QtWidgets import QApplication
 from map.view.mainwindow import MainWindow
-from map import __directory__, __version__, __project__
+from map import __version__, __project__
+from map.config.config import config
 
 
 class Map(QApplication):
@@ -10,14 +10,10 @@ class Map(QApplication):
     def __init__(self, sysarg):
 
         # Initialize logging
-        logging.config.fileConfig(__directory__ +
-                                  '/config/logging.ini')
+
+        logging.config.fileConfig(config.get_config('logging'))
         self.root_log = logging.getLogger('root')
         self.root_log.debug('Initializing Map')
-
-        # Initialize settings
-        self.cfg = ConfigParser()
-        self.cfg.read(__directory__ + '/config/settings.ini')
 
         # Initialize application
         super().__init__(sysarg)

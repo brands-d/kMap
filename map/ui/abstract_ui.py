@@ -1,24 +1,24 @@
 class AbstractUI():
 
-    def setupUi(self, widget):
+    def setupUi(self):
 
-        self._initialize_geometry(widget)
-        self._initialize_misc(widget)
-        self._initialize_content(widget)
-        self._initialize_connections(widget)
-        self._initialize_sub_content(widget)
+        self._initialize_geometry()
+        self._initialize_misc()
+        self._initialize_content()
+        self._initialize_connections()
+        self._initialize_sub_content()
 
-    def _initialize_geometry(self, widget):
+    def _initialize_geometry(self):
         pass
 
-    def _initialize_misc(self, widget):
+    def _initialize_misc(self):
         pass
 
-    def _initialize_content(self, widget):
+    def _initialize_content(self):
         pass
 
-    def _initialize_connections(self, widget):
+    def _initialize_connections(self):
         pass
 
-    def _initialize_sub_content(self, widget):
+    def _initialize_sub_content(self):
         pass
