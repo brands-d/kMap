@@ -1,7 +1,7 @@
 import logging.config
 from configparser import ConfigParser
 from PyQt5.QtWidgets import QApplication
-from map.gui.mainwindow import MainWindow
+from map.view.mainwindow import MainWindow
 from map import __directory__, __version__, __project__
 
 
