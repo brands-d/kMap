@@ -23,14 +23,14 @@ class Model():
 
         except AttributeError:
             self.root_log.exception(
-                'File could not be loaded. Check if file is missing' +
-                'any necessary keys. Traceback:')
+                ('File with ID %i could not be loaded. Check if file ' +
+                 'is missing any necessary keys. Traceback:') % ID)
             return None
 
         except OSError:
             self.root_log.exception(
-                'File could not be loaded. Check if file has the' +
-                'proper file extension. Traceback:')
+                ('File with ID %i could not be loaded. Check if file ' +
+                 'has the proper file extension. Traceback:') % ID)
             return None
 
         self.sliced_data.append(new_data)

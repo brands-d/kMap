@@ -52,7 +52,8 @@ class MainWindow(QMainWindow, MainWindowUI):
 
         except LookupError:
             self.root_log.exception('Removing of data with ID %i ' +
-                                    'couldnt be removed' % ID)
+                                    'couldnt be removed. Traceback:'
+                                    % ID)
             self.root_log.error('Error occured when trying to remove' +
                                 'data. Correct behaviour from now on' +
                                 'can\'t be guaranteed!')
