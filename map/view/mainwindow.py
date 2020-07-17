@@ -1,4 +1,5 @@
 import logging
+import re
 from PyQt5.QtWidgets import QMainWindow, QFileDialog
 from map.ui.mainwindow_ui import MainWindowUI
 from map.view.sliceddatatab import SlicedDataTab
@@ -38,6 +39,24 @@ class MainWindow(QMainWindow, MainWindowUI):
         tab_title = data.name + ' (' + str(data.ID) + ')'
         self.tab_widget.addTab(SlicedDataTab(self.model, data), tab_title)
 
+    def close_tab(self, index):
+
+        tab_text = self.tab_widget.tabText(index)
+        ID = self._get_ID_from_tab_text(tab_text)
+
+        try:
+            self.root_log.info('Removing data with ID %i' % ID)
+
+            self.model.remove_data_by_ID(ID)
+            self.tab_widget.removeTab(index)
+
+        except LookupError:
+            self.root_log.exception('Removing of data with ID %i ' +
+                                    'couldnt be removed' % ID)
+            self.root_log.error('Error occured when trying to remove' +
+                                'data. Correct behaviour from now on' +
+                                'can\'t be guaranteed!')
+
     def open_file(self):
 
         self.root_log.info('Loading new file(s)...')
@@ -56,3 +75,7 @@ class MainWindow(QMainWindow, MainWindowUI):
 
         else:
             self.root_log.info('No file chosen')
+
+    def _get_ID_from_tab_text(self, tab_text):
+
+        return int(re.search(r'\([0-9]+\)', tab_text).group(0)[1:-1])

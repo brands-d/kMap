@@ -42,3 +42,7 @@ class MainWindowUI(AbstractUI):
         self.tab_widget.setTabsClosable(True)
         self.tab_widget.setUsesScrollButtons(True)
         layout.addWidget(self.tab_widget)
+
+    def _initialize_connections(self):
+
+        self.tab_widget.tabCloseRequested.connect(self.close_tab)

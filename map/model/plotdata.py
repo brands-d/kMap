@@ -1,4 +1,4 @@
-"""Define the PlotData class.
+"""Defines the PlotData class.
 
 This file defines a class named PlotData designed to be plotted in
 arbitrary situations. For this purpose it holds a data matrix and axes
@@ -26,8 +26,8 @@ class PlotData():
     Attributes:
         data (float): See args.
         range (float): See args.
-        x_axis (float): 1D array for the first axis of data.
-        y_axis (float): 1D array for the first axis of data.
+        x_axis (float): 1D array for the first axis of the data.
+        y_axis (float): 1D array for the second axis of the data.
         step_size (float) : List of step sizes for each axes.
     """
 
@@ -61,6 +61,17 @@ class PlotData():
                                   dtype=np.float64)
 
     def axis_from_range(self, range_, num):
+        """Calculates a full 1D axis from range values and number of
+        elements. Result can be used for interpolation method.
+
+        Args:
+            range_ (float): 1D list with min and max value (inclusive).
+            num (int): Number of points.
+
+        Returns:
+            (float): 1D np.array containing the resulting axis.
+
+        """
 
         return np.linspace(range_[0], range_[1],
                            num=num, endpoint=True,
@@ -68,7 +79,30 @@ class PlotData():
 
     def interpolate(self, x_axis, y_axis, interpolator='rgi',
                     bounds_error=False, update=False, *args, **kwargs):
+        """Interpolates the current data to the new axes specificied.
 
+        Args:
+            x_axis (float): Same es as constructor.
+            y_axis (float): Same es as constructor.
+            interpolator (string): Specifies the underlying
+                interpolation method to be used. Currently available:
+                    rgi - RegularGridInterpolator from SciPy
+            bounds_error (bool): If True interpolating outside current
+                range will result in an error. If False data points
+                outside will be filled with np.nan.
+            update (bool): If True data and axis saved in this instance
+                will be overriden with interpolation result. If False
+                interpolate will only return the result but data will
+                stay unchanged.
+            *args & **kwargs: Will be passed to the interpolation
+                method, thus pass any arguments the chosen interpolation
+                accepts.
+
+        Returns:
+            (float): 2D np.array containing the result of the
+                interpolation.
+
+        """
         if interpolator == 'rgi':
             points = list(it.product(x_axis, y_axis))
             rgi = RGI((self.x_axis, self.y_axis), self.data,

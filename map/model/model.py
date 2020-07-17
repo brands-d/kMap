@@ -41,3 +41,13 @@ class Model():
         self._ID_counter = self._ID_counter + 1
 
         return self._ID_counter
+
+    def remove_data_by_ID(self, ID):
+
+        for data in self.sliced_data:
+            if data.ID == ID:
+                self.sliced_data.remove(data)
+                return
+
+        # All for loops ran through, thus didn't find ID
+        raise LookupError('No data with ID %i found' % ID)

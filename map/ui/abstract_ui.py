@@ -1,12 +1,12 @@
 class AbstractUI():
 
-    def setupUi(self, model):
+    def setupUi(self, model, *args, **kwargs):
 
         self.model = model
 
-        self._initialize_misc()
-        self._initialize_content()
-        self._initialize_connections()
+        self._initialize_misc(*args, **kwargs)
+        self._initialize_content(*args, **kwargs)
+        self._initialize_connections(*args, **kwargs)
 
     def _initialize_misc(self):
         pass
