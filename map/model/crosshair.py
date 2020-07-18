@@ -95,8 +95,8 @@ class CrosshairWithROI(Crosshair):
 
             # region == 'border'
             else:
-                '''"Pixel" is on the border if the border radius lies
-                inside (strictly) the pixels max and min radius'''
+                #"Pixel" is on the border if the border radius lies
+                # inside (strictly) the pixels max and min radius
 
                 epsilon = plotdata.step_size / 2
 
