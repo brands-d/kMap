@@ -40,7 +40,8 @@ class TestSlicedData(unittest.TestCase):
         npt.assert_equal(sliced_data.name, 'basic')
         npt.assert_equal(sliced_data.slice_from_idx(1).data, self.slices[1])
         npt.assert_equal(sliced_data.slice_from_idx(2).range, self.range)
-        npt.assert_equal(sliced_data.meta_data, {'date': '2020/07/12'})
+        npt.assert_equal(sliced_data.meta_data, {
+                         'date': '2020/07/12', 'alias': 'alias test'})
 
     def test_initialization_from_hdf5_with_new_keys(self):
 

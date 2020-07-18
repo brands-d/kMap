@@ -36,7 +36,13 @@ class MainWindow(QMainWindow, MainWindowUI):
 
     def add_sliced_data_tab(self, data):
 
-        tab_title = data.name + ' (' + str(data.ID) + ')'
+        if 'alias' in data.meta_data:
+            tab_title = data.meta_data['alias']
+
+        else:
+            tab_title = data.name
+
+        tab_title = tab_title + ' (' + str(data.ID) + ')'
         self.tab_widget.addTab(SlicedDataTab(self.model, data), tab_title)
 
     def close_tab(self, index):

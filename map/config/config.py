@@ -17,7 +17,6 @@ class Config:
 
         self._logging_settings = ConfigParser()
         self._logging_settings.read(__directory__ + '/config/logging.ini')
-        logging.config.fileConfig(config.get_config('logging'))
 
     def get_config(self, file='general'):
 
