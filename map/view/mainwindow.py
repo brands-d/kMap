@@ -1,10 +1,10 @@
 import logging
 import re
-from PyQt5.QtWidgets import QMainWindow, QFileDialog
+from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox
 from map.ui.mainwindow_ui import MainWindowUI
 from map.view.sliceddatatab import SlicedDataTab
 from map.view.orbitaldatatab import OrbitalDataTab
-from map import __directory__
+from map import __directory__, __version__
 
 
 class MainWindow(QMainWindow, MainWindowUI):
@@ -18,8 +18,17 @@ class MainWindow(QMainWindow, MainWindowUI):
         self.show()
 
     def open_about(self):
-        ''' UNDER CONSTRUCTION '''
-        print('Open About')
+
+        QMessageBox.about(self, 'Map', r'<h2 id="map"><center>Map' +
+                          '</center></h2>' +
+                          '<p> Map is a utility project to display, ' +
+                          'modify and compare momentum maps of ' +
+                          'orbitals from ARPES experiments and DFT ' +
+                          'calculations. </p>\n <h4 id="version-s"> '
+                          'Version: % s < /h4 >\n ' % __version__ +
+                          '<h4 id="copyright-2020-"> Copyright 2020: ' +
+                          '</h4><ul> <li> Dominik Brandstetter </li>' +
+                          '<li> Peter Puschnig </li></ul>')
 
     def open_readme(self):
         ''' UNDER CONSTRUCTION '''

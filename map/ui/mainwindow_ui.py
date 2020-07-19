@@ -30,15 +30,15 @@ class MainWindowUI(AbstractUI):
         load_orbital_file_action = file_menu.addAction('Open .cube File...',
                                                        self.open_cube_file)
         load_orbital_file_action.setShortcut(QKeySequence('Ctrl+o'))
-        # Help menu
-        help_menu = self.menubar.addMenu('Help')
-        help_menu.addAction('About Map', self.open_about)
-        help_menu.addAction('Open README', self.open_readme)
         # Preferences menu
         settings_menu = self.menubar.addMenu('Preferences')
         settings_menu.addAction('General', self.open_general_settings)
         settings_menu.addAction('Logging', self.open_logging_settings)
         settings_menu.addAction('Reload Settings', self.reload_settings)
+        # Help menu
+        help_menu = self.menubar.addMenu('Help')
+        help_menu.addAction('About Map', self.open_about)
+        help_menu.addAction('Open README', self.open_readme)
 
         # Tab widget
         self.tab_widget = QTabWidget()
