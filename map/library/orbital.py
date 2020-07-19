@@ -4,8 +4,8 @@ This file defines a class named Orbital designed to read, hold,
 calculate and slice data from cube files.
 """
 import numpy as np
-from plotdata import PlotData
 import scipy.interpolate as interp
+from map.model.plotdata import PlotData
 
 
 class Orbital():
