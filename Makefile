@@ -34,6 +34,10 @@ include-config:
 exclude-config:
 	git update-index --skip-worktree map/resources/config/*
 
+# Requires additional installs
+generate-uml:
+	pyreverse -o png -p Map ./map
+	
 help:
 	echo 'Usage:'   
 	echo '    make <command> [options]'
