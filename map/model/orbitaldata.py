@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import urllib.request
 from map.library.orbital import Orbital
@@ -32,23 +33,10 @@ class OrbitalData(Orbital):
     def _get_metadata(cls, file, file_path):
 
         first_line, second_line = file.split('\n')[:2]
-        first_line = first_line.strip()
-        second_line = second_line.strip()
-        keys = {}
 
-        if config.get_key('cube', 'line_one') == 'alias':
-            name = first_line.strip()
-            keys.update({config.get_key('cube', 'line_two'): second_line})
-
-        elif config.get_key('cube', 'line_two') == 'alias':
-            name = second_line.strip()
-            keys.update({config.get_key('cube', 'line_one'): first_line})
-
-        # File name without path and extension
-        else:
-            name = os.path.splitext(os.path.split(file_path)[1])[0]
-            keys.update({config.get_key('cube', 'line_one'): first_line,
-                         config.get_key('cube', 'line_two'): second_line})
+        name = os.path.splitext(os.path.split(file_path)[1])[0]
+        keys = {config.get_key('cube', 'line_one'): first_line.strip(),
+                config.get_key('cube', 'line_two'): second_line.strip()}
 
         return name, keys
 

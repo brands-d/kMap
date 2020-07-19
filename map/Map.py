@@ -62,3 +62,6 @@ class Map(QApplication):
 
         else:
             pg.setConfigOption('antialias', False)
+
+        value = config.get_key('pyqtgraph', 'imageAxisOrder')
+        pg.setConfigOption('imageAxisOrder', value)

@@ -146,7 +146,7 @@ class Orbital():
         kyi = np.linspace(-kmax, +kmax, num_k)
         krange = ((kxi[0], kxi[-1]), (kyi[0], kyi[-1]))
         KX, KY = np.meshgrid(kxi, kyi, indexing='xy')
-        print(kmax**2 - KX**2 - KY**2)
+        '''Throws warning?'''
         KZ = np.sqrt(kmax**2 - KX**2 - KY**2)
         kxkykz = list(map(lambda a, b, c: (a, b, c),
                           KX.flatten(), KY.flatten(), KZ.flatten()))

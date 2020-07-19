@@ -24,9 +24,12 @@ class MainWindowUI(AbstractUI):
         self.menubar = self.menuBar()
         # File menu
         file_menu = self.menubar.addMenu('File')
-        open_file_action = file_menu.addAction('Open File...',
-                                               self.open_file)
-        open_file_action.setShortcut(QKeySequence('Ctrl+f'))
+        load_slice_file_action = file_menu.addAction('Open .hdf5 File...',
+                                                     self.open_hdf5_file)
+        load_slice_file_action.setShortcut(QKeySequence('Ctrl+f'))
+        load_orbital_file_action = file_menu.addAction('Open .cube File...',
+                                                       self.open_cube_file)
+        load_orbital_file_action.setShortcut(QKeySequence('Ctrl+o'))
         # Help menu
         help_menu = self.menubar.addMenu('Help')
         help_menu.addAction('About Map', self.open_about)

@@ -1,16 +1,16 @@
-from map.ui.sliceddatatab_ui import SlicedDataTabUI
+from map.ui.orbitaldatatab_ui import OrbitalDataTabUI
 from PyQt5.QtWidgets import QWidget
 
 
-class SlicedDataTab(QWidget, SlicedDataTabUI):
+class OrbitalDataTab(QWidget, OrbitalDataTabUI):
 
-    def __init__(self, model, data):
+    def __init__(self, model, orbital):
 
         super().__init__()
 
         self.setupUi(model)
 
-        self.plot(data.slice_from_idx(0))
+        self.plot(orbital.get_kmap(E_kin=50, phi=10, Ak_type='toroid'))
 
     def plot(self, plotdata, pixel_center=True):
 
@@ -23,8 +23,6 @@ class SlicedDataTab(QWidget, SlicedDataTabUI):
 
         else:
             pos = plotdata.range[:, 0]
-
-        self.plot_item.clear()
 
         self.plot_item.setImage(image, autoRange=True,
                                 autoLevels=True, pos=pos, scale=scale)

@@ -3,6 +3,7 @@ import re
 from PyQt5.QtWidgets import QMainWindow, QFileDialog
 from map.ui.mainwindow_ui import MainWindowUI
 from map.view.sliceddatatab import SlicedDataTab
+from map.view.orbitaldatatab import OrbitalDataTab
 from map import __directory__
 
 
@@ -45,6 +46,17 @@ class MainWindow(QMainWindow, MainWindowUI):
         tab_title = tab_title + ' (' + str(data.ID) + ')'
         self.tab_widget.addTab(SlicedDataTab(self.model, data), tab_title)
 
+    def add_orbital_data_tab(self, data):
+
+        if 'alias' in data.meta_data:
+            tab_title = data.meta_data['alias']
+
+        else:
+            tab_title = data.name
+
+        tab_title = tab_title + ' (' + str(data.ID) + ')'
+        self.tab_widget.addTab(OrbitalDataTab(self.model, data), tab_title)
+
     def close_tab(self, index):
 
         tab_text = self.tab_widget.tabText(index)
@@ -57,14 +69,14 @@ class MainWindow(QMainWindow, MainWindowUI):
             self.tab_widget.removeTab(index)
 
         except LookupError:
-            self.root_log.exception('Removing of data with ID %i ' +
+            self.root_log.exception('Removing of data with ID %i ' % ID +
                                     'couldnt be removed. Traceback:'
-                                    % ID)
+                                    )
             self.root_log.error('Error occured when trying to remove' +
                                 'data. Correct behaviour from now on' +
                                 'can\'t be guaranteed!')
 
-    def open_file(self):
+    def open_hdf5_file(self):
 
         self.root_log.info('Loading new file(s)...')
 
@@ -79,6 +91,26 @@ class MainWindow(QMainWindow, MainWindowUI):
 
                 if new_data:
                     self.add_sliced_data_tab(new_data)
+
+        else:
+            self.root_log.info('No file chosen')
+
+    def open_cube_file(self):
+
+        self.root_log.info('Loading new file(s)...')
+
+        file_paths, _ = QFileDialog.getOpenFileNames(
+            None, 'Open file',
+            __directory__,
+            'hdf5 files (*.cube);; All Files (*)')
+
+        if file_paths:
+            for file_path in file_paths:
+                new_data = self.model.load_orbital_data_from_filepath(
+                    file_path)
+
+                if new_data:
+                    self.add_orbital_data_tab(new_data)
 
         else:
             self.root_log.info('No file chosen')
