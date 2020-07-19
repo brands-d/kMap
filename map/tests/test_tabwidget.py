@@ -13,7 +13,7 @@ class TestMainWindow(unittest.TestCase):
 
     def setUp(self):
 
-        self.model = Model()
+        self.model = Model(TestMainWindow.app)
         self.window = MainWindow(self.model)
 
     def test_default_state(self):
