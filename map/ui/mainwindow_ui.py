@@ -38,6 +38,7 @@ class MainWindowUI(AbstractUI):
         settings_menu = self.menubar.addMenu('Preferences')
         settings_menu.addAction('General', self.open_general_settings)
         settings_menu.addAction('Logging', self.open_logging_settings)
+        settings_menu.addAction('Reload Settings', self.reload_settings)
 
         # Tab widget
         self.tab_widget = QTabWidget()

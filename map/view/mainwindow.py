@@ -15,8 +15,6 @@ class MainWindow(QMainWindow, MainWindowUI):
 
         self.setupUi(model)
 
-        self.root_log = logging.getLogger('root')
-
         self.show()
 
     def open_about(self):
@@ -34,6 +32,10 @@ class MainWindow(QMainWindow, MainWindowUI):
     def open_logging_settings(self):
         ''' UNDER CONSTRUCTION '''
         print('Open Logging Settings')
+
+    def reload_settings(self):
+
+        self.model.reload_settings()
 
     def add_sliced_data_tab(self, data):
 
@@ -63,22 +65,18 @@ class MainWindow(QMainWindow, MainWindowUI):
         ID = self._get_ID_from_tab_text(tab_text)
 
         try:
-            self.root_log.info('Removing data with ID %i' % ID)
-
             self.model.remove_data_by_ID(ID)
             self.tab_widget.removeTab(index)
 
         except LookupError:
-            self.root_log.exception('Removing of data with ID %i ' % ID +
-                                    'couldnt be removed. Traceback:'
-                                    )
-            self.root_log.error('Error occured when trying to remove' +
-                                'data. Correct behaviour from now on' +
-                                'can\'t be guaranteed!')
+            log = logging.getLogger('root')
+            log.exception('Removing of data with ID %i couldn\'t' % ID +
+                          ' be removed. Traceback:')
+            log.error('Error occured when trying to remove data. ' +
+                      'Correct behaviour from now on can\'t be ' +
+                      'guaranteed!')
 
     def open_hdf5_file(self):
-
-        self.root_log.info('Loading new file(s)...')
 
         file_paths, _ = QFileDialog.getOpenFileNames(
             None, 'Open file',
@@ -87,7 +85,8 @@ class MainWindow(QMainWindow, MainWindowUI):
 
         if file_paths:
             for file_path in file_paths:
-                new_data = self.model.load_sliced_data_from_filepath(file_path)
+                new_data = self.model.load_data_from_filepath(file_path,
+                                                              'hdf5')
 
                 if new_data:
                     self.add_sliced_data_tab(new_data)
@@ -97,8 +96,6 @@ class MainWindow(QMainWindow, MainWindowUI):
 
     def open_cube_file(self):
 
-        self.root_log.info('Loading new file(s)...')
-
         file_paths, _ = QFileDialog.getOpenFileNames(
             None, 'Open file',
             __directory__,
@@ -106,8 +103,8 @@ class MainWindow(QMainWindow, MainWindowUI):
 
         if file_paths:
             for file_path in file_paths:
-                new_data = self.model.load_orbital_data_from_filepath(
-                    file_path)
+                new_data = self.model.load_data_from_filepath(file_path,
+                                                              'cube')
 
                 if new_data:
                     self.add_orbital_data_tab(new_data)

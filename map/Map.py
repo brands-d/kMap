@@ -11,12 +11,10 @@ class Map(QApplication):
 
     def __init__(self, sysarg):
 
-        # Load config
-        config.setup()
+        # Apply various configurations
+        self.load_settings()
 
-        logging.config.fileConfig(config.get_config('logging'))
-        self.root_log = logging.getLogger('root')
-        self.root_log.debug('Initializing Map')
+        logging.getLogger('root').debug('Initializing Map.')
 
         # Initialize application
         super().__init__(sysarg)
@@ -24,22 +22,25 @@ class Map(QApplication):
         self.setApplicationName(__project__)
         self.setDesktopFileName(__project__)
 
-        # Apply various configurations
-        self._setup()
-
     def run(self):
 
-        self.root_log.info('Starting up Map')
+        logging.getLogger('root').info('Starting up Map.')
 
         # Creating model
-        self.model = Model()
+        self.model = Model(self)
 
         # Creating mainwindow
         self.main_window = MainWindow(self.model)
 
         super().exec_()
 
-    def _setup(self):
+    def load_settings(self):
+
+        # Load config
+        config.setup()
+
+        # Logging
+        logging.config.fileConfig(config.get_config('logging'))
 
         # PyQtGraph
         value = config.get_key('pyqtgraph', 'background')
@@ -65,3 +66,5 @@ class Map(QApplication):
 
         value = config.get_key('pyqtgraph', 'imageAxisOrder')
         pg.setConfigOption('imageAxisOrder', value)
+
+        logging.getLogger('root').debug('Settings loaded successfully.')
