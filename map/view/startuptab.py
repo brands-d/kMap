@@ -8,4 +8,4 @@ class StartUpTab(QWidget, StartUpTabUI):
 
         super().__init__()
 
-        self.setupUi(None)
+        self.setupUi()

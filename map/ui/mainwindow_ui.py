@@ -24,21 +24,22 @@ class MainWindowUI(AbstractUI):
         self.menubar = self.menuBar()
         # File menu
         file_menu = self.menubar.addMenu('File')
-        load_slice_file_action = file_menu.addAction('Open .hdf5 File...',
-                                                     self.open_hdf5_file)
-        load_slice_file_action.setShortcut(QKeySequence('Ctrl+f'))
-        load_orbital_file_action = file_menu.addAction('Open .cube File...',
-                                                       self.open_cube_file)
-        load_orbital_file_action.setShortcut(QKeySequence('Ctrl+o'))
+        self.load_slice_action = file_menu.addAction('Open .hdf5 File...')
+        self.load_slice_action.setShortcut(QKeySequence('Ctrl+f'))
+        self.load_orbital_action = file_menu.addAction('Open .cube File...')
+        self.load_orbital_action.setShortcut(QKeySequence('Ctrl+o'))
+        file_menu.addSeparator()
+        self.log_file_action = file_menu.addAction('Open .log File...')
+        self.log_file_action.setShortcut(QKeySequence('Ctrl+l'))
         # Preferences menu
         settings_menu = self.menubar.addMenu('Preferences')
-        settings_menu.addAction('General', self.open_general_settings)
-        settings_menu.addAction('Logging', self.open_logging_settings)
-        settings_menu.addAction('Reload Settings', self.reload_settings)
+        self.general_action = settings_menu.addAction('Edit General')
+        self.logging_action = settings_menu.addAction('Edit Logging')
+        self.settings_action = settings_menu.addAction('Reload Settings')
         # Help menu
         help_menu = self.menubar.addMenu('Help')
-        help_menu.addAction('Open README', self.open_readme)
-        help_menu.addAction('About Map', self.open_about)
+        self.readme_action = help_menu.addAction('Open README')
+        self.about_action = help_menu.addAction('About Map')
 
         # Tab widget
         self.tab_widget = QTabWidget()
@@ -50,3 +51,15 @@ class MainWindowUI(AbstractUI):
     def _initialize_connections(self):
 
         self.tab_widget.tabCloseRequested.connect(self.close_tab)
+
+        # File menu
+        self.load_slice_action.triggered.connect(self.open_hdf5_file)
+        self.load_orbital_action.triggered.connect(self.open_cube_file)
+        self.log_file_action.triggered.connect(self.open_log_file)
+        # Preferences menu
+        self.general_action.triggered.connect(self.open_general_settings)
+        self.settings_action.triggered.connect(self.reload_settings)
+        self.logging_action.triggered.connect(self.open_logging_settings)
+        # Help menu
+        self.readme_action.triggered.connect(self.open_readme)
+        self.about_action.triggered.connect(self.open_about)

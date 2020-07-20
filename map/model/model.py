@@ -57,18 +57,26 @@ class Model():
 
         return self._ID_counter
 
-    def remove_data_by_ID(self, ID):
+    def remove_orbital_by_ID(self, ID):
 
-        logging.getLogger('root').debug('Removing data with ID %i.' % ID)
-
-        for data in self.sliced_data:
-            if data.ID == ID:
-                self.sliced_data.remove(data)
-                return
+        logging.getLogger('root').debug('Removing orbital with ID %i.' % ID)
 
         for data in self.orbital_data:
             if data.ID == ID:
                 self.orbital_data.remove(data)
+                return
+
+        # All for loops ran through, thus didn't find ID
+        raise LookupError('No data with ID %i found' % ID)
+
+    def remove_sliced_by_ID(self, ID):
+
+        logging.getLogger('root').debug('Removing sliced data with' +
+                                        ' ID %i.' % ID)
+
+        for data in self.sliced_data:
+            if data.ID == ID:
+                self.sliced_data.remove(data)
                 return
 
         # All for loops ran through, thus didn't find ID

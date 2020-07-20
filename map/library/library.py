@@ -1,5 +1,5 @@
 import numpy as np
-
+import re
 
 def round_to(x, base):
 
@@ -32,3 +32,7 @@ def centered_meshgrid(x_axis, x_shift, y_axis, y_shift):
 def distance_in_meshgrid(X, Y):
 
     return np.sqrt(X**2 + Y**2)
+
+def get_ID_from_tab_text(tab_text):
+
+    return int(re.search(r'\([0-9]+\)', tab_text).group(0)[1:-1])

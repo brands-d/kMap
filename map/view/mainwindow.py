@@ -1,9 +1,10 @@
 import logging
-import re
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox
 from map.ui.mainwindow_ui import MainWindowUI
 from map.view.sliceddatatab import SlicedDataTab
 from map.view.orbitaldatatab import OrbitalDataTab
+from map.view.fileviewertab import FileViewerTab
+from map.view.fileeditortab import FileEditorTab
 from map import __directory__, __version__
 
 
@@ -13,34 +14,43 @@ class MainWindow(QMainWindow, MainWindowUI):
 
         super().__init__()
 
-        self.setupUi(model)
+        self.setupUi()
+
+        self.model = model
 
         self.show()
 
     def open_about(self):
 
-        QMessageBox.about(self, 'Map', r'<h2 id="map"><center>Map' +
-                          '</center></h2>' +
-                          '<p> Map is a utility project to display, ' +
-                          'modify and compare momentum maps of ' +
-                          'orbitals from ARPES experiments and DFT ' +
-                          'calculations. </p>\n <h4 id="version-s"> '
-                          'Version: % s < /h4 >\n ' % __version__ +
-                          '<h4 id="copyright-2020-"> Copyright 2020: ' +
-                          '</h4><ul> <li> Dominik Brandstetter </li>' +
-                          '<li> Peter Puschnig </li></ul>')
+        with open(__directory__ + '/resources/texts/about.txt', 'r') as f:
+            QMessageBox.about(self, 'Map', f.read() % __version__)
 
     def open_readme(self):
-        ''' UNDER CONSTRUCTION '''
-        print('Open README')
+
+        file_path = __directory__ + '/../README.md'
+        index = self.tab_widget.addTab(FileViewerTab(
+            file_path, richText=True), 'README')
+        self.tab_widget.setCurrentIndex(index)
 
     def open_general_settings(self):
-        ''' UNDER CONSTRUCTION '''
-        print('Open General Settings')
+
+        file_path = __directory__ + '/config/settings.ini'
+        index = self.tab_widget.addTab(
+            FileEditorTab(file_path), 'General Settings')
+        self.tab_widget.setCurrentIndex(index)
 
     def open_logging_settings(self):
-        ''' UNDER CONSTRUCTION '''
-        print('Open Logging Settings')
+
+        file_path = __directory__ + '/config/logging.ini'
+        index = self.tab_widget.addTab(
+            FileEditorTab(file_path), 'Logging Settings')
+        self.tab_widget.setCurrentIndex(index)
+
+    def open_log_file(self):
+
+        file_path = __directory__ + '/../default.log'
+        index = self.tab_widget.addTab(FileViewerTab(file_path), 'Log File')
+        self.tab_widget.setCurrentIndex(index)
 
     def reload_settings(self):
 
@@ -55,7 +65,9 @@ class MainWindow(QMainWindow, MainWindowUI):
             tab_title = data.name
 
         tab_title = tab_title + ' (' + str(data.ID) + ')'
-        self.tab_widget.addTab(SlicedDataTab(self.model, data), tab_title)
+        index = self.tab_widget.addTab(
+            SlicedDataTab(self.model, data), tab_title)
+        self.tab_widget.setCurrentIndex(index)
 
     def add_orbital_data_tab(self, data):
 
@@ -66,24 +78,14 @@ class MainWindow(QMainWindow, MainWindowUI):
             tab_title = data.name
 
         tab_title = tab_title + ' (' + str(data.ID) + ')'
-        self.tab_widget.addTab(OrbitalDataTab(self.model, data), tab_title)
+        index = self.tab_widget.addTab(
+            OrbitalDataTab(self.model, data), tab_title)
+        self.tab_widget.setCurrentIndex(index)
 
     def close_tab(self, index):
 
-        tab_text = self.tab_widget.tabText(index)
-        ID = self._get_ID_from_tab_text(tab_text)
-
-        try:
-            self.model.remove_data_by_ID(ID)
-            self.tab_widget.removeTab(index)
-
-        except LookupError:
-            log = logging.getLogger('root')
-            log.exception('Removing of data with ID %i couldn\'t' % ID +
-                          ' be removed. Traceback:')
-            log.error('Error occured when trying to remove data. ' +
-                      'Correct behaviour from now on can\'t be ' +
-                      'guaranteed!')
+        self.tab_widget.widget(index).close()
+        self.tab_widget.removeTab(index)
 
     def open_hdf5_file(self):
 
@@ -120,7 +122,3 @@ class MainWindow(QMainWindow, MainWindowUI):
 
         else:
             self.root_log.info('No file chosen')
-
-    def _get_ID_from_tab_text(self, tab_text):
-
-        return int(re.search(r'\([0-9]+\)', tab_text).group(0)[1:-1])

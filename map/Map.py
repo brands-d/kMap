@@ -28,10 +28,10 @@ class Map(QApplication):
         logging.getLogger('root').info('Starting up Map.')
 
         # Creating model
-        self.model = Model(self)
+        model = Model(self)
 
         # Creating mainwindow
-        self.main_window = MainWindow(self.model)
+        self.main_window = MainWindow(model)
 
         super().exec_()
 
@@ -75,5 +75,4 @@ class Map(QApplication):
         value = config.get_key('pyqtgraph', 'imageAxisOrder')
         pg.setConfigOption('imageAxisOrder', value)
 
-        print(logging.getLogger('root').hasHandlers())
         logging.getLogger('root').debug('Settings loaded successfully.')
