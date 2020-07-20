@@ -37,8 +37,8 @@ class MainWindowUI(AbstractUI):
         settings_menu.addAction('Reload Settings', self.reload_settings)
         # Help menu
         help_menu = self.menubar.addMenu('Help')
-        help_menu.addAction('About Map', self.open_about)
         help_menu.addAction('Open README', self.open_readme)
+        help_menu.addAction('About Map', self.open_about)
 
         # Tab widget
         self.tab_widget = QTabWidget()

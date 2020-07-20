@@ -1,8 +1,9 @@
+import os
 import logging
 import pyqtgraph as pg
 from PyQt5.QtWidgets import QApplication
 from map.view.mainwindow import MainWindow
-from map import __version__, __project__
+from map import __version__, __project__, __directory__
 from map.model.model import Model
 from map.config.config import config
 
@@ -12,7 +13,7 @@ class Map(QApplication):
     def __init__(self, sysarg):
 
         # Apply various configurations
-        self.load_settings()
+        self.load_settings(startup=True)
 
         logging.getLogger('root').debug('Initializing Map.')
 
@@ -34,12 +35,18 @@ class Map(QApplication):
 
         super().exec_()
 
-    def load_settings(self):
+    def load_settings(self, startup=False):
 
         # Load config
         config.setup()
 
         # Logging
+        # Delete old log files if user set to do so
+        if startup and config.get_key('logging', 'persistent') == 'False':
+            log_file = __directory__ + '/../default.log'
+            if os.path.exists(log_file):
+                os.remove(log_file)
+
         logging.config.fileConfig(config.get_config('logging'))
 
         # PyQtGraph
