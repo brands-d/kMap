@@ -47,7 +47,8 @@ class Map(QApplication):
             if os.path.exists(log_file):
                 os.remove(log_file)
 
-        logging.config.fileConfig(config.get_config('logging'))
+        logging.config.fileConfig(config.get_config(
+            'logging'), disable_existing_loggers=False)
 
         # PyQtGraph
         value = config.get_key('pyqtgraph', 'background')
@@ -74,4 +75,5 @@ class Map(QApplication):
         value = config.get_key('pyqtgraph', 'imageAxisOrder')
         pg.setConfigOption('imageAxisOrder', value)
 
+        print(logging.getLogger('root').hasHandlers())
         logging.getLogger('root').debug('Settings loaded successfully.')
