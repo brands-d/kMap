@@ -18,7 +18,7 @@ class TestMainWindow(unittest.TestCase):
 
     def test_default_state(self):
 
-        self.assertEqual(self.window.tab_widget.count(), 0)
+        self.assertEqual(self.window.tab_widget.count(), 1)
 
     '''UNDER CONSTRUCTION
     def test_default_state(self):
