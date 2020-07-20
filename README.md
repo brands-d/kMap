@@ -153,3 +153,17 @@ To start Map simply run
 ### Windows
 
     python -m map
+
+## Bug Report
+
+If you want to make a bug report please use the
+
+    make report
+
+command (only Linux and maybe MacOS, no equivalent for Windows
+currently). This will create a report.tar.gz file containing relevant
+files like the log files and your settings. Please add this file to any
+bug report! (Windows: Until a easy solution is added please attach at
+least the log file (default.log) to your bug report).
+Please note that this process might take a while since all test will be
+run add the result added. 

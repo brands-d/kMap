@@ -18,6 +18,8 @@ class MainWindow(QMainWindow, MainWindowUI):
 
         self.model = model
 
+        self.open_welcome()
+
         self.show()
 
     def open_about(self):
@@ -50,6 +52,13 @@ class MainWindow(QMainWindow, MainWindowUI):
 
         file_path = __directory__ + '/../default.log'
         index = self.tab_widget.addTab(FileViewerTab(file_path), 'Log File')
+        self.tab_widget.setCurrentIndex(index)
+
+    def open_welcome(self):
+
+        file_path = __directory__ + '/resources/texts/welcome.txt'
+        index = self.tab_widget.addTab(
+            FileViewerTab(file_path, richText=True), 'Welcome')
         self.tab_widget.setCurrentIndex(index)
 
     def reload_settings(self):

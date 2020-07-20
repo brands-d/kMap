@@ -22,6 +22,15 @@ run:
 test-all:
 	python -m unittest discover
 
+report:
+	rm -f report.tar.gz report.tar
+	tar -cf report.tar *.log 
+	tar -rf report.tar -C ./map/config/ logging.ini settings.ini
+	-python -m unittest discover 2> test_results.txt
+	tar -rf report.tar test_results.txt
+	gzip report.tar
+	rm test_results.txt
+
 # Pleae don't use unless you know what you are doing
 freeze:
 	pip freeze > requirements.txt

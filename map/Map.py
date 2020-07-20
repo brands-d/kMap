@@ -15,7 +15,8 @@ class Map(QApplication):
         # Apply various configurations
         self.load_settings(startup=True)
 
-        logging.getLogger('root').debug('Initializing Map.')
+        logging.getLogger('root').debug(
+            'Initializing Map v' + __version__ + '.')
 
         # Initialize application
         super().__init__(sysarg)
