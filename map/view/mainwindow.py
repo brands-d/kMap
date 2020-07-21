@@ -65,7 +65,7 @@ class MainWindow(QMainWindow, MainWindowUI):
 
         self.model.reload_settings()
 
-    def add_sliced_data_tab(self, data):
+    def open_sliced_tab(self, data):
 
         if 'alias' in data.meta_data:
             tab_title = data.meta_data['alias']
@@ -78,7 +78,7 @@ class MainWindow(QMainWindow, MainWindowUI):
             SlicedDataTab(self.model, data), tab_title)
         self.tab_widget.setCurrentIndex(index)
 
-    def add_orbital_data_tab(self, data):
+    def open_orbital_tab(self, data):
 
         if 'alias' in data.meta_data:
             tab_title = data.meta_data['alias']
@@ -109,7 +109,7 @@ class MainWindow(QMainWindow, MainWindowUI):
                                                               'hdf5')
 
                 if new_data:
-                    self.add_sliced_data_tab(new_data)
+                    self.open_sliced_tab(new_data)
 
         else:
             self.root_log.info('No file chosen')
@@ -127,7 +127,7 @@ class MainWindow(QMainWindow, MainWindowUI):
                                                               'cube')
 
                 if new_data:
-                    self.add_orbital_data_tab(new_data)
+                    self.open_orbital_tab(new_data)
 
         else:
             self.root_log.info('No file chosen')

@@ -1,5 +1,5 @@
+from PyQt5.QtWidgets import QHBoxLayout
 from map.ui.abstract_ui import AbstractUI
-from PyQt5.QtWidgets import QHBoxLayout, QCheckBox
 from map.view.pyqtgraphplot import PyQtGraphPlot
 
 

@@ -25,7 +25,7 @@ class FileViewerTabUI(AbstractUI):
         self.display.setReadOnly(True)
         main_layout.addWidget(self.display)
 
-        # Seach
+        # Search
         search_layout = QHBoxLayout()
         main_layout.addLayout(search_layout)
         # Search bar
@@ -33,11 +33,9 @@ class FileViewerTabUI(AbstractUI):
         self.line_edit.setClearButtonEnabled(True)
         self.line_edit.setPlaceholderText('Enter search term here...')
         search_layout.addWidget(self.line_edit)
-
         # Find button
         self.find_next_button = QPushButton('Find')
         search_layout.addWidget(self.find_next_button)
-
         # Find Prev button
         self.find_prev_button = QPushButton('Find Prev')
         search_layout.addWidget(self.find_prev_button)

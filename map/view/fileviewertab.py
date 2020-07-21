@@ -1,7 +1,7 @@
-from map.ui.fileviewertab_ui import FileViewerTabUI
 from os.path import abspath
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtGui import QTextDocument
+from map.ui.fileviewertab_ui import FileViewerTabUI
 
 
 class FileViewerTab(QWidget, FileViewerTabUI):

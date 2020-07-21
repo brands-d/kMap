@@ -1,5 +1,6 @@
-from map.ui.fileeditortab_ui import FileEditorTabUI
 from map.view.fileviewertab import FileViewerTab
+from map.ui.fileeditortab_ui import FileEditorTabUI
+
 
 class FileEditorTab(FileViewerTab, FileEditorTabUI):
 
@@ -8,6 +9,6 @@ class FileEditorTab(FileViewerTab, FileEditorTabUI):
         super().__init__(file_path, richText=False)
 
     def save(self):
-        
+
         with open(self.file_path, 'wt') as f:
             f.write(self.display.toPlainText())

@@ -1,5 +1,4 @@
 from map.ui.abstract_ui import AbstractUI
-import pyqtgraph as pg
 
 
 class PyQtGraphPlotUI(AbstractUI):

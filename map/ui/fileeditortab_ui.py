@@ -1,5 +1,5 @@
-from map.ui.fileviewertab_ui import FileViewerTabUI
 from PyQt5.QtWidgets import QPushButton
+from map.ui.fileviewertab_ui import FileViewerTabUI
 
 
 class FileEditorTabUI(FileViewerTabUI):
