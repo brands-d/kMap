@@ -2,6 +2,7 @@ import os
 import logging
 import pyqtgraph as pg
 from PyQt5.QtWidgets import QApplication
+from PyQt5.QtGui import QFont
 from map.view.mainwindow import MainWindow
 from map import __version__, __project__, __directory__
 from map.model.model import Model
@@ -75,5 +76,8 @@ class Map(QApplication):
 
         value = config.get_key('pyqtgraph', 'imageAxisOrder')
         pg.setConfigOption('imageAxisOrder', value)
+
+        self.setFont(QFont(config.get_key('font', 'font'), int(
+            config.get_key('font', 'size')), QFont.Normal))
 
         logging.getLogger('root').debug('Settings loaded successfully.')

@@ -5,6 +5,7 @@ from PyQt5.QtCore import Qt
 from map.ui.abstract_ui import AbstractUI
 from map.view.pyqtgraphplot import PyQtGraphPlot
 from map.view.dataslider import DataSlider
+from map.config.config import config
 
 
 class SlicedDataTabUI(AbstractUI):
@@ -24,7 +25,20 @@ class SlicedDataTabUI(AbstractUI):
                         vPolicy=QSP.Policy.Fixed))
 
         # Slider
-        self.slider = DataSlider(self.data)
+        if 'slice_keys' in self.data.meta_data:
+            key_label = self.data.meta_data['slice_keys']
+
+        else:
+            key_label = config.get_key('sliced_data', 'default_slice_keys')
+
+        if 'slice_unit' in self.data.meta_data:
+            unit = self.data.meta_data['slice_unit']
+
+        else:
+            unit = config.get_key('sliced_data', 'default_slice_unit')
+
+        self.slider = DataSlider(self.data.slice_keys,
+                                 key_label=key_label, unit=unit)
         options_layout.addWidget(self.slider)
         self.slider.setSizePolicy(QSP.Policy.Expanding, QSP.Policy.Expanding)
 
