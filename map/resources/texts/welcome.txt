@@ -1,4 +1,4 @@
-<h1 id="map">Map</h1>
+<h1>Map</h1>
 <p>Map is a utility project to display, modify and compare momentum maps of
 orbitals from ARPES experiments and DFT calculations.</p>
 <p>Map is currently under construction and thus major changes are to be expected. Please feel free to explore what the program has to offer so far.</p>

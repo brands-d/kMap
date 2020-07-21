@@ -156,7 +156,7 @@ To start Map simply run
 
 ## Bug Report
 
-If you want to make a bug report please use the
+Bug reports are highly appreciated. Please first run
 
     make report
 
@@ -166,4 +166,7 @@ files like the log files and your settings. Please add this file to any
 bug report! (Windows: Until a easy solution is added please attach at
 least the log file (default.log) to your bug report).
 Please note that this process might take a while since all test will be
-run add the result added. 
+run.
+
+Simply send this file via E-mail to author
+(dominik.brandstetter@edu.uni-graz.at).

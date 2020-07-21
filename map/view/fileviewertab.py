@@ -21,7 +21,7 @@ class FileViewerTab(QWidget, FileViewerTabUI):
 
         with open(self.file_path, 'r') as f:
             if self.richText:
-                self.display.setMarkdown(f.read())
+                self.display.setHtml(f.read())
 
             else:
                 self.display.setPlainText(f.read())

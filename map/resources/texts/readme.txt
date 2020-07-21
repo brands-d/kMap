@@ -11,8 +11,8 @@ orbitals from ARPES experiments and DFT calculations.</p>
 <h3 id="1-install-python">1. Install Python</h3>
 <p>Before installing Map, please make sure you have a python version of 3.7
 or higher installed. If not, you can get one here</p>
-<pre><code><span class="hljs-symbol">https:</span>//www.python<span class="hljs-meta">.org</span>/downloads/
-</code></pre><p>With this, you should have pip already installed. If not please install
+<a href="https://www.python.org/downloads/">https://www.python.org/downloads/</a>
+<p>With this, you should have pip already installed. If not please install
 it using this guide (<a href="https://pip.pypa.io/en/stable/installing/">https://pip.pypa.io/en/stable/installing/</a>)</p>
 <h3 id="2-clone-git-project">2. Clone Git Project</h3>
 <p>Clone the project into a local repository. If you have git installed,
@@ -91,13 +91,22 @@ outside the index of git, which means you can (and have to) edit and
 change them directly.</p>
 <h2 id="usage">Usage</h2>
 <p>Before running, make sure you are in the correct environment, in which
-you installed Map. If you decided to use the venv Map comes with, redo</p>
-<ol>
-<li>of the installation instruction.</li>
-</ol>
+you installed Map. If you decided to use the venv Map comes with, redo 1. of the installation instruction.</p>
 <p>To start Map simply run</p>
 <h3 id="linux-macos-probably-">Linux &amp; MacOS (probably)</h3>
 <pre><code>make <span class="hljs-keyword">run</span><span class="bash"></span>
 </code></pre><h3 id="windows">Windows</h3>
 <pre><code><span class="hljs-keyword">python</span> -<span class="hljs-keyword">m</span> <span class="hljs-keyword">map</span>
 </code></pre>
+<h2 id="bug report">Bug Report</h2>
+<p>Bug reports are highly appreciated. Please first run</p>
+<pre><code>make <span class="hljs-keyword">report</span><span class="bash"></span></pre>
+<p>command (only Linux and maybe MacOS, no equivalent for Windows
+currently). This will create a report.tar.gz file containing relevant
+files like the log files and your settings. Please add this file to any
+bug report! (Windows: Until a easy solution is added please attach at
+least the log file (default.log) to your bug report).
+Please note that this process might take a while since all test will be
+run.</p>
+<p>Simply send this file via E-mail to author
+(dominik.brandstetter@edu.uni-graz.at).</p>

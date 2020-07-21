@@ -29,7 +29,7 @@ class MainWindow(QMainWindow, MainWindowUI):
 
     def open_readme(self):
 
-        file_path = __directory__ + '/../README.md'
+        file_path = __directory__ + '/resources/texts/readme.txt'
         index = self.tab_widget.addTab(FileViewerTab(
             file_path, richText=True), 'README')
         self.tab_widget.setCurrentIndex(index)
