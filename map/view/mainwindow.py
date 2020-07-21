@@ -100,7 +100,7 @@ class MainWindow(QMainWindow, MainWindowUI):
 
         file_paths, _ = QFileDialog.getOpenFileNames(
             None, 'Open file',
-            __directory__,
+            __directory__ + '/resources/test_resources/',
             'hdf5 files (*.hdf5 *.h5);; All Files (*)')
 
         if file_paths:

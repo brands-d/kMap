@@ -2,6 +2,7 @@ from map.ui.sliceddatatab_ui import SlicedDataTabUI
 from PyQt5.QtWidgets import QWidget
 from map.library.library import get_ID_from_tab_text
 
+
 class SlicedDataTab(QWidget, SlicedDataTabUI):
 
     def __init__(self, model, data):
@@ -9,10 +10,11 @@ class SlicedDataTab(QWidget, SlicedDataTabUI):
         super().__init__()
 
         self.model = model
-        
+        self.data = data
+
         self.setupUi()
 
-        self.plot_item.plot(data.slice_from_idx(0))
+        self.change_slice(0)
 
     def close(self):
 
@@ -32,3 +34,8 @@ class SlicedDataTab(QWidget, SlicedDataTabUI):
             log.error('Error occured when trying to remove data. ' +
                       'Correct behaviour from now on can\'t be ' +
                       'guaranteed!')
+
+    def change_slice(self, index):
+
+        plot_data = self.data.slice_from_idx(index)
+        self.plot_item.plot(plot_data)
