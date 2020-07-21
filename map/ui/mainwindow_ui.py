@@ -2,13 +2,18 @@ from map import __directory__
 from map.ui.abstract_ui import AbstractUI
 from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtWidgets import QWidget, QTabWidget, QVBoxLayout
+from map.config.config import config
 
 
 class MainWindowUI(AbstractUI):
 
     def _initialize_misc(self):
 
-        self.setGeometry(100, 100, 800, 600)
+        x = int(config.get_key('app', 'x'))
+        y = int(config.get_key('app', 'y'))
+        w = int(config.get_key('app', 'w'))
+        h = int(config.get_key('app', 'h'))
+        self.setGeometry(x, y, h, w)
         self.setWindowTitle('Map')
         self.setWindowIcon(
             QIcon(__directory__ + '/resources/images/icon.png'))

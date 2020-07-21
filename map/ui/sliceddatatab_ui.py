@@ -6,7 +6,7 @@ from map.ui.abstract_ui import AbstractUI
 from map.view.pyqtgraphplot import PyQtGraphPlot
 from map.view.dataslider import DataSlider
 from map.config.config import config
-
+from map.view.crosshair import CrosshairAnnulus
 
 class SlicedDataTabUI(AbstractUI):
 
@@ -41,6 +41,10 @@ class SlicedDataTabUI(AbstractUI):
                                  key_label=key_label, unit=unit)
         options_layout.addWidget(self.slider)
         self.slider.setSizePolicy(QSP.Policy.Expanding, QSP.Policy.Expanding)
+
+        # Crosshair
+        self.crosshair = CrosshairAnnulus()
+        options_layout.addWidget(self.crosshair)
 
         # Bottom Spacer
         options_layout.addItem(

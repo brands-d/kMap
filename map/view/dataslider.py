@@ -1,9 +1,9 @@
 from map.ui.dataslider_ui import DataSliderUI
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QGroupBox
 from PyQt5.QtCore import pyqtSignal
 
 
-class DataSlider(QWidget, DataSliderUI):
+class DataSlider(QGroupBox, DataSliderUI):
 
     value_changed = pyqtSignal(int)
 
