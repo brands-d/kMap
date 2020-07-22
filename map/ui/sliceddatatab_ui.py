@@ -8,11 +8,18 @@ from map.view.dataslider import DataSlider
 from map.config.config import config
 from map.view.crosshair import CrosshairAnnulus
 
+
 class SlicedDataTabUI(AbstractUI):
 
     def _initialize_content(self):
 
         options_widget = QWidget()
+
+        # Plot
+        self.plot_item = PyQtGraphPlot()
+        self.plot_item.setSizePolicy(
+            QSP.Policy.Expanding, QSP.Policy.Expanding)
+
         # Options
         options_layout = QVBoxLayout()
         options_widget.setLayout(options_layout)
@@ -43,7 +50,7 @@ class SlicedDataTabUI(AbstractUI):
         self.slider.setSizePolicy(QSP.Policy.Expanding, QSP.Policy.Expanding)
 
         # Crosshair
-        self.crosshair = CrosshairAnnulus()
+        self.crosshair = CrosshairAnnulus(self.plot_item)
         options_layout.addWidget(self.crosshair)
 
         # Bottom Spacer
@@ -58,16 +65,9 @@ class SlicedDataTabUI(AbstractUI):
         scroll_area.setSizePolicy(QSP.Policy.Maximum, QSP.Policy.Preferred)
         scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
-        # Plot
-        self.plot_item = PyQtGraphPlot()
-        self.plot_item.setSizePolicy(
-            QSP.Policy.Expanding, QSP.Policy.Expanding)
-
         main_layout = QHBoxLayout()
         main_layout.addWidget(scroll_area)
         main_layout.addWidget(self.plot_item)
-        #main_layout.setStretch(0, 1)
-        #main_layout.setStretch(1, 3)
 
         self.setLayout(main_layout)
 

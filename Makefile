@@ -10,7 +10,7 @@ install:
 	python setup.py install
 
 clean:
-	rm -rf build dist *.egg-info *.log
+	rm -rf build dist *.egg-info *.log report.tar.gz
 
 uninstall:
 	rm -rf venv build dist *.egg-info

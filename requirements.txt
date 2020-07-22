@@ -1,5 +1,5 @@
-h5py==2.10.0
 numpy==1.19.0
-PyQt5==5.15.0
-pyqtgraph==0.11.0
 scipy==1.5.1
+h5py==2.10.0
+PyQt5==5.15.0
+-e git://github.com/pyqtgraph/pyqtgraph.git@abfac52c34e368171db472efc8efc581b6383f0d#egg=pyqtgraph

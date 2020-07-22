@@ -22,8 +22,8 @@ class DataSlider(QGroupBox, DataSliderUI):
     def _load(self):
 
         self.slider.setMaximum(len(self.slice_keys) - 1)
-        self.key_label.setText('<b>' + self.key_label_text +
-                               ' [' + self.unit_text + ']:' + '</b>')
+        self.key_label.setText(self.key_label_text +
+                               ' [' + self.unit_text + ']:')
         self.update_slice_label()
 
     def update_slice_label(self):

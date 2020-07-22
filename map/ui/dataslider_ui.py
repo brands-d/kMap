@@ -8,6 +8,9 @@ class DataSliderUI(AbstractUI):
 
     def _initialize_content(self):
 
+        self.setTitle('Slices')
+        self.setStyleSheet('QGroupBox { font-weight: bold; } ')
+
         # Key Label
         self.key_label = QLabel('')
         self.key_label.setSizePolicy(QSP.Policy.Maximum, QSP.Policy.Maximum)
