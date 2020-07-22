@@ -39,3 +39,7 @@ class SlicedDataTab(QWidget, SlicedDataTabUI):
 
         plot_data = self.data.slice_from_idx(index)
         self.plot_item.plot(plot_data)
+
+    def crosshair_changed(self):
+
+        self.crosshair.update_label(self.plot_item.displayed_plot_data)

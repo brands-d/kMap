@@ -73,4 +73,5 @@ class SlicedDataTabUI(AbstractUI):
 
     def _initialize_connections(self):
 
+        self.crosshair.crosshair_changed.connect(self.crosshair_changed)
         self.slider.value_changed.connect(self.change_slice)
