@@ -1,6 +1,7 @@
 from map.ui.sliceddatatab_ui import SlicedDataTabUI
 from PyQt5.QtWidgets import QWidget
 from map.library.library import get_ID_from_tab_text
+from map.view.matplotlibwindow import MatplotlibWindow
 
 
 class SlicedDataTab(QWidget, SlicedDataTabUI):
@@ -11,6 +12,7 @@ class SlicedDataTab(QWidget, SlicedDataTabUI):
 
         self.model = model
         self.data = data
+        self.displayed = None
 
         self.setupUi()
 
@@ -37,9 +39,18 @@ class SlicedDataTab(QWidget, SlicedDataTabUI):
 
     def change_slice(self, index):
 
-        plot_data = self.data.slice_from_idx(index)
-        self.plot_item.plot(plot_data)
+        self.displayed = self.data.slice_from_idx(index)
+        self.plot_item.plot(self.displayed)
+        self.update()
+
+    def update(self):
+
+        self.crosshair.update_label(self.plot_item.displayed_plot_data)
 
     def crosshair_changed(self):
 
         self.crosshair.update_label(self.plot_item.displayed_plot_data)
+
+    def display_in_matplotlib(self):
+
+        self.window = MatplotlibWindow(self.displayed, self.data.name)

@@ -131,3 +131,11 @@ class MainWindow(QMainWindow, MainWindowUI):
 
         else:
             self.root_log.info('No file chosen')
+
+    def open_in_matplotlib(self):
+
+        current_tab = self.tab_widget.currentWidget()
+        if (type(current_tab) is OrbitalDataTab or
+                type(current_tab) is SlicedDataTab):
+
+            current_tab.display_in_matplotlib()

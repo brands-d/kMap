@@ -34,6 +34,10 @@ class MainWindowUI(AbstractUI):
         self.load_orbital_action = file_menu.addAction('Open .cube File...')
         self.load_orbital_action.setShortcut(QKeySequence('Ctrl+o'))
         file_menu.addSeparator()
+        export = file_menu.addMenu('Export')
+        self.show_matplotlib = export.addAction('Matplotlib')
+        self.show_matplotlib.setShortcut(QKeySequence('Ctrl+m'))
+        file_menu.addSeparator()
         self.log_file_action = file_menu.addAction('Open .log File...')
         self.log_file_action.setShortcut(QKeySequence('Ctrl+l'))
         # Preferences menu
@@ -61,6 +65,8 @@ class MainWindowUI(AbstractUI):
         self.load_slice_action.triggered.connect(self.open_hdf5_file)
         self.load_orbital_action.triggered.connect(self.open_cube_file)
         self.log_file_action.triggered.connect(self.open_log_file)
+        # Edit menu
+        self.show_matplotlib.triggered.connect(self.open_in_matplotlib)
         # Preferences menu
         self.general_action.triggered.connect(self.open_general_settings)
         self.settings_action.triggered.connect(self.reload_settings)

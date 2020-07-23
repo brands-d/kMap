@@ -90,6 +90,10 @@ class Crosshair(QGroupBox, CrosshairUI):
 
             self.point_value.setText('%.2f  a.u.' % intensity)
 
+        x = self.model.x
+        y = self.model.y
+        self.distance_value.setText('%.2f  Å^-1' % np.sqrt(x**2 + y**2))
+
 
 class CrosshairROI(Crosshair, CrosshairROIUI):
 

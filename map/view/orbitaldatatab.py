@@ -14,8 +14,8 @@ class OrbitalDataTab(QWidget, OrbitalDataTabUI):
 
         self.setupUi()
 
-        self.plot_item.plot(orbital.get_kmap(
-            E_kin=50, phi=10, Ak_type='toroid'))
+        self.displayed = orbital.get_kmap(E_kin=50, phi=10, Ak_type='toroid')
+        self.plot_item.plot(self.displayed)
 
     def close(self):
 
