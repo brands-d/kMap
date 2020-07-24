@@ -1,11 +1,11 @@
+import numpy as np
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QGroupBox
 from map.ui.crosshair_ui import (
     CrosshairUI, CrosshairROIUI, CrosshairAnnulusUI)
 from map.model.crosshair import Crosshair as CrosshairModel
 from map.model.crosshair import (
     CrosshairWithAnnulus as CrosshairWithAnnulusModel)
-import numpy as np
-from PyQt5.QtCore import pyqtSignal
 
 
 class Crosshair(QGroupBox, CrosshairUI):

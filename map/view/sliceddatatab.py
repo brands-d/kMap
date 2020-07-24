@@ -1,5 +1,5 @@
-from map.ui.sliceddatatab_ui import SlicedDataTabUI
 from PyQt5.QtWidgets import QWidget
+from map.ui.sliceddatatab_ui import SlicedDataTabUI
 from map.library.library import get_ID_from_tab_text
 from map.view.matplotlibwindow import MatplotlibWindow
 

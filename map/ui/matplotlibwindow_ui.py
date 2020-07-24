@@ -1,12 +1,12 @@
-from map import __directory__
-from map.ui.abstract_ui import AbstractUI
-from PyQt5.QtWidgets import (
-    QHBoxLayout, QGridLayout, QDoubleSpinBox, QComboBox, QSpinBox,
-    QWidget, QLabel, QPushButton, QVBoxLayout)
-from matplotlib.backends.backend_qt5agg import FigureCanvas
-from matplotlib.figure import Figure
-from PyQt5.QtWidgets import QSizePolicy as QSP
 from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QSizePolicy as QSP
+from PyQt5.QtWidgets import (
+    QHBoxLayout, QVBoxLayout, QGridLayout, QDoubleSpinBox, QComboBox,
+    QSpinBox, QWidget, QLabel, QPushButton)
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_qt5agg import FigureCanvas
+from map.ui.abstract_ui import AbstractUI
+from map import __directory__
 
 
 class MatplotlibWindowUI(AbstractUI):

@@ -1,7 +1,7 @@
-from map.ui.abstract_ui import AbstractUI
-from PyQt5.QtWidgets import QSlider, QVBoxLayout, QHBoxLayout, QLabel
-from PyQt5.QtWidgets import QSizePolicy as QSP
 from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QSizePolicy as QSP
+from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QLabel, QSlider
+from map.ui.abstract_ui import AbstractUI
 
 
 class DataSliderUI(AbstractUI):

@@ -1,6 +1,6 @@
-from map.ui.dataslider_ui import DataSliderUI
-from PyQt5.QtWidgets import QGroupBox
 from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtWidgets import QGroupBox
+from map.ui.dataslider_ui import DataSliderUI
 
 
 class DataSlider(QGroupBox, DataSliderUI):

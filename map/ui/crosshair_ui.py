@@ -1,10 +1,7 @@
-from map.ui.abstract_ui import AbstractUI
-from PyQt5.QtWidgets import (
-    QCheckBox, QHBoxLayout, QVBoxLayout, QLabel, QGridLayout, QDoubleSpinBox)
-from PyQt5.QtWidgets import QSizePolicy as QSP
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont
 import pyqtgraph as pg
+from PyQt5.QtWidgets import (
+    QHBoxLayout, QVBoxLayout, QGridLayout, QLabel, QCheckBox, QDoubleSpinBox)
+from map.ui.abstract_ui import AbstractUI
 
 
 class CrosshairUI(AbstractUI):
@@ -204,7 +201,8 @@ class CrosshairAnnulusUI(CrosshairROIUI):
 
         self.enable_an.stateChanged.connect(self.enable_annulus)
 
-        self.width_spinbox.valueChanged.connect(self.resize_annulus_from_spinbox)
+        self.width_spinbox.valueChanged.connect(
+            self.resize_annulus_from_spinbox)
         self.annulus.sigRegionChangeFinished.connect(
             self.resize_annulus_from_drag)
         self.annulus.sigRegionChangeStarted.connect(self.dragging_annulus)

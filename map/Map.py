@@ -1,12 +1,13 @@
 import os
 import logging
+import logging.config
 import pyqtgraph as pg
-from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QFont
-from map.view.mainwindow import MainWindow
-from map import __version__, __project__, __directory__
+from PyQt5.QtWidgets import QApplication
 from map.model.model import Model
 from map.config.config import config
+from map.view.mainwindow import MainWindow
+from map import __version__, __project__, __directory__
 
 
 class Map(QApplication):

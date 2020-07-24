@@ -72,7 +72,7 @@ class Model():
     def remove_sliced_by_ID(self, ID):
 
         logging.getLogger('map').debug('Removing sliced data with' +
-                                        ' ID %i.' % ID)
+                                       ' ID %i.' % ID)
 
         for data in self.sliced_data:
             if data.ID == ID:

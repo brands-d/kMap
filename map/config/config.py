@@ -1,6 +1,5 @@
 from configparser import ConfigParser
 from map import __directory__
-import logging.config
 
 
 class Config:

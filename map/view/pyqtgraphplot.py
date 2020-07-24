@@ -1,6 +1,5 @@
-from map.ui.pyqtgraphplot_ui import PyQtGraphPlotUI
-from PyQt5.QtWidgets import QWidget
 import pyqtgraph as pg
+from map.ui.pyqtgraphplot_ui import PyQtGraphPlotUI
 
 
 class PyQtGraphPlot(pg.ImageView, PyQtGraphPlotUI):

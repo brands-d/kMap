@@ -1,8 +1,6 @@
 import os
-import numpy as np
 import urllib.request
 from map.library.orbital import Orbital
-from abc import ABCMeta, abstractmethod
 from map.config.config import config
 
 

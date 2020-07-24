@@ -1,12 +1,12 @@
-from PyQt5.QtWidgets import (
-    QHBoxLayout, QVBoxLayout, QLabel, QSpacerItem, QScrollArea, QWidget)
-from PyQt5.QtWidgets import QSizePolicy as QSP
 from PyQt5.QtCore import Qt
-from map.ui.abstract_ui import AbstractUI
-from map.view.pyqtgraphplot import PyQtGraphPlot
-from map.view.dataslider import DataSlider
+from PyQt5.QtWidgets import QSizePolicy as QSP
+from PyQt5.QtWidgets import (
+    QWidget, QHBoxLayout, QVBoxLayout, QSpacerItem, QScrollArea)
 from map.config.config import config
+from map.ui.abstract_ui import AbstractUI
+from map.view.dataslider import DataSlider
 from map.view.crosshair import CrosshairAnnulus
+from map.view.pyqtgraphplot import PyQtGraphPlot
 
 
 class SlicedDataTabUI(AbstractUI):

@@ -1,7 +1,7 @@
-import numpy as np
 import h5py
-from map.model.plotdata import PlotData
+import numpy as np
 from abc import ABCMeta, abstractmethod
+from map.model.plotdata import PlotData
 
 
 class AbstractSlicedData(metaclass=ABCMeta):

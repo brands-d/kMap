@@ -1,9 +1,7 @@
-from map.ui.matplotlibwindow_ui import MatplotlibWindowUI
-from matplotlib.backends.backend_qt5agg import FigureCanvas
-from matplotlib.figure import Figure
+from math import ceil, floor
 from PyQt5.QtWidgets import QWidget
 from matplotlib.ticker import AutoMinorLocator
-from math import ceil, floor
+from map.ui.matplotlibwindow_ui import MatplotlibWindowUI
 
 
 class MatplotlibWindow(QWidget, MatplotlibWindowUI):

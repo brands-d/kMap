@@ -1,8 +1,8 @@
-from map import __directory__
-from map.ui.abstract_ui import AbstractUI
 from PyQt5.QtGui import QIcon, QKeySequence
-from PyQt5.QtWidgets import QWidget, QTabWidget, QVBoxLayout
+from PyQt5.QtWidgets import QVBoxLayout, QWidget, QTabWidget
 from map.config.config import config
+from map.ui.abstract_ui import AbstractUI
+from map import __directory__
 
 
 class MainWindowUI(AbstractUI):

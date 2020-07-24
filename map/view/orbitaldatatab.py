@@ -1,7 +1,7 @@
 import logging
-from map.ui.orbitaldatatab_ui import OrbitalDataTabUI
 from PyQt5.QtWidgets import QWidget
 from map.library.library import get_ID_from_tab_text
+from map.ui.orbitaldatatab_ui import OrbitalDataTabUI
 
 
 class OrbitalDataTab(QWidget, OrbitalDataTabUI):

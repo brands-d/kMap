@@ -1,6 +1,6 @@
-from map.ui.abstract_ui import AbstractUI
 from PyQt5.QtWidgets import (
     QVBoxLayout, QHBoxLayout, QTextEdit, QLineEdit, QPushButton, QLabel)
+from map.ui.abstract_ui import AbstractUI
 
 
 class FileViewerTabUI(AbstractUI):
