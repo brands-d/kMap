@@ -1,10 +1,10 @@
 from math import ceil, floor
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QMainWindow
 from matplotlib.ticker import AutoMinorLocator
 from map.ui.matplotlibwindow_ui import MatplotlibWindowUI
 
 
-class MatplotlibWindow(QWidget, MatplotlibWindowUI):
+class MatplotlibWindow(QMainWindow, MatplotlibWindowUI):
 
     def __init__(self, plot_data, name='Matplotlib'):
 
@@ -25,7 +25,7 @@ class MatplotlibWindow(QWidget, MatplotlibWindowUI):
 
     def display_figure(self):
 
-        self.axes.pcolormesh(self.x, self.y, self.plot_data.data)
+        self.plot = self.axes.pcolormesh(self.x, self.y, self.plot_data.data)
 
     def _calc_centered_axes(self):
 
@@ -119,3 +119,13 @@ class MatplotlibWindow(QWidget, MatplotlibWindowUI):
         # Catch closing to close options window as well
         self.options.close()
         event.accept()
+
+    def add_colorbar(self, enable):
+
+        if enable:
+            self.colorbar = self.figure.colorbar(self.plot, ax=self.axes)
+
+        else:
+            self.colorbar.remove()
+
+        self.update_axes()

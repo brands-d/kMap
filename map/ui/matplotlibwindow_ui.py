@@ -1,19 +1,23 @@
+from map import __directory__
+from map.ui.abstract_ui import AbstractUI
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QSizePolicy as QSP
 from PyQt5.QtWidgets import (
-    QHBoxLayout, QVBoxLayout, QGridLayout, QDoubleSpinBox, QComboBox,
-    QSpinBox, QWidget, QLabel, QPushButton)
+    QHBoxLayout, QGridLayout, QDoubleSpinBox, QComboBox,
+    QSpinBox, QWidget, QLabel, QPushButton, QCheckBox)
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt5agg import FigureCanvas
-from map.ui.abstract_ui import AbstractUI
-from map import __directory__
+from matplotlib.backends.backend_qt5agg import (FigureCanvas,
+                                                NavigationToolbar2QT)
 
 
 class MatplotlibWindowUI(AbstractUI):
 
     def _initialize_content(self):
 
-        self.setParent(None)
+        # Central Widget
+        central_widget = QWidget()
+        self.setCentralWidget(central_widget)
+
         self.setGeometry(200, 300, 500, 500)
         self.setWindowTitle(self.name)
         self.setWindowModality(Qt.WindowModal)
@@ -22,13 +26,13 @@ class MatplotlibWindowUI(AbstractUI):
         self.axes = self.figure.add_subplot(111)
 
         canvas = FigureCanvas(self.figure)
-        canvas.setParent(self)
         canvas.setSizePolicy(QSP.Expanding, QSP.Expanding)
+        self.addToolBar(NavigationToolbar2QT(canvas, self))
 
         main_layout = QHBoxLayout()
         main_layout.addWidget(canvas)
 
-        self.setLayout(main_layout)
+        central_widget.setLayout(main_layout)
 
         self.options = QWidget()
         self.options.setParent(None)
@@ -36,6 +40,7 @@ class MatplotlibWindowUI(AbstractUI):
         self.options.setWindowFlag(Qt.WindowCloseButtonHint, False)
 
         self.fit_button = QPushButton('Fit Axis')
+        self.colorbar_checkbox = QCheckBox('Add Colorbar')
 
         x_min_label = QLabel('x-Axis Min.')
         x_max_label = QLabel('x-Axis Max.')
@@ -84,27 +89,25 @@ class MatplotlibWindowUI(AbstractUI):
 
         options_layout = QGridLayout()
 
-        options_layout.addWidget(x_min_label, 0, 0)
-        options_layout.addWidget(x_max_label, 1, 0)
-        options_layout.addWidget(y_min_label, 2, 0)
-        options_layout.addWidget(y_max_label, 3, 0)
-        options_layout.addWidget(ticks_label, 4, 0)
-        options_layout.addWidget(grid_label, 5, 0)
+        options_layout.addWidget(self.colorbar_checkbox, 0, 0)
+        options_layout.addWidget(x_min_label, 1, 0)
+        options_layout.addWidget(x_max_label, 2, 0)
+        options_layout.addWidget(y_min_label, 3, 0)
+        options_layout.addWidget(y_max_label, 4, 0)
+        options_layout.addWidget(ticks_label, 5, 0)
+        options_layout.addWidget(grid_label, 6, 0)
 
-        options_layout.addWidget(self.x_min_spinbox, 0, 1)
-        options_layout.addWidget(self.x_max_spinbox, 1, 1)
-        options_layout.addWidget(self.y_min_spinbox, 2, 1)
-        options_layout.addWidget(self.y_max_spinbox, 3, 1)
-        options_layout.addWidget(self.ticks_spinbox, 4, 1)
-        options_layout.addWidget(self.grid_combobox, 5, 1)
+        options_layout.addWidget(self.fit_button, 0, 1)
+        options_layout.addWidget(self.x_min_spinbox, 1, 1)
+        options_layout.addWidget(self.x_max_spinbox, 2, 1)
+        options_layout.addWidget(self.y_min_spinbox, 3, 1)
+        options_layout.addWidget(self.y_max_spinbox, 4, 1)
+        options_layout.addWidget(self.ticks_spinbox, 5, 1)
+        options_layout.addWidget(self.grid_combobox, 6, 1)
 
-        top_layout = QVBoxLayout()
-        top_layout.addWidget(self.fit_button)
-        top_layout.addLayout(options_layout)
+        self.options.setLayout(options_layout)
 
-        self.options.setLayout(top_layout)
-
-        self.options.setFixedSize(top_layout.sizeHint())
+        self.options.setFixedSize(options_layout.sizeHint())
 
     def _initialize_connections(self):
 
@@ -122,3 +125,4 @@ class MatplotlibWindowUI(AbstractUI):
         self.grid_combobox.currentIndexChanged.connect(self.update_axes)
 
         self.fit_button.clicked.connect(self.fit_axis_limit)
+        self.colorbar_checkbox.stateChanged.connect(self.add_colorbar)
