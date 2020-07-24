@@ -54,6 +54,13 @@ class MainWindow(QMainWindow, MainWindowUI):
         index = self.tab_widget.addTab(FileViewerTab(file_path), 'Log File')
         self.tab_widget.setCurrentIndex(index)
 
+    def open_mod_log_file(self):
+
+        file_path = __directory__ + '/../modules.log'
+        index = self.tab_widget.addTab(
+            FileViewerTab(file_path), 'Modules Log File')
+        self.tab_widget.setCurrentIndex(index)
+
     def open_welcome(self):
 
         file_path = __directory__ + '/resources/texts/welcome.txt'
@@ -112,7 +119,7 @@ class MainWindow(QMainWindow, MainWindowUI):
                     self.open_sliced_tab(new_data)
 
         else:
-            self.root_log.info('No file chosen')
+            logging.getLogger('map').info('No file chosen')
 
     def open_cube_file(self):
 
@@ -130,7 +137,7 @@ class MainWindow(QMainWindow, MainWindowUI):
                     self.open_orbital_tab(new_data)
 
         else:
-            self.root_log.info('No file chosen')
+            logging.getLogger('map').info('No file chosen')
 
     def open_in_matplotlib(self):
 

@@ -14,7 +14,7 @@ class Model():
 
     def load_data_from_filepath(self, path, data_type):
 
-        log = logging.getLogger('root')
+        log = logging.getLogger('map')
         log.debug('Trying to load: %s.' % path)
 
         new_data = None
@@ -59,7 +59,7 @@ class Model():
 
     def remove_orbital_by_ID(self, ID):
 
-        logging.getLogger('root').debug('Removing orbital with ID %i.' % ID)
+        logging.getLogger('map').debug('Removing orbital with ID %i.' % ID)
 
         for data in self.orbital_data:
             if data.ID == ID:
@@ -71,7 +71,7 @@ class Model():
 
     def remove_sliced_by_ID(self, ID):
 
-        logging.getLogger('root').debug('Removing sliced data with' +
+        logging.getLogger('map').debug('Removing sliced data with' +
                                         ' ID %i.' % ID)
 
         for data in self.sliced_data:

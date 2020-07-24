@@ -38,8 +38,10 @@ class MainWindowUI(AbstractUI):
         self.show_matplotlib = export.addAction('Matplotlib')
         self.show_matplotlib.setShortcut(QKeySequence('Ctrl+m'))
         file_menu.addSeparator()
-        self.log_file_action = file_menu.addAction('Open .log File...')
+        log_menu = file_menu.addMenu('Open .log Files...')
+        self.log_file_action = log_menu.addAction('default.log...')
         self.log_file_action.setShortcut(QKeySequence('Ctrl+l'))
+        self.mod_log_file_action = log_menu.addAction('module.log...')
         # Preferences menu
         settings_menu = self.menubar.addMenu('Preferences')
         self.general_action = settings_menu.addAction('Edit General')
@@ -65,6 +67,7 @@ class MainWindowUI(AbstractUI):
         self.load_slice_action.triggered.connect(self.open_hdf5_file)
         self.load_orbital_action.triggered.connect(self.open_cube_file)
         self.log_file_action.triggered.connect(self.open_log_file)
+        self.mod_log_file_action.triggered.connect(self.open_mod_log_file)
         # Edit menu
         self.show_matplotlib.triggered.connect(self.open_in_matplotlib)
         # Preferences menu

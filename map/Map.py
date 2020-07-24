@@ -16,7 +16,7 @@ class Map(QApplication):
         # Apply various configurations
         self.load_settings(startup=True)
 
-        logging.getLogger('root').debug(
+        logging.getLogger('map').debug(
             'Initializing Map v' + __version__ + '.')
 
         # Initialize application
@@ -27,7 +27,7 @@ class Map(QApplication):
 
     def run(self):
 
-        logging.getLogger('root').info('Starting up Map.')
+        logging.getLogger('map').info('Starting up Map.')
 
         # Creating model
         model = Model(self)
@@ -80,4 +80,4 @@ class Map(QApplication):
         self.setFont(QFont(config.get_key('font', 'font'), int(
             config.get_key('font', 'size')), QFont.Normal))
 
-        logging.getLogger('root').debug('Settings loaded successfully.')
+        logging.getLogger('map').debug('Settings loaded successfully.')

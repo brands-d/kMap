@@ -30,7 +30,7 @@ class SlicedDataTab(QWidget, SlicedDataTabUI):
             self.model.remove_sliced_by_ID(ID)
 
         except LookupError:
-            log = logging.getLogger('root')
+            log = logging.getLogger('map')
             log.exception('Removing of data with ID %i couldn\'t' % ID +
                           ' be removed. Traceback:')
             log.error('Error occured when trying to remove data. ' +
