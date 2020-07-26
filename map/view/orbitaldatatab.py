@@ -11,6 +11,7 @@ class OrbitalDataTab(QWidget, OrbitalDataTabUI):
         super().__init__()
 
         self.model = model
+        self.displayed = None
 
         self.setupUi()
 
@@ -35,3 +36,7 @@ class OrbitalDataTab(QWidget, OrbitalDataTabUI):
             log.error('Error occured when trying to remove data. ' +
                       'Correct behaviour from now on can\'t be ' +
                       'guaranteed!')
+
+    def crosshair_changed(self):
+
+        self.crosshair.update_label(self.plot_item.displayed_plot_data)
