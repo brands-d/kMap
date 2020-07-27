@@ -25,6 +25,9 @@ class Config:
         elif file == 'logging':
             return self._logging_settings
 
+        else:
+            raise NotImplementedError('%s not implemented' % file)
+
     def get_key(self, group, key, file='general'):
 
         if file == 'general':
@@ -32,6 +35,9 @@ class Config:
 
         elif file == 'logging':
             return self._logging_settings[group][key]
+
+        else:
+            raise NotImplementedError('%s not implemented' % file)
 
     def set_key(self, group, key, value, file='general'):
         pass
