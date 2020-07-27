@@ -13,7 +13,7 @@ class MatplotlibWindow(QMainWindow, MatplotlibWindowUI):
         self.name = name
         self.plot_data = plot_data
 
-        self.setupUi()
+        self.setupUI()
 
         self._calc_centered_axes()
         self.fit_axis_limit()

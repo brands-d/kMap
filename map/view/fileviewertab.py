@@ -13,7 +13,7 @@ class FileViewerTab(QWidget, FileViewerTabUI):
         self.file_path = abspath(file_path)
         self.richText = richText
 
-        self.setupUi()
+        self.setupUI()
 
         self.open_file()
 

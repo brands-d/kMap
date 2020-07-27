@@ -2,20 +2,18 @@ import json
 import numpy as np
 import pyqtgraph as pg
 from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QGroupBox
 from map.ui.colormap_ui import ColormapUI
 from map import __directory__
 
 
-class Colormap(QGroupBox, ColormapUI):
+class Colormap(ColormapUI):
 
     def __init__(self, plot_item):
 
         self.plot_item = plot_item
 
         super().__init__()
-
-        self.setupUi()
+        self.setupUI()
 
         self.load_colormaps()
         self.change_colormap(self.combobox.itemText(0))

@@ -1,14 +1,17 @@
+from abc import abstractmethod
 from PyQt5.QtWidgets import (
-    QGridLayout, QComboBox, QPushButton, QLineEdit)
+    QGridLayout, QComboBox, QPushButton, QLineEdit, QGroupBox)
 from map.ui.abstract_ui import AbstractUI
 
 
-class ColormapUI(AbstractUI):
+class ColormapUI(QGroupBox, AbstractUI):
 
-    def _initialize_content(self):
+    def _initialize_misc(self):
 
         self.setTitle('Colormap')
         self.setStyleSheet('QGroupBox { font-weight: bold; } ')
+
+    def _initialize_content(self):
 
         # Colormap Combobox
         self.combobox = QComboBox()
@@ -40,3 +43,15 @@ class ColormapUI(AbstractUI):
 
         self.reload_button.clicked.connect(self.load_colormaps)
         self.add_button.clicked.connect(self.add_colormap)
+
+    @abstractmethod
+    def change_colormap(self, name):
+        pass
+
+    @abstractmethod
+    def load_colormaps(self):
+        pass
+
+    @abstractmethod
+    def add_colormap(self):
+        pass

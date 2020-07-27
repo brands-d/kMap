@@ -14,7 +14,7 @@ class SlicedDataTab(QWidget, SlicedDataTabUI):
         self.data = data
         self.displayed = None
 
-        self.setupUi()
+        self.setupUI()
 
         self.change_slice(0)
 

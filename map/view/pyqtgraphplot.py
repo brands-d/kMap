@@ -10,7 +10,7 @@ class PyQtGraphPlot(pg.ImageView, PyQtGraphPlotUI):
 
         super().__init__(view=pg.PlotItem())
 
-        self.setupUi()
+        self.setupUI()
 
     def plot(self, plotdata, pixel_center=True):
 

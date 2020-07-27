@@ -37,11 +37,13 @@ freeze:
 
 # Pleae don't use unless you know what you are doing
 include-config:
-	git update-index --no-skip-worktree map/resources/config/*
+	git update-index --no-skip-worktree map/config/*.ini
+	git update-index --no-skip-worktree map/resources/misc/*.json
 
 # Pleae don't use unless you know what you are doing
 exclude-config:
-	git update-index --skip-worktree map/resources/config/*
+	git update-index --skip-worktree map/config/*.ini
+	git update-index --skip-worktree map/resources/misc/*.json
 
 # Requires additional installs
 generate-uml:

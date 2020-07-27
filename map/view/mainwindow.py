@@ -14,7 +14,7 @@ class MainWindow(QMainWindow, MainWindowUI):
 
         super().__init__()
 
-        self.setupUi()
+        self.setupUI()
 
         self.model = model
 

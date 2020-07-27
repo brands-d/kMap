@@ -13,7 +13,7 @@ class OrbitalDataTab(QWidget, OrbitalDataTabUI):
         self.model = model
         self.displayed = None
 
-        self.setupUi()
+        self.setupUI()
 
         self.displayed = orbital.get_kmap(E_kin=50, phi=10, Ak_type='toroid')
         self.plot_item.plot(self.displayed)

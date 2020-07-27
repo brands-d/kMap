@@ -15,7 +15,7 @@ class DataSlider(QGroupBox, DataSliderUI):
         self.key_label_text = key_label
         self.unit_text = unit
 
-        self.setupUi()
+        self.setupUI()
 
         self._load()
 

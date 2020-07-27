@@ -19,7 +19,7 @@ class Crosshair(QGroupBox, CrosshairUI):
         self._set_crosshair_model()
         self.plot_item = plot_item
 
-        self.setupUi()
+        self.setupUI()
 
         self.enable(False)
         self.update_label(None)
