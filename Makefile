@@ -17,7 +17,7 @@ uninstall:
 	find . -type d -name '__pycache__' -exec rm -r {} +
 
 run:
-	python -m map
+	python -m kmap
 
 test-all:
 	python -m unittest discover
@@ -25,7 +25,7 @@ test-all:
 report:
 	rm -f report.tar.gz report.tar
 	tar -cf report.tar *.log 
-	tar -rf report.tar -C ./map/config/ logging.ini settings.ini
+	tar -rf report.tar -C ./kmap/config/ logging.ini settings.ini
 	-python -m unittest discover 2> test_results.txt
 	tar -rf report.tar test_results.txt
 	gzip report.tar
@@ -37,17 +37,17 @@ freeze:
 
 # Pleae don't use unless you know what you are doing
 include-config:
-	git update-index --no-skip-worktree map/config/*.ini
-	git update-index --no-skip-worktree map/resources/misc/*.json
+	git update-index --no-skip-worktree kmap/config/*.ini
+	git update-index --no-skip-worktree kmap/resources/misc/*.json
 
 # Pleae don't use unless you know what you are doing
 exclude-config:
-	git update-index --skip-worktree map/config/*.ini
-	git update-index --skip-worktree map/resources/misc/*.json
+	git update-index --skip-worktree kmap/config/*.ini
+	git update-index --skip-worktree kmap/resources/misc/*.json
 
 # Requires additional installs
 generate-uml:
-	pyreverse -o png -p Map ./map
+	pyreverse -o png -p kMap ./kmap
 	
 help:
 	echo 'Usage:'   

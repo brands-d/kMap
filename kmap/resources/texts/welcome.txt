@@ -1,0 +1,24 @@
+<h1>kMap</h1>
+<p>kMap is a utility project to display, modify and compare momentum maps of
+orbitals from ARPES experiments and DFT calculations.</p>
+<p>kMap is currently under construction and thus major changes are to be expected. Please feel free to explore what the program has to offer so far.</p>
+<hr>
+<p>If you come from the previous version of kMap, here is a short rundown of what changed or what new possibilities this version offers:</p>
+<ul>
+<li><p>Instead of a fixed number of certain tabs you can now load as many as your PC can handle. Loading a corresponding file will dynamically initiate a new tab. Those tabs can be closed at any time and function independently.</p>
+</li>
+<li><p>Many features have been moved to the new menubar. The structuring is heavily orientated along with common applications and thus should be intuitively useable.</p>
+</li>
+<li><p>There are now settings files in the .ini format. Under Preferences, you will find the option to display and edit them right there in a simplified text editor. There is also the option to reload the settings during runtime! Already done actions won&#39;t be reversed but new actions should use the updated settings.</p>
+</li>
+<li><p>The code gets completely rewritten. Many of the features previously deemed too hard to implement retrospectively are now in mind during the new implementation. Additionally, this will make kMap much more robust, modular and future-proof. On the flip side, through heavy use of object orientation and class structure some people may find it more difficult to get into the code. The structure tries to stay as close as possible to common open source project standards and extensive documentation will be provided to ease this process.</p>
+</li>
+<li><p>Last but not least, kMap comes with an ever-increasing number of unit tests. This will assist in making kMap more reliable and consistent.</p>
+</li>
+</ul>
+<hr>
+<p><strong> Any feedback whatsoever, bug reports, ideas, struggles with the program or other comments are highly appreciated. Please send your thoughts to</strong></p>
+<ul>
+<li>dominik.brandstetter@edu.uni-graz.at</li>
+</ul>
+<p>(For bug reports please use the &quot;make report&quot; command. For more information see README)</p>

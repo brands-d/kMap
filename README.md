@@ -1,6 +1,6 @@
-# Map
-Map is a utility project to display, modify and compare momentum maps of
-orbitals from ARPES experiments and DFT calculations.
+# kMap
+kMap is a utility project to display, modify and compare momentum maps
+of orbitals from ARPES experiments and DFT calculations.
 
 
 ## Author
@@ -13,7 +13,7 @@ orbitals from ARPES experiments and DFT calculations.
 ## Installation
 
 ### 1. Install Python
-Before installing Map, please make sure you have a python version of 3.7
+Before installing kMap, please make sure you have a python version of 3.7
 or higher installed. If not, you can get one here
 
     https://www.python.org/downloads/
@@ -25,25 +25,25 @@ it using this guide (https://pip.pypa.io/en/stable/installing/)
 Clone the project into a local repository. If you have git installed,
 simply execute the following command for https:
 
-    git clone https://github.com/brands-d/Map.git
+    git clone https://github.com/brands-d/kMap.git
 
 or if you have an ssh connection setup:
 
-    git clone git@github.com:brands-d/Map.git
+    git clone git@github.com:brands-d/kMap.git
 
 Alternatively, if don't have git installed (i.e. using Windows) you can
 download the .zip file here:
 
-    https://github.com/brands-d/Map/archive/master.zip
+    https://github.com/brands-d/kMap/archive/master.zip
     
 and extract the project into the local directory.
 
 ### 3. Virtual environment
-Map comes with a complete setup of a virtual environment for Map only
+kMap comes with a complete setup of a virtual environment for kMap only
 which is the cleanest and safest option to use. This, however,
 reinstalls packages you might already have in a distinct directory
 which can take up some space (currently about 400MB).
-If you want to keep storage Map takes up down, or prefer using our own
+If you want to keep storage kMap takes up down, or prefer using our own
 environment or program (like conda) you can skip 3. and 4. entirely.
 
 If you don't have virtualenv already installed, please do so with the
@@ -52,7 +52,7 @@ following command:
     pip install virtualenv
 
 #### Linux & MacOS (probably)
-The following commands will set up a venv folder inside the Map's root
+The following commands will set up a venv folder inside the kMap's root
 directory
     
     make setup
@@ -95,7 +95,7 @@ follow the "Manually" section. Recommend only if you know what
 you are doing.
 
 #### Linux & MacOS (probably)
-The following commands will install Map and all necessary packages
+The following commands will install kMap and all necessary packages
 inside
     
     make install
@@ -129,22 +129,22 @@ Afterwards please run tests to check if they come back passing.
 
 It should say something like "OK" at the end. If you see "FAILED"
 one or more test came back negative. If that's the case please make
-sure you installed Map correctly and retry. If it still fails, please
+sure you installed kMap correctly and retry. If it still fails, please
 contact the author.
 
 ## Configuration
 
-All configuration files can be found in ./map/resources/config. They are
+All configuration files can be found in ./kmap/resources/config. They are
 outside the index of git, which means you can (and have to) edit and
 change them directly.
 
 ## Usage
 
 Before running, make sure you are in the correct environment, in which
-you installed Map. If you decided to use the venv Map comes with, redo
+you installed kMap. If you decided to use the venv kMap comes with, redo
 4. of the installation instruction.
 
-To start Map simply run
+To start kMap simply run
 
 ### Linux & MacOS (probably)
     
@@ -152,7 +152,7 @@ To start Map simply run
     
 ### Windows
 
-    python -m map
+    python -m kmap
 
 ## Bug Report
 
