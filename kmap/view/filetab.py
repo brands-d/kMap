@@ -1,7 +1,7 @@
 from os.path import abspath
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtGui import QTextDocument
-from kmap.ui.fileviewertab_ui import FileViewerTabUI
+from kmap.ui.filetab_ui import FileViewerTabUI, FileEditorTabUI
 
 
 class FileViewerTab(QWidget, FileViewerTabUI):
@@ -36,3 +36,15 @@ class FileViewerTab(QWidget, FileViewerTabUI):
     def find_prev(self):
 
         self.display.find(self.line_edit.text(), QTextDocument.FindBackward)
+
+
+class FileEditorTab(FileViewerTab, FileEditorTabUI):
+
+    def __init__(self, file_path):
+
+        super().__init__(file_path, richText=False)
+
+    def save(self):
+
+        with open(self.file_path, 'wt') as f:
+            f.write(self.display.toPlainText())

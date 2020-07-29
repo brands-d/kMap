@@ -3,8 +3,7 @@ from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox
 from kmap.ui.mainwindow_ui import MainWindowUI
 from kmap.view.sliceddatatab import SlicedDataTab
 from kmap.view.orbitaldatatab import OrbitalDataTab
-from kmap.view.fileviewertab import FileViewerTab
-from kmap.view.fileeditortab import FileEditorTab
+from kmap.view.filetab import FileViewerTab, FileEditorTab
 from kmap import __directory__, __version__
 
 

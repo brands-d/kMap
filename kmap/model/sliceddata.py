@@ -51,7 +51,7 @@ class SlicedData(AbstractSlicedData):
                 'slices individually')
 
     @classmethod
-    def init_from_hdf5(cls, file_path, ID, keys={}):
+    def init_from_hdf5(cls, file_path, ID=-1, keys={}):
 
         # Updates default file_keys with user defined keys
         file_keys = {'name': 'name', 'slice_keys': 'slice_keys',
@@ -95,7 +95,7 @@ class SlicedData(AbstractSlicedData):
     def slice_from_key(self, key):
 
         try:
-            idx = self.slice_keys.index(key)
+            idx = list(self.slice_keys).index(key)
             return self._slices[idx]
 
         except ValueError:
