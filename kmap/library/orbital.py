@@ -8,6 +8,7 @@ import numpy as np
 import scipy.interpolate as interp
 from kmap.model.plotdata import PlotData
 
+np.seterr(invalid='ignore')
 
 class Orbital():
     """Class modelling cube files as orbitals from which kmaps can be
@@ -31,7 +32,7 @@ class Orbital():
     def __init__(self, file, file_format='cube', dk3D=0.15, value='abs2'):
 
         # Read orbital data from file
-        if file_format == 'cube':
+        if file_format == 'cube': 
             self._read_cube(file)
         else:
             NotImplementedError('Other formats than cube not implemented')
@@ -76,15 +77,25 @@ class Orbital():
         if new_E_kin:
             self.set_kinetic_energy(E_kin, dk)
 
-        # Rotate molecule (that is rotate hemisphere)
+        # Rotate molecule (that is, rotate hemisphere)
         if phi != 0 or theta != 0 or psi != 0:
             self.set_orientation(phi, theta, psi)
 
-        if Ak_type != 'no':
-            self.set_polarization(Ak_type, polarization, alpha, beta,
-                                  gamma)
+        self.set_polarization(Ak_type, polarization, alpha, beta,
+                              gamma)
+        
+        return PlotData(self.Ak['data']*self.kmap['data'], 
+                        self.kmap['krange'])
 
-        return PlotData(self.kmap['data'], self.kmap['krange'])
+
+    def change_polarization(self, Ak_type='no', polarization='p', alpha=60, beta=90,
+                                  gamma=0):
+        
+        self.set_polarization(Ak_type, polarization, alpha, beta,
+                              gamma)
+        return PlotData(self.Ak['data']*self.kmap['data'], 
+                        self.kmap['krange'])
+
 
     def compute_3DFT(self, dk3D, value):
         """Compute 3D-FT."""
@@ -184,6 +195,17 @@ class Orbital():
 
     def set_polarization(self, Ak_type, polarization, alpha, beta, gamma):
 
+        if Ak_type == 'no':  # Set |A.k|^2 to 1
+            self.Ak = {'Ak_type': Ak_type,
+                       'polarization': None,
+                       'alpha': None,
+                       'beta': None,
+                       'gamma': None,
+                       'data': np.ones_like(self.kmap['data'])}
+
+            return
+
+
         # Convert angles to rad and compute sin and cos for later use
         a = np.radians(alpha)
         b = np.radians(beta)
@@ -221,7 +243,7 @@ class Orbital():
         elif Ak_type == 'NanoESCA':
             # In-plane = p-polarization
             if polarization == 'p':
-                Ak = kx * cos_a * cos_b + ky * cos_a * sinb + kz * sin_a
+                Ak = kx * cos_a * cos_b + ky * cos_a * sin_b + kz * sin_a
                 Ak = Ak**2 + gamma**2 * sin_a**2
 
             # Out-of-plane = s-polarization
@@ -240,7 +262,7 @@ class Orbital():
             elif polarization == 'C-':
                 polp = kx * cos_a * cos_b + ky * cos_a * sin_b + kz * sin_a
                 pols = -kx * sin_b + ky * cos_b
-                Ak = 0.5 * (polp**2 + gamma**2 * sina**2) + 0.5 * \
+                Ak = 0.5 * (polp**2 + gamma**2 * sin_a**2) + 0.5 * \
                     pols**2 + (sin_b * kx - cos_b * ky) * gamma * sin_a
 
             # CDAD-signal (right-handed - left-handed) using empirically
@@ -250,8 +272,8 @@ class Orbital():
                 # Rel. Phen. 214, 29-52 (2017).
                 Ak = -2 * (sin_b * kx - cos_b * ky) * gamma * sin_a
 
-        # Multiply |A.k|^2 with kmap
-        self.kmap['data'] *= Ak
+#        # Multiply |A.k|^2 with kmap
+#        self.kmap['data'] *= Ak
 
         # Set attributes
         self.Ak = {'Ak_type': Ak_type,
@@ -264,6 +286,14 @@ class Orbital():
     def _read_cube(self, file):
         """ Read orbital data from cube file."""
 
+        ''' File and path to file are both string. Should _read_cube
+        get the file path or the file itself?
+        if type(file) == str:
+            orbfile = open(file, "r")
+            lines   = orbfile.readlines()
+            orbfile.close()
+        else:
+        '''
         # Split the entire file into separate lines
         lines = file.split('\n')
 

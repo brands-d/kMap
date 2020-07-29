@@ -1,10 +1,9 @@
 from math import ceil, floor
-from PyQt5.QtWidgets import QMainWindow
 from matplotlib.ticker import AutoMinorLocator
 from kmap.ui.matplotlibwindow_ui import MatplotlibWindowUI
 
 
-class MatplotlibWindow(QMainWindow, MatplotlibWindowUI):
+class MatplotlibWindow(MatplotlibWindowUI):
 
     def __init__(self, plot_data, name='Matplotlib'):
 
@@ -19,6 +18,7 @@ class MatplotlibWindow(QMainWindow, MatplotlibWindowUI):
         self.fit_axis_limit()
 
         self.display_figure()
+        self.update_axes()
 
         self.show()
         self.options.show()

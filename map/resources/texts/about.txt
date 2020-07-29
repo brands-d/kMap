@@ -1,1 +1,0 @@
-<h2 id="map"><center>Map</center></h2><p> Map is a utility project to display, modify and compare momentum maps of orbitals from ARPES experiments and DFT calculations. </p><h4 id="version-s"> Version: %s < /h4 ><h4 id="copyright-2020-"> Copyright 2020: </h4><ul> <li> Dominik Brandstetter </li><li> Peter Puschnig </li></ul>

@@ -1,34 +1,42 @@
 from kmap import __directory__
 from kmap.ui.abstract_ui import AbstractUI
+from kmap.view.fixedaspectwidget import FixedAspectWidget
+from kmap.config.config import config
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QSizePolicy as QSP
 from PyQt5.QtWidgets import (
-    QHBoxLayout, QGridLayout, QDoubleSpinBox, QComboBox,
+    QMainWindow, QHBoxLayout, QGridLayout, QDoubleSpinBox, QComboBox,
     QSpinBox, QWidget, QLabel, QPushButton, QCheckBox)
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import (FigureCanvas,
                                                 NavigationToolbar2QT)
 
 
-class MatplotlibWindowUI(AbstractUI):
+class MatplotlibWindowUI(QMainWindow, AbstractUI):
+
+    def _initialize_misc(self):
+
+        self.setGeometry(200, 300, 500, 550)
+        self.setWindowTitle(self.name)
+        self.setWindowModality(Qt.WindowModal)
 
     def _initialize_content(self):
 
         # Central Widget
-        central_widget = QWidget()
+        central_widget = FixedAspectWidget()
+
         self.setCentralWidget(central_widget)
 
-        self.setGeometry(200, 300, 500, 500)
-        self.setWindowTitle(self.name)
-        self.setWindowModality(Qt.WindowModal)
-
+        # Figure
         self.figure = Figure()
         self.axes = self.figure.add_subplot(111)
 
+        # Canvas
         canvas = FigureCanvas(self.figure)
         canvas.setSizePolicy(QSP.Expanding, QSP.Expanding)
         self.addToolBar(NavigationToolbar2QT(canvas, self))
 
+        # Main Layout
         main_layout = QHBoxLayout()
         main_layout.addWidget(canvas)
 
@@ -80,12 +88,24 @@ class MatplotlibWindowUI(AbstractUI):
         self.ticks_spinbox = QSpinBox()
         self.ticks_spinbox.setRange(0, 20)
         self.ticks_spinbox.setSingleStep(1)
-        self.ticks_spinbox.setValue(5)
+        default_ticks = config.get_key('matplotlib', 'default_minor_tick')
+        self.ticks_spinbox.setValue(int(default_ticks))
 
         self.grid_combobox = QComboBox()
         self.grid_combobox.addItem('No Grid')
         self.grid_combobox.addItem('Major Only')
         self.grid_combobox.addItem('Major and Minor')
+        if config.get_key('matplotlib', 'default_grid') == 'Major Only':
+            default_grid = 1
+
+        elif (config.get_key('matplotlib', 'default_grid') ==
+              'Major and Minor'):
+            default_grid = 2
+
+        else:
+            default_grid = 0
+
+        self.grid_combobox.setCurrentIndex(default_grid)
 
         options_layout = QGridLayout()
 
