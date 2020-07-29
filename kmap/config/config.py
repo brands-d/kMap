@@ -12,10 +12,14 @@ class Config:
     def setup(self):
 
         self._general_settings = ConfigParser()
-        self._general_settings.read(__directory__ + '/config/settings.ini')
+        self._general_settings.read(
+            [__directory__ + '/config/settings_default.ini',
+             __directory__ + '/config/settings_user.ini'])
 
         self._logging_settings = ConfigParser()
-        self._logging_settings.read(__directory__ + '/config/logging.ini')
+        self._logging_settings.read(
+            [__directory__ + '/config/logging_default.ini',
+             __directory__ + '/config/logging_user.ini'])
 
     def get_config(self, file='general'):
 

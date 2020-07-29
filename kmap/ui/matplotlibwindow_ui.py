@@ -95,7 +95,7 @@ class MatplotlibWindowUI(QMainWindow, AbstractUI):
         self.grid_combobox.addItem('No Grid')
         self.grid_combobox.addItem('Major Only')
         self.grid_combobox.addItem('Major and Minor')
-        if config.get_key('matplotlib', 'default_grid') == 'Major Only':
+        if config.get_key('matplotlib', 'default_grid') == 'Major only':
             default_grid = 1
 
         elif (config.get_key('matplotlib', 'default_grid') ==

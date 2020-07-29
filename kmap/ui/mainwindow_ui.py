@@ -44,8 +44,12 @@ class MainWindowUI(AbstractUI):
         self.mod_log_file_action = log_menu.addAction('module.log...')
         # Preferences menu
         settings_menu = self.menubar.addMenu('Preferences')
-        self.general_action = settings_menu.addAction('Edit General')
-        self.logging_action = settings_menu.addAction('Edit Logging')
+        general_menu = settings_menu.addMenu('General Settings')
+        self.general_action = general_menu.addAction('Edit User')
+        self.general_default_action = general_menu.addAction('Show Default')
+        logging_menu = settings_menu.addMenu('Logging Settings')
+        self.logging_action = logging_menu.addAction('Edit User')
+        self.logging_default_action = logging_menu.addAction('Show Default')
         self.settings_action = settings_menu.addAction('Reload Settings')
         # Help menu
         help_menu = self.menubar.addMenu('Help')
@@ -72,8 +76,12 @@ class MainWindowUI(AbstractUI):
         self.show_matplotlib.triggered.connect(self.open_in_matplotlib)
         # Preferences menu
         self.general_action.triggered.connect(self.open_general_settings)
-        self.settings_action.triggered.connect(self.reload_settings)
         self.logging_action.triggered.connect(self.open_logging_settings)
+        self.general_default_action.triggered.connect(
+            self.open_general_default_settings)
+        self.logging_default_action.triggered.connect(
+            self.open_logging_default_settings)
+        self.settings_action.triggered.connect(self.reload_settings)
         # Help menu
         self.readme_action.triggered.connect(self.open_readme)
         self.about_action.triggered.connect(self.open_about)

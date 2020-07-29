@@ -36,16 +36,30 @@ class MainWindow(QMainWindow, MainWindowUI):
 
     def open_general_settings(self):
 
-        file_path = __directory__ + '/config/settings.ini'
+        file_path = __directory__ + '/config/settings_user.ini'
         index = self.tab_widget.addTab(
             FileEditorTab(file_path), 'General Settings')
         self.tab_widget.setCurrentIndex(index)
 
     def open_logging_settings(self):
 
-        file_path = __directory__ + '/config/logging.ini'
+        file_path = __directory__ + '/config/logging_user.ini'
         index = self.tab_widget.addTab(
             FileEditorTab(file_path), 'Logging Settings')
+        self.tab_widget.setCurrentIndex(index)
+
+    def open_general_default_settings(self):
+
+        file_path = __directory__ + '/config/settings_default.ini'
+        index = self.tab_widget.addTab(
+            FileViewerTab(file_path), 'General Settings')
+        self.tab_widget.setCurrentIndex(index)
+
+    def open_logging_default_settings(self):
+
+        file_path = __directory__ + '/config/logging_default.ini'
+        index = self.tab_widget.addTab(
+            FileViewerTab(file_path), 'Logging Settings')
         self.tab_widget.setCurrentIndex(index)
 
     def open_log_file(self):

@@ -25,7 +25,7 @@ test-all:
 report:
 	rm -f report.tar.gz report.tar
 	tar -cf report.tar *.log 
-	tar -rf report.tar -C ./kmap/config/ logging.ini settings.ini
+	tar -rf report.tar -C ./kmap/config/ logging_user.ini settings_user.ini
 	-python -m unittest discover 2> test_results.txt
 	tar -rf report.tar test_results.txt
 	gzip report.tar
@@ -34,16 +34,6 @@ report:
 # Pleae don't use unless you know what you are doing
 freeze:
 	pip freeze > requirements.txt
-
-# Pleae don't use unless you know what you are doing
-include-config:
-	git update-index --no-skip-worktree kmap/config/*.ini
-	git update-index --no-skip-worktree kmap/resources/misc/*.json
-
-# Pleae don't use unless you know what you are doing
-exclude-config:
-	git update-index --skip-worktree kmap/config/*.ini
-	git update-index --skip-worktree kmap/resources/misc/*.json
 
 # Requires additional installs
 generate-uml:
