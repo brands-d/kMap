@@ -1,3 +1,4 @@
+import os
 from configparser import ConfigParser
 from kmap import __directory__
 
@@ -6,20 +7,29 @@ class Config:
 
     def __init__(self):
 
+        self.path_settings_default = (__directory__ +
+                                      '/config/settings_default.ini')
+        self.path_settings_user = (__directory__ +
+                                   '/config/settings_user.ini')
+        self.path_logging_default = (__directory__ +
+                                     '/config/logging_default.ini')
+        self.path_logging_user = (__directory__ +
+                                  '/config/logging_user.ini')
+
         self._general_settings = ''
         self._logging_settings = ''
 
     def setup(self):
 
+        self._check_for_user_files()
+
         self._general_settings = ConfigParser()
         self._general_settings.read(
-            [__directory__ + '/config/settings_default.ini',
-             __directory__ + '/config/settings_user.ini'])
+            [self.path_settings_default, self.path_settings_user])
 
         self._logging_settings = ConfigParser()
         self._logging_settings.read(
-            [__directory__ + '/config/logging_default.ini',
-             __directory__ + '/config/logging_user.ini'])
+            [self.path_logging_default, self.path_logging_user])
 
     def get_config(self, file='general'):
 
@@ -45,6 +55,16 @@ class Config:
 
     def set_key(self, group, key, value, file='general'):
         pass
+
+    def _check_for_user_files(self):
+
+        if not os.path.isfile(self.path_settings_user):
+            with open(self.path_settings_user, 'w+') as file:
+                file.write('; settings_user.ini')
+
+        if not os.path.isfile(self.path_logging_user):
+            with open(self.path_logging_user, 'w+') as file:
+                file.write('; logging_user.ini')
 
 
 config = Config()
