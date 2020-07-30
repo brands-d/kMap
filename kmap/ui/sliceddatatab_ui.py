@@ -65,7 +65,7 @@ class SlicedDataTabUI(AbstractUI):
         # Scroll Area
         scroll_area = QScrollArea()
         scroll_area.setWidget(options_widget)
-        scroll_area.setMinimumSize(0, 575)
+        scroll_area.setMinimumSize(0, 625)
         scroll_area.setSizePolicy(QSP.Policy.Maximum, QSP.Policy.Preferred)
         scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 

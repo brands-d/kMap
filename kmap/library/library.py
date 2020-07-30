@@ -14,7 +14,9 @@ def idx_closest_value(axis, value):
     mapped_value = round_to(value - shift, base) + shift
 
     try:
-        idx = list(axis).index(mapped_value)
+        # Round to fifth decimal place because machine error
+        idx = list(np.around(axis, decimals=5)).index(
+            np.around(mapped_value, decimals=5))
 
     except ValueError:
         idx = None
@@ -38,3 +40,17 @@ def distance_in_meshgrid(X, Y):
 def get_ID_from_tab_text(tab_text):
 
     return int(re.search(r'\([0-9]+\)', tab_text).group(0)[1:-1])
+
+
+def normalize(data):
+
+    data = np.array(data)
+    num_elements = len(data[~np.isnan(data)])
+
+    if num_elements == 0:
+        norm = np.nan
+
+    else:
+        norm = np.nansum(data) / num_elements
+
+    return norm

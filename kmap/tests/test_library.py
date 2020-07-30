@@ -28,3 +28,9 @@ class TestLibrary(unittest.TestCase):
 
         value = -1.23
         self.assertEqual(idx_closest_value(axis, value), 1)
+
+    def test_normalize(self):
+
+        data = [1,2,3]
+
+        self.assertEqual(normalize(data), 2)

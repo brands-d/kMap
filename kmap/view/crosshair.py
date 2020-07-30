@@ -6,6 +6,8 @@ from kmap.ui.crosshair_ui import (
 from kmap.model.crosshair import Crosshair as CrosshairModel
 from kmap.model.crosshair import (
     CrosshairWithAnnulus as CrosshairWithAnnulusModel)
+from kmap.config.config import config
+from kmap.library.library import normalize
 
 
 class Crosshair(QGroupBox, CrosshairUI):
@@ -82,12 +84,22 @@ class Crosshair(QGroupBox, CrosshairUI):
     def update_label(self, plot_data):
 
         if plot_data == None:
-            self.point_value.setText('0.00  a.u.')
+            intensity = 0
 
         else:
-            intensity = np.nansum(
-                self.model.cut_from_data(plot_data, region='center'))
+            cut = self.model.cut_from_data(plot_data, region='center')
 
+            # Normalize by dividing by the number of non nan elements
+            if config.get_key('crosshair', 'normalized_intensity') == 'True':
+                intensity = normalize(cut)
+
+            else:
+                intensity = np.nansum(cut)
+
+        if abs(intensity) > 1000:
+            self.point_value.setText('%.2f  ka.u.' % (intensity / 1000))
+
+        else:
             self.point_value.setText('%.2f  a.u.' % intensity)
 
         x = self.model.x
@@ -177,12 +189,22 @@ class CrosshairROI(Crosshair, CrosshairROIUI):
         super().update_label(plot_data)
 
         if plot_data == None:
-            self.area_value.setText('0.00  a.u.')
+            intensity = 0
 
         else:
-            intensity = np.nansum(
-                self.model.cut_from_data(plot_data, region='roi'))
+            cut = self.model.cut_from_data(plot_data, region='roi')
 
+            # Normalize by dividing by the number of non nan elements
+            if config.get_key('crosshair', 'normalized_intensity') == 'True':
+                intensity = normalize(cut)
+
+            else:
+                intensity = np.nansum(cut)
+
+        if abs(intensity) > 1000:
+            self.area_value.setText('%.2f  ka.u.' % (intensity / 1000))
+
+        else:
             self.area_value.setText('%.2f  a.u.' % intensity)
 
 
@@ -269,10 +291,20 @@ class CrosshairAnnulus(CrosshairROI, CrosshairAnnulusUI):
         super().update_label(plot_data)
 
         if plot_data == None:
-            self.ring_value.setText('0.00  a.u.')
+            intensity = 0
 
         else:
-            intensity = np.nansum(
-                self.model.cut_from_data(plot_data, region='ring'))
+            cut = self.model.cut_from_data(plot_data, region='ring')
 
+            # Normalize by dividing by the number of non nan elements
+            if config.get_key('crosshair', 'normalized_intensity') == 'True':
+                intensity = normalize(cut)
+
+            else:
+                intensity = np.nansum(cut)
+
+        if abs(intensity) > 1000:
+            self.ring_value.setText('%.2f  ka.u.' % (intensity / 1000))
+
+        else:
             self.ring_value.setText('%.2f  a.u.' % intensity)
