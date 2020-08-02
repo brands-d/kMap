@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import (
 from kmap.ui.abstract_ui import AbstractUI
 
 
-class ColormapUI(QGroupBox, AbstractUI):
+class ColormapUI(AbstractUI, QGroupBox):
 
     def _initialize_misc(self):
 
@@ -20,26 +20,27 @@ class ColormapUI(QGroupBox, AbstractUI):
         # Reload Button
         self.reload_button = QPushButton('Reload')
 
-        # Add Edit
-        self.add_lineEdit = QLineEdit()
-        self.add_lineEdit.setClearButtonEnabled(True)
-        self.add_lineEdit.setPlaceholderText('Enter new colormap\'s name...')
+        # LineEdit
+        self.lineEdit = QLineEdit()
+        self.lineEdit.setClearButtonEnabled(True)
+        self.lineEdit.setPlaceholderText('Enter new colormap\'s name...')
 
         # Add Button
         self.add_button = QPushButton('Add')
 
-        # Main Layout
-        main_layout = QGridLayout()
-        main_layout.addWidget(self.combobox, 0, 0)
-        main_layout.addWidget(self.reload_button, 0, 1)
-        main_layout.addWidget(self.add_lineEdit, 1, 0)
-        main_layout.addWidget(self.add_button, 1, 1)
+        # Layout
+        layout = QGridLayout()
+        layout.addWidget(self.combobox, 0, 0)
+        layout.addWidget(self.reload_button, 0, 1)
+        layout.addWidget(self.lineEdit, 1, 0)
+        layout.addWidget(self.add_button, 1, 1)
 
-        self.setLayout(main_layout)
+        self.setLayout(layout)
 
     def _initialize_connections(self):
 
-        self.combobox.currentTextChanged.connect(self.change_colormap)
+        self.combobox.currentIndexChanged.connect(
+            self.change_colormap_by_index)
 
         self.reload_button.clicked.connect(self.load_colormaps)
         self.add_button.clicked.connect(self.add_colormap)

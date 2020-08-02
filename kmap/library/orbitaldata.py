@@ -2,19 +2,16 @@ import os
 import urllib.request
 from kmap.library.orbital import Orbital
 from kmap.config.config import config
+from kmap.model.abstractdata import AbstractData
 
-
-class OrbitalData(Orbital):
+class OrbitalData(Orbital, AbstractData):
 
     def __init__(self, cube, ID, name='', meta_data={}):
 
-        self.name = name
-        self.ID = ID
-        self.meta_data = meta_data
-
         dk3D = float(config.get_key('orbital', 'dk3D'))
 
-        super().__init__(cube, file_format='cube', dk3D=dk3D,
+        AbstractData.__init__(self, ID, name, meta_data)
+        Orbital.__init__(self, cube, file_format='cube', dk3D=dk3D,
                          value='abs2')
 
     @classmethod

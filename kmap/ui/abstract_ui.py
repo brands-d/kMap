@@ -12,7 +12,13 @@ class AbstractUI():
     any particular one.
     """
 
-    def setupUI(self):
+    def __init__(self, *args, **kwargs):
+
+        super().__init__(*args, **kwargs)
+
+        self._setupUI()
+
+    def _setupUI(self):
         """Sets up the GUI elements by calling the _initialize_misc,
         _initialize_misc and _initialize_connections method in this
         order. In general do not overwrite this method and call it

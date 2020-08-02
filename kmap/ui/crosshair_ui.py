@@ -1,10 +1,12 @@
+from abc import abstractmethod
 import pyqtgraph as pg
 from PyQt5.QtWidgets import (
-    QHBoxLayout, QVBoxLayout, QGridLayout, QLabel, QCheckBox, QDoubleSpinBox)
+    QHBoxLayout, QGroupBox, QVBoxLayout, QGridLayout,
+    QLabel, QCheckBox, QDoubleSpinBox)
 from kmap.ui.abstract_ui import AbstractUI
 
 
-class CrosshairUI(AbstractUI):
+class CrosshairUI(AbstractUI, QGroupBox):
 
     def _initialize_content(self):
 
@@ -93,6 +95,22 @@ class CrosshairUI(AbstractUI):
         self.plot_item.view.scene().sigMouseClicked.connect(
             self.move_crosshair_from_click)
 
+    @abstractmethod
+    def move_crosshair_from_spinbox(self):
+        pass
+
+    @abstractmethod
+    def enable(self, enable):
+        pass
+
+    @abstractmethod
+    def move_crosshair_from_drag(self):
+        pass
+
+    @abstractmethod
+    def move_crosshair_from_click(self, event):
+        pass
+
 
 class CrosshairROIUI(CrosshairUI):
 
@@ -147,6 +165,22 @@ class CrosshairROIUI(CrosshairUI):
         self.roi_spinbox.valueChanged.connect(self.resize_roi_from_spinbox)
         self.roi.sigRegionChangeFinished.connect(self.resize_roi_from_drag)
         self.roi.sigRegionChangeStarted.connect(self.dragging_roi)
+
+    @abstractmethod
+    def resize_roi_from_spinbox(self):
+        pass
+
+    @abstractmethod
+    def enable_roi(self, enable):
+        pass
+
+    @abstractmethod
+    def resize_roi_from_drag(self):
+        pass
+
+    @abstractmethod
+    def dragging_roi(self):
+        pass
 
 
 class CrosshairAnnulusUI(CrosshairROIUI):
@@ -206,3 +240,19 @@ class CrosshairAnnulusUI(CrosshairROIUI):
         self.annulus.sigRegionChangeFinished.connect(
             self.resize_annulus_from_drag)
         self.annulus.sigRegionChangeStarted.connect(self.dragging_annulus)
+
+    @abstractmethod
+    def resize_annulus_from_drag(self):
+        pass
+
+    @abstractmethod
+    def enable_annulus(self, enable):
+        pass
+
+    @abstractmethod
+    def resize_annulus_from_spinbox(self):
+        pass
+
+    @abstractmethod
+    def dragging_annulus(self):
+        pass

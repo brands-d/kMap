@@ -6,11 +6,11 @@ a corsshair class including a ROI and a ROI-annulus.
 """
 
 import numpy as np
-from kmap.library.library import (
+from kmap.library.misc import (
     idx_closest_value, centered_meshgrid, distance_in_meshgrid)
 
 
-class Crosshair():
+class CrosshairModel():
 
     def __init__(self, x=0, y=0):
 
@@ -60,7 +60,7 @@ class Crosshair():
         return cut_data
 
 
-class CrosshairWithROI(Crosshair):
+class CrosshairWithROIModel(CrosshairModel):
 
     def __init__(self, x=0, y=0, radius=0):
 
@@ -121,7 +121,7 @@ class CrosshairWithROI(Crosshair):
         return mask
 
 
-class CrosshairWithAnnulus(CrosshairWithROI):
+class CrosshairWithAnnulusModel(CrosshairWithROIModel):
 
     def __init__(self, x=0, y=0, radius=0, width=0):
 
@@ -146,7 +146,7 @@ class CrosshairWithAnnulus(CrosshairWithROI):
 
         else:
             # Utilize the CrosshairWithROI class
-            aux_crosshair = CrosshairWithROI(
+            aux_crosshair = CrosshairWithROIModel(
                 x=self.x, y=self.y, radius=self.radius + self.width)
 
             if region == 'outer_border':

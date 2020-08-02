@@ -1,10 +1,10 @@
 import h5py
 import numpy as np
-from abc import ABCMeta, abstractmethod
-from kmap.model.plotdata import PlotData
+from abc import abstractmethod
+from kmap.library.plotdata import PlotData
+from kmap.library.abstractdata import AbstractData
 
-
-class AbstractSlicedData(metaclass=ABCMeta):
+class AbstractSlicedData(AbstractData):
 
     def __init__(self, slice_keys, ID, name, meta_data):
 
@@ -14,9 +14,7 @@ class AbstractSlicedData(metaclass=ABCMeta):
         else:
             self.slice_keys = slice_keys
 
-        self.name = name
-        self.ID = ID
-        self.meta_data = meta_data
+        super().__init__(ID, name, meta_data)
 
     @abstractmethod
     def slice_from_idx(self, idx):

@@ -1,15 +1,19 @@
+from abc import abstractmethod
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QSizePolicy as QSP
-from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QLabel, QSlider
+from PyQt5.QtWidgets import (
+    QGroupBox, QVBoxLayout, QHBoxLayout, QLabel, QSlider)
 from kmap.ui.abstract_ui import AbstractUI
 
 
-class DataSliderUI(AbstractUI):
+class DataSliderUI(AbstractUI, QGroupBox):
 
-    def _initialize_content(self):
+    def _initialize_misc(self):
 
         self.setTitle('Slices')
         self.setStyleSheet('QGroupBox { font-weight: bold; } ')
+
+    def _initialize_content(self):
 
         # Key Label
         self.key_label = QLabel('')
@@ -43,3 +47,7 @@ class DataSliderUI(AbstractUI):
     def _initialize_connections(self):
 
         self.slider.valueChanged.connect(self.change_slice)
+
+    @abstractmethod
+    def change_slice(self, index):
+        pass

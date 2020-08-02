@@ -3,37 +3,57 @@ from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QGroupBox
 from kmap.ui.crosshair_ui import (
     CrosshairUI, CrosshairROIUI, CrosshairAnnulusUI)
-from kmap.model.crosshair import Crosshair as CrosshairModel
-from kmap.model.crosshair import (
-    CrosshairWithAnnulus as CrosshairWithAnnulusModel)
+from kmap.model.crosshair_model import (
+    CrosshairModel, CrosshairWithROIModel, CrosshairWithAnnulusModel)
 from kmap.config.config import config
-from kmap.library.library import normalize
+from kmap.library.misc import normalize
 
 
-class Crosshair(QGroupBox, CrosshairUI):
+class Crosshair(CrosshairUI):
 
     crosshair_changed = pyqtSignal()
 
     def __init__(self, plot_item):
 
-        super().__init__()
-
-        self._set_crosshair_model()
         self.plot_item = plot_item
+        self._set_model()
 
-        self.setupUI()
+        CrosshairUI.__init__(self)
 
         self.enable(False)
-        self.update_label(None)
-
-    def _set_crosshair_model(self):
-
-        self.model = CrosshairModel(x=0, y=0)
+        self.update_label()
 
     def enable(self, enable):
 
         self.v_line.setVisible(enable)
         self.h_line.setVisible(enable)
+
+    def update_label(self):
+
+        plot_data = self.plot_item.get_plot_data()
+
+        if plot_data == None:
+            intensity = 0
+
+        else:
+            cut = self.model.cut_from_data(plot_data, region='center')
+
+            # Normalize by dividing by the number of non nan elements
+            if config.get_key('crosshair', 'normalized_intensity') == 'True':
+                intensity = normalize(cut)
+
+            else:
+                intensity = np.nansum(cut)
+
+        if abs(intensity) > 1000:
+            self.point_value.setText('%.2f  ka.u.' % (intensity / 1000))
+
+        else:
+            self.point_value.setText('%.2f  a.u.' % intensity)
+
+        x = self.model.x
+        y = self.model.y
+        self.distance_value.setText('%.2f  Å^-1' % np.sqrt(x**2 + y**2))
 
     def move_crosshair_from_drag(self):
 
@@ -81,30 +101,9 @@ class Crosshair(QGroupBox, CrosshairUI):
         # Emit Changed Signal
         self.crosshair_changed.emit()
 
-    def update_label(self, plot_data):
+    def _set_model(self):
 
-        if plot_data == None:
-            intensity = 0
-
-        else:
-            cut = self.model.cut_from_data(plot_data, region='center')
-
-            # Normalize by dividing by the number of non nan elements
-            if config.get_key('crosshair', 'normalized_intensity') == 'True':
-                intensity = normalize(cut)
-
-            else:
-                intensity = np.nansum(cut)
-
-        if abs(intensity) > 1000:
-            self.point_value.setText('%.2f  ka.u.' % (intensity / 1000))
-
-        else:
-            self.point_value.setText('%.2f  a.u.' % intensity)
-
-        x = self.model.x
-        y = self.model.y
-        self.distance_value.setText('%.2f  Å^-1' % np.sqrt(x**2 + y**2))
+        self.model = CrosshairModel(x=0, y=0)
 
 
 class CrosshairROI(Crosshair, CrosshairROIUI):
@@ -115,10 +114,6 @@ class CrosshairROI(Crosshair, CrosshairROIUI):
 
         self.dragging_roi = False
         self.enable_roi(False)
-
-    def _set_crosshair_model(self):
-
-        self.model = CrosshairWithROI(x=0, y=0, radius=0.02)
 
     def enable_roi(self, enable):
 
@@ -184,9 +179,11 @@ class CrosshairROI(Crosshair, CrosshairROIUI):
 
         super().update()
 
-    def update_label(self, plot_data):
+    def update_label(self):
 
-        super().update_label(plot_data)
+        super().update_label()
+
+        plot_data = self.plot_item.get_plot_data()
 
         if plot_data == None:
             intensity = 0
@@ -207,6 +204,10 @@ class CrosshairROI(Crosshair, CrosshairROIUI):
         else:
             self.area_value.setText('%.2f  a.u.' % intensity)
 
+    def _set_model(self):
+
+        self.model = CrosshairWithROI(x=0, y=0, radius=0.02)
+
 
 class CrosshairAnnulus(CrosshairROI, CrosshairAnnulusUI):
 
@@ -216,10 +217,6 @@ class CrosshairAnnulus(CrosshairROI, CrosshairAnnulusUI):
 
         self.dragging_annulus = False
         self.enable_annulus(False)
-
-    def _set_crosshair_model(self):
-
-        self.model = CrosshairWithAnnulusModel(x=0, y=0, radius=0.2, width=0.1)
 
     def enable_annulus(self, enable):
 
@@ -286,9 +283,11 @@ class CrosshairAnnulus(CrosshairROI, CrosshairAnnulusUI):
 
         super().update()
 
-    def update_label(self, plot_data):
+    def update_label(self):
 
-        super().update_label(plot_data)
+        plot_data = self.plot_item.get_plot_data()
+
+        super().update_label()
 
         if plot_data == None:
             intensity = 0
@@ -308,3 +307,7 @@ class CrosshairAnnulus(CrosshairROI, CrosshairAnnulusUI):
 
         else:
             self.ring_value.setText('%.2f  a.u.' % intensity)
+
+    def _set_model(self):
+
+        self.model = CrosshairWithAnnulusModel(x=0, y=0, radius=0.2, width=0.1)

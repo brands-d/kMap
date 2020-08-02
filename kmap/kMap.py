@@ -4,9 +4,8 @@ import logging.config
 import pyqtgraph as pg
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QApplication
-from kmap.model.model import Model
 from kmap.config.config import config
-from kmap.view.mainwindow import MainWindow
+from kmap.controller.mainwindow import MainWindow
 from kmap import __version__, __project__, __directory__
 
 
@@ -30,11 +29,8 @@ class kMap(QApplication):
 
         logging.getLogger('kmap').info('Starting up kMap.')
 
-        # Creating model
-        model = Model(self)
-
         # Creating mainwindow
-        self.main_window = MainWindow(model)
+        self.main_window = MainWindow()
 
         super().exec_()
 
