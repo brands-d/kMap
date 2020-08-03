@@ -18,8 +18,8 @@ class DataSlider(DataSliderUI):
     def _setup(self):
 
         self.slider.setMaximum(len(self.model.slice_keys) - 1)
-        self.key_label.setText('%s [%s]' % (
-            self.model.key_label, self.model.units))
+        self.key_label.setText('%s [%s]:' % (
+            self.model.key_label, self.model.unit))
 
         self.update_slice_label()
 

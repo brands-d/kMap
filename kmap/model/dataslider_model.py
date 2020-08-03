@@ -7,7 +7,7 @@ class DataSliderModel():
 
         self.slice_keys = ''
         self.key_label = ''
-        self.units = ''
+        self.unit = ''
 
         self.read(data)
 

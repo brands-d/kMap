@@ -23,3 +23,5 @@ class PyQtGraphPlotModel():
             pos = self.plot_data.range[:, 0] - scale / 2
         else:
             pos = self.plot_data.range[:, 0]
+
+        return pos

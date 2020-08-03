@@ -53,6 +53,7 @@ class Crosshair(CrosshairUI):
 
         x = self.model.x
         y = self.model.y
+
         self.distance_value.setText('%.2f  Å^-1' % np.sqrt(x**2 + y**2))
 
     def move_crosshair_from_drag(self):

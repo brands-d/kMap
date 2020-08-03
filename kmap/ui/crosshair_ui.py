@@ -8,10 +8,12 @@ from kmap.ui.abstract_ui import AbstractUI
 
 class CrosshairUI(AbstractUI, QGroupBox):
 
-    def _initialize_content(self):
+    def _initialize_misc(self):
 
         self.setTitle('Crosshair')
         self.setStyleSheet('QGroupBox { font-weight: bold; } ')
+
+    def _initialize_content(self):
 
         # Enable Label
         enable_label = QLabel('Enable:')
