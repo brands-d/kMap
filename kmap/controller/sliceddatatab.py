@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QWidget
 from kmap.ui.sliceddatatab_ui import SlicedDataTabUI
 from kmap.library.misc import get_ID_from_tab_text
 from kmap.model.sliceddatatab_model import SlicedDataTabModel
-#from kmap.view.matplotlibwindow import MatplotlibWindow
+from kmap.controller.matplotlibwindow import MatplotlibWindow
 
 
 class SlicedDataTab(SlicedDataTabUI):
@@ -47,5 +47,8 @@ class SlicedDataTab(SlicedDataTabUI):
         self.crosshair.update_label()
 
     def display_in_matplotlib(self):
-        pass
-        #MatplotlibWindow(self.displayed, self.data.name)
+
+        data = self.model.displayed_plot_data
+        title = self.get_title()
+        
+        self.window = MatplotlibWindow(data, title)
