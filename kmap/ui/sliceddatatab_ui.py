@@ -77,20 +77,3 @@ class SlicedDataTabUI(AbstractUI, QWidget):
     @abstractmethod
     def change_slice(self):
         pass
-
-
-'''# Slider
-        if 'slice_keys' in self.data.meta_data:
-            key_label = self.data.meta_data['slice_keys']
-
-        else:
-            key_label = config.get_key('sliced_data', 'default_slice_keys')
-
-        if 'slice_unit' in self.data.meta_data:
-            unit = self.data.meta_data['slice_unit']
-
-        else:
-            unit = config.get_key('sliced_data', 'default_slice_unit')
-
-        self.slider = DataSlider(self.data.slice_keys,
-                                 key_label=key_label, unit=unit)'''

@@ -21,13 +21,12 @@ class MatplotlibWindowUI(QMainWindow, AbstractUI):
         self.setWindowTitle(self.title)
         self.setWindowModality(Qt.WindowModal)
 
+        self.options = QWidget()
+        self.options.setParent(None)
+        self.options.setWindowTitle('Options')
+        self.options.setWindowFlag(Qt.WindowCloseButtonHint, False)
+
     def _initialize_content(self):
-
-        # Central Widget
-        ratio = float(config.get_key('matplotlib', 'forced_aspect_ratio'))
-        central_widget = AspectWidget(ratio)
-
-        self.setCentralWidget(central_widget)
 
         # Figure
         self.figure = Figure()
@@ -42,12 +41,11 @@ class MatplotlibWindowUI(QMainWindow, AbstractUI):
         main_layout = QHBoxLayout()
         main_layout.addWidget(canvas)
 
+        # Central Widget
+        ratio = float(config.get_key('matplotlib', 'forced_aspect_ratio'))
+        central_widget = AspectWidget(ratio)
         central_widget.setLayout(main_layout)
-
-        self.options = QWidget()
-        self.options.setParent(None)
-        self.options.setWindowTitle('Options')
-        self.options.setWindowFlag(Qt.WindowCloseButtonHint, False)
+        self.setCentralWidget(central_widget)
 
         self.fit_button = QPushButton('Fit Axis')
         self.colorbar_checkbox = QCheckBox('Add Colorbar')
@@ -60,6 +58,7 @@ class MatplotlibWindowUI(QMainWindow, AbstractUI):
         grid_label = QLabel('Grid Density')
 
         self.x_min_spinbox = QDoubleSpinBox()
+        self.x_min_spinbox.setKeyboardTracking(False)
         self.x_min_spinbox.setRange(-10, 3.9)
         self.x_min_spinbox.setSingleStep(0.1)
         self.x_min_spinbox.setSuffix('  Å^-1')
@@ -67,6 +66,7 @@ class MatplotlibWindowUI(QMainWindow, AbstractUI):
         self.x_min_spinbox.setDecimals(2)
 
         self.x_max_spinbox = QDoubleSpinBox()
+        self.x_max_spinbox.setKeyboardTracking(False)
         self.x_max_spinbox.setRange(-3.9, 10)
         self.x_max_spinbox.setSingleStep(0.1)
         self.x_max_spinbox.setSuffix('  Å^-1')
@@ -74,6 +74,7 @@ class MatplotlibWindowUI(QMainWindow, AbstractUI):
         self.x_max_spinbox.setDecimals(2)
 
         self.y_min_spinbox = QDoubleSpinBox()
+        self.y_min_spinbox.setKeyboardTracking(False)
         self.y_min_spinbox.setRange(-10, 3.9)
         self.y_min_spinbox.setSingleStep(0.1)
         self.y_min_spinbox.setSuffix('  Å^-1')
@@ -81,6 +82,7 @@ class MatplotlibWindowUI(QMainWindow, AbstractUI):
         self.y_min_spinbox.setDecimals(2)
 
         self.y_max_spinbox = QDoubleSpinBox()
+        self.y_max_spinbox.setKeyboardTracking(False)
         self.y_max_spinbox.setRange(-3.9, 10)
         self.y_max_spinbox.setSingleStep(0.1)
         self.y_max_spinbox.setSuffix('  Å^-1')
@@ -128,7 +130,6 @@ class MatplotlibWindowUI(QMainWindow, AbstractUI):
         options_layout.addWidget(self.grid_combobox, 6, 1)
 
         self.options.setLayout(options_layout)
-
         self.options.setFixedSize(options_layout.sizeHint())
 
     def _initialize_connections(self):

@@ -1,4 +1,9 @@
-class SlicedDataTabModel():
+import numpy as np
+from kmap.library.id import ID
+from kmap.library.orbitaldata import OrbitalData
+
+
+class OrbitalDataTabModel():
 
     def __init__(self, controller):
 
@@ -11,7 +16,6 @@ class SlicedDataTabModel():
 
         id_ = ID.new_ID()
         new_orbital = OrbitalData.init_from_file(path, ID=id_)
-
         self.orbitals.append(new_orbital)
 
         self.update_displayed_plot_data()
@@ -40,6 +44,7 @@ class SlicedDataTabModel():
     def update_displayed_plot_data(self):
 
         parameters = self.controller.get_parameters()
-
         self.displayed_plot_data = np.nansum([orbital.get_kmap(*parameters)
                                               for orbital in self.orbitals])
+
+        return self.displayed_plot_data

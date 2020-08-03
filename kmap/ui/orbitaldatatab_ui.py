@@ -7,6 +7,7 @@ from kmap.ui.abstract_ui import AbstractUI
 from kmap.controller.pyqtgraphplot import PyQtGraphPlot
 from kmap.controller.crosshair import CrosshairAnnulus
 from kmap.controller.colormap import Colormap
+from kmap.controller.polarization import Polarization
 
 
 class OrbitalDataTabUI(AbstractUI, QWidget):
@@ -29,6 +30,9 @@ class OrbitalDataTabUI(AbstractUI, QWidget):
         # Colormap
         self.colormap = Colormap(self.plot_item)
 
+        # Polarisation
+        self.polarization = Polarization()
+
         # Bottom Spacer
         bottom_spacer = QSpacerItem(0, 0,
                                     hPolicy=QSP.Policy.Fixed,
@@ -39,6 +43,7 @@ class OrbitalDataTabUI(AbstractUI, QWidget):
         options_layout.addItem(top_spacer)
         options_layout.addWidget(self.crosshair)
         options_layout.addWidget(self.colormap)
+        options_layout.addWidget(self.polarization)
         options_layout.addItem(bottom_spacer)
 
         # Options Widget
@@ -64,6 +69,13 @@ class OrbitalDataTabUI(AbstractUI, QWidget):
 
         self.crosshair.crosshair_changed.connect(self.crosshair_changed)
 
+        self.polarization.polarization_changed.connect(
+            self.polarization_changed)
+
     @abstractmethod
     def crosshair_changed(self):
+        pass
+
+    @abstractmethod
+    def polarization_changed(self):
         pass

@@ -39,7 +39,7 @@ class SlicedDataTab(SlicedDataTabUI):
         data = self.model.change_slice(index)
 
         self.plot_item.plot(data)
-        self.update()
+        #self.update()
 
     def crosshair_changed(self):
 

@@ -2,7 +2,7 @@ import os
 import urllib.request
 from kmap.library.orbital import Orbital
 from kmap.config.config import config
-from kmap.model.abstractdata import AbstractData
+from kmap.library.abstractdata import AbstractData
 
 class OrbitalData(Orbital, AbstractData):
 
@@ -16,7 +16,6 @@ class OrbitalData(Orbital, AbstractData):
 
     @classmethod
     def init_from_file(cls, file_path, ID):
-
         with open(file_path, 'r') as f:
             file = f.read()
 

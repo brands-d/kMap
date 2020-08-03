@@ -6,7 +6,7 @@ calculate and slice data from cube files.
 
 import numpy as np
 import scipy.interpolate as interp
-from kmap.model.plotdata import PlotData
+from kmap.library.plotdata import PlotData
 
 np.seterr(invalid='ignore')
 
