@@ -8,14 +8,17 @@ from kmap.config.config import config
 
 class OrbitalDataTab(OrbitalDataTabUI):
 
-    def __init__(self, path):
+    def __init__(self):
 
         self.model = OrbitalDataTabModel(self)
 
         OrbitalDataTabUI.__init__(self)
 
-        self.model.load_data_from_path(path)
+    def add_orbital_from_filepath(self, path):
 
+        orbital = self.model.load_data_from_path(path)
+
+        self.table.add_orbital(orbital)
         self.refresh_plot()
 
     def refresh_plot(self):

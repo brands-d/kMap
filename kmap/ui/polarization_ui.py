@@ -14,7 +14,6 @@ class PolarizationUI(AbstractUI, QGroupBox):
     def _initialize_content(self):
 
         # Polarisation Label
-
         polarisation_label = QLabel('Polarisation:')
 
         # Polarisation Combobox

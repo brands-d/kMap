@@ -62,7 +62,10 @@ class MainWindow(MainWindowUI):
             log.error('Couldn\'t load %s' % path)
             log.error(traceback.format_exc())
 
-    def load_cube_files(self):
+    def load_cube_files_online(self):
+        pass
+
+    def load_cube_files_locally(self):
         # Load one or more new cube files
 
         start_path = __directory__ + '/resources/test_resources/'
@@ -75,21 +78,43 @@ class MainWindow(MainWindowUI):
             logging.getLogger('kmap').info('No file chosen')
             return
 
-        for path in paths:
-            current_tab = self.tab_widget.currentWidget()
-            if type(current_tab) != OrbitalDataTab:
-                self.open_orbital_data_tab(path)
-            else:
-                current_tab.add_orbital_from_filepath(path)
+        # Get Tab to load to
+        tab = self._get_orbital_tab_to_load_to()
 
-    def open_orbital_data_tab(self, path):
+        # Load Data to Tab
+        for path in paths:
+            tab.add_orbital_from_filepath(path)
+
+    def _get_orbital_tab_to_load_to(self):
+
+        tab = None
+        aux = self.tab_widget.currentWidget()
+        if type(aux) == OrbitalDataTab:
+            tab = aux
+
+        else:
+            for index in range(self.tab_widget.count()):
+                aux = self.tab_widget.widget(index)
+
+                if type(aux) == OrbitalDataTab:
+                    tab = aux
+                    break
+
+        if tab is None:
+            tab = self.open_orbital_data_tab()
+
+        return tab
+
+    def open_orbital_data_tab(self):
         # Opens a new orbital data tab
 
-        tab = OrbitalDataTab(path)
+        tab = OrbitalDataTab()
         title = tab.get_title()
 
         index = self.tab_widget.addTab(tab, title)
         self.tab_widget.setCurrentIndex(index)
+
+        return tab
 
     def open_log_file(self):
         # Open log file

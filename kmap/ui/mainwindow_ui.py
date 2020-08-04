@@ -30,11 +30,11 @@ class MainWindowUI(AbstractUI, QMainWindow):
 
         # Load hdf5
         self.load_hdf5_action = file_menu.addAction('Open .hdf5 File(s)...')
-        self.load_hdf5_action.setShortcut(QKeySequence('Ctrl+f'))
 
         # Load cube
-        self.load_cube_action = file_menu.addAction('Open .cube File(s)...')
-        self.load_cube_action.setShortcut(QKeySequence('Ctrl+o'))
+        cube_menu = file_menu.addMenu('Open .cube File(s)...')
+        self.load_cube_file_action = cube_menu.addAction('Locally...')
+        self.load_cube_online_action = cube_menu.addAction('Online...')
 
         # Separator
         file_menu.addSeparator()
@@ -44,7 +44,6 @@ class MainWindowUI(AbstractUI, QMainWindow):
 
         # Matplotlib
         self.show_matplotlib = export.addAction('Matplotlib')
-        self.show_matplotlib.setShortcut(QKeySequence('Ctrl+m'))
 
         # Separator
         file_menu.addSeparator()
@@ -54,10 +53,13 @@ class MainWindowUI(AbstractUI, QMainWindow):
 
         # Open Log File
         self.log_file_action = log_menu.addAction('default.log...')
-        self.log_file_action.setShortcut(QKeySequence('Ctrl+l'))
 
         # Open Module Log File
         self.mod_log_file_action = log_menu.addAction('module.log...')
+
+        # Edit menu
+        edit_menu = self.menubar.addMenu('Edit')
+        self.open_sim_tab_action = edit_menu.addAction('Open new SimTab')
 
         # Preferences menu
         settings_menu = self.menubar.addMenu('Preferences')
@@ -96,6 +98,21 @@ class MainWindowUI(AbstractUI, QMainWindow):
         central_widget.setLayout(layout)
         self.setCentralWidget(central_widget)
 
+        self._initialize_shortcuts()
+
+    def _initialize_shortcuts(self):
+
+        actions = [self.load_hdf5_action, self.show_matplotlib,
+                   self.log_file_action, self.load_cube_online_action,
+                   self.load_cube_file_action]
+
+        alias = ['load_hdf5', 'show_matplotlib', 'open_log',
+                 'load_cube_online', 'load_cube_file']
+
+        for action, alias in zip(actions, alias):
+            shortcut = config.get_key('shortcut', alias, file='shortcut')
+            action.setShortcut(QKeySequence(shortcut))
+
     def _initialize_connections(self):
 
         # Tab closed
@@ -103,12 +120,16 @@ class MainWindowUI(AbstractUI, QMainWindow):
 
         # File menu
         self.load_hdf5_action.triggered.connect(self.load_hdf5_files)
-        self.load_cube_action.triggered.connect(self.load_cube_files)
+        self.load_cube_file_action.triggered.connect(
+            self.load_cube_files_locally)
+        self.load_cube_online_action.triggered.connect(
+            self.load_cube_files_online)
         self.log_file_action.triggered.connect(self.open_log_file)
         self.mod_log_file_action.triggered.connect(self.open_mod_log_file)
+        self.show_matplotlib.triggered.connect(self.open_in_matplotlib)
 
         # Edit menu
-        self.show_matplotlib.triggered.connect(self.open_in_matplotlib)
+        self.open_sim_tab_action.triggered.connect(self.open_orbital_data_tab)
 
         # Preferences menu
         self.general_action.triggered.connect(self.open_general_settings)

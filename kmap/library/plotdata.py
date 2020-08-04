@@ -6,6 +6,7 @@ data as well as some other useful properties. It also comes with
 interpolations methods.
 """
 
+from numbers import Number
 import numpy as np
 import itertools as it
 from scipy.interpolate import RegularGridInterpolator as RGI
@@ -120,3 +121,23 @@ class PlotData():
             self.y_axis = y_axis
 
         return new_data
+
+    def __add__(self, other):
+
+        if isinstance(other, self.__class__):
+
+            if ((self.x_axis == other.x_axis).all() and
+                    (self.y_axis == other.y_axis).all()):
+                return PlotData(self.data + other.data, self.range)
+
+    def __mul__(self, other):
+
+        if isinstance(other, Number):
+
+            return PlotData(self.data * other, self.range)
+
+    def __pow__(self):
+
+        if isinstance(other, Number):
+
+            return PlotData(self.data ** 2, self.range)

@@ -20,6 +20,8 @@ class OrbitalDataTabModel():
 
         self.update_displayed_plot_data()
 
+        return new_orbital
+
     def load_data_from_online(self, url):
 
         id_ = ID.new_ID()
