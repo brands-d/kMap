@@ -60,9 +60,10 @@ class OrbitalDataTabUI(AbstractUI, QWidget):
         # Scroll Area
         scroll_area = QScrollArea()
         scroll_area.setWidget(options_widget)
-        scroll_area.setMinimumSize(0, 625)
-        scroll_area.setSizePolicy(QSP.Policy.Maximum, QSP.Policy.Preferred)
+        scroll_area.setMinimumSize(700, 650)
+        scroll_area.setSizePolicy(QSP.Policy.Fixed, QSP.Policy.Expanding)
         scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scroll_area.setWidgetResizable(True)
 
         main_layout = QHBoxLayout()
         main_layout.addWidget(scroll_area)
