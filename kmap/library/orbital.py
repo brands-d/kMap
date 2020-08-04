@@ -249,7 +249,7 @@ class Orbital():
             # Out-of-plane = s-polarization
             elif polarization == 's':
                 Ak = -kx * sin_b + ky * cos_b
-                Ak = pol**2
+                Ak = Ak**2
 
             # Circularly polarized light (right-handed)
             elif polarization == 'C+':

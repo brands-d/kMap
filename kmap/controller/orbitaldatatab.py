@@ -27,12 +27,12 @@ class OrbitalDataTab(OrbitalDataTabUI):
     def get_parameters(self):
 
         kinetic_energy = 30
-        dk3D = float(config.get_key('orbital', 'dk3D'))
+        dk = 0.03
         #orientation = self.orientation.get_parameters()
         orientation = [0, 0, 0]
         polarization = self.polarization.get_parameters()
 
-        return kinetic_energy, dk3D, *orientation, *polarization
+        return (kinetic_energy, dk, *orientation, *polarization)
 
     def _get_orientation(self):
 
