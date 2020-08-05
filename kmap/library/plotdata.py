@@ -132,12 +132,18 @@ class PlotData():
 
     def __mul__(self, other):
 
-        if isinstance(other, Number):
+        if isinstance(other, float) or isinstance(other, int):
+
+            return PlotData(self.data * other, self.range)
+
+    def __rmul__(self, other):
+
+        if isinstance(other, float) or isinstance(other, int):
 
             return PlotData(self.data * other, self.range)
 
     def __pow__(self):
 
-        if isinstance(other, Number):
+        if isinstance(other, float) or isinstance(other, int):
 
             return PlotData(self.data ** 2, self.range)

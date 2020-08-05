@@ -2,7 +2,7 @@ from abc import abstractmethod
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QSizePolicy as QSP
 from PyQt5.QtWidgets import (
-    QWidget, QHBoxLayout, QVBoxLayout, QSpacerItem, QScrollArea)
+    QWidget, QHBoxLayout, QVBoxLayout, QSpacerItem, QScrollArea, QPushButton)
 from kmap.ui.abstract_ui import AbstractUI
 from kmap.controller.pyqtgraphplot import PyQtGraphPlot
 from kmap.controller.crosshair import CrosshairAnnulus
@@ -24,6 +24,11 @@ class OrbitalDataTabUI(AbstractUI, QWidget):
         top_spacer = QSpacerItem(0, 0,
                                  hPolicy=QSP.Policy.Fixed,
                                  vPolicy=QSP.Policy.Fixed)
+
+        # !!!
+        self.refresh = QPushButton('Refresh')
+        self.refresh.clicked.connect(self.refresh_plot)
+        # !!!
 
         # TableWidget
         self.table = OrbitalTable()
@@ -51,6 +56,10 @@ class OrbitalDataTabUI(AbstractUI, QWidget):
         options_layout.addWidget(self.polarization)
         options_layout.addItem(bottom_spacer)
 
+        #!!!
+        options_layout.addWidget(self.refresh)
+        #!!!
+        
         # Options Widget
         options_widget = QWidget()
         options_widget.setLayout(options_layout)

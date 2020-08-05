@@ -18,8 +18,6 @@ class OrbitalDataTabModel():
         new_orbital = OrbitalData.init_from_file(path, ID=id_)
         self.orbitals.append(new_orbital)
 
-        self.update_displayed_plot_data()
-
         return new_orbital
 
     def load_data_from_online(self, url):
@@ -29,24 +27,30 @@ class OrbitalDataTabModel():
 
         self.orbitals.append(new_orbital)
 
-        self.update_displayed_plot_data()
+        return new_orbital
 
     def remove_data_by_object(self, orbital):
 
         self.orbitals.remove(orbital)
 
-        self.update_displayed_plot_data()
-
     def remove_data_by_index(self, index):
 
         del self.orbitals[index]
 
-        self.update_displayed_plot_data()
-
     def update_displayed_plot_data(self):
 
-        parameters = self.controller.get_parameters()
-        self.displayed_plot_data = np.nansum([orbital.get_kmap(*parameters)
-                                              for orbital in self.orbitals])
+        aux = []
+
+        for orbital in self.orbitals:
+            # Get all parameters for this orbital
+            parameters = self.controller.get_parameters(orbital.ID)
+            # Split of first element
+            deconvolution, *other = parameters
+            # Get scaled kmap
+            kmap = deconvolution * orbital.get_kmap(*other)
+            aux.append(kmap)
+
+        # Sum kmaps
+        self.displayed_plot_data = np.nansum(aux)
 
         return self.displayed_plot_data

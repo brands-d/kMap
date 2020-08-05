@@ -18,3 +18,16 @@ class OrbitalTable(OrbitalTableUI):
 
         new_row = OrbitalTableRow(self, ID, name)
         self.rows.append(new_row)
+
+    def get_parameters_by_ID(self, ID):
+
+        for row in self.rows:
+            if row.data_ID == ID:
+                deconvolution = row.deconvolution.value()
+                phi = row.phi.value()
+                theta = row.theta.value()
+                psi = row.psi.value()
+
+                return deconvolution, phi, theta, psi
+
+        return None

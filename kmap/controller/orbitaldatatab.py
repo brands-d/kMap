@@ -19,6 +19,7 @@ class OrbitalDataTab(OrbitalDataTabUI):
         orbital = self.model.load_data_from_path(path)
 
         self.table.add_orbital(orbital)
+
         self.refresh_plot()
 
     def refresh_plot(self):
@@ -27,23 +28,18 @@ class OrbitalDataTab(OrbitalDataTabUI):
 
         self.plot_item.plot(data)
 
-    def get_parameters(self):
+    def get_parameters(self, ID):
 
+        # Hardcoded for now
         kinetic_energy = 30
         dk = 0.03
-        #orientation = self.orientation.get_parameters()
-        orientation = [0, 0, 0]
+
+        parameters = self.table.get_parameters_by_ID(ID)
+        deconvolution, *orientation = parameters
         polarization = self.polarization.get_parameters()
 
-        return (kinetic_energy, dk, *orientation, *polarization)
-
-    def _get_orientation(self):
-
-        phi = 0
-        theta = 0
-        psi = 0
-
-        return phi, theta, psi
+        return (deconvolution, kinetic_energy, dk,
+                *orientation, *polarization)
 
     def crosshair_changed(self):
 
