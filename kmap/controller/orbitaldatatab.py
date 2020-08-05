@@ -50,6 +50,16 @@ class OrbitalDataTab(OrbitalDataTabUI):
 
         self.refresh_plot()
 
+    def orbitals_changed(self):
+
+        self.refresh_plot()
+
     def get_title(self):
 
         return 'Gas Phase Simulation'
+
+    def remove_orbital_by_ID(self, ID):
+
+        orbital = self.model.remove_orbital_by_ID(ID)
+
+        self.refresh_plot()

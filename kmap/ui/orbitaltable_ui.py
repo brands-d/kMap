@@ -18,7 +18,7 @@ class OrbitalTableUI(AbstractUI, QGroupBox):
         self.table.setColumnCount(7)
         self.table.setHorizontalHeaderLabels(
             ['', 'ID', 'Name', 'Deconv.', 'Phi', 'Theta', 'Psi'])
-        self.table.verticalHeader().setVisible(False)
+        self.table.verticalHeader().setVisible(True)
         self.table.horizontalHeader().setMinimumSectionSize(10)
         self.table.setColumnWidth(0, 40)
         self.table.setColumnWidth(1, 40)
@@ -35,4 +35,8 @@ class OrbitalTableUI(AbstractUI, QGroupBox):
         self.setLayout(layout)
 
     def _initialize_connections(self):
+        pass
+
+    @abstractmethod
+    def remove_orbital_by_ID(self, ID):
         pass

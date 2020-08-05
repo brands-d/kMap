@@ -2,7 +2,7 @@ from abc import abstractmethod
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QSizePolicy as QSP
 from PyQt5.QtWidgets import (
-    QWidget, QHBoxLayout, QVBoxLayout, QSpacerItem, QScrollArea, QPushButton)
+    QWidget, QHBoxLayout, QVBoxLayout, QSpacerItem, QScrollArea)
 from kmap.ui.abstract_ui import AbstractUI
 from kmap.controller.pyqtgraphplot import PyQtGraphPlot
 from kmap.controller.crosshair import CrosshairAnnulus
@@ -24,11 +24,6 @@ class OrbitalDataTabUI(AbstractUI, QWidget):
         top_spacer = QSpacerItem(0, 0,
                                  hPolicy=QSP.Policy.Fixed,
                                  vPolicy=QSP.Policy.Fixed)
-
-        # !!!
-        self.refresh = QPushButton('Refresh')
-        self.refresh.clicked.connect(self.refresh_plot)
-        # !!!
 
         # TableWidget
         self.table = OrbitalTable()
@@ -56,10 +51,6 @@ class OrbitalDataTabUI(AbstractUI, QWidget):
         options_layout.addWidget(self.polarization)
         options_layout.addItem(bottom_spacer)
 
-        #!!!
-        options_layout.addWidget(self.refresh)
-        #!!!
-        
         # Options Widget
         options_widget = QWidget()
         options_widget.setLayout(options_layout)
@@ -84,6 +75,8 @@ class OrbitalDataTabUI(AbstractUI, QWidget):
 
         self.crosshair.crosshair_changed.connect(self.crosshair_changed)
 
+        self.table.orbitals_changed.connect(self.orbitals_changed)
+        self.table.orbital_removed.connect(self.remove_orbital_by_ID)
         self.polarization.polarization_changed.connect(
             self.polarization_changed)
 

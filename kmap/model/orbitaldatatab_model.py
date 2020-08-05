@@ -50,7 +50,18 @@ class OrbitalDataTabModel():
             kmap = deconvolution * orbital.get_kmap(*other)
             aux.append(kmap)
 
-        # Sum kmaps
-        self.displayed_plot_data = np.nansum(aux)
+        if aux:
+            # Sum kmaps
+            self.displayed_plot_data = np.nansum(aux)
+
+        else:
+            self.displayed_plot_data = None
 
         return self.displayed_plot_data
+
+    def remove_orbital_by_ID(self, ID_):
+
+        for orbital in self.orbitals:
+            if orbital.ID == ID_:
+                self.orbitals.remove(orbital)
+                del orbital

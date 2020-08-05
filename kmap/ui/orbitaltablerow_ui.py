@@ -1,3 +1,4 @@
+from abc import abstractmethod
 from PyQt5.QtWidgets import QGroupBox, QLabel, QPushButton, QDoubleSpinBox
 from PyQt5.QtCore import Qt
 from kmap.ui.abstract_ui import AbstractUI
@@ -7,24 +8,24 @@ class OrbitalTableRowUI(AbstractUI, QGroupBox):
 
     def _initialize_misc(self):
 
-        self.row = self.table.rowCount()
-        self.table.insertRow(self.row)
+        self.inital_row = self.table.rowCount()
+        self.table.insertRow(self.inital_row)
 
     def _initialize_content(self):
 
         # Remove
         self.button = QPushButton('X')
-        self.table.setCellWidget(self.row, 0, self.button)
+        self.table.setCellWidget(self.inital_row, 0, self.button)
 
         # ID
         label = QLabel(str(self.data_ID))
         label.setAlignment(Qt.AlignCenter)
-        self.table.setCellWidget(self.row, 1, label)
+        self.table.setCellWidget(self.inital_row, 1, label)
 
         # Name
         label = QLabel(self.data_name)
         label.setAlignment(Qt.AlignCenter)
-        self.table.setCellWidget(self.row, 2, label)
+        self.table.setCellWidget(self.inital_row, 2, label)
 
         # Deconvolution
         self.deconvolution = QDoubleSpinBox()
@@ -34,7 +35,7 @@ class OrbitalTableRowUI(AbstractUI, QGroupBox):
         self.deconvolution.setDecimals(1)
         self.deconvolution.setSingleStep(0.1)
         self.deconvolution.setKeyboardTracking(False)
-        self.table.setCellWidget(self.row, 3, self.deconvolution)
+        self.table.setCellWidget(self.inital_row, 3, self.deconvolution)
 
         # phi-Angle
         self.phi = QDoubleSpinBox()
@@ -45,7 +46,7 @@ class OrbitalTableRowUI(AbstractUI, QGroupBox):
         self.phi.setDecimals(1)
         self.phi.setSingleStep(1)
         self.phi.setKeyboardTracking(False)
-        self.table.setCellWidget(self.row, 4, self.phi)
+        self.table.setCellWidget(self.inital_row, 4, self.phi)
 
         # theta-Angle
         self.theta = QDoubleSpinBox()
@@ -56,7 +57,7 @@ class OrbitalTableRowUI(AbstractUI, QGroupBox):
         self.theta.setDecimals(1)
         self.theta.setSingleStep(1)
         self.theta.setKeyboardTracking(False)
-        self.table.setCellWidget(self.row, 5, self.theta)
+        self.table.setCellWidget(self.inital_row, 5, self.theta)
 
         # psi-Angle
         self.psi = QDoubleSpinBox()
@@ -67,4 +68,25 @@ class OrbitalTableRowUI(AbstractUI, QGroupBox):
         self.psi.setDecimals(1)
         self.psi.setSingleStep(1)
         self.psi.setKeyboardTracking(False)
-        self.table.setCellWidget(self.row, 6, self.psi)
+        self.table.setCellWidget(self.inital_row, 6, self.psi)
+
+    def _initialize_connections(self):
+
+        self.button.clicked.connect(self._remove_orbital)
+
+        self.deconvolution.valueChanged.connect(self._parameters_changed)
+        self.phi.valueChanged.connect(self._parameters_changed)
+        self.theta.valueChanged.connect(self._parameters_changed)
+        self.psi.valueChanged.connect(self._parameters_changed)
+
+    @abstractmethod
+    def change_polarization(self):
+        pass
+
+    @abstractmethod
+    def _remove_orbital(self):
+        pass
+
+    @abstractmethod
+    def _parameters_changed(self):
+        pass
