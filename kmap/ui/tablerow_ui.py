@@ -1,31 +1,26 @@
 from abc import abstractmethod
-from PyQt5.QtWidgets import QGroupBox, QLabel, QPushButton, QDoubleSpinBox
 from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QGroupBox, QLabel, QPushButton, QDoubleSpinBox
 from kmap.ui.abstract_ui import AbstractUI
 
 
 class OrbitalTableRowUI(AbstractUI, QGroupBox):
 
-    def _initialize_misc(self):
-
-        self.inital_row = self.table.rowCount()
-        self.table.insertRow(self.inital_row)
-
     def _initialize_content(self):
+
+        row_index = self.table.rowCount()
+        self.table.insertRow(row_index)
 
         # Remove
         self.button = QPushButton('X')
-        self.table.setCellWidget(self.inital_row, 0, self.button)
 
         # ID
-        label = QLabel(str(self.data_ID))
-        label.setAlignment(Qt.AlignCenter)
-        self.table.setCellWidget(self.inital_row, 1, label)
+        ID_label = QLabel(str(self.ID))
+        ID_label.setAlignment(Qt.AlignCenter)
 
         # Name
-        label = QLabel(self.data_name)
-        label.setAlignment(Qt.AlignCenter)
-        self.table.setCellWidget(self.inital_row, 2, label)
+        name_label = QLabel(self.name)
+        name_label.setAlignment(Qt.AlignCenter)
 
         # Deconvolution
         self.deconvolution = QDoubleSpinBox()
@@ -35,9 +30,9 @@ class OrbitalTableRowUI(AbstractUI, QGroupBox):
         self.deconvolution.setDecimals(1)
         self.deconvolution.setSingleStep(0.1)
         self.deconvolution.setKeyboardTracking(False)
-        self.table.setCellWidget(self.inital_row, 3, self.deconvolution)
+        self.deconvolution.setObjectName('deconvolution')
 
-        # phi-Angle
+        # Phi-Angle
         self.phi = QDoubleSpinBox()
         self.phi.setSuffix('°')
         self.phi.setValue(0)
@@ -46,9 +41,9 @@ class OrbitalTableRowUI(AbstractUI, QGroupBox):
         self.phi.setDecimals(1)
         self.phi.setSingleStep(1)
         self.phi.setKeyboardTracking(False)
-        self.table.setCellWidget(self.inital_row, 4, self.phi)
+        self.phi.setObjectName('phi')
 
-        # theta-Angle
+        # Theta-Angle
         self.theta = QDoubleSpinBox()
         self.theta.setSuffix('°')
         self.theta.setValue(0)
@@ -57,9 +52,9 @@ class OrbitalTableRowUI(AbstractUI, QGroupBox):
         self.theta.setDecimals(1)
         self.theta.setSingleStep(1)
         self.theta.setKeyboardTracking(False)
-        self.table.setCellWidget(self.inital_row, 5, self.theta)
+        self.theta.setObjectName('theta')
 
-        # psi-Angle
+        # Psi-Angle
         self.psi = QDoubleSpinBox()
         self.psi.setSuffix('°')
         self.psi.setValue(0)
@@ -68,25 +63,29 @@ class OrbitalTableRowUI(AbstractUI, QGroupBox):
         self.psi.setDecimals(1)
         self.psi.setSingleStep(1)
         self.psi.setKeyboardTracking(False)
-        self.table.setCellWidget(self.inital_row, 6, self.psi)
+        self.psi.setObjectName('psi')
+
+        self.table.setCellWidget(row_index, 0, self.button)
+        self.table.setCellWidget(row_index, 1, ID_label)
+        self.table.setCellWidget(row_index, 2, name_label)
+        self.table.setCellWidget(row_index, 3, self.deconvolution)
+        self.table.setCellWidget(row_index, 4, self.phi)
+        self.table.setCellWidget(row_index, 5, self.theta)
+        self.table.setCellWidget(row_index, 6, self.psi)
 
     def _initialize_connections(self):
 
-        self.button.clicked.connect(self._remove_orbital)
+        self.button.clicked.connect(self.remove_row)
 
-        self.deconvolution.valueChanged.connect(self._parameters_changed)
-        self.phi.valueChanged.connect(self._parameters_changed)
-        self.theta.valueChanged.connect(self._parameters_changed)
-        self.psi.valueChanged.connect(self._parameters_changed)
+        self.deconvolution.valueChanged.connect(self.change_parameter)
+        self.phi.valueChanged.connect(self.change_parameter)
+        self.theta.valueChanged.connect(self.change_parameter)
+        self.psi.valueChanged.connect(self.change_parameter)
 
     @abstractmethod
-    def change_polarization(self):
+    def remove_row(self):
         pass
 
     @abstractmethod
-    def _remove_orbital(self):
-        pass
-
-    @abstractmethod
-    def _parameters_changed(self):
+    def change_parameter(self):
         pass

@@ -18,7 +18,7 @@ class OrbitalDataTab(OrbitalDataTabUI):
 
         orbital = self.model.load_data_from_path(path)
 
-        self.table.add_orbital(orbital)
+        self.table.add_item(orbital)
 
         self.refresh_plot()
 
