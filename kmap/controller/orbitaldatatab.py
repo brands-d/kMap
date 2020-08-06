@@ -17,6 +17,14 @@ class OrbitalDataTab(OrbitalDataTabUI):
     def add_orbital_from_filepath(self, path):
 
         orbital = self.model.load_data_from_path(path)
+        self.add_orbital(orbital)
+
+    def add_orbital_from_online(self, URL):
+
+        orbital = self.model.load_data_from_online(URL)
+        self.add_orbital(orbital)
+
+    def add_orbital(self, orbital):
 
         self.table.add_item(orbital)
 

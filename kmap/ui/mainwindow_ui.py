@@ -123,7 +123,7 @@ class MainWindowUI(AbstractUI, QMainWindow):
         self.load_cube_file_action.triggered.connect(
             self.load_cube_files_locally)
         self.load_cube_online_action.triggered.connect(
-            self.load_cube_files_online)
+            self.open_database_browser)
         self.log_file_action.triggered.connect(self.open_log_file)
         self.mod_log_file_action.triggered.connect(self.open_mod_log_file)
         self.show_matplotlib.triggered.connect(self.open_in_matplotlib)

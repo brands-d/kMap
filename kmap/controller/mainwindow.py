@@ -5,9 +5,9 @@ from kmap.ui.mainwindow_ui import MainWindowUI
 from kmap.controller.sliceddatatab import SlicedDataTab
 from kmap.controller.orbitaldatatab import OrbitalDataTab
 from kmap.controller.filetab import FileViewerTab, FileEditorTab
+from kmap.controller.databasewindow import DatabaseWindow
 from kmap.model.mainwindow_model import MainWindowModel
 from kmap.config.config import config
-from kmap.library.database import Database
 from kmap import __directory__, __version__
 
 
@@ -64,12 +64,24 @@ class MainWindow(MainWindowUI):
             log.error('Couldn\'t load %s' % path)
             log.error(traceback.format_exc())
 
-    def load_cube_files_online(self):
+    def open_database_browser(self):
 
         path = __directory__ + config.get_key('paths', 'database')
-        database = Database(path)
+        self.database = DatabaseWindow(path)
+        self.database.file_chosen.connect(self.load_cube_files_online)
 
-        print(database.molecules[0].orbitals[0].to_string())
+    def load_cube_files_online(self, URL):
+
+        if not URL:
+            # No file chosen
+            logging.getLogger('kmap').info('No file chosen')
+            return
+
+        # Get Tab to load to
+        tab = self._get_orbital_tab_to_load_to()
+
+        # Load URL to Tab
+        tab.add_orbital_from_online(URL)
 
     def load_cube_files_locally(self):
         # Load one or more new cube files
