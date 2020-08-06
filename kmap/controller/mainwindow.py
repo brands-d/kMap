@@ -6,6 +6,8 @@ from kmap.controller.sliceddatatab import SlicedDataTab
 from kmap.controller.orbitaldatatab import OrbitalDataTab
 from kmap.controller.filetab import FileViewerTab, FileEditorTab
 from kmap.model.mainwindow_model import MainWindowModel
+from kmap.config.config import config
+from kmap.library.database import Database
 from kmap import __directory__, __version__
 
 
@@ -30,7 +32,7 @@ class MainWindow(MainWindowUI):
         log = logging.getLogger('kmap')
         log.info('Loading .hdf5 file(s)...')
 
-        start_path = __directory__ + '/resources/test_resources/'
+        start_path = __directory__ + config.get_key('paths', 'hdf5_start')
         extensions = 'hdf5 files (*.hdf5 *.h5);; All Files (*)'
         paths, _ = QFileDialog.getOpenFileNames(
             None, 'Open file(s)', start_path, extensions)
@@ -63,12 +65,16 @@ class MainWindow(MainWindowUI):
             log.error(traceback.format_exc())
 
     def load_cube_files_online(self):
-        pass
+
+        path = __directory__ + config.get_key('paths', 'database')
+        database = Database(path)
+
+        print(database.molecules[0].orbitals[0].to_string())
 
     def load_cube_files_locally(self):
         # Load one or more new cube files
 
-        start_path = __directory__ + '/resources/test_resources/'
+        start_path = __directory__ + config.get_key('paths', 'cube_start')
         extensions = 'cube files (*.cube);; All Files (*)'
         paths, _ = QFileDialog.getOpenFileNames(
             None, 'Open file(s)', start_path, extensions)
