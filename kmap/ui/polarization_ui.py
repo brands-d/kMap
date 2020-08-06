@@ -19,7 +19,7 @@ class PolarizationUI(AbstractUI, QGroupBox):
         # Polarisation Combobox
         self.combobox = QComboBox()
         self.combobox.setDuplicatesEnabled(False)
-        self.combobox.addItem('|A\u2096|\u00B2')
+        self.combobox.addItem('no |A\u2096|\u00B2')
         self.combobox.addItem('Toroid (p-pol)')
         self.combobox.addItem('NANO-ESCA: p-pol')
         self.combobox.addItem('NANO-ESCA: s-pol')

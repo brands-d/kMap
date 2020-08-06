@@ -78,8 +78,8 @@ class Orbital():
             self.set_kinetic_energy(E_kin, dk)
 
         # Rotate molecule (that is, rotate hemisphere)
-        if phi != 0 or theta != 0 or psi != 0:
-            self.set_orientation(phi, theta, psi)
+        #if phi != 0 or theta != 0 or psi != 0:
+        self.set_orientation(phi, theta, psi)
 
         self.set_polarization(Ak_type, polarization, alpha, beta,
                               gamma)
@@ -221,7 +221,7 @@ class Orbital():
             E_kin = self.kmap['E_kin']
             c1 = 143
             c2 = 0.054
-            lam = c1 * Ekin**(-2) + c2 * np.sqrt(Ekin)
+            lam = c1 * E_kin**(-2) + c2 * np.sqrt(E_kin)
             lam *= 10
             gamma = 1 / lam
 
@@ -256,21 +256,21 @@ class Orbital():
                 polp = kx * cos_a * cos_b + ky * cos_a * sin_b + kz * sin_a
                 pols = -kx * sin_b + ky * cos_b
                 Ak = 0.5 * (polp**2 + gamma**2 * sin_a**2) + 0.5 * \
-                    pols**2 - (sin_b * kx - cos_b * ky) * gamma * sin_a
+                    pols**2 + (sin_b * kx - cos_b * ky) * gamma * sin_a
 
             # Circularly polarized light (left-handed)
             elif polarization == 'C-':
                 polp = kx * cos_a * cos_b + ky * cos_a * sin_b + kz * sin_a
                 pols = -kx * sin_b + ky * cos_b
                 Ak = 0.5 * (polp**2 + gamma**2 * sin_a**2) + 0.5 * \
-                    pols**2 + (sin_b * kx - cos_b * ky) * gamma * sin_a
+                    pols**2 - (sin_b * kx - cos_b * ky) * gamma * sin_a
 
             # CDAD-signal (right-handed - left-handed) using empirically
             # damped plane wave
             elif polarization == 'CDAD':
                 # Compare Equation (31) in S. Moser, J. Electr. Spectr.
                 # Rel. Phen. 214, 29-52 (2017).
-                Ak = -2 * (sin_b * kx - cos_b * ky) * gamma * sin_a
+                Ak = +2 * (sin_b * kx - cos_b * ky) * gamma * sin_a
 
 #        # Multiply |A.k|^2 with kmap
 #        self.kmap['data'] *= Ak

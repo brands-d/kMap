@@ -42,13 +42,15 @@ class OrbitalDataTabModel():
         aux = []
 
         for orbital in self.orbitals:
-            # Get all parameters for this orbital
-            parameters = self.controller.get_parameters(orbital.ID)
-            # Split of first element
-            deconvolution, *other = parameters
-            # Get scaled kmap
-            kmap = deconvolution * orbital.get_kmap(*other)
-            aux.append(kmap)
+
+            if self.controller.get_use(orbital.ID):
+                # Get all parameters for this orbital
+                parameters = self.controller.get_parameters(orbital.ID)
+                # Split of first element
+                weight, *other = parameters
+                # Get scaled kmap
+                kmap = weight * orbital.get_kmap(*other)
+                aux.append(kmap)
 
         if aux:
             # Sum kmaps

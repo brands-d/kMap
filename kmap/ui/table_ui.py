@@ -35,13 +35,14 @@ class OrbitalTableUI(TableUI):
 
         super()._initialize_content()
 
-        self.table.setColumnCount(7)
+        self.table.setColumnCount(8)
         self.table.setHorizontalHeaderLabels(
-            ['', 'ID', 'Name', 'Deconv.', 'Phi', 'Theta', 'Psi'])
+            ['', 'ID', 'Name', 'Weight', 'Phi', 'Theta', 'Psi', 'Use'])
         self.table.setColumnWidth(0, 40)
         self.table.setColumnWidth(1, 40)
         self.table.setColumnWidth(3, 90)
         self.table.setColumnWidth(4, 75)
         self.table.setColumnWidth(5, 75)
         self.table.setColumnWidth(6, 75)
+        self.table.setColumnWidth(7, 45)
         self.table.horizontalHeader().setResizeMode(2, QHeaderView.Stretch)

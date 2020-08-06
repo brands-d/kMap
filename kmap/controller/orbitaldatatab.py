@@ -35,11 +35,15 @@ class OrbitalDataTab(OrbitalDataTabUI):
         dk = 0.03
 
         parameters = self.table.get_parameters_by_ID(ID)
-        deconvolution, *orientation = parameters
+        weight, *orientation = parameters
         polarization = self.polarization.get_parameters()
 
-        return (deconvolution, kinetic_energy, dk,
+        return (weight, kinetic_energy, dk,
                 *orientation, *polarization)
+
+    def get_use(self, ID):
+
+        return self.table.get_use_by_ID(ID)
 
     def crosshair_changed(self):
 

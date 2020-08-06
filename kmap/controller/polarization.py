@@ -44,6 +44,6 @@ class Polarization(PolarizationUI):
 
         alpha = self.angle_spinbox.value()
         beta = self.azimuth_spinbox.value()
-        gamma = 0
+        gamma = 'auto'
 
         return Ak_type, polarization, alpha, beta, gamma

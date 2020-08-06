@@ -28,9 +28,19 @@ class Table(TableUI):
 
         return self.rows[index].get_parameters()
 
-    def parameters_changed(self, ID, parameter, value):
+    def get_use_by_ID(self, ID):
+
+        index = self._ID_to_row_index(ID)
+
+        return self.rows[index].get_use()
+
+    def change_parameter(self, ID, parameter, value):
 
         self._update_selected_rows(parameter, value)
+
+        self.item_changed.emit(ID)
+
+    def change_use(self, ID):
 
         self.item_changed.emit(ID)
 
@@ -78,6 +88,7 @@ class OrbitalTable(Table, OrbitalTableUI):
         self._add_row(new_row)
 
     def _connet_row(self, row):
-        
+
         row.row_removed.connect(self.remove_item)
-        row.parameter_changed.connect(self.parameters_changed)
+        row.parameter_changed.connect(self.change_parameter)
+        row.use_changed.connect(self.change_use)

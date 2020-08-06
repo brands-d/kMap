@@ -7,6 +7,7 @@ class TableRow():
 
     row_removed = pyqtSignal(int)
     parameter_changed = pyqtSignal(int, str, float)
+    use_changed = pyqtSignal(int)
 
     def __init__(self, table, data_ID, data_name):
 
@@ -27,6 +28,10 @@ class TableRow():
 
         return parameters
 
+    def get_use(self):
+
+        return self.use.isChecked()
+
     def change_parameter(self):
 
         sender = self.sender()
@@ -36,6 +41,12 @@ class TableRow():
         value = sender.value()
 
         self.parameter_changed.emit(ID_, parameter, value)
+
+    def change_use(self):
+
+        ID_ = self.ID
+
+        self.use_changed.emit(ID_)
 
     def update_parameter_silently(self, parameter, value):
 
@@ -54,4 +65,4 @@ class OrbitalTableRow(TableRow, OrbitalTableRowUI):
         TableRow.__init__(self, parent, data_ID, data_name)
         OrbitalTableRowUI.__init__(self)
 
-        self.widgets = [self.deconvolution, self.phi, self.theta, self.psi]
+        self.widgets = [self.weight, self.phi, self.theta, self.psi]
