@@ -68,11 +68,17 @@ class MainWindow(MainWindowUI):
 
         path = __directory__ + config.get_key('paths', 'database')
         self.database = DatabaseWindow(path)
-        self.database.file_chosen.connect(self.load_cube_files_online)
 
-    def load_cube_files_online(self, URL):
+        self.database.files_chosen.connect(self.close_database)
+        self.database.files_chosen.connect(self.load_cube_files_online)
 
-        if not URL:
+    def close_database(self):
+
+        del self.database
+
+    def load_cube_files_online(self, URLs):
+
+        if not URLs:
             # No file chosen
             logging.getLogger('kmap').info('No file chosen')
             return
@@ -81,7 +87,13 @@ class MainWindow(MainWindowUI):
         tab = self._get_orbital_tab_to_load_to()
 
         # Load URL to Tab
-        tab.add_orbital_from_online(URL)
+        for URL in URLs:
+            try:
+                tab.add_orbital_from_online(URL)
+
+            except ValueError:
+                logging.getLogger('kmap').error(
+                    'URL "%s" is invalid. File could not be loaded.' % URL)
 
     def load_cube_files_locally(self):
         # Load one or more new cube files

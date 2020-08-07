@@ -47,33 +47,48 @@ class Molecule():
 
         self.short_name = parts[0].split('=')[1]
         self.full_name = parts[1].split('=')[1]
-        self.charge = int(parts[2].split('=')[1])
-        self.magnetic_moment = float(parts[3].split('=')[1])
-        self.XC_functional = parts[4].split('=')[1]
+        self.formula = parts[2].split('=')[1]
+        self.orientation = parts[3].split('=')[1]
+        self.charge = int(parts[4].split('=')[1])
+        self.magnetic_moment = float(parts[5].split('=')[1])
+        self.IP = float(parts[6].split('=')[1])
+        self.EA = float(parts[7].split('=')[1])
+        self.basis_set = parts[8].split('=')[1]
+        self.XC_functional = parts[9].split('=')[1][:-1]
 
         self.orbitals = []
-        for line in lines[3:]:
-            new_orbital = Orbital(line)
+        for index, line in enumerate(lines[3:], 1):
+            new_orbital = Orbital(self, index, line)
             self.orbitals.append(new_orbital)
 
     def to_string(self):
 
-        id_ = 'ID: %i\n' % self.ID
-        url = 'URL: %s\n' % self.URL
-        sn = 'Short Name: % s\n' % self.short_name
-        fn = 'Full Name: %s\n' % self.full_name
+        ID = 'ID: %i\n' % self.ID
+        URL = 'URL: %s\n' % self.URL
+        small_name = 'Short Name: % s\n' % self.short_name
+        full_name = 'Full Name: %s\n' % self.full_name
+        formula = 'Formula: %s\n' % self.formula
+        orientation = 'Orientation: %s\n' % self.orientation
         charge = 'Charge: %i\n' % self.charge
-        mag = 'Magnetic Moment: %.5f\n' % self.magnetic_moment
-        cxf = 'XC-Functional: %s\n' % self.XC_functional
+        magnetic_moment = 'Magnetic Moment: %.3f\n' % self.magnetic_moment
+        IP = 'IP: %.2f\n' % self.IP
+        EA = 'EA: %.2f\n' % self.EA
+        basis_set = 'Basis Set: %s\n' % self.basis_set
+        XC_functional = 'XC-Functional: %s\n' % self.XC_functional
         length = 'Number of Orbitals: %i' % len(self.orbitals)
 
-        return id_ + url + sn + fn + charge + mag + cxf + length
+        return (ID + URL + small_name + full_name + formula +
+                orientation + charge + magnetic_moment + IP +
+                EA + basis_set + XC_functional + length)
 
 
 class Orbital():
 
-    def __init__(self, line):
+    def __init__(self, molecule, ID, line):
 
+        self.molecule = molecule
+
+        self.ID = ID
         parts = line.split(',')
         self.URL = parts[0].split('=')[1]
         self.name = parts[1].split('=')[1]
@@ -85,8 +100,8 @@ class Orbital():
 
         url = 'URL: %s\n' % self.URL
         name = 'Name: % s\n' % self.name
-        energy = 'Energy: %.5f\n' % self.energy
-        occ = 'Occupation: %i\n' % self.occupation
-        sym = 'Symmetry: %s' % self.symmetry
+        energy = 'Energy: %.3f\n' % self.energy
+        occupation = 'Occupation: %i\n' % self.occupation
+        symmetry = 'Symmetry: %s' % self.symmetry
 
-        return url + name + energy + occ + sym
+        return url + name + energy + occupation + symmetry

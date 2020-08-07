@@ -5,40 +5,73 @@ from kmap.library.database import Database
 
 class DatabaseWindow(DatabaseWindowUI):
 
-    file_chosen = pyqtSignal(str)
+    files_chosen = pyqtSignal(list)
 
     def __init__(self, path):
 
         self.database = Database(path)
-        self.URL = ''
+        self.URLs = []
+        self.filter = 'No Filter'
 
         DatabaseWindowUI.__init__(self)
 
+        self._fill_tree()
+
         self.show()
 
-    def load_online(self):
+    def load_urls(self):
 
-        self.URL = self.lineedit.text()
+        text = self.line_edit.toPlainText()
+
+        if not text:
+            self.URLs = []
+
+        elif '\n' in text:
+            self.URLs = text.split('\n')
+
+        else:
+            self.URLs.append(text)
+
         self._close()
 
     def load_database(self):
 
-        URL_1 = self.database.URL
+        orbitals_chosen = self.tree.get_chosen_items()
 
-        molecule_number = self.molecule.value()
-        molecule = self.database.molecules[molecule_number]
-        URL_2 = molecule.URL
-
-        orbital_number = self.orbital.value()
-        orbital = molecule.orbitals[orbital_number]
-        URL_3 = orbital.URL
-
-        self.URL = URL_1 + URL_2 + URL_3
+        for orbital in orbitals_chosen:
+            URL = self.database.URL
+            URL = URL + orbital.molecule.URL
+            URL = URL + orbital.URL
+            self.URLs.append(URL)
 
         self._close()
 
+    def filter_tree(self):
+
+        self.filter = self.combobox.currentText()
+        self._fill_tree()
+
+    def _fill_tree(self, ):
+
+        self.tree.clear()
+
+        for molecule in self.database.molecules:
+            if self._fit_filter(molecule):
+                item = self.tree.add_molecule(molecule)
+
+    def _fit_filter(self, molecule):
+
+        if self.filter == 'No Filter':
+            return True
+
+        elif molecule.XC_functional == self.filter:
+            return True
+
+        else:
+            return False
+
     def _close(self):
 
-        print(self.URL)
-        self.file_chosen.emit(self.URL)
+        print(self.URLs)
+        self.files_chosen.emit(self.URLs)
         self.close()
