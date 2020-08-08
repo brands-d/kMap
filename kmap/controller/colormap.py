@@ -17,7 +17,7 @@ Colormap_UI, _ = uic.loadUiType(UI_file)
 
 class Colormap(QWidget, Colormap_UI):
 
-    def __init__(self, plot_item, path='/resources/misc/colormaps.json'):
+    def __init__(self, plot_item):
 
         # Setup GUI
         super(Colormap, self).__init__()
@@ -25,7 +25,7 @@ class Colormap(QWidget, Colormap_UI):
         self._connect()
 
         # Path for the .json file containing the colormaps
-        self.path = __directory__ + path
+        self.path = __directory__ + config.get_key('paths', 'colormap')
         self.model = ColormapModel(plot_item)
 
         self.load_colormaps()

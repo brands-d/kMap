@@ -66,15 +66,9 @@ class MainWindow(MainWindowUI):
 
     def open_database_browser(self):
 
-        path = __directory__ + config.get_key('paths', 'database')
-        self.database = DatabaseWindow(path)
+        self.database = DatabaseWindow()
 
-        self.database.files_chosen.connect(self.close_database)
         self.database.files_chosen.connect(self.load_cube_files_online)
-
-    def close_database(self):
-
-        del self.database
 
     def load_cube_files_online(self, URLs):
 
@@ -88,6 +82,7 @@ class MainWindow(MainWindowUI):
 
         # Load URL to Tab
         for URL in URLs:
+
             try:
                 tab.add_orbital_from_online(URL)
 

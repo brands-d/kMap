@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>474</width>
-    <height>119</height>
+    <height>123</height>
    </rect>
   </property>
   <property name="font">
@@ -72,9 +72,9 @@
        <number>5</number>
       </property>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
+       <layout class="QVBoxLayout" name="vertical_layout">
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <layout class="QHBoxLayout" name="top_layout">
           <item>
            <widget class="QComboBox" name="combobox">
             <property name="font">
@@ -140,7 +140,7 @@ This will DELETE unsaved colormaps in the list.</string>
          </layout>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <layout class="QHBoxLayout" name="bottom_layout">
           <item>
            <widget class="QLineEdit" name="line_edit">
             <property name="font">
