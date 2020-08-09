@@ -76,7 +76,7 @@ class DatabaseWindow(QMainWindow, DatabaseWindow_UI):
         orbital_item = OrbitalTreeWidgetItem(orbital)
 
         # Add the entries in the respective column
-        entries = ['', orbital.name, '', '',
+        entries = ['%i' % orbital.ID, orbital.name, '', '',
                    '', '', '%.3f' % orbital.energy]
 
         for col, entry in enumerate(entries):
@@ -158,7 +158,7 @@ class DatabaseWindow(QMainWindow, DatabaseWindow_UI):
         self.tree.header().setDefaultAlignment(Qt.AlignCenter)
         self.tree.header().setSectionResizeMode(1, QHeaderView.Stretch)
 
-        self.tree.sortItems(1, Qt.SortOrder.AscendingOrder)
+        self.tree.sortItems(0, Qt.SortOrder.AscendingOrder)
 
     def _fit_filter(self, molecule):
 
