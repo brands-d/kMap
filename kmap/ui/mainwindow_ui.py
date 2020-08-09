@@ -15,6 +15,9 @@ class MainWindowUI(AbstractUI, QMainWindow):
         w = int(config.get_key('app', 'w'))
         h = int(config.get_key('app', 'h'))
         self.setGeometry(x, y, h, w)
+        fullscreen = bool(config.get_key('logging', 'persistent'))
+        if fullscreen:
+            self.showMaximized()
         self.setWindowTitle('kMap')
         self.setWindowIcon(
             QIcon(__directory__ + '/resources/images/icon.png'))
