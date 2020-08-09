@@ -6,6 +6,7 @@ calculate and slice data from cube files.
 
 import numpy as np
 import scipy.interpolate as interp
+from scipy.ndimage import rotate
 from kmap.library.plotdata import PlotData
 
 np.seterr(invalid='ignore')
@@ -42,7 +43,7 @@ class Orbital():
 
     def get_kmap(self, E_kin=30, dk=0.03, phi=0, theta=0, psi=0,
                  Ak_type='no', polarization='p', alpha=60, beta=90,
-                 gamma=0):
+                 gamma=0,symmetrization='no'):
         """Returns a kmap slice from the orbital data.
 
         Args:
@@ -57,8 +58,10 @@ class Orbital():
                 'CDAD'.   
             alpha (float): Angle of incidence plane in degree.
             beta (float): Azimuth of incidence plane in degree.
-            gamma (float): Damping factor for final state in
-                Angstroem^-1.
+            gamma (float/str): Damping factor for final state in
+                Angstroem^-1. str = 'auto' sets gamms automatically
+            symmetrization (str): either 'no', '2-fold', '2-fold+mirror',
+                '3-fold', '3-fold+mirror','4-fold', '4-fold+mirror'
         Returns:
             (PlotData): PlotData containing the kmap slice.
         """
@@ -78,12 +81,15 @@ class Orbital():
             self.set_kinetic_energy(E_kin, dk)
 
         # Rotate molecule (that is, rotate hemisphere)
-        #if phi != 0 or theta != 0 or psi != 0:
         self.set_orientation(phi, theta, psi)
 
+        # Compute polarization factor
         self.set_polarization(Ak_type, polarization, alpha, beta,
                               gamma)
-        
+
+        # symmetrize kmap
+        self.set_symmetry(symmetrization)
+
         return PlotData(self.Ak['data']*self.kmap['data'], 
                         self.kmap['krange'])
 
@@ -288,6 +294,60 @@ class Orbital():
                    'beta': beta,
                    'gamma': gamma,
                    'data': Ak}
+
+    def set_symmetry(self, symmetrization):
+        """Symmterizes the kmap.
+
+        Args:
+            symmetrization (str): either 'no', '2-fold', '2-fold+mirror',
+                '3-fold', '3-fold+mirror','4-fold', '4-fold+mirror'
+
+        """
+        if symmetrization == 'no':
+            return 
+
+        data = self.kmap['data']
+
+        if symmetrization == '2-fold': 
+            data += rotate(np.nan_to_num(data), 180, reshape=False)
+            data /= 2
+                    
+        elif symmetrization == '2-fold+mirror': 
+            data += rotate(np.nan_to_num(data), 180, reshape=False)
+            data += np.flip(data, 0)  # mirror map with respect to first axis
+            data /= 4
+
+        elif symmetrization == '3-fold': 
+            data1 = rotate(np.nan_to_num(data), 120, reshape=False)
+            data2 = rotate(np.nan_to_num(data), 240, reshape=False)
+            data += (data1 + data2)
+            data /= 3
+                     
+        elif symmetrization == '3-fold+mirror': 
+            data1 = rotate(np.nan_to_num(data), 120, reshape=False)
+            data2 = rotate(np.nan_to_num(data), 240, reshape=False)
+            data += (data1 + data2)
+            data += np.flip(data, 0)
+            data /= 6
+
+        elif symmetrization == '4-fold': 
+            data1 = rotate(np.nan_to_num(data), 90, reshape=False)
+            data2 = rotate(np.nan_to_num(data), 180, reshape=False)
+            data3 = rotate(np.nan_to_num(data), 270, reshape=False)
+            data += (data1 + data2 + data3)
+            data /= 4
+                      
+        elif symmetrization == '4-fold+mirror': 
+            data1 = rotate(np.nan_to_num(data), 90, reshape=False)
+            data2 = rotate(np.nan_to_num(data), 180, reshape=False)
+            data3 = rotate(np.nan_to_num(data), 270, reshape=False)
+            data += np.flip(data, 0)  # mirror map with respect to first axis
+            data += np.flip(data, 1)  # mirror map with respect to second axis
+            data /= 8
+
+        self.kmap['data'] = data
+        return
+
 
     def _read_cube(self, file):
         """ Read orbital data from cube file."""
