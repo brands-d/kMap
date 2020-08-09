@@ -7,7 +7,7 @@ class DataSliderModel():
 
         self.slice_keys = ''
         self.key_label = ''
-        self.unit = ''
+        self.units = ''
 
         self.read(data)
 
@@ -26,7 +26,7 @@ class DataSliderModel():
 
         # Units
         if 'slice_unit' in data.meta_data:
-            self.unit = data.meta_data['slice_unit']
+            self.units = data.meta_data['slice_unit']
 
         else:
-            self.unit = config.get_key('sliced_data', 'default_slice_unit')
+            self.units = config.get_key('sliced_data', 'default_slice_unit')
