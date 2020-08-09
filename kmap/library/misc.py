@@ -54,3 +54,12 @@ def normalize(data):
         norm = np.nansum(data) / num_elements
 
     return norm
+
+
+def orientation_to_euler_angle(orientation):
+
+    phi = 0 if orientation in ['xy', 'xz', 'zx'] else 90
+    theta = 0 if orientation in ['xy', 'yx'] else 90
+    psi = 0 if orientation in ['xy', 'yx', 'yz', 'xz'] else 90
+
+    return phi, theta, psi

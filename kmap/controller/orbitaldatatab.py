@@ -24,9 +24,9 @@ class OrbitalDataTab(OrbitalDataTabUI):
         orbital = self.model.load_data_from_online(URL)
         self.add_orbital(orbital)
 
-    def add_orbital(self, orbital):
+    def add_orbital(self, orbital, orientation='xy'):
 
-        self.table.add_item(orbital)
+        self.table.add_orbital(orbital, orientation)
 
         self.refresh_plot()
 
