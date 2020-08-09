@@ -20,10 +20,11 @@ class OrbitalDataTabModel():
 
         return new_orbital
 
-    def load_data_from_online(self, url):
+    def load_data_from_online(self, url, meta_data={}):
 
         id_ = ID.new_ID()
-        new_orbital = OrbitalData.init_from_online(url, ID=id_)
+        new_orbital = OrbitalData.init_from_online(
+            url, ID=id_, meta_data=meta_data)
 
         self.orbitals.append(new_orbital)
 

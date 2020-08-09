@@ -84,7 +84,7 @@ class MainWindow(MainWindowUI):
         for URL in URLs:
 
             try:
-                tab.add_orbital_from_online(URL)
+                tab.add_orbital_from_online(URL[0], URL[1])
 
             except ValueError:
                 logging.getLogger('kmap').error(

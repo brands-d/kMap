@@ -100,7 +100,7 @@ class DatabaseWindow(QMainWindow, DatabaseWindow_UI):
 
         # Only one URL entered
         else:
-            self.URLs.append(text)
+            self.URLs.append([text, {}])
 
         self.close()
 
@@ -109,8 +109,9 @@ class DatabaseWindow(QMainWindow, DatabaseWindow_UI):
         orbitals_chosen = self._get_chosen_orbitals()
 
         for orbital in orbitals_chosen:
-            URL = self.database.URL + orbital.molecule.URL + orbital.URL
-            self.URLs.append(URL)
+            URL = orbital.URL
+            meta_data = orbital.get_meta_data()
+            self.URLs.append([URL, meta_data])
 
         self.close()
 

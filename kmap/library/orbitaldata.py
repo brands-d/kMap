@@ -4,6 +4,7 @@ from kmap.library.orbital import Orbital
 from kmap.config.config import config
 from kmap.library.abstractdata import AbstractData
 
+
 class OrbitalData(Orbital, AbstractData):
 
     def __init__(self, cube, ID, name='', meta_data={}):
@@ -35,11 +36,12 @@ class OrbitalData(Orbital, AbstractData):
         return name, keys
 
     @classmethod
-    def init_from_online(cls, url, ID):
+    def init_from_online(cls, url, ID, meta_data={}):
 
         with urllib.request.urlopen(url) as f:
             file = f.read().decode('utf-8')
 
             name, keys = OrbitalData._get_metadata(file, url)
+            meta_data.update(keys)
 
-        return cls(file, ID, name=name, meta_data=keys)
+        return cls(file, ID, name=name, meta_data=meta_data)

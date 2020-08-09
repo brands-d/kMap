@@ -28,7 +28,7 @@ class Database():
             # Loop over all Molecules
             for line in file:
                 if line[:11] == 'moleculeID=':
-                    new_molecule = Molecule(lines)
+                    new_molecule = Molecule(lines, URL=self.URL)
                     self.molecules.append(new_molecule)
 
                     lines = []
@@ -38,10 +38,10 @@ class Database():
 
 class Molecule():
 
-    def __init__(self, lines):
+    def __init__(self, lines, URL=''):
 
         self.ID = int(lines[0].split('=')[1])
-        self.URL = lines[2].split('=')[2][:-1]
+        self.URL = URL + lines[2].split('=')[2][:-1]
 
         parts = lines[1].split(',')
 
@@ -58,7 +58,7 @@ class Molecule():
 
         self.orbitals = []
         for index, line in enumerate(lines[3:], 1):
-            new_orbital = Orbital(self, index, line)
+            new_orbital = Orbital(index, line, self.URL, self.orientation)
             self.orbitals.append(new_orbital)
 
     def to_string(self):
@@ -84,17 +84,16 @@ class Molecule():
 
 class Orbital():
 
-    def __init__(self, molecule, ID, line):
-
-        self.molecule = molecule
+    def __init__(self, ID, line, URL='', orientation='xy'):
 
         self.ID = ID
         parts = line.split(',')
-        self.URL = parts[0].split('=')[1]
+        self.URL = URL + parts[0].split('=')[1]
         self.name = parts[1].split('=')[1]
         self.energy = float(parts[2].split('=')[1])
         self.occupation = int(parts[3].split('=')[1])
         self.symmetry = parts[4].split('=')[1][:-1]
+        self.orientation = orientation
 
     def to_string(self):
 
@@ -105,3 +104,13 @@ class Orbital():
         symmetry = 'Symmetry: %s' % self.symmetry
 
         return url + name + energy + occupation + symmetry
+
+    def get_meta_data(self):
+
+        meta_data = {'name': self.name,
+                     'energy': self.energy,
+                     'occupation': self.occupation,
+                     'symmetry': self.symmetry,
+                     'orientation': self.orientation}
+
+        return meta_data

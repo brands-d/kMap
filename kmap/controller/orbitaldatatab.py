@@ -19,12 +19,18 @@ class OrbitalDataTab(OrbitalDataTabUI):
         orbital = self.model.load_data_from_path(path)
         self.add_orbital(orbital)
 
-    def add_orbital_from_online(self, URL):
+    def add_orbital_from_online(self, URL, meta_data={}):
 
-        orbital = self.model.load_data_from_online(URL)
+        orbital = self.model.load_data_from_online(URL, meta_data)
         self.add_orbital(orbital)
 
-    def add_orbital(self, orbital, orientation='xy'):
+    def add_orbital(self, orbital):
+
+        if 'orientation' in orbital.meta_data:
+            orientation = orbital.meta_data['orientation']
+            
+        else:
+            orientation = 'xy'
 
         self.table.add_orbital(orbital, orientation)
 
