@@ -170,6 +170,12 @@ class Orbital():
                      'phi': 0, 'theta': 0, 'psi': 0,
                      'data': data}
 
+    # get the (kx,ky) values of the kmap as a list of tuples 
+    def get_kxkygrid(self):
+        
+        KX, KY = self.kmap['KX'], self.kmap['KY']   
+        return list(map(lambda a, b: (a, b), KX.flatten(), KY.flatten()))         
+
     # Rotate hemisphere KX, KY, KZ by Euler angles phi, theta, psi
     def set_orientation(self, phi, theta, psi):
 
