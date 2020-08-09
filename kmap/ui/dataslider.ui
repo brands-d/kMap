@@ -69,6 +69,9 @@
             <bold>false</bold>
            </font>
           </property>
+          <property name="toolTip">
+           <string>Key label for the individual slices.</string>
+          </property>
           <property name="text">
            <string/>
           </property>
@@ -81,6 +84,9 @@
             <weight>50</weight>
             <bold>false</bold>
            </font>
+          </property>
+          <property name="toolTip">
+           <string>Slice key of the current slice.</string>
           </property>
           <property name="text">
            <string/>
@@ -99,6 +105,9 @@
           <weight>50</weight>
           <bold>false</bold>
          </font>
+        </property>
+        <property name="toolTip">
+         <string>Drag the slider to change the displayed slice of data.</string>
         </property>
         <property name="maximum">
          <number>0</number>

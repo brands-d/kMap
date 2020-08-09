@@ -29,6 +29,9 @@
       <property name="title">
        <string>Database</string>
       </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
         <widget class="QTreeWidget" name="tree">
@@ -253,6 +256,9 @@ To load an entire molecule, simply select the molecule row.</string>
       </property>
       <property name="title">
        <string>Load by URL</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>

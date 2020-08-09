@@ -29,7 +29,7 @@ class DataSlider(QWidget, DataSlider_UI):
     def update_slice_label(self):
 
         index = self.slider.sliderPosition()
-        value = str(self.slice_keys[index])
+        value = '%.2f  %s' % (self.slice_keys[index], self.units)
         self.value_label.setText(value)
 
     def change_slice(self, index):
@@ -54,14 +54,14 @@ class DataSlider(QWidget, DataSlider_UI):
             key_label = config.get_key(
                 'sliced_data', 'default_slice_keys')
 
+        self.key_label.setText('%s:' % key_label)
+
         # Units
         if 'slice_unit' in data.meta_data:
-            units = data.meta_data['slice_unit']
+            self.units = data.meta_data['slice_unit']
 
         else:
-            units = config.get_key('sliced_data', 'default_slice_unit')
-
-        self.key_label.setText('%s [%s]:' % (key_label, units))
+            self.units = config.get_key('sliced_data', 'default_slice_unit')
 
         self.update_slice_label()
 

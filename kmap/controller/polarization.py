@@ -1,17 +1,31 @@
+# Python Imports
+import logging
+
+# PyQt5 Imports
+from PyQt5 import uic
 from PyQt5.QtCore import pyqtSignal
-from kmap.model.polarization_model import PolarizationModel
-from kmap.ui.polarization_ui import PolarizationUI
+from PyQt5.QtWidgets import QWidget
+
+# Own Imports
+from kmap import __directory__
+from kmap.config.config import config
+
+# Load .ui File
+UI_file = __directory__ + '/ui/polarization.ui'
+Polarization_UI, _ = uic.loadUiType(UI_file)
 
 
-class Polarization(PolarizationUI):
+class Polarization(QWidget, Polarization_UI):
 
     polarization_changed = pyqtSignal()
 
     def __init__(self):
 
-        self.model = PolarizationModel()
-
-        PolarizationUI.__init__(self)
+        # Setup GUI
+        super(Polarization, self).__init__()
+        self.setupUi(self)
+        self._setup()
+        self._connect()
 
     def change_polarization(self):
 
@@ -47,3 +61,14 @@ class Polarization(PolarizationUI):
         gamma = 'auto'
 
         return Ak_type, polarization, alpha, beta, gamma
+
+    def _setup(self):
+
+        # Can't add sub and superscript text in QtCreator
+        self.combobox.setItemText(0, 'no |A\u2096|\u00B2')
+
+    def _connect(self):
+
+        self.combobox.currentIndexChanged.connect(self.change_polarization)
+        self.angle_spinbox.valueChanged.connect(self.change_polarization)
+        self.azimuth_spinbox.valueChanged.connect(self.change_polarization)
