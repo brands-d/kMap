@@ -349,6 +349,35 @@ class Orbital():
         return
 
 
+    def plot(self, ax, title=None):
+        """Creates a plot of the kmap in axes-obeject ax.
+
+        Args:
+            
+
+        """
+
+        # prepare data
+        data   = self.Ak['data']*self.kmap['data']  
+        krange = self.kmap['krange']
+        limits = [krange[0][0], krange[0][1], krange[1][0], krange[1][1]]
+
+        # plot kmap       
+        im = ax.imshow(data,
+                      extent=limits,
+                      interpolation='bicubic',
+                      origin='lower',
+                      cmap='jet')
+
+        # format plot
+        ax.set_aspect('equal')
+        ax.set_xlabel(r'$\kappa_x(1/\AA)$')
+        ax.set_ylabel(r'$\kappa_y(1/\AA)$')
+        if title != None:
+            ax.set_title(title)
+
+        return
+
     def _read_cube(self, file):
         """ Read orbital data from cube file."""
 
