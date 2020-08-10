@@ -63,3 +63,20 @@ def orientation_to_euler_angle(orientation):
     psi = 0 if orientation in ['xy', 'yx', 'yz', 'xz'] else 90
 
     return phi, theta, psi
+
+
+def axis_from_range(range_, num):
+    """Calculates a full 1D axis from range values and number of
+    elements. Result can be used for interpolation method.
+
+    Args:
+        range_ (float): 1D list with min and max value (inclusive).
+        num (int): Number of points.
+
+    Returns:
+        (float): 1D np.array containing the resulting axis.
+
+    """
+
+    return np.linspace(range_[0], range_[1], num=num, endpoint=True,
+                       dtype=np.float64)

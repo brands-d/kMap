@@ -1,4 +1,5 @@
 from kmap.config.config import config
+from kmap.library.misc import axis_from_range
 
 
 class MatplotlibWindowModel():
@@ -19,13 +20,11 @@ class MatplotlibWindowModel():
         x_step_size = plot_data.step_size[0]
         centered_range = plot_data.range[0] + \
             [-x_step_size / 2, x_step_size / 2]
-        x = plot_data.axis_from_range(
-            centered_range, len(plot_data.x_axis) + 1)
+        x = axis_from_range(centered_range, len(plot_data.x_axis) + 1)
 
         y_step_size = plot_data.step_size[1]
         centered_range = plot_data.range[1] + \
             [-y_step_size / 2, y_step_size / 2]
-        y = plot_data.axis_from_range(
-            centered_range, len(plot_data.y_axis) + 1)
+        y = axis_from_range(centered_range, len(plot_data.y_axis) + 1)
 
         return x, y

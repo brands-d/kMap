@@ -1,6 +1,7 @@
 from kmap.library.id import ID
 from kmap.library.sliceddata import SlicedData
 
+
 class SlicedDataTabModel():
 
     def __init__(self, path, delayed_access=False):
@@ -16,13 +17,12 @@ class SlicedDataTabModel():
 
     def load_data_from_path(self, path):
 
-        id_ = ID.new_ID()
-        self.data = SlicedData.init_from_hdf5(path, ID=id_)
+        self.data = SlicedData.init_from_hdf5(path,)
 
-        self.change_slice(0)
+        self.change_slice(0, 0)
 
-    def change_slice(self, index):
+    def change_slice(self, index, axis):
 
-        self.displayed_plot_data = self.data.slice_from_idx(index)
+        self.displayed_plot_data = self.data.slice_from_index(index, axis)
 
         return self.displayed_plot_data

@@ -13,7 +13,7 @@ class SlicedDataTab(SlicedDataTabUI):
 
         SlicedDataTabUI.__init__(self)
 
-        self.change_slice(0)
+        self.change_slice(0, 0)
 
     def get_title(self):
 
@@ -34,12 +34,12 @@ class SlicedDataTab(SlicedDataTabUI):
 
         return title
 
-    def change_slice(self, index):
+    def change_slice(self, index, axis):
 
-        data = self.model.change_slice(index)
+        data = self.model.change_slice(index, axis)
 
         self.plot_item.plot(data)
-        #self.update()
+        # self.update()
 
     def crosshair_changed(self):
 
@@ -50,5 +50,5 @@ class SlicedDataTab(SlicedDataTabUI):
 
         data = self.model.displayed_plot_data
         title = self.get_title()
-        
+
         self.window = MatplotlibWindow(data, title)

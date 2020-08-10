@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QWidget
 # Own Imports
 from kmap import __directory__
 from kmap.config.config import config
-#from kmap.model.dataslider_model import DataSliderModel
+# from kmap.model.dataslider_model import DataSliderModel
 
 # Load .ui File
 UI_file = __directory__ + '/ui/dataslider.ui'
@@ -15,7 +15,7 @@ DataSlider_UI, _ = uic.loadUiType(UI_file)
 
 class DataSlider(QWidget, DataSlider_UI):
 
-    value_changed = pyqtSignal(int)
+    value_changed = pyqtSignal(int, int)
 
     def __init__(self, data):
 
@@ -24,47 +24,81 @@ class DataSlider(QWidget, DataSlider_UI):
         self.setupUi(self)
         self._connect()
 
-        self._setup(data)
-
-    def update_slice_label(self):
-
-        index = self.slider.sliderPosition()
-        value = '%.2f  %s' % (self.slice_keys[index], self.units)
-        self.value_label.setText(value)
+        self.axes = data.axes
+        self._setup_combobox()
+        self._update_slice_label()
 
     def change_slice(self, index):
 
-        self.update_slice_label()
+        sender = self.sender().objectName()
 
-        self.value_changed.emit(index)
+        # If spinbox or slider called, index will be the slice index
+        # and the other widget has to be updated. As default use slider
+        # position as index
+        if sender == 'spinbox':
+            self._update_slider_silently(index)
 
-    def _setup(self, data):
+        elif sender == 'slider':
+            self._update_spinbox_silently(index)
 
-        # Slice Keys
-        self.slice_keys = data.slice_keys
-        # Slider
-        maximum = len(self.slice_keys) - 1
+        else:
+            index = self.slider.sliderPosition()
+
+        axis = self.combobox.currentIndex()
+
+        self._update_slice_label()
+
+        self.value_changed.emit(index, axis)
+
+    def change_axis(self, axis):
+
+        index = self.slider.sliderPosition()
+
+        self._update_slider_silently(index)
+        self._update_spinbox_silently(index)
+        self._update_slice_label()
+
+        self.value_changed.emit(index, axis)
+
+    def _update_slice_label(self):
+
+        index = self.slider.sliderPosition()
+        axis = self.axes[self.combobox.currentIndex()]
+        value = axis.axis[index]
+
+        text = '%.2f  %s' % (value, axis.units)
+        self.value_label.setText(text)
+
+    def _update_slider_silently(self, index):
+
+        self.slider.blockSignals(True)
+
+        axis = self.axes[self.combobox.currentIndex()]
+        maximum = len(axis.axis) - 1
         self.slider.setMaximum(maximum)
+        self.slider.setSliderPosition(index)
 
-        # Key Labels
-        if 'slice_key_label' in data.meta_data:
-            key_label = data.meta_data['slice_key_label']
+        self.slider.blockSignals(False)
 
-        else:
-            key_label = config.get_key(
-                'sliced_data', 'default_slice_keys')
+    def _update_spinbox_silently(self, index):
 
-        self.key_label.setText('%s:' % key_label)
+        self.spinbox.blockSignals(True)
 
-        # Units
-        if 'slice_unit' in data.meta_data:
-            self.units = data.meta_data['slice_unit']
+        axis = self.axes[self.combobox.currentIndex()]
+        maximum = len(axis.axis) - 1
+        self.spinbox.setMaximum(maximum)
+        self.spinbox.setValue(index)
 
-        else:
-            self.units = config.get_key('sliced_data', 'default_slice_unit')
+        self.spinbox.blockSignals(False)
 
-        self.update_slice_label()
+    def _setup_combobox(self):
+
+        for index in [0, 1, 2]:
+            axis_label = self.axes[index].label
+            self.combobox.addItem(str(axis_label))
 
     def _connect(self):
 
         self.slider.valueChanged.connect(self.change_slice)
+        self.spinbox.valueChanged.connect(self.change_slice)
+        self.combobox.currentIndexChanged.connect(self.change_axis)

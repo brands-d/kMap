@@ -10,7 +10,7 @@ from numbers import Number
 import numpy as np
 import itertools as it
 from scipy.interpolate import RegularGridInterpolator as RGI
-
+from kmap.library.misc import axis_from_range
 
 class PlotData():
     """Basic data class holding necessary information for plotting.
@@ -53,30 +53,13 @@ class PlotData():
             raise ValueError('range_ can only have finite values')
 
         # Set axes
-        self.x_axis = self.axis_from_range(self.range[0], self.data.shape[0])
-        self.y_axis = self.axis_from_range(self.range[1], self.data.shape[1])
+        self.x_axis = axis_from_range(self.range[0], self.data.shape[0])
+        self.y_axis = axis_from_range(self.range[1], self.data.shape[1])
 
         # Set step_size
         self.step_size = np.array([self.x_axis[1] - self.x_axis[0],
                                    self.y_axis[1] - self.y_axis[0]],
                                   dtype=np.float64)
-
-    def axis_from_range(self, range_, num):
-        """Calculates a full 1D axis from range values and number of
-        elements. Result can be used for interpolation method.
-
-        Args:
-            range_ (float): 1D list with min and max value (inclusive).
-            num (int): Number of points.
-
-        Returns:
-            (float): 1D np.array containing the resulting axis.
-
-        """
-
-        return np.linspace(range_[0], range_[1],
-                           num=num, endpoint=True,
-                           dtype=np.float64)
 
     def interpolate(self, x_axis, y_axis, interpolator='rgi',
                     bounds_error=False, update=False, *args, **kwargs):

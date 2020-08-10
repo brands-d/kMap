@@ -1,3 +1,5 @@
+import numpy as np
+
 from kmap.ui.pyqtgraphplot_ui import PyQtGraphPlotUI
 from kmap.model.pyqtgraphplot_model import PyQtGraphPlotModel
 
@@ -25,6 +27,9 @@ class PyQtGraphPlot(PyQtGraphPlotUI):
             return
 
         image, pos, scale = self.model.get_plot()
+        
+        if np.all(np.isnan(image)) == True:
+            return
 
         self.setImage(image, autoRange=True,
                       autoLevels=True, pos=pos, scale=scale)

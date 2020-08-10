@@ -6,6 +6,7 @@ import numpy as np
 from kmap.library.id import ID
 from kmap.library.plotdata import PlotData
 from kmap.library.abstractdata import AbstractData
+from kmap.library.misc import axis_from_range
 
 
 class SlicedData(AbstractData):
@@ -18,10 +19,17 @@ class SlicedData(AbstractData):
         else:
             raise ValueError('name has to be string and not empty')
 
-        self.axis_1 = Axis.init_from_hdf_list(axis_1)
-        self.axis_2 = Axis.init_from_hdf_list(axis_2)
-        self.axis_3 = Axis.init_from_hdf_list(axis_3)
-        self.data = np.array(data, dtype=np.float64)
+        data = np.array(data, dtype=np.float64)
+        if len(data.shape) == 3:
+            self.data = data
+
+        else:
+            raise ValueError('data has to be 3D')
+
+        axis_1 = Axis.init_from_hdf_list(axis_1, len(data[:, 0, 0]))
+        axis_2 = Axis.init_from_hdf_list(axis_2, len(data[0, :, 0]))
+        axis_3 = Axis.init_from_hdf_list(axis_3, len(data[0, 0, :]))
+        self.axes = [axis_1, axis_2, axis_3]
 
     @classmethod
     def init_from_hdf5(cls, file_path, keys={}, meta_data={}):
@@ -87,22 +95,22 @@ class SlicedData(AbstractData):
         axis_1 = [axis_1_label, axis_1_units, axis_1_range]
         axis_2 = [axis_2_label, axis_2_units, axis_2_range]
         axis_3 = [axis_3_label, axis_3_units, axis_3_range]
-        print(axis_1)
+
         return cls(name, axis_1, axis_2, axis_3, data, meta_data)
 
-    def slice_from_index(self, index, axis=1):
+    def slice_from_index(self, index, axis=0):
 
-        if axis == 1:
+        if axis == 0:
             data = self.data[index, :, :]
-            range_ = [self.axis_2.range, self.axis_3.range]
+            range_ = [self.axes[1].range, self.axes[2].range]
+
+        elif axis == 1:
+            data = self.data[:, index, :]
+            range_ = [self.axes[0].range, self.axes[2].range]
 
         elif axis == 2:
-            data = self.data[:, index, :]
-            range_ = [self.axis_1.range, self.axis_2.range]
-
-        elif axis == 3:
             data = self.data[:, :, index]
-            range_ = [self.axis_1.range, self.axis_2.range]
+            range_ = [self.axes[0].range, self.axes[1].range]
 
         else:
             raise ValueError('axis has to be between 1 and 3')
@@ -112,17 +120,18 @@ class SlicedData(AbstractData):
 
 class Axis():
 
-    def __init__(self, label, units, range_):
+    def __init__(self, label, units, range_, num):
 
         self.label = label
         self.units = units
         self.range = range_
+        self.axis = axis_from_range(range_, num)
 
     @classmethod
-    def init_from_hdf_list(cls, axis):
+    def init_from_hdf_list(cls, axis, num):
 
         if Axis._is_correct_axis(axis):
-            return cls(*axis)
+            return cls(*axis, num)
 
     @classmethod
     def _is_correct_axis(self, axis):
