@@ -47,8 +47,8 @@ class DataSlider(QWidget, DataSlider_UI):
         self.slider.setMaximum(maximum)
 
         # Key Labels
-        if 'slice_keys' in data.meta_data:
-            key_label = data.meta_data['slice_keys']
+        if 'slice_key_label' in data.meta_data:
+            key_label = data.meta_data['slice_key_label']
 
         else:
             key_label = config.get_key(
