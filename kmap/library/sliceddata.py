@@ -1,100 +1,151 @@
+# Python Imports
 import h5py
 import numpy as np
-from abc import abstractmethod
+
+# Own Imports
+from kmap.library.id import ID
 from kmap.library.plotdata import PlotData
 from kmap.library.abstractdata import AbstractData
 
-class AbstractSlicedData(AbstractData):
 
-    def __init__(self, slice_keys, ID, name, meta_data):
+class SlicedData(AbstractData):
 
-        # Test for uniqueness in the slice_axis key list
-        if len(slice_keys) > len(set(slice_keys)):
-            raise ValueError('slice_axis has to have only unique values')
+    def __init__(self, name, axis_1, axis_2, axis_3, data, meta_data={}):
+
+        if isinstance(name, str) and name:
+            super(SlicedData, self).__init__(ID.new_ID(), name, meta_data)
+
         else:
-            self.slice_keys = slice_keys
+            raise ValueError('name has to be string and not empty')
 
-        super().__init__(ID, name, meta_data)
-
-    @abstractmethod
-    def slice_from_idx(self, idx):
-        pass
-
-    @abstractmethod
-    def slice_from_key(self, key):
-        pass
-
-
-class SlicedData(AbstractSlicedData):
-
-    def __init__(self, slices, ranges, slice_keys, ID, name='', meta_data={}):
-
-        # Test if slice_keys matches slices
-        if len(slice_keys) != len(slices):
-            raise TypeError('slice_axis has to be the same length as slices')
-
-        super().__init__(slice_keys, ID, name, meta_data)
-
-        # If only one range is supplied, it applies to all slices
-        if len(np.array(ranges).shape) == 2:
-            self._slices = [PlotData(slice_, ranges) for slice_ in slices]
-
-        # Each slices has its own range
-        elif len(ranges) == len(slices):
-            self._slices = [PlotData(slice_, range_)
-                            for slice_, range_ in zip(slices, ranges)]
-        else:
-            raise TypeError(
-                'range_ needs to be specified either once for all or for all' +
-                'slices individually')
+        self.axis_1 = Axis.init_from_hdf_list(axis_1)
+        self.axis_2 = Axis.init_from_hdf_list(axis_2)
+        self.axis_3 = Axis.init_from_hdf_list(axis_3)
+        self.data = np.array(data, dtype=np.float64)
 
     @classmethod
-    def init_from_hdf5(cls, file_path, ID=-1, keys={}):
+    def init_from_hdf5(cls, file_path, keys={}, meta_data={}):
 
         # Updates default file_keys with user defined keys
-        file_keys = {'name': 'name', 'slice_keys': 'slice_keys',
-                     'slices': 'slices', 'range': 'range'}
+        file_keys = {'name': 'name', 'axis_1_label': 'axis_1_label',
+                     'axis_1_units': 'axis_1_units',
+                     'axis_1_range': 'axis_1_range',
+                     'axis_2_label': 'axis_2_label',
+                     'axis_2_units': 'axis_2_units',
+                     'axis_2_range': 'axis_2_range',
+                     'axis_3_label': 'axis_3_label',
+                     'axis_3_units': 'axis_3_units',
+                     'axis_3_range': 'axis_3_range',
+                     'data': 'data'}
         file_keys.update(keys)
 
-        meta_data = {}
-
-        with h5py.File(file_path, 'r') as f:
+        with h5py.File(file_path, 'r') as file:
 
             # First check if necessary datasets exist
-            if (file_keys['name'] not in f or
-                file_keys['slice_keys'] not in f or
-                    file_keys['range'] not in f):
-                raise AttributeError('Necessary dataset in hdf5 file missing')
+            for _, value in file_keys.items():
+                if value not in file:
+                    raise AttributeError('Dataset is missing %s' % value)
 
             # Read all datasets
-            for key, value in f.items():
+            for key, value in file.items():
                 if key == file_keys['name']:
-                    name = str(f[key][()])
+                    name = str(file[key][()])
 
-                elif key == file_keys['slice_keys']:
-                    slice_keys = f[key][()]
+                elif key == file_keys['axis_1_label']:
+                    axis_1_label = file[key][()]
 
-                elif key == file_keys['slices']:
-                    slices = f[key][()]
+                elif key == file_keys['axis_2_label']:
+                    axis_2_label = file[key][()]
 
-                elif key == file_keys['range']:
-                    ranges = f[key][()]
+                elif key == file_keys['axis_3_label']:
+                    axis_3_label = file[key][()]
+
+                elif key == file_keys['axis_1_units']:
+                    axis_1_units = file[key][()]
+
+                elif key == file_keys['axis_2_units']:
+                    axis_2_units = file[key][()]
+
+                elif key == file_keys['axis_3_units']:
+                    axis_3_units = file[key][()]
+
+                elif key == file_keys['axis_1_range']:
+                    axis_1_range = file[key][()]
+
+                elif key == file_keys['axis_2_range']:
+                    axis_2_range = file[key][()]
+
+                elif key == file_keys['axis_3_range']:
+                    axis_3_range = file[key][()]
+
+                elif key == file_keys['data']:
+                    data = file[key][()]
 
                 else:
                     meta_data.update({key: str(f[key][()])})
 
-        return cls(slices, ranges, slice_keys, ID, name=name,
-                   meta_data=meta_data)
+        axis_1 = [axis_1_label, axis_1_units, axis_1_range]
+        axis_2 = [axis_2_label, axis_2_units, axis_2_range]
+        axis_3 = [axis_3_label, axis_3_units, axis_3_range]
+        print(axis_1)
+        return cls(name, axis_1, axis_2, axis_3, data, meta_data)
 
-    def slice_from_idx(self, idx):
+    def slice_from_index(self, index, axis=1):
 
-        return self._slices[idx]
+        if axis == 1:
+            data = self.data[index, :, :]
+            range_ = [self.axis_2.range, self.axis_3.range]
 
-    def slice_from_key(self, key):
+        elif axis == 2:
+            data = self.data[:, index, :]
+            range_ = [self.axis_1.range, self.axis_2.range]
 
-        try:
-            idx = list(self.slice_keys).index(key)
-            return self._slices[idx]
+        elif axis == 3:
+            data = self.data[:, :, index]
+            range_ = [self.axis_1.range, self.axis_2.range]
 
-        except ValueError:
-            return None
+        else:
+            raise ValueError('axis has to be between 1 and 3')
+
+        return PlotData(data, range_)
+
+
+class Axis():
+
+    def __init__(self, label, units, range_):
+
+        self.label = label
+        self.units = units
+        self.range = range_
+
+    @classmethod
+    def init_from_hdf_list(cls, axis):
+
+        if Axis._is_correct_axis(axis):
+            return cls(*axis)
+
+    @classmethod
+    def _is_correct_axis(self, axis):
+
+        if not isinstance(axis, list) or len(axis) != 3:
+            raise ValueError('axis has to be a list of length 3')
+
+        label, units, range_ = axis
+        if not isinstance(label, str) or not label:
+            raise ValueError('axis label has to be a non empty string')
+
+        if not isinstance(units, str) or not units:
+            raise ValueError('axis units has to be a non empty string')
+
+        if len(range_) != 2:
+            raise ValueError('axis range has to be list of length 2')
+
+        minimum, maximum = range_
+        if not np.isfinite(minimum) or not np.isfinite(maximum):
+            raise ValueError('axis range can not contain inf or nan values')
+
+        if not minimum < maximum:
+            raise ValueError(
+                'axis minimum has to strictly smaller than maxmimum')
+
+        return True

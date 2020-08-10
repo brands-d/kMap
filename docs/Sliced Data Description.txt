@@ -1,45 +1,20 @@
-This is a short description of how .hdf5 Files storing sliced data need
-to be structured in order to be readable by kMap.py. The loading process
-of .hdf5 Files happens in the library/sliceddata.py and
-library/plotdata.py files. See the local documentation for more
-information.
+Universal key list of hdf files
+--------------------
+**Necessary key-value pairs**
+* name (string): A string labeling this dataset. Can not be an empty string. 
+* axis_1_label (string): A string with the label/name of the this axis (string). Can not be empty.
+* axis_2_label (string): See 'axis_1_label'.
+* axis_3_label (string): See 'axis_1_label'.
+* axis_1_units (string): A string with the units of the this axis (string). Can not be empty.
+* axis_2_units (string): See 'axis_1_units'.
+* axis_3_units (string): See 'axis_1_units'.
+* axis_1_range (list): A list of length two [minimum, maximum] value of the this axis. Both values need to be numeric (no NaN values) and
+the minimum value has to be strictly less than the maximum value.
+* axis_2_range (list): See 'axis_1_range'.
+* axis_3_range (list): See 'axis_1_range'.
+* data (3D array): An array of length XxYxZ containing the image data. X being the first axis, Y being axis_2 and Z being axis_3. The data has to be 3D, meaning X, Y, Z >= 1. The data can contain NaN values but has to be otherwise numeric. 
 
-The following key-value pairs are necessary:
+**Additional key-value pairs recognized**
+* alias (string): A short alternative to 'name'. Can not be an empty string.
 
-- name (str): A name for the dataset. If no alias is provided, this name
-    should be kept short.
-
-- slice_keys​ (1D(float)): Basically an axis for the different slices. A
-    list of values the slices identify with. Typically this would be
-    binding energy or time. Has to have the same length as the first
-    dimension of 'slices'.
-
-- slices (3D(float)): A 3D array containing the actual image data. The
-    first dimension are the individual slices and as such the length
-    of slices has to be the same as 'slice_keys'. The second and third
-    dimension are (x,y) respectively.
-
-- range(2D(float) or 3D(float)): Contains the range for the slices as a
-    2x2 array looking like [x_min, x_max], [y_min, y_max]]. If 'range'
-    is a 2D array this range will be used for all slices. As alternative
-    provide a range as described above for each slice along the first
-    dimension. The length of 'range' then has to be the same as the
-    first dimension of 'slices'.
-
-The following key-value pairs are not necessary but can be used by
-kMap.py if provided:
-
-- alias (str): A short name for the dataset. Will be used for example
-    as tab title.
-
-- slice_unit (str): The units for the values in 'slice_keys'. Will be
-    displayed in tab. If not provided, the default label from settings
-    will be used instead.
-
-- slice_key_label (str): The label for the 'slice_keys'. Will be
-    displayed in tab (usually 'Binding Energy' or 'Time'). If not
-    provided, the default label from settings will be used instead.
-
-
-All other key-value pairs are are stored and can be displayed (not yet)
-as meta data but don't serve any purpose yet.
+All additional key-value pairs will be stored as generic metadata.
