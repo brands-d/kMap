@@ -11,8 +11,6 @@ cubefile = open('pentacene_HOMO.cube').read()  # read cube-file from file
 homo     = Orbital(cubefile,        # compute 3D Fourier transform (see Eqs. 6-11)  
                    dk3D=0.15)       # with a desired k-spacing of dkx = dky = dkz = 0.15 1/Angstroem                           
 
-fig, _ax = plt.subplots(2,2)         # create empty figure with 2 x 2 axes
-ax       = _ax.flatten()
 
 # plot Figure 5(c): HOMO of pentacene with tilt angles of theta = 0°, 10°, 20° and 30°
 thetas = [0, 10, 20, 30]

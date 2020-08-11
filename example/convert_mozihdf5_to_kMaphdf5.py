@@ -4,7 +4,6 @@ import numpy as np
 # this script demonstrates how the hdf5-files created by Mozi can be converted to 
 # the format used in kMap.py 
 
-
 def mozi_to_kmap(mozi_h5_file,kmap_h5_file,
                  alias=None,          # A short alternative to 'name'. Can not be an empty string.
                  axis1type='+BE'):    # choose between '+BE' or '-BE' (binding energy) or 'E_kin' (kinetic energy)
@@ -30,7 +29,6 @@ def mozi_to_kmap(mozi_h5_file,kmap_h5_file,
     elif axis1type == 'E_kin':   # kinetic energy 
         axis_1_range = [fermiLevel-list_BE_real[0], fermiLevel-list_BE_real[-1]] 
 
-    
     # write header info in new hdf5
     new.create_dataset('name',        data=filenumber)
     if alias != None: new.create_dataset('alias',data=alias)
@@ -56,8 +54,7 @@ def mozi_to_kmap(mozi_h5_file,kmap_h5_file,
         else:
             i = nx - count - 1
 
-        kxkyslice = old['data_kmaps'][BE][()]
-        data[i,:,:] = kxkyslice
+        data[i,:,:] = old['data_kmaps'][BE][()]
 
     new.create_dataset('data',data=data,
                         dtype='f8',compression='gzip', compression_opts=9)
@@ -68,9 +65,9 @@ def mozi_to_kmap(mozi_h5_file,kmap_h5_file,
 
 
 
-mozi_to_kmap('kmaps_6584_BEstep0.02_kStep0.02.hdf5','6584.hdf5',
+mozi_to_kmap('kmaps_3254_BEstep0.1.hdf5','example4.hdf5',
              axis1type='E_kin',
-             alias='M3-feature PTCDA/Ag(110)')
+             alias='multilayer 5A HOMO')
 
 
 
