@@ -13,9 +13,9 @@ from kmap.library.orbital import Orbital
 from kmap.library.sliceddata import SlicedData
 
 # Load experimental data-file and choose a constant-binding energy slice
-exp_data = SlicedData.init_from_hdf5('example4.hdf5') 
-exp_kmap = exp_data.slice_from_index(5)   # returns PlotData object
-kx       = np.arange(-3.0,3.0,0.05)
+exp_data = SlicedData.init_from_hdf5('example4_3271.hdf5') 
+exp_kmap = exp_data.slice_from_index(3)   # returns PlotData object
+kx       = np.arange(0,3.0,0.05)
 ky       = kx
 exp_kmap.interpolate(kx,ky,update=True)
 
