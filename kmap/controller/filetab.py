@@ -1,31 +1,33 @@
+# Python Imports
 from os.path import abspath
+
+# PyQt5 Imports
+from PyQt5 import uic
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtGui import QTextDocument
-from kmap.ui.filetab_ui import FileViewerTabUI, FileEditorTabUI
-from kmap.model.filetab_model import FileViewerTabModel, FileEditorTabModel
+
+# Own Imports
 from kmap import __directory__
+from kmap.config.config import config
 
 
-class FileViewerTab(FileViewerTabUI):
+class FileTab(QWidget):
 
     def __init__(self, path, richText=False):
 
+        super(FileTab, self).__init__()
+
         self.path = path
         self.richText = richText
-        self._set_model()
-
-        FileViewerTabUI.__init__(self)
-
-        self.reload_text()
-        self.refresh_display()
 
     def reload_text(self):
 
-        self.model.read_file(self.path)
+        with open(self.path, 'r') as file:
+            text = file.read()
 
-    def refresh_display(self):
+        self.refresh_display(text)
 
-        text = self.model.text
+    def refresh_display(self, text):
 
         if self.richText:
             self.display.setHtml(text)
@@ -40,22 +42,66 @@ class FileViewerTab(FileViewerTabUI):
 
         self.display.find(self.line_edit.text(), QTextDocument.FindBackward)
 
-    def _set_model(self):
+    def _setup(self):
 
-        self.model = FileViewerTabModel()
+        label = self.title.text()
+        self.title.setText(label + self.path)
+
+    def _connect(self):
+
+        self.find_next_button.clicked.connect(self.find_next)
+        self.find_prev_button.clicked.connect(self.find_prev)
+        self.reload_button.clicked.connect(self.reload_text)
 
 
-class FileEditorTab(FileViewerTab, FileEditorTabUI):
+# Load .ui File
+UI_file = __directory__ + '/ui/fileviewertab.ui'
+FileViewerTab_UI, _ = uic.loadUiType(UI_file)
+
+
+class FileViewerTab(FileTab, FileViewerTab_UI):
+
+    def __init__(self, path, richText=False):
+
+        # Setup GUI
+        super(FileViewerTab, self).__init__(path, richText=richText)
+        self.setupUi(self)
+        self._connect()
+
+        self._setup()
+        self.reload_text()
+
+
+# Load .ui File
+UI_file = __directory__ + '/ui/fileeditortab.ui'
+FileEditorTab_UI, _ = uic.loadUiType(UI_file)
+
+
+class FileEditorTab(FileTab, FileEditorTab_UI):
 
     def __init__(self, path):
 
-        super().__init__(path, richText=False)
+        # Setup GUI
+        super(FileEditorTab, self).__init__(path, richText=False)
+        self.setupUi(self)
+        self._connect()
 
-    def _set_model(self):
-
-        self.model = FileEditorTabModel()
+        self._setup()
+        self.reload_text()
 
     def save(self):
 
-        text = self.display.toPlainText()
-        self.model.save_file(text, self.path)
+        if self.richText:
+            text = self.display.toHtml()
+
+        else:
+            text = self.display.toPlainText()
+
+        with open(self.path, 'wt') as file:
+            file.write(text)
+
+    def _connect(self):
+
+        FileTab._connect(self)
+
+        self.save_button.clicked.connect(self.save)

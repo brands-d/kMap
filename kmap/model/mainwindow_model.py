@@ -15,5 +15,3 @@ class MainWindowModel():
 
         return title, text
 
-    def reload_settings(self):
-        pass

@@ -192,7 +192,7 @@ class MainWindow(MainWindowUI):
     def reload_settings(self):
         # Reload the settings
 
-        self.model.reload_settings()
+        config.setup()
 
     def open_readme(self):
         # Open a README page

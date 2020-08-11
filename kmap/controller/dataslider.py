@@ -58,7 +58,10 @@ class DataSlider(QWidget, DataSlider_UI):
         self._update_spinbox_silently(index)
         self._update_slice_label()
 
-        self.value_changed.emit(index, axis)
+        # Index could have changed if new axis is smaller than old one
+        new_index = self.slider.sliderPosition()
+        
+        self.value_changed.emit(new_index, axis)
 
     def _update_slice_label(self):
 

@@ -1,17 +1,36 @@
+# Python Imports
+import logging
+
+# PyQt5 Imports
+from PyQt5 import uic
 from PyQt5.QtWidgets import QWidget
-from kmap.ui.sliceddatatab_ui import SlicedDataTabUI
-from kmap.library.misc import get_ID_from_tab_text
+
+# Own Imports
+from kmap import __directory__
 from kmap.model.sliceddatatab_model import SlicedDataTabModel
 from kmap.controller.matplotlibwindow import MatplotlibWindow
+from kmap.controller.dataslider import DataSlider
+from kmap.controller.crosshair import CrosshairAnnulus
+from kmap.controller.pyqtgraphplot import PyQtGraphPlot
+from kmap.controller.colormap import Colormap
+from kmap.library.misc import get_ID_from_tab_text
+
+# Load .ui File
+UI_file = __directory__ + '/ui/sliceddatatab.ui'
+SlicedDataTab_UI, _ = uic.loadUiType(UI_file)
 
 
-class SlicedDataTab(SlicedDataTabUI):
+class SlicedDataTab(QWidget, SlicedDataTab_UI):
 
     def __init__(self, path):
 
         self.model = SlicedDataTabModel(path)
 
-        SlicedDataTabUI.__init__(self)
+        # Setup GUI
+        super(SlicedDataTab, self).__init__()
+        self.setupUi(self)
+        self._setup()
+        self._connect()
 
         self.change_slice(0, 0)
 
@@ -39,7 +58,6 @@ class SlicedDataTab(SlicedDataTabUI):
         data = self.model.change_slice(index, axis)
 
         self.plot_item.plot(data)
-        # self.update()
 
     def crosshair_changed(self):
 
@@ -52,3 +70,19 @@ class SlicedDataTab(SlicedDataTabUI):
         title = self.get_title()
 
         self.window = MatplotlibWindow(data, title)
+
+    def _setup(self):
+
+        self.slider = DataSlider(self.model.data)
+        self.crosshair = CrosshairAnnulus(self.plot_item)
+        self.colormap = Colormap(self.plot_item)
+
+        layout = self.scroll_area.widget().layout()
+        layout.insertWidget(0, self.slider)
+        layout.insertWidget(1, self.colormap)
+        layout.insertWidget(2, self.crosshair)
+
+    def _connect(self):
+
+        self.crosshair.crosshair_changed.connect(self.crosshair_changed)
+        self.slider.value_changed.connect(self.change_slice)
