@@ -32,7 +32,8 @@ class SlicedDataTab(QWidget, SlicedDataTab_UI):
         self._setup()
         self._connect()
 
-        self.change_slice(0, 0)
+        self.change_axis(0)
+        self.change_slice(0)
 
     def get_title(self):
 
@@ -53,10 +54,22 @@ class SlicedDataTab(QWidget, SlicedDataTab_UI):
 
         return title
 
-    def change_slice(self, index, axis):
+    def change_slice(self, index):
 
+        axis = self.slider.get_axis()
         data = self.model.change_slice(index, axis)
 
+        self.plot_item.plot(data)
+
+    def change_axis(self, axis):
+
+        # 'axes' is a copy of all axes except the one with index 'axis'
+        axes = [a for i, a in enumerate(self.model.data.axes) if i != axis]
+
+        index = self.slider.get_index()
+        data = self.model.change_slice(index, axis)
+
+        self.plot_item.set_label(*axes)
         self.plot_item.plot(data)
 
     def crosshair_changed(self):
@@ -85,4 +98,5 @@ class SlicedDataTab(QWidget, SlicedDataTab_UI):
     def _connect(self):
 
         self.crosshair.crosshair_changed.connect(self.crosshair_changed)
-        self.slider.value_changed.connect(self.change_slice)
+        self.slider.slice_changed.connect(self.change_slice)
+        self.slider.axis_changed.connect(self.change_axis)

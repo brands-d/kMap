@@ -6,7 +6,7 @@ from PyQt5 import uic
 from PyQt5.QtWidgets import QWidget
 
 # Third Party Imports
-from pyqtgraph import ImageView, PlotItem
+from pyqtgraph import ImageView, PlotItem, AxisItem
 
 # Own Imports
 from kmap.model.pyqtgraphplot_model import PyQtGraphPlotModel
@@ -20,7 +20,7 @@ class PyQtGraphPlot(ImageView):
         # Setup GUI
         super(PyQtGraphPlot, self).__init__(view=PlotItem())
         self._setup()
-        
+
         self.model = PyQtGraphPlotModel(plot_data)
 
         self.refresh_plot()
@@ -50,15 +50,15 @@ class PyQtGraphPlot(ImageView):
 
         return self.model.plot_data
 
-    def set_label(self, x_label, x_units, y_label, y_units):
+    def set_label(self, x, y):
 
         color = config.get_key('pyqtgraph', 'axis_color')
-        size = config.get_key('pyqtgraph', '14pt')
+        size = config.get_key('pyqtgraph', 'axis_size')
 
-        x_axis = pg.AxisItem('bottom', text=x_label, units=x_units,
-                             **{'color': color, 'font-size': size})
-        y_axis = pg.AxisItem('left', text=y_label, units=y_units,
-                             **{'color': color, 'font-size': size})
+        x_axis = AxisItem('bottom', text=x.label, units=x.units,
+                          **{'color': color, 'font-size': size})
+        y_axis = AxisItem('left', text=y.label, units=y.units,
+                          **{'color': color, 'font-size': size})
 
         if config.get_key('pyqtgraph', 'show_axis_label') != 'True':
             x_axis.showLabel(True)
@@ -68,7 +68,7 @@ class PyQtGraphPlot(ImageView):
             x_axis.showLabel(True)
             y_axis.showLabel(True)
 
-        self.plot_item.view.setAxisItems({'bottom': x_axis, 'left': y_axis})
+        self.view.setAxisItems({'bottom': x_axis, 'left': y_axis})
 
     def _setup(self):
 

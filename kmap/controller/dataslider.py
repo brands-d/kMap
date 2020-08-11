@@ -6,7 +6,6 @@ from PyQt5.QtWidgets import QWidget
 # Own Imports
 from kmap import __directory__
 from kmap.config.config import config
-# from kmap.model.dataslider_model import DataSliderModel
 
 # Load .ui File
 UI_file = __directory__ + '/ui/dataslider.ui'
@@ -15,7 +14,8 @@ DataSlider_UI, _ = uic.loadUiType(UI_file)
 
 class DataSlider(QWidget, DataSlider_UI):
 
-    value_changed = pyqtSignal(int, int)
+    slice_changed = pyqtSignal(int)
+    axis_changed = pyqtSignal(int)
 
     def __init__(self, data):
 
@@ -44,11 +44,9 @@ class DataSlider(QWidget, DataSlider_UI):
         else:
             index = self.slider.sliderPosition()
 
-        axis = self.combobox.currentIndex()
-
         self._update_slice_label()
 
-        self.value_changed.emit(index, axis)
+        self.slice_changed.emit(index)
 
     def change_axis(self, axis):
 
@@ -58,10 +56,19 @@ class DataSlider(QWidget, DataSlider_UI):
         self._update_spinbox_silently(index)
         self._update_slice_label()
 
-        # Index could have changed if new axis is smaller than old one
-        new_index = self.slider.sliderPosition()
-        
-        self.value_changed.emit(new_index, axis)
+        self.axis_changed.emit(axis)
+
+    def get_index(self):
+
+        index = self.slider.sliderPosition()
+
+        return index
+
+    def get_axis(self):
+
+        axis = self.combobox.currentIndex()
+
+        return axis
 
     def _update_slice_label(self):
 
