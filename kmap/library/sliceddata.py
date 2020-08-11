@@ -90,7 +90,7 @@ class SlicedData(AbstractData):
                     data = file[key][()]
 
                 else:
-                    meta_data.update({key: str(f[key][()])})
+                    meta_data.update({key: str(file[key][()])})
 
         axis_1 = [axis_1_label, axis_1_units, axis_1_range]
         axis_2 = [axis_2_label, axis_2_units, axis_2_range]

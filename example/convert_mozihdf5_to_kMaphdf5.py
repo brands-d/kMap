@@ -6,7 +6,7 @@ import numpy as np
 
 
 def mozi_to_kmap(mozi_h5_file,kmap_h5_file,
-                 name=None,           # if None than 'filenumber' from old hdf5 is taken, otherwise name must be a string
+                 alias=None,          # A short alternative to 'name'. Can not be an empty string.
                  axis1type='+BE'):    # choose between '+BE' or '-BE' (binding energy) or 'E_kin' (kinetic energy)
 
     old     = h5py.File(mozi_h5_file,'r')  # open old hdf5 file
@@ -21,8 +21,6 @@ def mozi_to_kmap(mozi_h5_file,kmap_h5_file,
     list_BE_real = old['list_BE_real'][()]
     list_BE      = old['list_BE'][()]
 
-    if name == None: name = filenumber
-
     if   axis1type == '+BE':   # binding energy with positive sign convention
         axis_1_range = [ list_BE_real[-1], list_BE_real[0]]      
     
@@ -34,7 +32,8 @@ def mozi_to_kmap(mozi_h5_file,kmap_h5_file,
 
     
     # write header info in new hdf5
-    new.create_dataset('name',        data=name)
+    new.create_dataset('name',        data=filenumber)
+    if alias != None: new.create_dataset('alias',data=alias)
     new.create_dataset('axis_1_label',data=axis1type)
     new.create_dataset('axis_2_label',data='kx')
     new.create_dataset('axis_3_label',data='ky')
@@ -69,7 +68,9 @@ def mozi_to_kmap(mozi_h5_file,kmap_h5_file,
 
 
 
-mozi_to_kmap('kmaps_6584_BEstep0.02_kStep0.02.hdf5','6584.hdf5',axis1type='E_kin')
+mozi_to_kmap('kmaps_6584_BEstep0.02_kStep0.02.hdf5','6584.hdf5',
+             axis1type='E_kin',
+             alias='M3-feature PTCDA/Ag(110)')
 
 
 
