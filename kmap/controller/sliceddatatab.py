@@ -60,7 +60,8 @@ class SlicedDataTab(QWidget, SlicedDataTab_UI):
         data = self.model.change_slice(index, axis)
 
         self.plot_item.plot(data)
-
+        self.crosshair.update_label()
+        
     def change_axis(self, axis):
 
         # 'axes' is a copy of all axes except the one with index 'axis'

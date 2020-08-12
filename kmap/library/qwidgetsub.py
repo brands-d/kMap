@@ -33,6 +33,7 @@ class AngleSpinBox(QDoubleSpinBox):
         self.setDecimals(1)
         self.setSingleStep(1)
         self.setKeyboardTracking(False)
+        self.setAlignment(Qt.AlignHCenter)
         self.setObjectName(objectname)
 
 
@@ -48,6 +49,7 @@ class WeightSpinBox(QDoubleSpinBox):
         self.setDecimals(1)
         self.setSingleStep(0.1)
         self.setKeyboardTracking(False)
+        self.setAlignment(Qt.AlignHCenter)
         self.setObjectName('weight')
 
 

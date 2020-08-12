@@ -107,10 +107,10 @@ class CrosshairROIBase(CrosshairBase):
                 intensity = np.nansum(cut)
 
         if abs(intensity) > 1000:
-            self.area_value_label.setText('%.2f  ka.u.' % (intensity / 1000))
+            self.area_value_label.setText('%.2fk' % (intensity / 1000))
 
         else:
-            self.area_value_label.setText('%.2f  a.u.' % intensity)
+            self.area_value_label.setText('%.2f' % intensity)
 
     def _set_model(self):
 

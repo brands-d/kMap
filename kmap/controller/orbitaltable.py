@@ -93,7 +93,7 @@ class OrbitalTable(QWidget, OrbitalTable_UI):
 
     def _setup(self):
 
-        widths = [40, 40, 0, 90, 75, 75, 75, 45]
+        widths = [40, 40, 0, 90, 80, 80, 80, 45]
 
         for col, width in enumerate(widths):
             self.table.setColumnWidth(col, width)

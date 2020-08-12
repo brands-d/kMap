@@ -52,10 +52,10 @@ class CrosshairBase(QWidget):
                 intensity = np.nansum(cut)
 
         if abs(intensity) > 1000:
-            self.point_value_label.setText('%.2f  ka.u.' % (intensity / 1000))
+            self.point_value_label.setText('%.2fk' % (intensity / 1000))
 
         else:
-            self.point_value_label.setText('%.2f  a.u.' % intensity)
+            self.point_value_label.setText('%.2f' % intensity)
 
         x = self.model.x
         y = self.model.y
