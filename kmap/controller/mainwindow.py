@@ -1,23 +1,38 @@
+# Python Imports
 import logging
 import traceback
-from PyQt5.QtWidgets import QFileDialog, QMessageBox
-from kmap.ui.mainwindow_ui import MainWindowUI
+
+# PyQt5 Imports
+from PyQt5 import uic
+from PyQt5.QtGui import QIcon, QKeySequence
+from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox
+
+# Own Imports
+from kmap import __directory__, __version__
 from kmap.controller.sliceddatatab import SlicedDataTab
 from kmap.controller.orbitaldatatab import OrbitalDataTab
 from kmap.controller.filetab import FileViewerTab, FileEditorTab
 from kmap.controller.databasewindow import DatabaseWindow
 from kmap.model.mainwindow_model import MainWindowModel
 from kmap.config.config import config
-from kmap import __directory__, __version__
 
 
-class MainWindow(MainWindowUI):
+# Load .ui File
+UI_file = __directory__ + '/ui/mainwindow.ui'
+MainWindow_UI, _ = uic.loadUiType(UI_file)
+
+
+class MainWindow(QMainWindow, MainWindow_UI):
 
     def __init__(self):
 
-        self.model = MainWindowModel(self)
+        # Setup GUI
+        super(MainWindow, self).__init__()
+        self.setupUi(self)
+        self._setup()
+        self._connect()
 
-        MainWindowUI.__init__(self)
+        self.model = MainWindowModel(self)
 
         self.open_welcome()
 
@@ -234,3 +249,67 @@ class MainWindow(MainWindowUI):
 
         index = self.tab_widget.addTab(tab, title)
         self.tab_widget.setCurrentIndex(index)
+
+    def _setup(self):
+
+        self._set_misc()
+        self._initialize_shortcuts()
+
+    def _set_misc(self):
+
+        x = int(config.get_key('app', 'x'))
+        y = int(config.get_key('app', 'y'))
+        w = int(config.get_key('app', 'w'))
+        h = int(config.get_key('app', 'h'))
+        self.setGeometry(x, y, h, w)
+        if config.get_key('app', 'fullscreen') == 'True':
+            self.showMaximized()
+        self.setWindowTitle('kMap')
+        self.setWindowIcon(
+            QIcon(__directory__ + '/resources/images/icon.png'))
+        self.show()
+
+    def _initialize_shortcuts(self):
+
+        actions = [self.load_hdf5_action, self.show_matplotlib,
+                   self.log_file_action, self.load_cube_online_action,
+                   self.load_cube_file_action]
+
+        alias = ['load_hdf5', 'show_matplotlib', 'open_log',
+                 'load_cube_online', 'load_cube_file']
+
+        for action, alias in zip(actions, alias):
+            shortcut = config.get_key('shortcut', alias, file='shortcut')
+            action.setShortcut(QKeySequence(shortcut))
+
+    def _connect(self):
+
+        # Tab closed
+        self.tab_widget.tabCloseRequested.connect(self.close_tab)
+
+        # File menu
+        self.load_hdf5_action.triggered.connect(self.load_hdf5_files)
+        self.load_cube_file_action.triggered.connect(
+            self.load_cube_files_locally)
+        self.load_cube_online_action.triggered.connect(
+            self.open_database_browser)
+        self.log_file_action.triggered.connect(self.open_log_file)
+        self.mod_log_file_action.triggered.connect(self.open_mod_log_file)
+        self.show_matplotlib.triggered.connect(self.open_in_matplotlib)
+
+        # Edit menu
+        self.open_sim_tab_action.triggered.connect(self.open_orbital_data_tab)
+
+        # Preferences menu
+        self.general_action.triggered.connect(self.open_general_settings)
+        self.logging_action.triggered.connect(self.open_logging_settings)
+        self.general_default_action.triggered.connect(
+            self.open_general_default_settings)
+        self.logging_default_action.triggered.connect(
+            self.open_logging_default_settings)
+        self.settings_action.triggered.connect(self.reload_settings)
+
+        # Help menu
+        self.readme_action.triggered.connect(self.open_readme)
+        self.welcome_action.triggered.connect(self.open_welcome)
+        self.about_action.triggered.connect(self.open_about)
