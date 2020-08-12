@@ -18,8 +18,8 @@ class PyQtGraphPlot(ImageView):
     def __init__(self, *args, plot_data=None, **kwargs):
 
         # Setup GUI
-        self.plt = PlotItem()
-        super(PyQtGraphPlot, self).__init__(view=self.plt)
+        self.plot_view = PlotItem()
+        super(PyQtGraphPlot, self).__init__(view=self.plot_view)
         self._setup()
 
         self.model = PyQtGraphPlotModel(plot_data)
@@ -48,13 +48,11 @@ class PyQtGraphPlot(ImageView):
         self.setImage(image, autoRange=True,
                       autoLevels=True, pos=pos, scale=scale)
 
-        self.plt.setAspectLocked(False)
         # Fit Range
-        ''' !!! DOESN'T WORK !!!
         padding = float(config.get_key('pyqtgraph', 'padding'))
         x_range, y_range = range_
         self.view.setRange(xRange=x_range, yRange=y_range,
-                           update=True, disableAutoRange=True)'''
+                           update=True, padding=padding)
 
     def get_plot_data(self):
 
@@ -86,3 +84,4 @@ class PyQtGraphPlot(ImageView):
         self.view.hideButtons()
         self.ui.roiBtn.hide()
         self.ui.menuBtn.hide()
+        self.plot_view.setAspectLocked(False)
