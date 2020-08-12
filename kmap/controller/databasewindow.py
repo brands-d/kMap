@@ -19,11 +19,12 @@ DatabaseWindow_UI, _ = uic.loadUiType(UI_file)
 class DatabaseWindow(QMainWindow, DatabaseWindow_UI):
 
     files_chosen = pyqtSignal(list)
-
+    
     def __init__(self):
 
         # Setup GUI
         super(DatabaseWindow, self).__init__()
+        self.setAttribute(Qt.WA_DeleteOnClose, True)
         self.setupUi(self)
         self._setup_tree()
         self._connect()
@@ -142,7 +143,7 @@ class DatabaseWindow(QMainWindow, DatabaseWindow_UI):
     def closeEvent(self, event):
 
         self.files_chosen.emit(self.URLs)
-
+        self.deleteLater()
         event.accept()
 
     def _setup_tree(self):

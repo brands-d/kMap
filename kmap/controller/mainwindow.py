@@ -1,6 +1,8 @@
 # Python Imports
 import logging
 import traceback
+import sys
+import gc
 
 # PyQt5 Imports
 from PyQt5 import uic
@@ -82,7 +84,6 @@ class MainWindow(QMainWindow, MainWindow_UI):
     def open_database_browser(self):
 
         self.database = DatabaseWindow()
-
         self.database.files_chosen.connect(self.load_cube_files_online)
 
     def load_cube_files_online(self, URLs):
@@ -282,6 +283,8 @@ class MainWindow(QMainWindow, MainWindow_UI):
             shortcut = config.get_key('shortcut', alias, file='shortcut')
             action.setShortcut(QKeySequence(shortcut))
 
+        self.ref_action.setShortcut(QKeySequence('Ctrl+r'))
+
     def _connect(self):
 
         # Tab closed
@@ -313,3 +316,18 @@ class MainWindow(QMainWindow, MainWindow_UI):
         self.readme_action.triggered.connect(self.open_readme)
         self.welcome_action.triggered.connect(self.open_welcome)
         self.about_action.triggered.connect(self.open_about)
+
+        # DEBUG
+        self.ref_action.triggered.connect(self.print_refs)
+
+
+    def print_refs(self):
+        pass
+        '''
+        gc.collect()
+        print(sys.getrefcount(self.database))
+        print(len(gc.get_referrers(self.database)))
+        referrers = gc.get_referrers(self.database)
+        for referrer in referrers:
+            print(referrer)'''
+

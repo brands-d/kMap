@@ -116,10 +116,17 @@
     <addaction name="welcome_action"/>
     <addaction name="about_action"/>
    </widget>
+   <widget class="QMenu" name="DEBUG_menu">
+    <property name="title">
+     <string>DEBUG</string>
+    </property>
+    <addaction name="ref_action"/>
+   </widget>
    <addaction name="file_menu"/>
    <addaction name="edit_menu"/>
    <addaction name="settings_menu"/>
    <addaction name="help_menu"/>
+   <addaction name="DEBUG_menu"/>
   </widget>
   <action name="load_hdf5_action">
    <property name="text">
@@ -194,6 +201,11 @@
   <action name="about_action">
    <property name="text">
     <string>About kMap</string>
+   </property>
+  </action>
+  <action name="ref_action">
+   <property name="text">
+    <string>Print References</string>
    </property>
   </action>
  </widget>
