@@ -10,7 +10,7 @@ from kmap import __directory__
 from kmap.model.sliceddatatab_model import SlicedDataTabModel
 from kmap.controller.matplotlibwindow import MatplotlibWindow
 from kmap.controller.dataslider import DataSlider
-from kmap.controller.crosshair import CrosshairAnnulus
+from kmap.controller.crosshairannulus import CrosshairAnnulus
 from kmap.controller.pyqtgraphplot import PyQtGraphPlot
 from kmap.controller.colormap import Colormap
 from kmap.library.misc import get_ID_from_tab_text
@@ -80,9 +80,9 @@ class SlicedDataTab(QWidget, SlicedDataTab_UI):
     def display_in_matplotlib(self):
 
         data = self.model.displayed_plot_data
-        title = self.get_title()
+        LUT = self.plot_item.get_LUT()
 
-        self.window = MatplotlibWindow(data)
+        self.window = MatplotlibWindow(data, LUT=LUT)
 
     def _setup(self):
 

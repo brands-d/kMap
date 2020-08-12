@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import (
     QWidget, QHBoxLayout, QVBoxLayout, QSpacerItem, QScrollArea)
 from kmap.ui.abstract_ui import AbstractUI
 from kmap.controller.pyqtgraphplot import PyQtGraphPlot
-from kmap.controller.crosshair import CrosshairAnnulus
+#from kmap.controller.crosshair import CrosshairAnnulus
 from kmap.controller.colormap import Colormap
 from kmap.controller.polarization import Polarization
 from kmap.controller.orbitaltable import OrbitalTable

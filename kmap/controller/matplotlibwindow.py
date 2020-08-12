@@ -11,6 +11,7 @@ from matplotlib.ticker import AutoMinorLocator
 from matplotlib.backends.backend_qt5agg import (FigureCanvas,
                                                 NavigationToolbar2QT)
 from matplotlib.figure import Figure
+from matplotlib.colors import LinearSegmentedColormap
 
 # Own Imports
 from kmap import __directory__
@@ -24,9 +25,10 @@ MatplotlibWindow_UI, _ = uic.loadUiType(UI_file)
 
 class MatplotlibWindow(QMainWindow, MatplotlibWindow_UI):
 
-    def __init__(self, plot_data):
+    def __init__(self, plot_data, LUT=None):
 
         self.model = MatplotlibWindowModel(plot_data)
+        self.LUT = LinearSegmentedColormap.from_list('cm_user', LUT, N=100)
 
         # Setup GUI
         super(MatplotlibWindow, self).__init__()
@@ -46,7 +48,7 @@ class MatplotlibWindow(QMainWindow, MatplotlibWindow_UI):
 
         x, y, image = self.model.x, self.model.y, self.model.image
 
-        self.plot = self.axes.pcolormesh(x, y, image)
+        self.plot = self.axes.pcolormesh(x, y, image, cmap=self.LUT)
 
     def update_x_range(self, range_):
 

@@ -59,6 +59,10 @@ class AspectWidget(QWidget):
 
         super().__init__(*args, **kwargs)
 
+    def set_ratio(self, ratio):
+
+        self.ratio = ratio
+
     def heightForWidth(self, width):
 
         return int(width / self.ratio)
