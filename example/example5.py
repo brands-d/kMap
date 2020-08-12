@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from lmfit import Minimizer, Parameters, report_fit
 
-# for local imports include parent path
+# for local imports include parent path for import of kMap classes
 import os,sys,inspect
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -36,7 +36,7 @@ for name in names:
 
 params.add('background',value=1, min=0)   # also use constant background as fit parameter
 
-# Load experimental data-file
+# Load experimental data-file: ARPES data of M3-feature of PTCDA/Ag(110)
 exp_data = SlicedData.init_from_hdf5('example5_6584.hdf5') 
 
 # define function to be minimized
@@ -62,9 +62,14 @@ for i in range(nslice):
         pDOS[i,j] = pdir[p]
 #    report_fit(result)
 
-fig,ax = plt.subplots()
+# plot results: weights of orbitals (pDOS) vs. kinetic energy
+fig,ax  = plt.subplots()
+x       = exp_data.axes[0].axis
+x_label = exp_data.axes[0].label + '(' + exp_data.axes[0].units + ')'
 for j,p in enumerate(names):
-    ax.plot(range(nslice),pDOS[:,j],label=p)
+    ax.plot(x,pDOS[:,j],label=p)
 plt.legend()
+plt.xlabel(x_label)
+plt.xlabel('weights (arb. units)')
 plt.show()
 

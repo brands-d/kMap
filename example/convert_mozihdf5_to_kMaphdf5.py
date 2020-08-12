@@ -29,6 +29,17 @@ def mozi_to_kmap(mozi_h5_file,kmap_h5_file,
     elif axis1type == 'E_kin':   # kinetic energy 
         axis_1_range = [fermiLevel-list_BE_real[0], fermiLevel-list_BE_real[-1]] 
 
+    meta_data = {'filenumber'    : old['filenumber'][()],
+                 'fermiLevel'    : old['fermiLevel'][()],
+                 'kStepSize'     : old['kStepSize'][()],
+                 'arcwidth'      : old['arcwidth'][()],
+                 'polarshift'    : old['polarshift'][()],
+                 'rotation'      : old['rotation'][()],
+                 'negPolar_avgs' : old['negPolar_avgs'][()],
+                 'sym_anglemin'  : old['sym_anglemin'][()],
+                 'sym_anglemax'  : old['sym_anglemax'][()],
+                 'symmode'       : old['symmode'][()]}
+           
     # write header info in new hdf5
     new.create_dataset('name',        data=filenumber)
     if alias != None: new.create_dataset('alias',data=alias)
@@ -41,6 +52,8 @@ def mozi_to_kmap(mozi_h5_file,kmap_h5_file,
     new.create_dataset('axis_1_range',data=axis_1_range)
     new.create_dataset('axis_2_range',data=[list_kAxis[0,0],list_kAxis[0,-1]])
     new.create_dataset('axis_3_range',data=[list_kAxis[0,0],list_kAxis[0,-1]])
+    for key in meta_data:
+        new.create_dataset(key,data=meta_data[key])
 
     # extract data from old hdf5 and write 3D-array to new hdf5
     nx    = len(list_BE)
@@ -65,7 +78,7 @@ def mozi_to_kmap(mozi_h5_file,kmap_h5_file,
 
 
 
-mozi_to_kmap('kmaps_3271_BEstep0.1.hdf5','example4_3271.hdf5',
+mozi_to_kmap('kmaps_6584_BEstep0.02_kStep0.02.hdf5','example5_6584.hdf5',
              axis1type='E_kin',
              alias='multilayer 5A HOMO')
 

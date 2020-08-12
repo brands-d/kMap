@@ -37,7 +37,7 @@ def chi2_function(params):
 
     # simulate momentum map for given theta
     sim_kmap = homo.get_kmap(E_kin=28,     
-                   phi=90,theta=theta,psi=90,  # Euler angles 
+                   phi=90,theta=theta.value,psi=90,  # Euler angles 
                    Ak_type='toroid',           # toroidal analyzer 
                    polarization='p',           # p-polarized light
                    alpha=60,                   # angle of incidence

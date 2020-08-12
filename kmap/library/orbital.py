@@ -40,6 +40,7 @@ class Orbital():
 
         self.compute_3DFT(dk3D, value)
         self.kmap = {}
+        self.Ak   = {}
 
     def get_kmap(self, E_kin=30, dk=0.03, phi=0, theta=0, psi=0,
                  Ak_type='no', polarization='p', alpha=60, beta=90,
@@ -66,29 +67,23 @@ class Orbital():
             (PlotData): PlotData containing the kmap slice.
         """
 
-        # Check if E_kin or dk has changed and new hemispherical cut
-        # must be computed
-        if 'E_kin' in self.kmap:
-            if self.kmap['E_kin'] != E_kin or self.kmap['dk'] != dk:
-                new_E_kin = True
+        # Compute new hemispherical cut if E_kin or dk has changed
+        new_cut = self.check_new_cut(E_kin, dk)
+        if new_cut: self.set_kinetic_energy(E_kin, dk)
 
-            else:
-                new_E_kin = False
-        else:
-            new_E_kin = True
+        # Rotate molecule (that is, rotate hemisphere) if angles have changed
+        new_orientation = self.check_new_orientation(phi, theta, psi)
+        if new_orientation: self.set_orientation(phi, theta, psi)
 
-        if new_E_kin:
-            self.set_kinetic_energy(E_kin, dk)
+        # symmetrize kmap if necessary
+        new_symmetrization = self.check_new_symmetrization(symmetrization)
+        if new_symmetrization or new_orientation:
+            self.set_symmetry(symmetrization)
 
-        # Rotate molecule (that is, rotate hemisphere)
-        self.set_orientation(phi, theta, psi)
-
-        # Compute polarization factor
-        self.set_polarization(Ak_type, polarization, alpha, beta,
-                              gamma)
-
-        # symmetrize kmap
-        self.set_symmetry(symmetrization)
+        # Compute polarization factor if parameters have changed
+        new_Ak  = self.check_new_Ak(Ak_type, polarization, alpha, beta, gamma)
+        if new_Ak: self.set_polarization(Ak_type, polarization, 
+                                         alpha, beta,gamma)
 
         return PlotData(self.Ak['data']*self.kmap['data'], 
                         self.kmap['krange'])
@@ -118,9 +113,21 @@ class Orbital():
         nky = self.psi['ny'] + pad_y
         nkz = self.psi['nz'] + pad_z
 
+        # Set up k-grids for 3D-FT
+        kx = self.set_3Dkgrid(nkx, self.psi['dx'])
+        ky = self.set_3Dkgrid(nky, self.psi['dy'])
+        kz = self.set_3Dkgrid(nkz, self.psi['dz'])
+
         # Compute 3D FFT
         psik = np.fft.fftshift(np.fft.fftn(self.psi['data'],
                                            s=[nkx, nky, nkz]))
+
+        # properly normalize wave function in momentum space
+        dkx, dky, dkz = kx[1]-kx[0], ky[1]-ky[0], kz[1]-kz[0]
+        factor        = dkx*dky*dkz*np.sum(np.abs(psik)**2)
+        psik         /= np.sqrt(factor)
+
+        # decide whether real, imaginry part, absolute value, or squared absolute value is used
         if value == 'real':
             psik = np.real(psik)
 
@@ -133,10 +140,6 @@ class Orbital():
         else:
             psik = np.abs(psik)**2
 
-        # Set up k-grids for 3D-FT
-        kx = self.set_3Dkgrid(nkx, self.psi['dx'])
-        ky = self.set_3Dkgrid(nky, self.psi['dy'])
-        kz = self.set_3Dkgrid(nkz, self.psi['dz'])
 
         # Define interpolating function to be used later for kmap
         # computation
@@ -164,7 +167,6 @@ class Orbital():
         kyi = np.linspace(-kmax, +kmax, num_k)
         krange = ((kxi[0], kxi[-1]), (kyi[0], kyi[-1]))
         KX, KY = np.meshgrid(kxi, kyi, indexing='xy')
-        '''Throws warning?'''
         KZ = np.sqrt(kmax**2 - KX**2 - KY**2)
         kxkykz = list(map(lambda a, b, c: (a, b, c),
                           KX.flatten(), KY.flatten(), KZ.flatten()))
@@ -175,6 +177,21 @@ class Orbital():
                      'KX': KX, 'KY': KY, 'KZ': KZ,
                      'phi': 0, 'theta': 0, 'psi': 0,
                      'data': data}
+
+    def check_new_cut(self, E_kin, dk):
+
+        eps = 1e-10
+        if 'E_kin' in self.kmap:
+            if (np.abs(self.kmap['E_kin'] - E_kin) > eps or 
+                np.abs(self.kmap['dk']    - dk)    > eps):
+                  new_cut = True
+
+            else:
+                  new_cut = False
+        else:
+            new_cut = True
+
+        return new_cut
 
     # get the (kx,ky) values of the kmap as a list of tuples 
     def get_kxkygrid(self):
@@ -205,14 +222,31 @@ class Orbital():
         self.kmap['psi'] = psi
         self.kmap['data'] = data
 
+    def check_new_orientation(self, phi, theta, psi):
+
+        eps = 1e-10
+        if 'phi' in self.kmap:
+            if (np.abs(self.kmap['phi']   - phi)   > eps or 
+                np.abs(self.kmap['theta'] - theta) > eps or
+                np.abs(self.kmap['psi']   - psi)   > eps ):
+                  new_orientation = True
+
+            else:
+                  new_orientation = False
+        else:
+            new_orientation = True
+
+        return new_orientation
+
+
     def set_polarization(self, Ak_type, polarization, alpha, beta, gamma):
 
         if Ak_type == 'no':  # Set |A.k|^2 to 1
             self.Ak = {'Ak_type': Ak_type,
-                       'polarization': None,
-                       'alpha': None,
-                       'beta': None,
-                       'gamma': None,
+                       'polarization': polarization,
+                       'alpha': alpha,
+                       'beta': beta,
+                       'gamma': gamma,
                        'data': np.ones_like(self.kmap['data'])}
 
             return
@@ -235,7 +269,9 @@ class Orbital():
             c2 = 0.054
             lam = c1 * E_kin**(-2) + c2 * np.sqrt(E_kin)
             lam *= 10
-            gamma = 1 / lam
+            gamma_calc = 1 / lam
+        else:
+            gamma_calc = gamma
 
         # Retrieve k-grid from kmap
         kx, ky, kz = self.kmap['KX'], self.kmap['KY'], self.kmap['KZ']
@@ -256,7 +292,7 @@ class Orbital():
             # In-plane = p-polarization
             if polarization == 'p':
                 Ak = kx * cos_a * cos_b + ky * cos_a * sin_b + kz * sin_a
-                Ak = Ak**2 + gamma**2 * sin_a**2
+                Ak = Ak**2 + gamma_calc**2 * sin_a**2
 
             # Out-of-plane = s-polarization
             elif polarization == 's':
@@ -267,25 +303,23 @@ class Orbital():
             elif polarization == 'C+':
                 polp = kx * cos_a * cos_b + ky * cos_a * sin_b + kz * sin_a
                 pols = -kx * sin_b + ky * cos_b
-                Ak = 0.5 * (polp**2 + gamma**2 * sin_a**2) + 0.5 * \
-                    pols**2 + (sin_b * kx - cos_b * ky) * gamma * sin_a
+                Ak = 0.5 * (polp**2 + gamma_calc**2 * sin_a**2) + 0.5 * \
+                    pols**2 + (sin_b * kx - cos_b * ky) * gamma_calc * sin_a
 
             # Circularly polarized light (left-handed)
             elif polarization == 'C-':
                 polp = kx * cos_a * cos_b + ky * cos_a * sin_b + kz * sin_a
                 pols = -kx * sin_b + ky * cos_b
-                Ak = 0.5 * (polp**2 + gamma**2 * sin_a**2) + 0.5 * \
-                    pols**2 - (sin_b * kx - cos_b * ky) * gamma * sin_a
+                Ak = 0.5 * (polp**2 + gamma_calc**2 * sin_a**2) + 0.5 * \
+                    pols**2 - (sin_b * kx - cos_b * ky) * gamma_calc * sin_a
 
             # CDAD-signal (right-handed - left-handed) using empirically
             # damped plane wave
             elif polarization == 'CDAD':
                 # Compare Equation (31) in S. Moser, J. Electr. Spectr.
                 # Rel. Phen. 214, 29-52 (2017).
-                Ak = +2 * (sin_b * kx - cos_b * ky) * gamma * sin_a
+                Ak = +2 * (sin_b * kx - cos_b * ky) * gamma_calc * sin_a
 
-#        # Multiply |A.k|^2 with kmap
-#        self.kmap['data'] *= Ak
 
         # Set attributes
         self.Ak = {'Ak_type': Ak_type,
@@ -294,6 +328,27 @@ class Orbital():
                    'beta': beta,
                    'gamma': gamma,
                    'data': Ak}
+
+    def check_new_Ak(self, Ak_type, polarization, alpha, beta, gamma):
+
+        if 'Ak_type' in self.Ak:
+
+            if (self.Ak['Ak_type']      != Ak_type      or
+                self.Ak['polarization'] != polarization or
+                self.Ak['alpha']        != alpha        or
+                self.Ak['beta']         != beta         or
+                self.Ak['gamma']        != gamma):
+ 
+                  new_Ak = True
+
+            else:
+                  new_Ak = False
+        else:
+            new_Ak = True
+
+        return new_Ak
+
+
 
     def set_symmetry(self, symmetrization):
         """Symmterizes the kmap.
@@ -304,6 +359,7 @@ class Orbital():
 
         """
         if symmetrization == 'no':
+            self.kmap['symmetrization'] = 'no'
             return 
 
         data = self.kmap['data']
@@ -345,8 +401,24 @@ class Orbital():
             data += np.flip(data, 1)  # mirror map with respect to second axis
             data /= 8
 
+        self.kmap['symmetrization'] = symmetrization
         self.kmap['data'] = data
         return
+
+    def check_new_symmetrization(self, symmetrization):
+
+        if 'symmetrization' in self.kmap:
+
+            if self.kmap['symmetrization'] != symmetrization:
+ 
+                  new_symmetrization = True
+
+            else:
+                  new_symmetrization = False
+        else:
+            new_symmetrization = True
+
+        return new_symmetrization
 
 
     def plot(self, ax, title=None):
