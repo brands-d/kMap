@@ -1,18 +1,38 @@
+# Python Imports
 import logging
+
+# PyQt5 Imports
+from PyQt5 import uic
 from PyQt5.QtWidgets import QWidget
+
+# Own Imports
+from kmap import __directory__
 from kmap.library.misc import get_ID_from_tab_text
-from kmap.ui.orbitaldatatab_ui import OrbitalDataTabUI
 from kmap.model.orbitaldatatab_model import OrbitalDataTabModel
+from kmap.controller.crosshairannulus import CrosshairAnnulus
+from kmap.controller.colormap import Colormap
+from kmap.controller.orbitaltable import OrbitalTable
+from kmap.controller.pyqtgraphplot import PyQtGraphPlot
+from kmap.controller.polarization import Polarization
 from kmap.config.config import config
 
 
-class OrbitalDataTab(OrbitalDataTabUI):
+# Load .ui File
+UI_file = __directory__ + '/ui/orbitaldatatab.ui'
+OrbitalDataTab_UI, _ = uic.loadUiType(UI_file)
+
+
+class OrbitalDataTab(QWidget, OrbitalDataTab_UI):
 
     def __init__(self):
 
-        self.model = OrbitalDataTabModel(self)
+        # Setup GUI
+        super(OrbitalDataTab, self).__init__()
+        self.setupUi(self)
+        self._setup()
+        self._connect()
 
-        OrbitalDataTabUI.__init__(self)
+        self.model = OrbitalDataTabModel(self)
 
     def add_orbital_from_filepath(self, path):
 
@@ -28,7 +48,7 @@ class OrbitalDataTab(OrbitalDataTabUI):
 
         if 'orientation' in orbital.meta_data:
             orientation = orbital.meta_data['orientation']
-            
+
         else:
             orientation = 'xy'
 
@@ -81,3 +101,20 @@ class OrbitalDataTab(OrbitalDataTabUI):
         orbital = self.model.remove_orbital_by_ID(ID)
 
         self.refresh_plot()
+
+    def _setup(self):
+
+        self.crosshair = CrosshairAnnulus(self.plot_item)
+        self.colormap = Colormap(self.plot_item)
+
+        layout = self.scroll_area.widget().layout()
+        layout.insertWidget(1, self.colormap)
+        layout.insertWidget(2, self.crosshair)
+
+    def _connect(self):
+
+        self.crosshair.crosshair_changed.connect(self.crosshair_changed)
+        self.table.orbital_changed.connect(self.orbitals_changed)
+        self.table.orbital_removed.connect(self.remove_orbital_by_ID)
+        self.polarization.polarization_changed.connect(
+            self.polarization_changed)

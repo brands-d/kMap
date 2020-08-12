@@ -20,10 +20,10 @@ class OrbitalTable(QWidget, OrbitalTable_UI):
     orbital_changed = pyqtSignal(int)
     orbital_removed = pyqtSignal(int)
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
 
         # Setup GUI
-        super(OrbitalTable, self).__init__()
+        super(OrbitalTable, self).__init__(*args, **kwargs)
         self.setupUi(self)
         self._setup()
 

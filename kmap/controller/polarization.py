@@ -19,10 +19,10 @@ class Polarization(QWidget, Polarization_UI):
 
     polarization_changed = pyqtSignal()
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
 
         # Setup GUI
-        super(Polarization, self).__init__()
+        super(Polarization, self).__init__(*args, **kwargs)
         self.setupUi(self)
         self._setup()
         self._connect()
