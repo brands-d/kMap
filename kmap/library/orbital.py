@@ -82,7 +82,7 @@ class Orbital():
 
         # Compute polarization factor if parameters have changed
         new_Ak  = self.check_new_Ak(Ak_type, polarization, alpha, beta, gamma)
-        if new_Ak: self.set_polarization(Ak_type, polarization, 
+        if new_cut or new_Ak: self.set_polarization(Ak_type, polarization, 
                                          alpha, beta,gamma)
 
         return PlotData(self.Ak['data']*self.kmap['data'], 
@@ -421,7 +421,7 @@ class Orbital():
         return new_symmetrization
 
 
-    def plot(self, ax, title=None):
+    def plot(self, ax, title=None, kxlim=None, kylim=None):
         """Creates a plot of the kmap in axes-obeject ax.
 
         Args:
@@ -445,6 +445,12 @@ class Orbital():
         ax.set_aspect('equal')
         ax.set_xlabel(r'$\kappa_x(1/\AA)$')
         ax.set_ylabel(r'$\kappa_y(1/\AA)$')
+
+        if kxlim != None:
+            ax.set_xlim(kxlim[0],kxlim[1])        
+        if kylim != None:
+            ax.set_ylim(kxlim[0],kxlim[1])        
+
         if title != None:
             ax.set_title(title)
 
