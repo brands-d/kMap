@@ -8,12 +8,6 @@ class MatplotlibWindowModel():
 
         self.image = plot_data.data
         self.x, self.y = self._calc_centered_axes(plot_data)
-        '''
-        if config.get_key('matplotlib', 'pixel_center') == 'True':
-            self.x, self.y = self._calc_centered_axes()
-
-        else:
-            self.x, self.y = 0, 0'''
 
     def _calc_centered_axes(self, plot_data):
 

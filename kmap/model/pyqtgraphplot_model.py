@@ -12,8 +12,11 @@ class PyQtGraphPlotModel():
         image = self.plot_data.data
         scale = self.plot_data.step_size
         pos = self._calculate_pos(scale)
-
-        return image, pos, scale
+        x_range = [self.plot_data.x_axis[0], self.plot_data.x_axis[-1]]
+        y_range = [self.plot_data.y_axis[0], self.plot_data.y_axis[-1]]
+        range_ = [x_range, y_range]
+        
+        return image, pos, scale, range_
 
     def _calculate_pos(self, scale):
 

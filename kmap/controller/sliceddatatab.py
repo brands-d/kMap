@@ -82,7 +82,7 @@ class SlicedDataTab(QWidget, SlicedDataTab_UI):
         data = self.model.displayed_plot_data
         title = self.get_title()
 
-        self.window = MatplotlibWindow(data, title)
+        self.window = MatplotlibWindow(data)
 
     def _setup(self):
 

@@ -38,13 +38,21 @@ class PyQtGraphPlot(ImageView):
         if self.model.plot_data is None:
             return
 
-        image, pos, scale = self.model.get_plot()
+        image, pos, scale, range_ = self.model.get_plot()
 
         if np.all(np.isnan(image)) == True:
             return
 
+        # Plot
         self.setImage(image, autoRange=True,
                       autoLevels=True, pos=pos, scale=scale)
+
+        # Fit Range
+        ''' !!! DOESN'T WORK !!!
+        padding = float(config.get_key('pyqtgraph', 'padding'))
+        x_range, y_range = range_
+        self.view.setRange(xRange=x_range, yRange=y_range,
+                           update=True, disableAutoRange=True)'''
 
     def get_plot_data(self):
 
