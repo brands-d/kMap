@@ -53,6 +53,9 @@ class PyQtGraphPlot(ImageView):
         x_range, y_range = range_
         self.view.setRange(xRange=x_range, yRange=y_range,
                            update=True, padding=padding)
+        
+        # set AspectRatio
+        self.plot_view.setAspectLocked(True,ratio=(y_range[1]-y_range[0])/(x_range[1]-x_range[0]))
 
     def get_plot_data(self):
 
@@ -84,4 +87,6 @@ class PyQtGraphPlot(ImageView):
         self.view.hideButtons()
         self.ui.roiBtn.hide()
         self.ui.menuBtn.hide()
-        self.plot_view.setAspectLocked(False)
+        #self.plot_view.setAspectLocked(False)
+
+
