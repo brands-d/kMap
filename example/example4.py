@@ -21,9 +21,9 @@ exp_kmap.interpolate(kx,ky,update=True)
 
 # create a set of parameters to be minimized
 params = Parameters()
-params.add('theta',     value=10, min=0, max=90)  # tilting angle of molecule
-params.add('weight',    value=1,  min=0)          # weight of orbital
-params.add('background',value=0,  min=0)          # constant background
+params.add('theta',     value=15, min=0, max=90)  # tilting angle of molecule
+params.add('weight',    value=5000,  min=0)          # weight of orbital
+#params.add('background',value=300,  min=0)          # constant background
 
 # read pentacene HOMO cube-file from file 
 cubefile = open('pentacene_HOMO.cube').read() # read cube-file from file
@@ -33,7 +33,7 @@ def chi2_function(params):
 
     theta      = params['theta']
     weight     = params['weight']
-    background = params['background']
+    #background = params['background']
 
     # simulate momentum map for given theta
     sim_kmap = homo.get_kmap(E_kin=28,     
@@ -48,7 +48,7 @@ def chi2_function(params):
     ky = exp_kmap.y_axis
     sim_kmap.interpolate(kx,ky,update=True)
 
-    difference = (exp_kmap.data - background) - weight*(sim_kmap.data)
+    difference = (exp_kmap.data - 200) - weight*(sim_kmap.data)
  
     return difference
 
