@@ -67,4 +67,4 @@ class OrbitalDataTabModel():
         for orbital in self.orbitals:
             if orbital.ID == ID_:
                 self.orbitals.remove(orbital)
-                del orbital
+                del orbitals

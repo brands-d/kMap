@@ -28,14 +28,7 @@
      <number>5</number>
     </property>
     <item>
-     <widget class="QTabWidget" name="tab_widget">
-      <property name="tabsClosable">
-       <bool>true</bool>
-      </property>
-      <property name="movable">
-       <bool>true</bool>
-      </property>
-     </widget>
+     <widget class="TabWidget" name="tab_widget" native="true"/>
     </item>
    </layout>
   </widget>
@@ -209,6 +202,14 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TabWidget</class>
+   <extends>QWidget</extends>
+   <header>kmap/controller/tabwidget</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

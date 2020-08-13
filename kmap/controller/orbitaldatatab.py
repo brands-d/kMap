@@ -3,11 +3,11 @@ import logging
 
 # PyQt5 Imports
 from PyQt5 import uic
-from PyQt5.QtWidgets import QWidget
 
 # Own Imports
 from kmap import __directory__
 from kmap.library.misc import get_ID_from_tab_text
+from kmap.library.qwidgetsub import Tab
 from kmap.model.orbitaldatatab_model import OrbitalDataTabModel
 from kmap.controller.crosshairannulus import CrosshairAnnulus
 from kmap.controller.colormap import Colormap
@@ -22,7 +22,7 @@ UI_file = __directory__ + '/ui/orbitaldatatab.ui'
 OrbitalDataTab_UI, _ = uic.loadUiType(UI_file)
 
 
-class OrbitalDataTab(QWidget, OrbitalDataTab_UI):
+class OrbitalDataTab(Tab, OrbitalDataTab_UI):
 
     def __init__(self):
 
@@ -101,6 +101,12 @@ class OrbitalDataTab(QWidget, OrbitalDataTab_UI):
         orbital = self.model.remove_orbital_by_ID(ID)
 
         self.refresh_plot()
+
+    def closeEvent(self, event):
+
+        del self.model
+
+        Tab.closeEvent(self, event)
 
     def _setup(self):
 

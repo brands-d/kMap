@@ -3,24 +3,25 @@ import logging
 
 # PyQt5 Imports
 from PyQt5 import uic
-from PyQt5.QtWidgets import QWidget
 
 # Own Imports
 from kmap import __directory__
+from kmap.library.misc import get_ID_from_tab_text
+from kmap.library.qwidgetsub import Tab
 from kmap.model.sliceddatatab_model import SlicedDataTabModel
 from kmap.controller.matplotlibwindow import MatplotlibWindow
 from kmap.controller.dataslider import DataSlider
 from kmap.controller.crosshairannulus import CrosshairAnnulus
 from kmap.controller.pyqtgraphplot import PyQtGraphPlot
 from kmap.controller.colormap import Colormap
-from kmap.library.misc import get_ID_from_tab_text
+
 
 # Load .ui File
 UI_file = __directory__ + '/ui/sliceddatatab.ui'
 SlicedDataTab_UI, _ = uic.loadUiType(UI_file)
 
 
-class SlicedDataTab(QWidget, SlicedDataTab_UI):
+class SlicedDataTab(Tab, SlicedDataTab_UI):
 
     def __init__(self, path):
 
@@ -84,6 +85,12 @@ class SlicedDataTab(QWidget, SlicedDataTab_UI):
         LUT = self.plot_item.get_LUT()
 
         self.window = MatplotlibWindow(data, LUT=LUT)
+
+    def closeEvent(self, event):
+
+        del self.model
+
+        Tab.closeEvent(self, event)
 
     def _setup(self):
 

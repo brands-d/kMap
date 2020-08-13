@@ -1,3 +1,6 @@
+# Python Imports
+from abc import abstractmethod
+
 # PyQt5 Imports
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QLabel, QCheckBox, QDoubleSpinBox, QWidget
@@ -118,3 +121,19 @@ class AspectWidget(QWidget):
         self.blockSignals(True)
         self.resize(width, height)
         self.blockSignals(False)
+
+
+class Tab(QWidget):
+
+    def __init__(self, *args, **kwargs):
+
+        super(Tab, self).__init__(*args, **kwargs)
+
+    @abstractmethod
+    def get_title(self):
+        pass
+
+    def closeEvent(self, event):
+
+        self.deleteLater()
+        event.accept()

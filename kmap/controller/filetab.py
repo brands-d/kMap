@@ -3,15 +3,15 @@ from os.path import abspath
 
 # PyQt5 Imports
 from PyQt5 import uic
-from PyQt5.QtWidgets import QWidget
 from PyQt5.QtGui import QTextDocument
 
 # Own Imports
 from kmap import __directory__
+from kmap.library.qwidgetsub import Tab
 from kmap.config.config import config
 
 
-class FileTab(QWidget):
+class FileTab(Tab):
 
     def __init__(self, path, richText=False):
 

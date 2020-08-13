@@ -11,10 +11,8 @@ from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox
 
 # Own Imports
 from kmap import __directory__, __version__
-from kmap.controller.sliceddatatab import SlicedDataTab
-from kmap.controller.orbitaldatatab import OrbitalDataTab
-from kmap.controller.filetab import FileViewerTab, FileEditorTab
 from kmap.controller.databasewindow import DatabaseWindow
+from kmap.controller.tabwidget import TabWidget
 from kmap.model.mainwindow_model import MainWindowModel
 from kmap.config.config import config
 
@@ -38,11 +36,6 @@ class MainWindow(QMainWindow, MainWindow_UI):
 
         self.open_welcome()
 
-    def close_tab(self, index):
-        # Close tab specified with index
-
-        self.tab_widget.removeTab(index)
-
     def load_hdf5_files(self):
         # Load one or more new hdf5 files
 
@@ -61,25 +54,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
 
         for path in paths:
 
-            self.open_sliced_data_tab(path)
-
-    def open_sliced_data_tab(self, path):
-        # Opens a new sliced data tab
-
-        log = logging.getLogger('kmap')
-        log.info('Trying to load %s' % path)
-
-        try:
-            tab = SlicedDataTab(path)
-            title = tab.get_title()
-
-            index = self.tab_widget.addTab(tab, title)
-            self.tab_widget.setCurrentIndex(index)
-
-        except Exception as e:
-
-            log.error('Couldn\'t load %s' % path)
-            log.error(traceback.format_exc())
+            self.tab_widget.open_sliced_data_tab(path)
 
     def open_database_browser(self):
 
@@ -94,7 +69,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
             return
 
         # Get Tab to load to
-        tab = self._get_orbital_tab_to_load_to()
+        tab = self.tab_widget.get_orbital_tab_to_load_to()
 
         # Load URL to Tab
         for URL in URLs:
@@ -120,42 +95,11 @@ class MainWindow(QMainWindow, MainWindow_UI):
             return
 
         # Get Tab to load to
-        tab = self._get_orbital_tab_to_load_to()
+        tab = self.tab_widget.get_orbital_tab_to_load_to()
 
         # Load Data to Tab
         for path in paths:
             tab.add_orbital_from_filepath(path)
-
-    def _get_orbital_tab_to_load_to(self):
-
-        tab = None
-        aux = self.tab_widget.currentWidget()
-        if type(aux) == OrbitalDataTab:
-            tab = aux
-
-        else:
-            for index in range(self.tab_widget.count()):
-                aux = self.tab_widget.widget(index)
-
-                if type(aux) == OrbitalDataTab:
-                    tab = aux
-                    break
-
-        if tab is None:
-            tab = self.open_orbital_data_tab()
-
-        return tab
-
-    def open_orbital_data_tab(self):
-        # Opens a new orbital data tab
-
-        tab = OrbitalDataTab()
-        title = tab.get_title()
-
-        index = self.tab_widget.addTab(tab, title)
-        self.tab_widget.setCurrentIndex(index)
-
-        return tab
 
     def open_log_file(self):
         # Open log file
@@ -163,7 +107,8 @@ class MainWindow(QMainWindow, MainWindow_UI):
         path = __directory__ + '/../default.log'
         title = 'Log File'
 
-        self._open_file_tab(path, title, editable=False, richText=False)
+        self.tab_widget.open_file_tab(
+            path, title, editable=False, richText=False)
 
     def open_mod_log_file(self):
         # Open module log file
@@ -171,7 +116,8 @@ class MainWindow(QMainWindow, MainWindow_UI):
         path = __directory__ + '/../modules.log'
         title = 'Modules Log File'
 
-        self._open_file_tab(path, title, editable=False, richText=False)
+        self.tab_widget.open_file_tab(
+            path, title, editable=False, richText=False)
 
     def open_general_settings(self):
         # Open general user settings
@@ -179,15 +125,21 @@ class MainWindow(QMainWindow, MainWindow_UI):
         path = __directory__ + '/config/settings_user.ini'
         title = 'General Settings'
 
-        self._open_file_tab(path, title, editable=True, richText=False)
+        self.tab_widget.open_file_tab(
+            path, title, editable=True, richText=False)
 
+    def open_orbital_data_tab(self):
+
+        self.tab_widget.open_orbital_data_tab()
+        
     def open_logging_settings(self):
         # Open logging user settings
 
         path = __directory__ + '/config/logging_user.ini'
         title = 'Logging Settings'
 
-        self._open_file_tab(path, title, editable=True, richText=False)
+        self.tab_widget.open_file_tab(
+            path, title, editable=True, richText=False)
 
     def open_general_default_settings(self):
         # Open general default settings
@@ -195,7 +147,8 @@ class MainWindow(QMainWindow, MainWindow_UI):
         path = __directory__ + '/config/settings_default.ini'
         title = 'General Settings (Default)'
 
-        self._open_file_tab(path, title, editable=False, richText=False)
+        self.tab_widget.open_file_tab(
+            path, title, editable=False, richText=False)
 
     def open_logging_default_settings(self):
         # Open logging default settings
@@ -203,12 +156,8 @@ class MainWindow(QMainWindow, MainWindow_UI):
         path = __directory__ + '/config/logging_default.ini'
         title = 'Logging Settings (Default)'
 
-        self._open_file_tab(path, title, editable=False, richText=False)
-
-    def reload_settings(self):
-        # Reload the settings
-
-        config.setup()
+        self.tab_widget.open_file_tab(
+            path, title, editable=False, richText=False)
 
     def open_readme(self):
         # Open a README page
@@ -216,7 +165,8 @@ class MainWindow(QMainWindow, MainWindow_UI):
         path = __directory__ + '/resources/texts/readme.txt'
         title = 'README'
 
-        self._open_file_tab(path, title, editable=False, richText=True)
+        self.tab_widget.open_file_tab(
+            path, title, editable=False, richText=True)
 
     def open_welcome(self):
         # Open a welcome page
@@ -224,7 +174,8 @@ class MainWindow(QMainWindow, MainWindow_UI):
         path = __directory__ + '/resources/texts/welcome.txt'
         title = 'Welcome'
 
-        self._open_file_tab(path, title, editable=False, richText=True)
+        self.tab_widget.open_file_tab(
+            path, title, editable=False, richText=True)
 
     def open_about(self):
         # Open an about window
@@ -241,15 +192,10 @@ class MainWindow(QMainWindow, MainWindow_UI):
 
             current_tab.display_in_matplotlib()
 
-    def _open_file_tab(self, path, title, editable=False, richText=False):
+    def reload_settings(self):
+        # Reload the settings
 
-        if editable:
-            tab = FileEditorTab(path)
-        else:
-            tab = FileViewerTab(path, richText=richText)
-
-        index = self.tab_widget.addTab(tab, title)
-        self.tab_widget.setCurrentIndex(index)
+        config.setup()
 
     def _setup(self):
 
@@ -287,9 +233,6 @@ class MainWindow(QMainWindow, MainWindow_UI):
 
     def _connect(self):
 
-        # Tab closed
-        self.tab_widget.tabCloseRequested.connect(self.close_tab)
-
         # File menu
         self.load_hdf5_action.triggered.connect(self.load_hdf5_files)
         self.load_cube_file_action.triggered.connect(
@@ -320,14 +263,9 @@ class MainWindow(QMainWindow, MainWindow_UI):
         # DEBUG
         self.ref_action.triggered.connect(self.print_refs)
 
-
     def print_refs(self):
-        pass
-        '''
-        gc.collect()
-        print(sys.getrefcount(self.database))
-        print(len(gc.get_referrers(self.database)))
-        referrers = gc.get_referrers(self.database)
-        for referrer in referrers:
-            print(referrer)'''
 
+        gc.collect()
+        print(sys.getrefcount(self.tab_widget.widget(self.index)))
+        print(len(gc.get_referrers(self.tab_widget.widget(self.index))))
+        print(gc.get_referrers(self.tab_widget.widget(self.index)))
