@@ -70,10 +70,10 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
 
         parameters = self.table.get_parameters_by_ID(ID)
         weight, *orientation = parameters
-        polarization = self.polarization.get_parameters()
-
+        *polarization, symmetry = self.polarization.get_parameters()
+        
         return (weight, kinetic_energy, dk,
-                *orientation, *polarization)
+                *orientation, *polarization, symmetry)
 
     def get_use(self, ID):
 
@@ -123,4 +123,6 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         self.table.orbital_changed.connect(self.orbitals_changed)
         self.table.orbital_removed.connect(self.remove_orbital_by_ID)
         self.polarization.polarization_changed.connect(
+            self.polarization_changed)
+        self.polarization.symmetrization_changed.connect(
             self.polarization_changed)
