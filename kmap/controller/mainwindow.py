@@ -1,8 +1,6 @@
 # Python Imports
 import logging
 import traceback
-import sys
-import gc
 
 # PyQt5 Imports
 from PyQt5 import uic
@@ -259,13 +257,3 @@ class MainWindow(QMainWindow, MainWindow_UI):
         self.readme_action.triggered.connect(self.open_readme)
         self.welcome_action.triggered.connect(self.open_welcome)
         self.about_action.triggered.connect(self.open_about)
-
-        # DEBUG
-        self.ref_action.triggered.connect(self.print_refs)
-
-    def print_refs(self):
-
-        gc.collect()
-        print(sys.getrefcount(self.tab_widget.widget(self.index)))
-        print(len(gc.get_referrers(self.tab_widget.widget(self.index))))
-        print(gc.get_referrers(self.tab_widget.widget(self.index)))
