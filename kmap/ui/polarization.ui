@@ -127,7 +127,7 @@
            <string>The angle of incidence.</string>
           </property>
           <property name="alignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+           <set>Qt::AlignCenter</set>
           </property>
           <property name="buttonSymbols">
            <enum>QAbstractSpinBox::UpDownArrows</enum>
@@ -201,6 +201,9 @@
           </property>
           <property name="toolTip">
            <string>The azimuth of incidence.</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
           </property>
           <property name="correctionMode">
            <enum>QAbstractSpinBox::CorrectToNearestValue</enum>

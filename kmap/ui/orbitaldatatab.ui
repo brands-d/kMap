@@ -54,7 +54,14 @@
         <widget class="OrbitalTable" name="table" native="true"/>
        </item>
        <item>
-        <widget class="Polarization" name="polarization" native="true"/>
+        <layout class="QHBoxLayout" name="polarization_layout">
+         <item>
+          <widget class="Polarization" name="polarization" native="true"/>
+         </item>
+         <item>
+          <widget class="CubeOptions" name="cube_options" native="true"/>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
@@ -89,6 +96,12 @@
    <class>Polarization</class>
    <extends>QWidget</extends>
    <header>kmap/controller/polarization</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CubeOptions</class>
+   <extends>QWidget</extends>
+   <header>kmap/controller/cubeoptions</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

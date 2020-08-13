@@ -11,6 +11,7 @@ from kmap.library.qwidgetsub import Tab
 from kmap.model.orbitaldatatab_model import OrbitalDataTabModel
 from kmap.controller.crosshairannulus import CrosshairAnnulus
 from kmap.controller.colormap import Colormap
+from kmap.controller.cubeoptions import CubeOptions
 from kmap.controller.orbitaltable import OrbitalTable
 from kmap.controller.pyqtgraphplot import PyQtGraphPlot
 from kmap.controller.polarization import Polarization
@@ -64,10 +65,7 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
 
     def get_parameters(self, ID):
 
-        # Hardcoded for now
-        kinetic_energy = 30
-        dk = 0.03
-
+        kinetic_energy, dk = self.cube_options.get_parameters()
         parameters = self.table.get_parameters_by_ID(ID)
         weight, *orientation = parameters
         *polarization, symmetry = self.polarization.get_parameters()
@@ -84,7 +82,7 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         data = self.model.displayed_plot_data
         self.crosshair.update_label()
 
-    def polarization_changed(self):
+    def change_parameter(self):
 
         self.refresh_plot()
 
@@ -123,6 +121,10 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         self.table.orbital_changed.connect(self.orbitals_changed)
         self.table.orbital_removed.connect(self.remove_orbital_by_ID)
         self.polarization.polarization_changed.connect(
-            self.polarization_changed)
+            self.change_parameter)
         self.polarization.symmetrization_changed.connect(
-            self.polarization_changed)
+            self.change_parameter)
+        self.cube_options.energy_changed.connect(
+            self.change_parameter)
+        self.cube_options.resolution_changed.connect(
+            self.change_parameter)
