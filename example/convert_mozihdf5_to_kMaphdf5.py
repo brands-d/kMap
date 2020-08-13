@@ -78,7 +78,7 @@ def mozi_to_kmap(mozi_h5_file,kmap_h5_file,
 
 
 
-mozi_to_kmap('kmaps_6584_BEstep0.02_kStep0.02.hdf5','example5_6584.hdf5',
+mozi_to_kmap('kmaps_3271_BEstep0.1.hdf5','example4_3271_NEW.hdf5',
              axis1type='E_kin',
              alias='multilayer 5A HOMO')
 

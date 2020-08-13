@@ -72,12 +72,11 @@ class Orbital():
         if new_cut: self.set_kinetic_energy(E_kin, dk)
 
         # Rotate molecule (that is, rotate hemisphere) if angles have changed
-        new_orientation = self.check_new_orientation(phi, theta, psi)
-        if new_orientation: self.set_orientation(phi, theta, psi)
-
-        # symmetrize kmap if necessary
+        # ... and symmetrize kmap if necessary
+        new_orientation = self.check_new_orientation(phi, theta, psi)       
         new_symmetrization = self.check_new_symmetrization(symmetrization)
         if new_symmetrization or new_orientation:
+            self.set_orientation(phi, theta, psi)
             self.set_symmetry(symmetrization)
 
         # Compute polarization factor if parameters have changed
@@ -349,7 +348,6 @@ class Orbital():
         return new_Ak
 
 
-
     def set_symmetry(self, symmetrization):
         """Symmterizes the kmap.
 
@@ -397,6 +395,7 @@ class Orbital():
             data1 = rotate(np.nan_to_num(data), 90, reshape=False)
             data2 = rotate(np.nan_to_num(data), 180, reshape=False)
             data3 = rotate(np.nan_to_num(data), 270, reshape=False)
+            data += (data1 + data2 + data3)
             data += np.flip(data, 0)  # mirror map with respect to first axis
             data += np.flip(data, 1)  # mirror map with respect to second axis
             data /= 8
