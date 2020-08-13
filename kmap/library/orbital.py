@@ -516,6 +516,30 @@ class Orbital():
                          'chemical_numbers': chemical_numbers,
                          'atomic_coordinates': atomic_coordinates}
 
+    def get_bonds(self,min_bond_length=0.8,max_bond_length=1.8):
+        """ returns a list of bond used for plotting the molecular structure.
+
+        Args:
+            min_bond_length (float): minimum distance between atoms 
+                                     for drawing bonds
+            max_bond_length (float): maximum distance between atoms 
+                                     for drawing bonds
+        """
+        
+        dx,dy,dz    = self.psi['dx'], self.psi['dy'], self.psi['dz'] 
+        coordinates = self.molecule['atomic_coordinates']
+        bonds       = []
+        for atom1 in coordinates:
+            x1,y1,z1 = atom1[0], atom1[1], atom1[2]
+            for atom2 in coordinates:
+                x2,y2,z2 = atom2[0], atom2[1], atom2[2]    
+                distance = np.sqrt((x1-x2)**2 + (y1-y2)**2 + (z1-z2)**2)
+                if min_bond_length <= distance <= max_bond_length:
+                    bond = [[x1/dx,y1/dy,z1/dz], [x2/dx,y2/dy,z2/dz]] 
+                    bonds.append(np.array(bond))
+
+        return bonds
+
     def set_3Dkgrid(self, nk, delta):
 
         L = (nk - 1) * delta
