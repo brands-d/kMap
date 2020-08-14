@@ -107,10 +107,10 @@ class CrosshairROIBase(CrosshairBase):
 
             # Normalize by dividing by the number of non nan elements
             if config.get_key('crosshair', 'normalized_intensity') == 'True':
-                intensity = normalize(cut)
+                intensity = normalize(cut.data)
 
             else:
-                intensity = np.nansum(cut)
+                intensity = np.nansum(cut.data)
 
         if abs(intensity) > 1000:
             self.area_value_label.setText('%.2fk' % (intensity / 1000))

@@ -69,7 +69,7 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         parameters = self.table.get_parameters_by_ID(ID)
         weight, *orientation = parameters
         *polarization, symmetry = self.polarization.get_parameters()
-        
+
         return (weight, kinetic_energy, dk,
                 *orientation, *polarization, symmetry)
 
@@ -79,7 +79,6 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
 
     def crosshair_changed(self):
 
-        data = self.model.displayed_plot_data
         self.crosshair.update_label()
 
     def change_parameter(self):

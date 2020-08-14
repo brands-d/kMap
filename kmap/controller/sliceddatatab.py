@@ -76,7 +76,6 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
 
     def crosshair_changed(self):
 
-        data = self.model.displayed_plot_data
         self.crosshair.update_label()
 
     def display_in_matplotlib(self):
@@ -95,7 +94,7 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
     def to_string(self):
 
         text = self.model.to_string()
-        
+
         return text
 
     def _setup(self):
@@ -108,7 +107,6 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
         layout.insertWidget(0, self.slider)
         layout.insertWidget(1, self.colormap)
         layout.insertWidget(2, self.crosshair)
-
 
     def _connect(self):
 
