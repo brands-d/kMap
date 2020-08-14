@@ -1,11 +1,11 @@
-# Python Imports
-import numpy as np
-import pyqtgraph as pg
-
 # PyQt5 Imports
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QWidget
+
+# Third Party Imports
+import numpy as np
+import pyqtgraph as pg
 
 # Own Imports
 from kmap import __directory__
@@ -48,10 +48,10 @@ class CrosshairBase(QWidget):
 
             # Normalize by dividing by the number of non nan elements
             if config.get_key('crosshair', 'normalized_intensity') == 'True':
-                intensity = normalize(cut)
+                intensity = normalize(cut.data)
 
             else:
-                intensity = np.nansum(cut)
+                intensity = np.nansum(cut.data)
 
         if abs(intensity) > 1000:
             self.point_value_label.setText('%.2fk' % (intensity / 1000))

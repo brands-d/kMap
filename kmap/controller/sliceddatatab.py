@@ -77,6 +77,9 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
     def crosshair_changed(self):
 
         data = self.model.displayed_plot_data
+        self.plot_item.plot(
+            self.crosshair.model.cut_from_data(data, region='ring'))
+        self.crosshair.update_label()
         self.crosshair.update_label()
 
     def display_in_matplotlib(self):

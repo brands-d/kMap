@@ -142,3 +142,6 @@ report.tar.gz
 
 # User Settings
 *_user.ini
+
+# Other
+/src
