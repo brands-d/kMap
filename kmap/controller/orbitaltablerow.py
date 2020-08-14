@@ -18,10 +18,10 @@ class OrbitalTableRow(QWidget):
 
         self.ID = orbital.ID
 
+        super(OrbitalTableRow, self).__init__(*args, **kwargs)
+
         self._setup(orbital, orientation)
         self._connect()
-
-        super(OrbitalTableRow, self).__init__(*args, **kwargs)
 
     def remove_row(self):
 
@@ -77,6 +77,8 @@ class OrbitalTableRow(QWidget):
         self.psi = AngleSpinBox(psi, 'psi')
 
         self.use = UseCheckBox()
+
+        self.name_label.setToolTip(str(orbital))
 
     def _connect(self):
 

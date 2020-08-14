@@ -1,5 +1,6 @@
 # Python Imports
 import logging
+import traceback
 
 # PyQt5 Imports
 from PyQt5 import uic
@@ -22,7 +23,7 @@ class TabWidget(QWidget, TabWidget_UI):
     def __init__(self, *args, **kwargs):
 
         # Setup GUI
-        super(TabWidget, self).__init__( *args, **kwargs)
+        super(TabWidget, self).__init__(*args, **kwargs)
         self.setupUi(self)
         self._connect()
 
@@ -35,7 +36,8 @@ class TabWidget(QWidget, TabWidget_UI):
         try:
             tab = SlicedDataTab(path)
             title = tab.get_title()
-            self._open_tab(tab, title)
+            tooltip = tab.to_string()
+            self._open_tab(tab, title, tooltip)
 
         except Exception as e:
 
@@ -89,10 +91,13 @@ class TabWidget(QWidget, TabWidget_UI):
         widget.close()
         widget.deleteLater()
 
-    def _open_tab(self, tab, title):
+    def _open_tab(self, tab, title, tooltip=None):
 
         index = self.tab_widget.addTab(tab, title)
         self.tab_widget.setCurrentIndex(index)
+
+        if tooltip is not None:
+            self.tab_widget.setTabToolTip(index, tooltip)
 
     def _connect(self):
 

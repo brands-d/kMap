@@ -9,10 +9,10 @@ class OrbitalData(Orbital, AbstractData):
 
     def __init__(self, cube, ID, name='', meta_data={}):
 
-        dk3D = float(config.get_key('orbital', 'dk3D'))
+        self.dk3D = float(config.get_key('orbital', 'dk3D'))
 
         AbstractData.__init__(self, ID, name, meta_data)
-        Orbital.__init__(self, cube, file_format='cube', dk3D=dk3D,
+        Orbital.__init__(self, cube, file_format='cube', dk3D=self.dk3D,
                          value='abs2')
 
     @classmethod
@@ -45,3 +45,10 @@ class OrbitalData(Orbital, AbstractData):
             meta_data.update(keys)
 
         return cls(file, ID, name=name, meta_data=meta_data)
+
+    def __str__(self):
+
+        rep = AbstractData.__str__(self)
+        rep += '\ndk3D:\t\t%s' % self.dk3D
+
+        return rep

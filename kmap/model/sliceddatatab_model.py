@@ -26,3 +26,9 @@ class SlicedDataTabModel():
         self.displayed_plot_data = self.data.slice_from_index(index, axis)
 
         return self.displayed_plot_data
+
+    def to_string(self):
+
+        rep = 'Path:\t%s\n%s' % (self.path, str(self.data))
+
+        return rep

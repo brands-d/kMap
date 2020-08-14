@@ -62,7 +62,7 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
 
         self.plot_item.plot(data)
         self.crosshair.update_label()
-        
+
     def change_axis(self, axis):
 
         # 'axes' is a copy of all axes except the one with index 'axis'
@@ -92,6 +92,12 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
 
         Tab.closeEvent(self, event)
 
+    def to_string(self):
+
+        text = self.model.to_string()
+        
+        return text
+
     def _setup(self):
 
         self.slider = DataSlider(self.model.data)
@@ -102,6 +108,7 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
         layout.insertWidget(0, self.slider)
         layout.insertWidget(1, self.colormap)
         layout.insertWidget(2, self.crosshair)
+
 
     def _connect(self):
 

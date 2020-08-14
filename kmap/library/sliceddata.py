@@ -117,6 +117,16 @@ class SlicedData(AbstractData):
 
         return PlotData(data, range_)
 
+    def __str__(self):
+
+        rep = AbstractData.__str__(self)
+
+        for index, axis in enumerate(self.axes):
+            rep += '\n\nAxis %i\n%s' % (index, str(self.axes[index]))
+
+        rep += '\n\n'
+        return rep[:-2]
+
 
 class Axis():
 
@@ -158,3 +168,9 @@ class Axis():
                 'axis minimum has to strictly smaller than maxmimum')
 
         return True
+
+    def __str__(self):
+
+        rep = 'Label:\t%s\nUnits:\t%s\nRange:\t[%.3f, %.3f]' % (
+            self.label, self.units, *self.range)
+        return rep

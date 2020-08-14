@@ -17,16 +17,15 @@ class DataSlider(QWidget, DataSlider_UI):
     slice_changed = pyqtSignal(int)
     axis_changed = pyqtSignal(int)
 
-    def __init__(self, data):
-
-        # Setup GUI
-        super(DataSlider, self).__init__()
-        self.setupUi(self)
-        self._connect()
+    def __init__(self, data, *args, **kwargs):
 
         self.axes = data.axes
-        self._setup_combobox()
-        self._update_slice_label()
+
+        # Setup GUI
+        super(DataSlider, self).__init__(*args, **kwargs)
+        self.setupUi(self)
+        self._setup()
+        self._connect()
 
     def change_slice(self, index):
 
@@ -103,9 +102,15 @@ class DataSlider(QWidget, DataSlider_UI):
 
     def _setup_combobox(self):
 
-        for index in [0, 1, 2]:
+        for index in range(3):
             axis_label = self.axes[index].label
             self.combobox.addItem(str(axis_label))
+
+    def _setup(self):
+
+        self._setup_combobox()
+        self._update_slice_label()
+        self.change_axis(0)
 
     def _connect(self):
 
