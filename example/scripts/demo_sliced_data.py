@@ -1,16 +1,20 @@
-import os,sys,inspect
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+import os
+import matplotlib.pyplot as plt
+from kmap.library.sliceddata import SlicedData
+import os
+import sys
+import inspect
+currentdir = os.path.dirname(os.path.abspath(
+    inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
-sys.path.insert(0,parentdir) 
+sys.path.insert(0, parentdir)
 
 # Import the sliced data class from the model folder
-from kmap.library.sliceddata import SlicedData
-import matplotlib.pyplot as plt
-import os
 
 # Get path to the directory this file is in
-dir_path, __ = os.path.split(os.path.realpath(__file__))
-file_path = dir_path + '/6584.hdf5'
+# ATTENTION FILE DOES NOT EXIT ANYMORE
+file_path = os.path.dirname(os.path.realpath(__file__)) + '/../data/6584.hdf5'
+
 # Loading from file (Initialisation methods are usually class members)
 sliced_data = SlicedData.init_from_hdf5(file_path)
 print(dir(sliced_data))

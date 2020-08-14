@@ -1,13 +1,12 @@
 import os,sys,inspect
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0,parentdir) 
+
+path = os.path.dirname(os.path.realpath(__file__)) + '/../data/'
 
 ####
 import matplotlib.pyplot as plt
 from kmap.library.orbital import Orbital
 
-cubefile = open('pentacene_HOMO.cube').read()  # read cube-file from file
+cubefile = open(path + 'pentacene_HOMO.cube').read()  # read cube-file from file
 homo     = Orbital(cubefile,        # compute 3D Fourier transform (see Eqs. 6-11)  
                    dk3D=0.15)       # with a desired k-spacing of dkx = dky = dkz = 0.15 1/Angstroem                           
 

@@ -4,16 +4,15 @@ from lmfit import Minimizer, Parameters, report_fit
 
 # for local imports include parent path
 import os,sys,inspect
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0,parentdir) 
 
 # now import classes from kMap
 from kmap.library.orbital import Orbital
 from kmap.library.sliceddata import SlicedData
 
+path = os.path.dirname(os.path.realpath(__file__)) + '/../data/'
+
 # Load experimental data-file and choose a constant-binding energy slice
-exp_data = SlicedData.init_from_hdf5('example4_3271.hdf5') 
+exp_data = SlicedData.init_from_hdf5(path + 'example4_3271.hdf5') 
 exp_kmap = exp_data.slice_from_index(3)   # returns PlotData object
 kx       = np.arange(0,3.0,0.05)
 ky       = kx
@@ -26,7 +25,7 @@ params.add('weight',    value=5000,  min=0)          # weight of orbital
 #params.add('background',value=300,  min=0)          # constant background
 
 # read pentacene HOMO cube-file from file 
-cubefile = open('pentacene_HOMO.cube').read() # read cube-file from file
+cubefile = open(path + 'pentacene_HOMO.cube').read() # read cube-file from file
 homo     = Orbital(cubefile,dk3D=0.15)        # 3D-FT 
 
 def chi2_function(params):

@@ -9,5 +9,5 @@ setup(name='kMap',
       license='MIT',
       url='https://github.com/brands-d/kMap',
       author='Dominik Brandstetter',
-      author_email='dominik.brandstetter@edu.uni-graz.at'
-      )
+      author_email='dominik.brandstetter@edu.uni-graz.at',
+      zip_safe=False)

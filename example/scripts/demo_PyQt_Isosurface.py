@@ -11,10 +11,10 @@ import pyqtgraph.opengl as gl   # pip install PyOpenGL
 
 # local imports (first include the parent path access kmap-modules)
 import os,sys,inspect
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0,parentdir) 
+
 from kmap.library.orbital import Orbital
+
+path = os.path.dirname(os.path.realpath(__file__)) + '/../data/'
 
 class Plot3DMolecule():
 
@@ -130,7 +130,7 @@ class Plot3DMolecule():
         return [axis1, axis2, axis3]
 
 ### MAIN PROGRAM ######################################################
-cubefile = open('pentacene_HOMO.cube').read()  # read cube-file from file
+cubefile = open(path + 'pentacene_HOMO.cube').read()  # read cube-file from file
 molecule = Orbital(cubefile) # Orbital object contains molecular geometry and psi(x,y,z)
 
 # initialize GLViewWidget()
