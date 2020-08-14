@@ -184,10 +184,8 @@ class MainWindow(QMainWindow, MainWindow_UI):
 
     def open_in_matplotlib(self):
 
-        current_tab = self.tab_widget.currentWidget()
-        if (type(current_tab) is OrbitalDataTab or
-                type(current_tab) is SlicedDataTab):
-
+        current_tab = self.tab_widget.get_current_tab()
+        if hasattr(current_tab, 'display_in_matplotlib'):
             current_tab.display_in_matplotlib()
 
     def reload_settings(self):

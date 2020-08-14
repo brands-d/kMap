@@ -83,6 +83,10 @@ class TabWidget(QWidget, TabWidget_UI):
 
         return tab
 
+    def get_current_tab(self):
+
+        return self.tab_widget.currentWidget()
+        
     def close_tab(self, index):
         # Close tab specified with index
 
