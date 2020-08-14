@@ -29,6 +29,8 @@ class CrosshairBase(QWidget):
         self.plot_item = plot_item
         self._set_model()
 
+        self.colors = ['k', 'w', 'r', 'b', 'g', 'c', 'm', 'y']
+
     def enable(self, enable):
 
         self.v_line.setVisible(enable)
@@ -89,6 +91,11 @@ class CrosshairBase(QWidget):
 
         self.update()
 
+    def change_color(self, index):
+
+        self.h_line.setPen(self.colors[index])
+        self.v_line.setPen(self.colors[index])
+
     def update(self):
 
         x, y = self.model.x, self.model.y
@@ -132,6 +139,8 @@ class CrosshairBase(QWidget):
         self.h_line.sigDragged.connect(self.move_crosshair_from_drag)
         self.plot_item.view.scene().sigMouseClicked.connect(
             self.move_crosshair_from_click)
+
+        self.color_combobox.currentIndexChanged.connect(self.change_color)
 
     def _set_model(self):
 

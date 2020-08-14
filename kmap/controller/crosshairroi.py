@@ -72,6 +72,12 @@ class CrosshairROIBase(CrosshairBase):
         else:
             return False
 
+    def change_color(self, index):
+
+        CrosshairBase.change_color(self, index)
+        
+        self.roi.setPen(self.colors[index])
+
     def update(self):
 
         x, y, radius = self.model.x, self.model.y, self.model.radius

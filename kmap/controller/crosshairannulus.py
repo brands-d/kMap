@@ -72,6 +72,12 @@ class CrosshairAnnulusBase(CrosshairROIBase):
         else:
             return False
 
+    def change_color(self, index):
+
+        CrosshairROIBase.change_color(self, index)
+
+        self.annulus.setPen(self.colors[index])
+
     def update(self):
 
         x, y = self.model.x, self.model.y
