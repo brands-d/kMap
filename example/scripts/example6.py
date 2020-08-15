@@ -17,11 +17,10 @@ crosshair = CrosshairAnnulusModel(x=x, y=y, radius=radius, width=width)
 # Use 7x7 as data from which we cut to better demonstrate working
 # The data goes from 0-49 and the pixel center acts is the whole number
 global data
-data = PlotData(np.reshape(np.array(range(81)), (9, 9)),
-                [[-4, 4], [-4, 4]])
+data = PlotData(np.reshape(np.array(range(99)), (9, 11)),
+                [[-5, 5], [-4, 4]])
 global extent
 extent = data.range.flatten() + [-0.5, 0.5, -0.5, 0.5]
-
 
 def plot(axis, x, y, r, w, region, inverted, title=''):
     # Helper Function plotting crosshair and data
@@ -45,9 +44,9 @@ def plot(axis, x, y, r, w, region, inverted, title=''):
     axis.set_ylabel('y')
 
     # Plot x line
-    axis.plot([x, x], extent[2:], color='black')
+    axis.plot([x, x], extent[:2], color='black')
     # Plot y line
-    axis.plot(extent[:2], [y, y], color='black')
+    axis.plot(extent[2:], [y, y], color='black')
     # Plot ROI
     axis.plot(r * np.cos(theta) + x, r *
               np.sin(theta) + y, color='black')
@@ -57,7 +56,7 @@ def plot(axis, x, y, r, w, region, inverted, title=''):
     # Plot Data
     # Origin needs to be set to lower because we defined both axes
     # as starting from minimum to maximum
-    axis.imshow(cut.data, extent=extent, vmin=0, vmax=81, origin='lower')
+    axis.imshow(cut.data, extent=extent, vmin=0, vmax=99, origin='lower')
 
 
 global theta
@@ -81,8 +80,7 @@ plot(axes[1][0], x=0, y=0, r=1.5, w=1.5, region='x',
 # x-Line 2
 plot(axes[1][1], x=1, y=0, r=1.5, w=1.5,
      region='x', inverted=False, title='x-Line 2')
-# y-Line Edge Case: 0.5 is right on the edge. Crosshair uses round thus
-# 0.5 is considered
+# y-Line Edge Case: 0.5 is right on the edge.
 plot(axes[1][2], x=0, y=0.5, r=1.5, w=1.5, region='y',
      inverted=False, title='y-Line Edge Case 2')
 
