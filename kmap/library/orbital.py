@@ -23,6 +23,8 @@ class Orbital():
         file_format (string): Currently only cube files are supported.
         dk3D (float): Desired resolution for 3D-Fourier-Transform.
             Single number.
+        E_kin_max (float): maximum kinetic energy in eV is used to
+            reduce the size of the 3D-numpy-array in momentum space
         value (string): choose between 'real', 'imag', 'abs' or 'abs2'
             for Re(), Im(), |..| or |..|^2
 
@@ -30,15 +32,15 @@ class Orbital():
 
     """
 
-    def __init__(self, file, file_format='cube', dk3D=0.15, value='abs2'):
-
+    def __init__(self, file, file_format='cube', dk3D=0.15, E_kin_max=150,value='abs2'):
+        
         # Read orbital data from file
         if file_format == 'cube': 
             self._read_cube(file)
         else:
             NotImplementedError('Other formats than cube not implemented')
 
-        self.compute_3DFT(dk3D, value)
+        self.compute_3DFT(dk3D, E_kin_max, value)
         self.kmap = {}
         self.Ak   = {}
 
@@ -97,7 +99,7 @@ class Orbital():
                         self.kmap['krange'])
 
 
-    def compute_3DFT(self, dk3D, value):
+    def compute_3DFT(self, dk3D, E_kin_max, value):
         """Compute 3D-FT."""
 
         # Determine required size (nkx,nky,nkz) of 3D-FT array to reach
@@ -126,6 +128,18 @@ class Orbital():
         factor        = dkx*dky*dkz*np.sum(np.abs(psik)**2)
         psik         /= np.sqrt(factor)
 
+        # Reduce size of array to value given by E_kin_max to save memory
+        k_max      = self.E_to_k(E_kin_max)
+        kx_indices = np.where((kx <= k_max) & (kx >= -k_max))[0]
+        ky_indices = np.where((ky <= k_max) & (ky >= -k_max))[0]
+        kz_indices = np.where((kz <= k_max) & (kz >= -k_max))[0]    
+        kx         = kx[kx_indices]
+        ky         = ky[ky_indices]
+        kz         = kz[kz_indices]
+        psik       = np.take(psik, kx_indices, axis=0)
+        psik       = np.take(psik, ky_indices, axis=1)
+        psik       = np.take(psik, kz_indices, axis=2)
+
         # decide whether real, imaginry part, absolute value, or squared absolute value is used
         if value == 'real':
             psik = np.real(psik)
@@ -148,6 +162,7 @@ class Orbital():
 
         # Set attributes
         self.psik = {'kx': kx, 'ky': ky, 'kz': kz,
+                     'E_kin_max':E_kin_max,
                      'value': value,
                      'data': psik,
                      'data_interp': psik_interp}
