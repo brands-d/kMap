@@ -9,7 +9,7 @@ from kmap.library.plotdata import PlotData
 from kmap.library.abstractdata import AbstractData
 from kmap.library.misc import axis_from_range
 from kmap.library.database import Database
-from kmap.library.orbital import Orbital 
+from kmap.library.orbital import Orbital
 
 
 class SlicedData(AbstractData):
@@ -102,17 +102,16 @@ class SlicedData(AbstractData):
         return cls(name, axis_1, axis_2, axis_3, data, meta_data)
 
     @classmethod
-    def init_from_orbitals(cls, name, orbitals,  
-                                photon_energy=35,  
-                                fermi_energy=0,     
-                                energy_broadening=0.4,  
-                                dk=0.03,               
-                                phi=0,theta=0,psi=0,   
-                                Ak_type='no',           
-                                polarization='p',
-                                alpha=60,beta=90,gamma='auto',
-                                symmetrization='no'):
-
+    def init_from_orbitals(cls, name, orbitals,
+                           photon_energy=35,
+                           fermi_energy=0,
+                           energy_broadening=0.4,
+                           dk=0.03,
+                           phi=0, theta=0, psi=0,
+                           Ak_type='no',
+                           polarization='p',
+                           alpha=60, beta=90, gamma='auto',
+                           symmetrization='no'):
         """Returns a SlicedData object with the data[BE,kx,ky] 
            computed from the kmaps of several orbitals and
            broadened in energy.
@@ -142,97 +141,97 @@ class SlicedData(AbstractData):
         """
 
         # determine axis_1 from minimal and maximal binding energy
-        extend_range = 3*energy_broadening
+        extend_range = 3 * energy_broadening
         energies = []
-        
-        for orbital in orbitals:                
+
+        for orbital in orbitals:
             energies.append(orbital.energy)
 
         BE_min = min(energies) - fermi_energy - extend_range
         BE_max = max(energies) - fermi_energy + extend_range
-        dBE    = energy_broadening/4  # set energy grid spacing 5 times smaller than broadening
-        nBE    = int( (BE_max - BE_min)/dBE ) + 1
-        BE     = np.linspace(BE_min,BE_max,nBE)
-        nBE    = len(BE)
-        axis_1 = ['-BE', 'eV',  [BE_min, BE_max]]
+        dBE = energy_broadening / 4  # set energy grid spacing 5 times smaller than broadening
+        nBE = int((BE_max - BE_min) / dBE) + 1
+        BE = np.linspace(BE_min, BE_max, nBE)
+        nBE = len(BE)
+        axis_1 = ['-BE', 'eV', [BE_min, BE_max]]
 
         # determine axis_2 and axis_3 kmax at BE_max
-        Phi        = -fermi_energy  # work function
-        E_kin_max  = photon_energy - Phi + BE_max
-        m, hbar, e = 9.10938356e-31, 1.0545718e-34, 1.60217662e-19 
-        fac        = 2 * 1e-20 * e * m / hbar**2
-        k_max      = np.sqrt(fac * E_kin_max)
-        nk         = int( (2*k_max)/dk ) + 1
-        k_grid     = np.linspace(-k_max,+k_max,nk)
-        nk         = len(k_grid)
-        axis_2     = ['kx', '1/A', [-k_max,+k_max]]
-        axis_3     = ['ky', '1/A', [-k_max,+k_max]]
-  
-        # initialize 3D-numpy array with zeros     
-        data          = np.zeros((nBE,nk,nk))
+        Phi = -fermi_energy  # work function
+        E_kin_max = photon_energy - Phi + BE_max
+        m, hbar, e = 9.10938356e-31, 1.0545718e-34, 1.60217662e-19
+        fac = 2 * 1e-20 * e * m / hbar**2
+        k_max = np.sqrt(fac * E_kin_max)
+        nk = int((2 * k_max) / dk) + 1
+        k_grid = np.linspace(-k_max, +k_max, nk)
+        nk = len(k_grid)
+        axis_2 = ['kx', '1/A', [-k_max, +k_max]]
+        axis_3 = ['ky', '1/A', [-k_max, +k_max]]
+
+        # initialize 3D-numpy array with zeros
+        data = np.zeros((nBE, nk, nk))
         orbital_names = []
 
-        # add kmaps of orbitals to 
+        # add kmaps of orbitals to
         print('Adding orbitals to SlicedData Object, please wait!')
         for orbital in orbitals:
-            BE0    = orbital.energy - fermi_energy  # binding energy of orbital
-            E_kin  = photon_energy - Phi + BE0      # kinetic energy of emitted electron
+            BE0 = orbital.energy - fermi_energy  # binding energy of orbital
+            E_kin = photon_energy - Phi + BE0      # kinetic energy of emitted electron
 
             # Gaussian weight function
-            norm   = (1/np.sqrt(2*np.pi*energy_broadening**2)) 
-            weight = norm*np.exp( -((BE - BE0)**2/(2*energy_broadening**2)) )
+            norm = (1 / np.sqrt(2 * np.pi * energy_broadening**2))
+            weight = norm * \
+                np.exp(-((BE - BE0)**2 / (2 * energy_broadening**2)))
 
-            url    = orbital.URL  
+            url = orbital.URL
 
-            print('Loading from database: ',url)
+            print('Loading from database: ', url)
             with urllib.request.urlopen(url) as f:
                 file = f.read().decode('utf-8')
                 orbital_data = Orbital(file)
 
             orbital_name = orbital.name
             orbital_names.append(orbital.name)
-            print('Computing k-map for ',orbital_name)
+            print('Computing k-map for ', orbital_name)
 
             kmap = orbital_data.get_kmap(E_kin, dk, phi, theta, psi,
-                                  Ak_type, polarization, alpha, beta,
-                                  gamma,symmetrization)
-            kmap.interpolate(k_grid,k_grid,update=True)
-     
-            print('Adding to 3D-array: ',orbital_name)       
+                                         Ak_type, polarization, alpha, beta,
+                                         gamma, symmetrization)
+            kmap.interpolate(k_grid, k_grid, update=True)
+
+            print('Adding to 3D-array: ', orbital_name)
             for i in range(len(BE)):
-                data[i,:,:] += weight[i]*kmap.data
+                data[i, :, :] += weight[i] * kmap.data
 
         # define meta-data for tool-tip display
         orbital_info = {}
         for name, energy in zip(orbital_names, energies):
-            orbital_info[name] = energy    
+            orbital_info[name] = energy
 
-        meta_data = {'Photon energy (eV)':photon_energy,
-                     'Fermi energy (eV)':fermi_energy,
-                     'Energy broadening (eV)':energy_broadening,
-                     'Molecular orientation':(phi, theta, psi),
-                     '|A.k|^2 factor':Ak_type,
-                     'Polarization':polarization,
-                     'Incidence direction':(alpha, beta),
-                     'Symmetrization':symmetrization,
-                     'Orbital Info':orbital_info}
+        meta_data = {'Photon energy (eV)': photon_energy,
+                     'Fermi energy (eV)': fermi_energy,
+                     'Energy broadening (eV)': energy_broadening,
+                     'Molecular orientation': (phi, theta, psi),
+                     '|A.k|^2 factor': Ak_type,
+                     'Polarization': polarization,
+                     'Incidence direction': (alpha, beta),
+                     'Symmetrization': symmetrization,
+                     'Orbital Info': orbital_info}
 
         return cls(name, axis_1, axis_2, axis_3, data, meta_data)
-
 
     def slice_from_index(self, index, axis=0):
 
         if axis == 0:
             data = self.data[index, :, :]
-            range_ = [self.axes[1].range, self.axes[2].range]
+            range_ = [self.axes[2].range, self.axes[1].range]
 
         elif axis == 1:
             data = self.data[:, index, :]
-            range_ = [self.axes[0].range, self.axes[2].range]
+            range_ = [self.axes[2].range, self.axes[0].range]
 
         elif axis == 2:
             data = self.data[:, :, index]
-            range_ = [self.axes[0].range, self.axes[1].range]
+            range_ = [self.axes[1].range, self.axes[0].range]
 
         else:
             raise ValueError('axis has to be between 1 and 3')

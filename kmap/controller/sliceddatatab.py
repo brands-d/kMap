@@ -87,7 +87,7 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
         index = self.slider.get_index()
         data = self.model.change_slice(index, axis)
 
-        self.plot_item.set_label(*axes)
+        self.plot_item.set_label(axes[1], axes[0])
         self.plot_item.plot(data)
 
     def crosshair_changed(self):
