@@ -53,8 +53,8 @@ class PlotData():
             raise ValueError('range_ can only have finite values')
 
         # Set axes
-        self.x_axis = axis_from_range(self.range[0], self.data.shape[0])
-        self.y_axis = axis_from_range(self.range[1], self.data.shape[1])
+        self.x_axis = axis_from_range(self.range[0], self.data.shape[1])
+        self.y_axis = axis_from_range(self.range[1], self.data.shape[0])
 
         # Set step_size
         self.step_size = np.array([self.x_axis[1] - self.x_axis[0],
