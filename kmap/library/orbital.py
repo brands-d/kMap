@@ -123,6 +123,11 @@ class Orbital():
         psik = np.fft.fftshift(np.fft.fftn(self.psi['data'],
                                            s=[nkx, nky, nkz]))
 
+        # properly normalize wave function in momentum space
+        dkx, dky, dkz = kx[1]-kx[0], ky[1]-ky[0], kz[1]-kz[0]
+        factor        = dkx*dky*dkz*np.sum(np.abs(psik)**2)
+        psik         /= np.sqrt(factor)
+
         # Reduce size of array to value given by E_kin_max to save memory
         k_max      = self.E_to_k(E_kin_max)
         kx_indices = np.where((kx <= k_max) & (kx >= -k_max))[0]
@@ -134,11 +139,6 @@ class Orbital():
         psik       = np.take(psik, kx_indices, axis=0)
         psik       = np.take(psik, ky_indices, axis=1)
         psik       = np.take(psik, kz_indices, axis=2)
-
-        # properly normalize wave function in momentum space
-        dkx, dky, dkz = kx[1]-kx[0], ky[1]-ky[0], kz[1]-kz[0]
-        factor        = dkx*dky*dkz*np.sum(np.abs(psik)**2)
-        psik         /= np.sqrt(factor)
 
         # decide whether real, imaginry part, absolute value, or squared absolute value is used
         if value == 'real':
