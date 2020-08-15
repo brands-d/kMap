@@ -44,6 +44,27 @@ class TabWidget(QWidget, TabWidget_UI):
             log.error('Couldn\'t load %s' % path)
             log.error(traceback.format_exc())
 
+    def open_sliced_data_tab_by_URL(self, URLs):
+
+        # Last element in URLs are the parameters. All other elements
+        # are individual orbitals to load. Each is a list of length 2
+        # with first entry being the URL, the second the meta_data
+        # dictionary
+        try:
+            *orbitals, options = URLs
+            name, *parameters = options
+            tab = SlicedDataTab.init_from_orbitals(name, orbitals,
+                                                   *parameters)
+            title = tab.get_title()
+            tooltip = tab.to_string()
+            self._open_tab(tab, title, tooltip)
+
+        except Exception as e:
+
+            log = logging.getLogger('kmap')
+            log.error('Couldn\'t load URLs')
+            log.error(traceback.format_exc())
+
     def open_orbital_data_tab(self):
         # Opens a new orbital data tab
 
@@ -86,7 +107,7 @@ class TabWidget(QWidget, TabWidget_UI):
     def get_current_tab(self):
 
         return self.tab_widget.currentWidget()
-        
+
     def close_tab(self, index):
         # Close tab specified with index
 

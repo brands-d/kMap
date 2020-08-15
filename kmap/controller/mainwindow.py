@@ -9,7 +9,8 @@ from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox
 
 # Own Imports
 from kmap import __directory__, __version__
-from kmap.controller.databasewindow import DatabaseWindow
+from kmap.controller.databasewindows import (
+    OrbitalDatabase, SlicedDatabaseWindow)
 from kmap.controller.tabwidget import TabWidget
 from kmap.model.mainwindow_model import MainWindowModel
 from kmap.config.config import config
@@ -54,10 +55,23 @@ class MainWindow(QMainWindow, MainWindow_UI):
 
             self.tab_widget.open_sliced_data_tab(path)
 
-    def open_database_browser(self):
+    def open_orbitaldatabase_browser(self):
 
-        self.database = DatabaseWindow()
+        self.database = OrbitalDatabase()
         self.database.files_chosen.connect(self.load_cube_files_online)
+
+    def open_sliceddatabase_browser(self):
+
+        self.database = SlicedDatabaseWindow()
+        self.database.files_chosen.connect(self.load_sliced_files_online)
+
+    def load_sliced_files_online(self, URLs):
+        # Load one or more cube files as sliced data
+
+        log = logging.getLogger('kmap')
+        log.info('Loading .cube file(s) as sliced data...')
+
+        self.tab_widget.open_sliced_data_tab_by_URL(URLs)
 
     def load_cube_files_online(self, URLs):
 
@@ -129,7 +143,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
     def open_orbital_data_tab(self):
 
         self.tab_widget.open_orbital_data_tab()
-        
+
     def open_logging_settings(self):
         # Open logging user settings
 
@@ -214,11 +228,13 @@ class MainWindow(QMainWindow, MainWindow_UI):
 
     def _initialize_shortcuts(self):
 
-        actions = [self.load_hdf5_action, self.show_matplotlib,
+        actions = [self.load_hdf5_action,
+                   self.load_sliced_online_action,
+                   self.show_matplotlib,
                    self.log_file_action, self.load_cube_online_action,
                    self.load_cube_file_action]
 
-        alias = ['load_hdf5', 'show_matplotlib', 'open_log',
+        alias = ['load_hdf5', 'load_sliced_online_action', 'show_matplotlib', 'open_log',
                  'load_cube_online', 'load_cube_file']
 
         for action, alias in zip(actions, alias):
@@ -231,10 +247,12 @@ class MainWindow(QMainWindow, MainWindow_UI):
 
         # File menu
         self.load_hdf5_action.triggered.connect(self.load_hdf5_files)
+        self.load_sliced_online_action.triggered.connect(
+            self.open_sliceddatabase_browser)
         self.load_cube_file_action.triggered.connect(
             self.load_cube_files_locally)
         self.load_cube_online_action.triggered.connect(
-            self.open_database_browser)
+            self.open_orbitaldatabase_browser)
         self.log_file_action.triggered.connect(self.open_log_file)
         self.mod_log_file_action.triggered.connect(self.open_mod_log_file)
         self.show_matplotlib.triggered.connect(self.open_in_matplotlib)
