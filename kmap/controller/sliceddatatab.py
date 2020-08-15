@@ -23,9 +23,9 @@ SlicedDataTab_UI, _ = uic.loadUiType(UI_file)
 
 class SlicedDataTab(Tab, SlicedDataTab_UI):
 
-    def __init__(self, path):
+    def __init__(self, model):
 
-        self.model = SlicedDataTabModel(path)
+        self.model = model
 
         # Setup GUI
         super(SlicedDataTab, self).__init__()
@@ -35,6 +35,22 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
 
         self.change_axis(0)
         self.change_slice(0)
+
+    @classmethod
+    def init_from_URLs(cls, URLs):
+
+        model = SlicedDataTabModel()
+        model.load_data_from_URLs(URLs)
+
+        return cls(model)
+
+    @classmethod
+    def init_from_path(cls, path):
+
+        model = SlicedDataTabModel()
+        model.load_data_from_path(path)
+
+        return cls(model)
 
     def get_title(self):
 

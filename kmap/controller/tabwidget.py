@@ -34,7 +34,7 @@ class TabWidget(QWidget, TabWidget_UI):
         log.info('Trying to load %s' % path)
 
         try:
-            tab = SlicedDataTab(path)
+            tab = SlicedDataTab.init_from_path(path)
             title = tab.get_title()
             tooltip = tab.to_string()
             self._open_tab(tab, title, tooltip)
@@ -46,15 +46,8 @@ class TabWidget(QWidget, TabWidget_UI):
 
     def open_sliced_data_tab_by_URL(self, URLs):
 
-        # Last element in URLs are the parameters. All other elements
-        # are individual orbitals to load. Each is a list of length 2
-        # with first entry being the URL, the second the meta_data
-        # dictionary
         try:
-            *orbitals, options = URLs
-            name, *parameters = options
-            tab = SlicedDataTab.init_from_orbitals(name, orbitals,
-                                                   *parameters)
+            tab = SlicedDataTab.init_from_URLs(URLs)
             title = tab.get_title()
             tooltip = tab.to_string()
             self._open_tab(tab, title, tooltip)
