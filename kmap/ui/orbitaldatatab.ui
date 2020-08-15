@@ -24,7 +24,7 @@
      </property>
      <property name="minimumSize">
       <size>
-       <width>650</width>
+       <width>700</width>
        <height>0</height>
       </size>
      </property>
@@ -45,13 +45,42 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>648</width>
+        <width>698</width>
         <height>513</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>20</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item>
-        <widget class="OrbitalTable" name="table" native="true"/>
+        <widget class="OrbitalTable" name="table" native="true">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>200</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="mini_plot_layout" stretch="0,0">
+         <item>
+          <widget class="QWidget" name="mini_real_plot" native="true"/>
+         </item>
+         <item>
+          <widget class="MiniKSpacePlot" name="mini_kspace_plot" native="true"/>
+         </item>
+        </layout>
        </item>
        <item>
         <layout class="QHBoxLayout" name="polarization_layout">
@@ -102,6 +131,12 @@
    <class>CubeOptions</class>
    <extends>QWidget</extends>
    <header>kmap/controller/cubeoptions</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>MiniKSpacePlot</class>
+   <extends>QWidget</extends>
+   <header>kmap/controller/miniplots</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

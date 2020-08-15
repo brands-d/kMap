@@ -56,6 +56,18 @@ class WeightSpinBox(QDoubleSpinBox):
         self.setObjectName('weight')
 
 
+class FixedSizeWidget(QWidget):
+
+    def __init__(self, width, ratio, *args, **kwargs):
+
+        super(FixedSizeWidget, self).__init__()
+        
+        height = width * ratio
+        self.resize(width, height)
+        self.setMaximumSize(width, height)
+        self.setMinimumSize(width, height)
+
+
 class AspectWidget(QWidget):
 
     def __init__(self, *args, ratio=0, **kwargs):

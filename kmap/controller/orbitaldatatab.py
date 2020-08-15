@@ -63,6 +63,12 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
 
         self.plot_item.plot(data)
 
+    def refresh_mini_plots(self, ID):
+
+        data = self.model.get_orbital_kmap_by_ID(ID)
+
+        self.mini_kspace_plot.plot(data)
+
     def get_parameters(self, ID):
 
         kinetic_energy, dk = self.cube_options.get_parameters()
@@ -108,17 +114,18 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
     def _setup(self):
 
         self.crosshair = CrosshairAnnulus(self.plot_item)
-        self.colormap = Colormap(self.plot_item)
+        self.colormap = Colormap([self.plot_item, self.mini_kspace_plot])
 
         layout = self.scroll_area.widget().layout()
-        layout.insertWidget(1, self.colormap)
-        layout.insertWidget(2, self.crosshair)
+        layout.insertWidget(2, self.colormap)
+        layout.insertWidget(3, self.crosshair)
 
     def _connect(self):
 
         self.crosshair.crosshair_changed.connect(self.crosshair_changed)
         self.table.orbital_changed.connect(self.orbitals_changed)
         self.table.orbital_removed.connect(self.remove_orbital_by_ID)
+        self.table.orbital_selected.connect(self.refresh_mini_plots)
         self.polarization.polarization_changed.connect(
             self.change_parameter)
         self.polarization.symmetrization_changed.connect(

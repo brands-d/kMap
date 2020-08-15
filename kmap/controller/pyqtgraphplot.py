@@ -19,7 +19,8 @@ class PyQtGraphPlot(ImageView):
 
         # Setup GUI
         self.plot_view = PlotItem()
-        super(PyQtGraphPlot, self).__init__(view=self.plot_view)
+        super(PyQtGraphPlot, self).__init__(
+            *args, view=self.plot_view, **kwargs)
         self._setup()
 
         self.model = PyQtGraphPlotModel(plot_data)
