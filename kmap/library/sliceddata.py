@@ -200,7 +200,7 @@ class SlicedData(AbstractData):
      
             print('Adding to 3D-array: ',orbital_name)       
             for i in range(len(BE)):
-                data[i,:,:] = weight[i]*kmap.data
+                data[i,:,:] += weight[i]*kmap.data
 
         # define meta-data for tool-tip display
         orbital_info = {}

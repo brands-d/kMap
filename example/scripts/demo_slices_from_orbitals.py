@@ -17,11 +17,16 @@ kmap_stack = SlicedData.init_from_orbitals(name,molecule.orbitals[6:-4],
                                            photon_energy=40,fermi_energy=-3)  
 
 
-# Get a PlotData object consisting of the 10th slice and its axes
-plot_data = kmap_stack.slice_from_index(10)
+# Plot some slices
+fig, _ax = plt.subplots(3,3)
+ax = _ax.flatten()
+nplots = len(ax)
+nslice = kmap_stack.data.shape[0]
 
-# Plot
-__, axes = plt.subplots()
-axes.imshow(plot_data.data)
+count = 0
+for i in range(0,nslice,1+nslice//nplots):
+    plot_data = kmap_stack.slice_from_index(i)
+    ax[count].imshow(plot_data.data)
+    count += 1
 plt.show()
 
