@@ -102,54 +102,59 @@ class SlicedData(AbstractData):
         return cls(name, axis_1, axis_2, axis_3, data, meta_data)
 
     @classmethod
-    def init_from_orbitals(cls, name, orbitals,
-                           photon_energy=35,
-                           fermi_energy=0,
-                           energy_broadening=0.4,
-                           dk=0.03,
-                           phi=0, theta=0, psi=0,
-                           Ak_type='no',
-                           polarization='p',
-                           alpha=60, beta=90, gamma='auto',
-                           symmetrization='no'):
+    def init_from_orbitals(cls, name, orbitals, parameters):
+
         """Returns a SlicedData object with the data[BE,kx,ky] 
            computed from the kmaps of several orbitals and
            broadened in energy.
 
         Args:
             name (str): name for SlicedData object
-            orbitals (list): list of orbitals from kmap.database.Orbital class
-            photon_energy (float): Photon energy in eV.
-            fermi_energy (float): Fermi energy in eV
-            energy_broadening (float): FWHM of Gaussian energy broadenening in eV
-            dk (float): Desired k-resolution in kmap in Angstroem^-1.
-            phi (float): Euler orientation angle phi in degree.
-            theta (float): Euler orientation angle theta in degree.
-            psi (float): Euler orientation angle psi in degree.
-            Ak_type (string): Treatment of |A.k|^2: either 'no',
-                'toroid' or 'NanoESCA'.
-            polarization (string): Either 'p', 's', 'C+', 'C-' or
-                'CDAD'.   
-            alpha (float): Angle of incidence plane in degree.
-            beta (float): Azimuth of incidence plane in degree.
-            gamma (float/str): Damping factor for final state in
-                Angstroem^-1. str = 'auto' sets gamma automatically
-            symmetrization (str): either 'no', '2-fold', '2-fold+mirror',
-                '3-fold', '3-fold+mirror','4-fold', '4-fold+mirror'
+            orbitals (list): [[ 'URL1',dict1], ['URL2',dict2], ...]
+                dict needs keys: 'energy' and 'name' 
+            parameters (list): list of parameters
+                photon_energy (float): Photon energy in eV.
+                fermi_energy (float): Fermi energy in eV
+                energy_broadening (float): FWHM of Gaussian energy broadenening in eV
+                dk (float): Desired k-resolution in kmap in Angstroem^-1.
+                phi (float): Euler orientation angle phi in degree.
+                theta (float): Euler orientation angle theta in degree.
+                psi (float): Euler orientation angle psi in degree.
+                Ak_type (string): Treatment of |A.k|^2: either 'no',
+                        'toroid' or 'NanoESCA'.
+                polarization (string): Either 'p', 's', 'C+', 'C-' or
+                        'CDAD'.   
+                alpha (float): Angle of incidence plane in degree.
+                beta (float): Azimuth of incidence plane in degree.
+                gamma (float/str): Damping factor for final state in
+                        Angstroem^-1. str = 'auto' sets gamma automatically
+                symmetrization (str): either 'no', '2-fold', '2-fold+mirror',
+                        '3-fold', '3-fold+mirror','4-fold', '4-fold+mirror'
         Returns:
             (SlicedData): SlicedData containing kmaps of all orbitals
         """
+
+        # extract parameters
+        photon_energy      = parameters[0]
+        fermi_energy       = parameters[1]
+        energy_broadening  = parameters[2]
+        dk                 = parameters[3]
+        phi, theta, psi    = parameters[4], parameters[5], parameters[6]
+        Ak_type            = parameters[7]
+        polarization       = parameters[8]
+        alpha, beta, gamma = parameters[9], parameters[10], parameters[11]
+        symmetrization     = parameters[12]
 
         # determine axis_1 from minimal and maximal binding energy
         extend_range = 3 * energy_broadening
         energies = []
 
         for orbital in orbitals:
-            energies.append(orbital.energy)
+            energies.append(orbital[1]['energy'])
 
         BE_min = min(energies) - fermi_energy - extend_range
         BE_max = max(energies) - fermi_energy + extend_range
-        dBE = energy_broadening / 4  # set energy grid spacing 5 times smaller than broadening
+        dBE = energy_broadening / 6  # set energy grid spacing 6 times smaller than broadening
         nBE = int((BE_max - BE_min) / dBE) + 1
         BE = np.linspace(BE_min, BE_max, nBE)
         nBE = len(BE)
@@ -174,7 +179,7 @@ class SlicedData(AbstractData):
         # add kmaps of orbitals to
         print('Adding orbitals to SlicedData Object, please wait!')
         for orbital in orbitals:
-            BE0 = orbital.energy - fermi_energy  # binding energy of orbital
+            BE0 = orbital[1]['energy'] - fermi_energy  # binding energy of orbital
             E_kin = photon_energy - Phi + BE0      # kinetic energy of emitted electron
 
             # Gaussian weight function
@@ -182,30 +187,29 @@ class SlicedData(AbstractData):
             weight = norm * \
                 np.exp(-((BE - BE0)**2 / (2 * energy_broadening**2)))
 
-            url = orbital.URL
+            url = orbital[0]
 
             print('Loading from database: ', url)
             with urllib.request.urlopen(url) as f:
                 file = f.read().decode('utf-8')
                 orbital_data = Orbital(file)
 
-            orbital_name = orbital.name
-            orbital_names.append(orbital.name)
-            print('Computing k-map for ', orbital_name)
+            orbital_names.append(orbital[1]['name'])
+            print('Computing k-map for ', orbital[1]['name'])
 
             kmap = orbital_data.get_kmap(E_kin, dk, phi, theta, psi,
                                          Ak_type, polarization, alpha, beta,
                                          gamma, symmetrization)
             kmap.interpolate(k_grid, k_grid, update=True)
 
-            print('Adding to 3D-array: ', orbital_name)
+            print('Adding to 3D-array: ', orbital[1]['name'])
             for i in range(len(BE)):
                 data[i, :, :] += weight[i] * kmap.data
 
         # define meta-data for tool-tip display
         orbital_info = {}
-        for name, energy in zip(orbital_names, energies):
-            orbital_info[name] = energy
+        for orbital_name, energy in zip(orbital_names, energies):
+            orbital_info[orbital_name] = energy
 
         meta_data = {'Photon energy (eV)': photon_energy,
                      'Fermi energy (eV)': fermi_energy,

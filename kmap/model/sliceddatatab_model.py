@@ -16,7 +16,7 @@ class SlicedDataTabModel():
         # dictionary
         *orbitals, options = URLs
         name, *parameters = options
-        print(name, orbitals, parameters)
+        #print(name, orbitals, parameters)
         self.data = SlicedData.init_from_orbitals(name, orbitals, parameters)
 
         self.change_slice(0, 0)

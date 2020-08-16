@@ -1,3 +1,9 @@
+# This script demonstrates how kmaps of several orbitals can be used to
+# create the datacube Intensity[BE,kx,ky] as SlicedData object (BE = binding energy)
+# To this end a list of molecular orbitals is loaded from a list of URLs 
+# pointing to the cube files. By using the orbital energies and a given
+# energy broadening parameter the data cube is created and can be sliced as desired.
+
 # Python imports
 import os
 import matplotlib.pyplot as plt
@@ -11,11 +17,30 @@ from kmap.library.sliceddata import SlicedData
 db = Database(path + 'molecules.txt')
 molecule = db.get_molecule_by_ID(11)  # choose pentacene molecule for testing ...
 
-# ... and for testing choose some subset of orbitals of pentacene
-name       = molecule.full_name   # set name for SlicedData Object
-kmap_stack = SlicedData.init_from_orbitals(name,molecule.orbitals[6:-4],
-                                           photon_energy=40,fermi_energy=-3)  
+# set name and select list of orbitals 
+name       = 'pentacene'   # set name for SlicedData Object
+orbitals   = []
+for orbital in molecule.orbitals[7:-4]:
+    orbitals.append([orbital.URL,{'energy':orbital.energy,'name':orbital.name}])
 
+# set parameters
+parameters =[35.0,  # photon_energy (float): Photon energy in eV.
+             0.0,   # fermi_energy (float): Fermi energy in eV
+             0.4,   # energy_broadening (float): FWHM of Gaussian energy broadenening in eV
+             0.03,  # dk (float): Desired k-resolution in kmap in Angstroem^-1. 
+             0,     # phi (float): Euler orientation angle phi in degree. 
+             0,     # theta (float): Euler orientation angle phi in degree. 
+             0,     # psi (float): Euler orientation angle phi in degree. 
+             'no',  # Ak_type (string): Treatment of |A.k|^2: either 'no', 'toroid' or 'NanoESCA'.  
+             'p',   # polarization (string): Either 'p', 's', 'C+', 'C-' or 'CDAD'. 
+             0,     # alpha (float): Angle of incidence plane in degree. 
+             0,     # beta (float): Azimuth of incidence plane in degree.
+             'auto',# gamma (float/str): Damping factor for final state in Angstroem^-1. str = 'auto' sets gamma automatically
+             'no']  # symmetrization (str): either 'no', '2-fold', '2-fold+mirror',
+                    #    '3-fold', '3-fold+mirror','4-fold', '4-fold+mirror'
+             
+# initialize SlicedData object
+kmap_stack = SlicedData.init_from_orbitals(name,orbitals,parameters)  
 
 # Plot some slices
 fig, _ax = plt.subplots(3,3)
