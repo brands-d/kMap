@@ -203,7 +203,7 @@
   </action>
   <action name="load_sliced_online_action">
    <property name="text">
-    <string>from orbitals ...</string>
+    <string>From Orbitals ...</string>
    </property>
   </action>
  </widget>

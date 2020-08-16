@@ -8,8 +8,15 @@ class MiniKSpacePlot(FixedSizeWidget, PyQtGraphPlot):
 
         width = 300
         self.ratio = 1
+        self.ID = None
 
         super(MiniKSpacePlot, self).__init__(300, 1, *args, **kwargs)
+
+    def plot(self, plot_data, ID):
+
+        self.ID = ID
+
+        PyQtGraphPlot.plot(self, plot_data)
 
     def _setup(self):
 
