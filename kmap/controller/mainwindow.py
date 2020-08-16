@@ -144,6 +144,10 @@ class MainWindow(QMainWindow, MainWindow_UI):
 
         self.tab_widget.open_orbital_data_tab()
 
+    def open_profile_tab(self):
+
+        self.tab_widget.open_profile_tab()
+        
     def open_logging_settings(self):
         # Open logging user settings
 
@@ -257,8 +261,9 @@ class MainWindow(QMainWindow, MainWindow_UI):
         self.mod_log_file_action.triggered.connect(self.open_mod_log_file)
         self.show_matplotlib.triggered.connect(self.open_in_matplotlib)
 
-        # Edit menu
+        # Tabs menu
         self.open_sim_tab_action.triggered.connect(self.open_orbital_data_tab)
+        self.open_profile_tab_action.triggered.connect(self.open_profile_tab)
 
         # Preferences menu
         self.general_action.triggered.connect(self.open_general_settings)

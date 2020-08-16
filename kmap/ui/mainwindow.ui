@@ -81,9 +81,10 @@
    </widget>
    <widget class="QMenu" name="edit_menu">
     <property name="title">
-     <string>Edit</string>
+     <string>Tabs</string>
     </property>
     <addaction name="open_sim_tab_action"/>
+    <addaction name="open_profile_tab_action"/>
    </widget>
    <widget class="QMenu" name="settings_menu">
     <property name="title">
@@ -204,6 +205,11 @@
   <action name="load_sliced_online_action">
    <property name="text">
     <string>From Orbitals ...</string>
+   </property>
+  </action>
+  <action name="open_profile_tab_action">
+   <property name="text">
+    <string>Open new Profile Tab</string>
    </property>
   </action>
  </widget>

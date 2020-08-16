@@ -5,12 +5,15 @@ import traceback
 # PyQt5 Imports
 from PyQt5 import uic
 from PyQt5.QtWidgets import QWidget
+from PyQt5.QtCore import pyqtSignal
 
 # Own Imports
 from kmap import __directory__
 from kmap.controller.sliceddatatab import SlicedDataTab
 from kmap.controller.orbitaldatatab import OrbitalDataTab
+from kmap.controller.profileplottab import ProfilePlotTab
 from kmap.controller.filetab import FileViewerTab, FileEditorTab
+from kmap.library.qwidgetsub import Tab
 from kmap.config.config import config
 
 # Load .ui File
@@ -19,6 +22,8 @@ TabWidget_UI, _ = uic.loadUiType(UI_file)
 
 
 class TabWidget(QWidget, TabWidget_UI):
+
+    tab_added = pyqtSignal(Tab)
 
     def __init__(self, *args, **kwargs):
 
@@ -77,6 +82,12 @@ class TabWidget(QWidget, TabWidget_UI):
 
         self._open_tab(tab, title)
 
+    def open_profile_tab(self):
+
+        tab = ProfilePlotTab(self)
+
+        self._open_tab(tab, 'Profile Plot')
+
     def get_orbital_tab_to_load_to(self):
 
         tab = None
@@ -101,6 +112,18 @@ class TabWidget(QWidget, TabWidget_UI):
 
         return self.tab_widget.currentWidget()
 
+    def get_tabs_of_type(self, type_):
+
+        tabs = []
+
+        for index in range(self.tab_widget.count()):
+            tab = self.tab_widget.widget(index)
+
+            if type(tab) == type_:
+                tabs.append(tab)
+
+        return tabs
+
     def close_tab(self, index):
         # Close tab specified with index
 
@@ -116,6 +139,8 @@ class TabWidget(QWidget, TabWidget_UI):
 
         if tooltip is not None:
             self.tab_widget.setTabToolTip(index, tooltip)
+
+        self.tab_added.emit(tab)
 
     def _connect(self):
 
