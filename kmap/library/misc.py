@@ -80,3 +80,19 @@ def axis_from_range(range_, num):
 
     return np.linspace(range_[0], range_[1], num=num, endpoint=True,
                        dtype=np.float64)
+
+
+def get_rotation_axes(phi, theta):
+
+    deg2rad = np.pi / 180
+    cos_phi = np.cos(phi * deg2rad)
+    sin_phi = np.sin(phi * deg2rad)
+    cos_theta = np.cos(theta * deg2rad)
+    sin_theta = np.sin(theta * deg2rad)
+
+    axis1 = [0, 0, 1]  # first axis is always the z-axis
+    axis2 = [cos_phi, -sin_phi, 0]  # x' axis
+    axis3 = [-sin_phi * sin_theta, -cos_phi *
+             sin_theta, cos_theta]  # z'' axis
+
+    return [axis1, axis2, axis3]

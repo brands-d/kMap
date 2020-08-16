@@ -75,7 +75,7 @@
        <item>
         <layout class="QHBoxLayout" name="mini_plot_layout" stretch="0,0">
          <item>
-          <widget class="QWidget" name="mini_real_plot" native="true"/>
+          <widget class="MiniRealSpacePlot" name="mini_real_plot" native="true"/>
          </item>
          <item>
           <widget class="MiniKSpacePlot" name="mini_kspace_plot" native="true"/>
@@ -135,6 +135,12 @@
   </customwidget>
   <customwidget>
    <class>MiniKSpacePlot</class>
+   <extends>QWidget</extends>
+   <header>kmap/controller/miniplots</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>MiniRealSpacePlot</class>
    <extends>QWidget</extends>
    <header>kmap/controller/miniplots</header>
    <container>1</container>

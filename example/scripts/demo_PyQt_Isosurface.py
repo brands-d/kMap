@@ -13,6 +13,7 @@ import pyqtgraph.opengl as gl   # pip install PyOpenGL
 import os,sys,inspect
 
 from kmap.library.orbital import Orbital
+from kmap.library.misc import get_rotation_axes
 
 path = os.path.dirname(os.path.realpath(__file__)) + '/../data/'
 
@@ -96,14 +97,14 @@ class Plot3DMolecule():
         old_psi   = self.psi
 
         # first rotate items back to original orientation
-        axes = self.get_rotation_axes(old_phi,old_theta)
+        axes = get_rotation_axes(old_phi,old_theta)
         for item in self.items:
             item.rotate(-old_psi,  axes[2][0],axes[2][1],axes[2][2],local=True) # first undo psi-rotation
             item.rotate( old_theta,axes[1][0],axes[1][1],axes[1][2],local=True) # next undo theta-rotation
             item.rotate(-old_phi,  axes[0][0],axes[0][1],axes[0][2],local=True) # finally undo phi-rotation
 
         # now rotate items to new desired orientation
-        axes = self.get_rotation_axes(phi,theta)
+        axes = get_rotation_axes(phi,theta)
         for item in self.items:
             item.rotate( phi,  axes[0][0],axes[0][1],axes[0][2],local=True) # first do phi-rotation
             item.rotate(-theta,axes[1][0],axes[1][1],axes[1][2],local=True) # next do theta-rotation
@@ -115,19 +116,6 @@ class Plot3DMolecule():
 
         return
 
-    def get_rotation_axes(self,phi,theta):
-
-        deg2rad   = np.pi/180
-        cos_phi   = np.cos(phi*deg2rad)
-        sin_phi   = np.sin(phi*deg2rad)
-        cos_theta = np.cos(theta*deg2rad)
-        sin_theta = np.sin(theta*deg2rad)
-
-        axis1   = [0,0,1]  # first axis is always the z-axis
-        axis2   = [cos_phi,-sin_phi, 0]  # x' axis
-        axis3   = [-sin_phi*sin_theta, -cos_phi*sin_theta, cos_theta] # z'' axis
-
-        return [axis1, axis2, axis3]
 
 ### MAIN PROGRAM ######################################################
 cubefile = open(path + 'pentacene_HOMO.cube').read()  # read cube-file from file

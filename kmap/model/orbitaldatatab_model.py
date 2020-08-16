@@ -79,7 +79,6 @@ class OrbitalDataTabModel():
 
         if orbital is not None:
             self.orbitals.remove(orbital)
-            del orbitals
 
     def ID_to_orbital(self, ID):
 

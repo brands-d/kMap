@@ -63,11 +63,18 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
 
         self.plot_item.plot(data)
 
-    def refresh_mini_plots(self, ID):
+    def refresh_mini_plots(self, ID, orbital_changed=True):
 
         data = self.model.get_orbital_kmap_by_ID(ID)
+        phi, theta, psi = self.get_parameters(ID)[3:6]
 
         self.mini_kspace_plot.plot(data, ID)
+
+        if orbital_changed:
+            orbital = self.model.ID_to_orbital(ID)
+            self.mini_real_plot.set_orbital(orbital)
+
+        self.mini_real_plot.rotate_orbital(phi, theta, psi)
 
     def get_parameters(self, ID):
 
@@ -93,7 +100,7 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
 
         ID = self.mini_kspace_plot.ID
         if ID is not None:
-            self.refresh_mini_plots(ID)
+            self.refresh_mini_plots(ID, orbital_changed=False)
 
     def orbitals_changed(self, ID):
 
@@ -101,7 +108,7 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
 
         current_ID = self.mini_kspace_plot.ID
         if current_ID is None or current_ID == ID:
-            self.refresh_mini_plots(ID)
+            self.refresh_mini_plots(ID, orbital_changed=False)
 
     def get_title(self):
 
@@ -112,7 +119,8 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         orbital = self.model.remove_orbital_by_ID(ID)
 
         self.refresh_plot()
-        self.mini_kspace_plot.plot(None)
+        self.mini_kspace_plot.plot(None, ID)
+        self.mini_real_plot.set_orbital(None)
 
     def closeEvent(self, event):
 
