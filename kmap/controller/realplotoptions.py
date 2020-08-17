@@ -14,9 +14,9 @@ RealPlotOptions_UI, _ = uic.loadUiType(UI_file)
 class RealPlotOptions(QWidget, RealPlotOptions_UI):
 
     set_camera = pyqtSignal(int, int, int)
-    show_grid_changed = pyqtSignal()
-    show_mesh_changed = pyqtSignal()
-    show_bonds_changed = pyqtSignal()
+    show_grid_changed = pyqtSignal(int)
+    show_mesh_changed = pyqtSignal(int)
+    show_bonds_changed = pyqtSignal(int)
     iso_val_changed = pyqtSignal()
 
     def __init__(self, plot_item):
@@ -49,18 +49,22 @@ class RealPlotOptions(QWidget, RealPlotOptions_UI):
 
         return self.iso_spinbox.value()
 
-    def _change_bonds_show(self):
+    def _change_bonds_show(self, state):
 
-        self.show_bonds_changed.emit()
+        self.show_bonds_changed.emit(state)
 
-    def _change_grid_show(self):
+    def _change_grid_show(self, state):
 
-        self.show_grid_changed.emit()
+        self.show_grid_changed.emit(state)
 
-    def _change_mesh_show(self):
+    def _change_mesh_show(self, state):
 
-        self.show_mesh_changed.emit()
+        self.show_mesh_changed.emit(state)
 
+    def _change_iso_val(self):
+
+        self.iso_val_changed.emit()
+        
     def _connect(self):
 
         self.reset_camera_button.clicked.connect(self.reset_camera)
@@ -68,4 +72,4 @@ class RealPlotOptions(QWidget, RealPlotOptions_UI):
         self.show_grid_checkbox.stateChanged.connect(self._change_grid_show)
         self.show_isosurface_checkbox.stateChanged.connect(
             self._change_mesh_show)
-        self.iso_spinbox.valueChanged.connect(self._change_mesh_show)
+        self.iso_spinbox.valueChanged.connect(self._change_iso_val)

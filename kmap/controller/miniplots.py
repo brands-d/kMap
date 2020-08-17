@@ -92,6 +92,23 @@ class MiniRealSpacePlot(GLViewWidget):
         self.setCameraPosition(distance=distance, elevation=elevation,
                                azimuth=azimuth)
 
+    def toggle_show_grid(self, state):
+
+        if self.grid is not None:
+            self.grid.setVisible(state)
+
+    def toggle_show_bonds(self, state):
+
+        if self.bonds:
+            for bond in self.bonds:
+                bond.setVisible(state)
+
+    def toggle_show_mesh(self, state):
+
+        if self.mesh:
+            for mesh in self.mesh:
+                mesh.setVisible(state)
+
     def _refresh_mesh(self):
 
         if self.mesh:
@@ -110,6 +127,12 @@ class MiniRealSpacePlot(GLViewWidget):
         self.addItem(minus_mesh)
 
         self.mesh = [plus_mesh, minus_mesh]
+
+        # Updating the mesh after iso val change would leave it
+        # unrotated
+        axes = get_rotation_axes(*self.orientation[:2])
+        for item in self.mesh:
+            self._rotate_item(item, axes, *self.orientation, backward=False)
 
     def _refresh_bonds(self):
 
@@ -203,7 +226,7 @@ class MiniRealSpacePlot(GLViewWidget):
     def _connect(self):
 
         self.options.set_camera.connect(self.reset_camera)
-        self.options.show_grid_changed.connect(self._refresh_grid)
-        self.options.show_mesh_changed.connect(self._refresh_mesh)
-        self.options.show_bonds_changed.connect(self._refresh_bonds)
+        self.options.show_grid_changed.connect(self.toggle_show_grid)
+        self.options.show_mesh_changed.connect(self.toggle_show_mesh)
+        self.options.show_bonds_changed.connect(self.toggle_show_bonds)
         self.options.iso_val_changed.connect(self._refresh_mesh)
