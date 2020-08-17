@@ -17,6 +17,7 @@ from kmap.library.misc import get_rotation_axes
 
 path = os.path.dirname(os.path.realpath(__file__)) + '/../data/'
 
+
 class Plot3DMolecule():
 
     def __init__(self, w, orbital, grid=True, isoval=1/6):
@@ -99,16 +100,16 @@ class Plot3DMolecule():
         # first rotate items back to original orientation
         axes = get_rotation_axes(old_phi,old_theta)
         for item in self.items:
-            item.rotate(-old_psi,  axes[2][0],axes[2][1],axes[2][2],local=True) # first undo psi-rotation
+            item.rotate( old_psi,  axes[2][0],axes[2][1],axes[2][2],local=True) # first undo psi-rotation
             item.rotate( old_theta,axes[1][0],axes[1][1],axes[1][2],local=True) # next undo theta-rotation
-            item.rotate(-old_phi,  axes[0][0],axes[0][1],axes[0][2],local=True) # finally undo phi-rotation
+            item.rotate( old_phi,  axes[0][0],axes[0][1],axes[0][2],local=True) # finally undo phi-rotation
 
         # now rotate items to new desired orientation
         axes = get_rotation_axes(phi,theta)
         for item in self.items:
-            item.rotate( phi,  axes[0][0],axes[0][1],axes[0][2],local=True) # first do phi-rotation
+            item.rotate(-phi,  axes[0][0],axes[0][1],axes[0][2],local=True) # first do phi-rotation
             item.rotate(-theta,axes[1][0],axes[1][1],axes[1][2],local=True) # next do theta-rotation
-            item.rotate( psi,  axes[2][0],axes[2][1],axes[2][2],local=True) # finally do psi-rotation
+            item.rotate(-psi,  axes[2][0],axes[2][1],axes[2][2],local=True) # finally do psi-rotation
                   
         self.phi   = phi
         self.theta = theta
@@ -118,7 +119,8 @@ class Plot3DMolecule():
 
 
 ### MAIN PROGRAM ######################################################
-cubefile = open(path + 'pentacene_HOMO.cube').read()  # read cube-file from file
+#cubefile = open(path + 'pentacene_HOMO.cube').read()  # read cube-file from file
+cubefile = open(path + 'bisanthene_HOMO.cube').read()  # read cube-file from file
 molecule = Orbital(cubefile) # Orbital object contains molecular geometry and psi(x,y,z)
 
 # initialize GLViewWidget()
@@ -126,20 +128,29 @@ app = QtGui.QApplication([])
 w = gl.GLViewWidget()
 w.show()
 w.setWindowTitle('test')
-w.setCameraPosition(distance=100,elevation=90,azimuth=0)  # view from top
+w.setCameraPosition(distance=100,elevation=90,azimuth=-90)  # view from top
 
 molecule_view = Plot3DMolecule(w, molecule)
 
+
+xdirection = gl.GLLinePlotItem(pos=np.array([[0,0,0],[20,0,0]]), color=(1,1,1,0.5), width=5, antialias=True)
+w.addItem(xdirection)
+
+ydirection = gl.GLLinePlotItem(pos=np.array([[0,0,0],[0,20,0]]), color=(1,0,0,0.5), width=5, antialias=True)
+w.addItem(ydirection)
+
+
 # a few tests to see if the roration works as desired ...
 # (note: only last is shown, so uncomment all others)
-molecule_view.rotate_molecule(phi=90,theta=30)
-molecule_view.rotate_molecule(phi=90,theta=0)
-molecule_view.rotate_molecule(phi=0,theta=45)
-molecule_view.rotate_molecule(phi=90,theta=30)
-molecule_view.rotate_molecule(phi=0,theta=0,psi=30)
-molecule_view.rotate_molecule(phi=0,theta=0,psi=0)
-molecule_view.rotate_molecule(phi=90,theta=30,psi=90)
-molecule_view.rotate_molecule(phi=0,theta=0,psi=0)
+molecule_view.rotate_molecule(phi=20,theta= 0,psi= 0)
+molecule_view.rotate_molecule(phi= 0,theta= 0,psi= 0)
+molecule_view.rotate_molecule(phi= 0,theta=40,psi= 0)
+molecule_view.rotate_molecule(phi= 0,theta= 0,psi= 0)
+molecule_view.rotate_molecule(phi=90,theta=20,psi= 0)
+molecule_view.rotate_molecule(phi= 0,theta= 0,psi= 0)
+molecule_view.rotate_molecule(phi=90,theta=20,psi=90)
+molecule_view.rotate_molecule(phi= 0,theta= 0,psi= 0)
+
 # ... all these tests were in agreement with the kmaps shown in the kMap GasPhaseSim-Tab!
 
 QtGui.QApplication.instance().exec_()

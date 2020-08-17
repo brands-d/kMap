@@ -91,8 +91,10 @@ def get_rotation_axes(phi, theta):
     sin_theta = np.sin(theta * deg2rad)
 
     axis1 = [0, 0, 1]  # first axis is always the z-axis
-    axis2 = [cos_phi, -sin_phi, 0]  # x' axis
-    axis3 = [-sin_phi * sin_theta, -cos_phi *
+    axis2 = [cos_phi, sin_phi, 0]  # x' axis
+    axis3 = [sin_phi * sin_theta, -cos_phi *
              sin_theta, cos_theta]  # z'' axis
 
     return [axis1, axis2, axis3]
+
+

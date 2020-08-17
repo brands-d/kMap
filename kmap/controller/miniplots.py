@@ -31,10 +31,10 @@ class MiniKSpacePlot(FixedSizeWidget, PyQtGraphPlot):
         PyQtGraphPlot._setup(self)
 
         self.ui.histogram.hide()
-        self.view.showAxis('bottom', show=True)
-        self.view.showAxis('left', show=True)
-        self.view.showAxis('top', show=True)
-        self.view.showAxis('right', show=True)
+        self.view.showAxis('bottom', show=False)
+        self.view.showAxis('left', show=False)
+        self.view.showAxis('top', show=False)
+        self.view.showAxis('right', show=False)
         self.view.setAspectLocked(lock=True, ratio=self.ratio)
 
 
@@ -123,7 +123,7 @@ class MiniRealSpacePlot(GLViewWidget):
         if self.orbital is None:
             return
 
-        color = (0.5, 1, 0.5, 0.5)
+        color = (1, 1, 0.5, 0.5)
 
         for bond in self.orbital.get_bonds():
             new_bond = GLLinePlotItem(pos=bond, color=color,
@@ -151,15 +151,14 @@ class MiniRealSpacePlot(GLViewWidget):
 
         if backward:
             # Undo Rotation in reverse order
-            item.rotate(-psi, axes[2][0], axes[2][1], axes[2][2], local=True)
+            item.rotate(psi, axes[2][0], axes[2][1], axes[2][2], local=True)
             item.rotate(theta, axes[1][0], axes[1][1], axes[1][2], local=True)
-            item.rotate(-phi, axes[0][0], axes[0][1], axes[0][2], local=True)
+            item.rotate(phi, axes[0][0], axes[0][1], axes[0][2], local=True)
 
         else:
-            item.rotate(phi, axes[0][0], axes[0][1], axes[0][2], local=True)
-            item.rotate(-theta, axes[1][0], axes[1][1], axes[1][2],
-                        local=True)
-            item.rotate(psi, axes[2][0], axes[2][1], axes[2][2], local=True)
+            item.rotate(-phi, axes[0][0], axes[0][1], axes[0][2], local=True)
+            item.rotate(-theta, axes[1][0], axes[1][1], axes[1][2],local=True)
+            item.rotate(-psi, axes[2][0], axes[2][1], axes[2][2], local=True)
 
     def _get_iso_mesh(self, data, color, iso_val):
 
@@ -191,7 +190,7 @@ class MiniRealSpacePlot(GLViewWidget):
     def _setup(self):
 
         # View from top
-        self.setCameraPosition(distance=75, elevation=90, azimuth=0)
+        self.setCameraPosition(distance=75, elevation=90, azimuth=-90)
 
         # Set Fixed Size. Due to some unknown reason subclassing from a
         # second class like FixedSizeWidget while also
