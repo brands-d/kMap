@@ -1,3 +1,7 @@
+import os, sys
+
+path = os.path.dirname(os.path.realpath(__file__))
+sys.path.insert(0,path + os.sep + '..' + os.sep + '..' + os.sep)
 # Third Party Imports
 import numpy as np
 import matplotlib.pyplot as plt

@@ -488,6 +488,8 @@ class Orbital():
         # Conversion factor from Bohr to Angstroem
         b2a = 0.529177105787531
 
+        name = lines[1].strip()
+
         x0, y0, z0 = b2a * float(lines[2].split()[1]), b2a * float(
             lines[2].split()[2]), b2a * float(lines[2].split()[3])
         nx, ny, nz = int(lines[3].split()[0]), int(
@@ -522,7 +524,8 @@ class Orbital():
         data = np.reshape(np.array(data), (nx, ny, nz))
 
         # set attributes
-        self.psi = {'nx': nx, 'ny': ny, 'nz': nz,
+        self.psi = {'name': name,
+                    'nx': nx, 'ny': ny, 'nz': nz,
                     'dx': dx, 'dy': dy, 'dz': dz,
                     'x': x, 'y': y, 'z': z,
                     'data': data}

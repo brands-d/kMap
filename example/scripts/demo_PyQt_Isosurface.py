@@ -3,19 +3,21 @@
 This example uses the isosurface function to convert a scalar field,
 here the real space orbital from a cube file, into an isosurface
 """
+import os, sys
+
+path = os.path.dirname(os.path.realpath(__file__))
+sys.path.insert(0,path + os.sep + '..' + os.sep + '..' + os.sep)
+data_path = path + os.sep + '..' + os.sep + 'data' + os.sep
+#####
 
 import numpy as np
 from pyqtgraph.Qt import QtCore, QtGui
 import pyqtgraph as pg
 import pyqtgraph.opengl as gl   # pip install PyOpenGL
 
-# local imports (first include the parent path access kmap-modules)
-import os,sys,inspect
-
+# local imports 
 from kmap.library.orbital import Orbital
 from kmap.library.misc import get_rotation_axes
-
-path = os.path.dirname(os.path.realpath(__file__)) + '/../data/'
 
 
 class Plot3DMolecule():
@@ -120,7 +122,7 @@ class Plot3DMolecule():
 
 ### MAIN PROGRAM ######################################################
 #cubefile = open(path + 'pentacene_HOMO.cube').read()  # read cube-file from file
-cubefile = open(path + 'bisanthene_HOMO.cube').read()  # read cube-file from file
+cubefile = open(data_path + 'bisanthene_HOMO.cube').read()  # read cube-file from file
 molecule = Orbital(cubefile) # Orbital object contains molecular geometry and psi(x,y,z)
 
 # initialize GLViewWidget()
@@ -133,11 +135,10 @@ w.setCameraPosition(distance=100,elevation=90,azimuth=-90)  # view from top
 molecule_view = Plot3DMolecule(w, molecule)
 
 
-xdirection = gl.GLLinePlotItem(pos=np.array([[0,0,0],[20,0,0]]), color=(1,1,1,0.5), width=5, antialias=True)
-w.addItem(xdirection)
-
-ydirection = gl.GLLinePlotItem(pos=np.array([[0,0,0],[0,20,0]]), color=(1,0,0,0.5), width=5, antialias=True)
-w.addItem(ydirection)
+#xdirection = gl.GLLinePlotItem(pos=np.array([[0,0,0],[20,0,0]]), color=(1,1,1,0.5), width=5, antialias=True)
+#w.addItem(xdirection)
+#ydirection = gl.GLLinePlotItem(pos=np.array([[0,0,0],[0,20,0]]), color=(1,0,0,0.5), width=5, antialias=True)
+#w.addItem(ydirection)
 
 
 # a few tests to see if the roration works as desired ...

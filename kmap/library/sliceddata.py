@@ -227,6 +227,47 @@ class SlicedData(AbstractData):
 
         return cls(name, axis_1, axis_2, axis_3, data, meta_data)
 
+
+    @classmethod
+    def init_from_orbital_psi(cls, orbital):
+        """Returns a SlicedData object with the data[x,y,z] 
+           taken from the real space wave function in orbital.
+
+        Args:
+            orbital (Orbital): from kmap.library.orbital
+ 
+        Returns:
+            (SlicedData): SlicedData containing the real space orbital
+        """
+        name   = orbital.psi['name']
+        axis_1 = ['x', 'A', [orbital.psi['x'][0], orbital.psi['x'][-1] ] ]
+        axis_2 = ['y', 'A', [orbital.psi['y'][0], orbital.psi['y'][-1] ] ]
+        axis_3 = ['z', 'A', [orbital.psi['z'][0], orbital.psi['z'][-1] ] ]
+        data   = orbital.psi['data']
+        meta_data = {}
+
+        return cls(name, axis_1, axis_2, axis_3, data, meta_data)
+
+    @classmethod
+    def init_from_orbital_psik(cls, orbital):
+        """Returns a SlicedData object with the data[kx,ky,kz] 
+           taken from the momentum space wave function in orbital.
+
+        Args:
+            orbital (Orbital): from kmap.library.orbital
+ 
+        Returns:
+            (SlicedData): SlicedData containing the momentum space orbital
+        """
+        name   = orbital.psi['name']
+        axis_1 = ['kx', '1/A', [orbital.psik['kx'][0], orbital.psik['kx'][-1] ] ]
+        axis_2 = ['ky', '1/A', [orbital.psik['ky'][0], orbital.psik['ky'][-1] ] ]
+        axis_3 = ['kz', '1/A', [orbital.psik['kz'][0], orbital.psik['kz'][-1] ] ]
+        data   = orbital.psik['data']
+        meta_data = {}
+
+        return cls(name, axis_1, axis_2, axis_3, data, meta_data)
+
     def slice_from_index(self, index, axis=0):
 
         if axis == 0:

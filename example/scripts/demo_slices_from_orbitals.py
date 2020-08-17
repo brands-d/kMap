@@ -5,16 +5,20 @@
 # energy broadening parameter the data cube is created and can be sliced as desired.
 
 # Python imports
-import os
-import matplotlib.pyplot as plt
+import os, sys
 
-path = os.path.dirname(os.path.realpath(__file__)) + '/../data/'
+path = os.path.dirname(os.path.realpath(__file__))
+sys.path.insert(0,path + os.sep + '..' + os.sep + '..' + os.sep)
+data_path = path + os.sep + '..' + os.sep + 'data' + os.sep
+
+import matplotlib.pyplot as plt
 
 # kmap imports
 from kmap.library.database import Database
 from kmap.library.sliceddata import SlicedData
+
 # 
-db = Database(path + 'molecules.txt')
+db = Database(data_path + 'molecules.txt')
 molecule = db.get_molecule_by_ID(11)  # choose pentacene molecule for testing ...
 
 # set name and select list of orbitals 
