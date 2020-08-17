@@ -82,6 +82,20 @@ def axis_from_range(range_, num):
                        dtype=np.float64)
 
 
+def resolution_to_num(range_, resolution):
+
+    num = int((range_[1] - range_[0]) / resolution)
+
+    return num
+
+
+def num_to_resolution(range_, num):
+
+    resolution = (range_[1] - range_[0]) / resolution
+
+    return resolution
+
+
 def get_rotation_axes(phi, theta):
 
     deg2rad = np.pi / 180
@@ -96,5 +110,3 @@ def get_rotation_axes(phi, theta):
              sin_theta, cos_theta]  # z'' axis
 
     return [axis1, axis2, axis3]
-
-

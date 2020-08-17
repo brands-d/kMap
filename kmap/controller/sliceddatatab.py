@@ -10,6 +10,7 @@ from kmap.library.misc import get_ID_from_tab_text
 from kmap.library.qwidgetsub import Tab
 from kmap.model.sliceddatatab_model import SlicedDataTabModel
 from kmap.controller.matplotlibwindow import MatplotlibWindow
+from kmap.controller.interpolation import Interpolation
 from kmap.controller.dataslider import DataSlider
 from kmap.controller.crosshairannulus import CrosshairAnnulus
 from kmap.controller.pyqtgraphplot import PyQtGraphPlot
@@ -76,6 +77,9 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
         axis = self.slider.get_axis()
         data = self.model.change_slice(index, axis)
 
+        data = self.interpolation.interpolate(data)
+        data = self.interpolation.smooth(data)
+
         self.plot_item.plot(data)
         self.crosshair.update_label()
 
@@ -118,11 +122,13 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
         self.slider = DataSlider(self.model.data)
         self.crosshair = CrosshairAnnulus(self.plot_item)
         self.colormap = Colormap(self.plot_item)
+        self.interpolation = Interpolation()
 
         layout = self.scroll_area.widget().layout()
         layout.insertWidget(0, self.slider)
         layout.insertWidget(1, self.colormap)
         layout.insertWidget(2, self.crosshair)
+        layout.insertWidget(3, self.interpolation)
 
     def _connect(self):
 

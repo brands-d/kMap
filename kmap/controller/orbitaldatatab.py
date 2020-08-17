@@ -15,6 +15,7 @@ from kmap.controller.crosshairannulus import CrosshairAnnulus
 from kmap.controller.colormap import Colormap
 from kmap.controller.cubeoptions import CubeOptions
 from kmap.controller.orbitaltable import OrbitalTable
+from kmap.controller.interpolation import Interpolation
 from kmap.controller.pyqtgraphplot import PyQtGraphPlot
 from kmap.controller.polarization import Polarization
 from kmap.config.config import config
@@ -67,6 +68,9 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
     def refresh_plot(self):
 
         data = self.model.update_displayed_plot_data()
+
+        data = self.interpolation.interpolate(data)
+        data = self.interpolation.smooth(data)
 
         self.plot_item.plot(data)
 
@@ -148,13 +152,15 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
 
         self.crosshair = CrosshairAnnulus(self.plot_item)
         self.colormap = Colormap([self.plot_item, self.mini_kspace_plot])
+        self.interpolation = Interpolation()
 
         layout = self.scroll_area.widget().layout()
         layout.insertWidget(2, self.colormap)
         layout.insertWidget(3, self.crosshair)
+        layout.insertWidget(4, self.interpolation)
 
         self.mini_real_plot.set_options(self.real_space_options)
-        
+
     def _connect(self):
 
         self.crosshair.crosshair_changed.connect(self.crosshair_changed)

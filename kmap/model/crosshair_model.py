@@ -29,7 +29,6 @@ class CrosshairModel():
     def mask(self, plotdata, region='center', inverted=False):
 
         mask = np.zeros(plotdata.data.shape)
-
         x_idx = idx_closest_value(plotdata.x_axis, self.x)
         y_idx = idx_closest_value(plotdata.y_axis, self.y)
 
