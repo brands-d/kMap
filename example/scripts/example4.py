@@ -1,4 +1,10 @@
-import os
+import os, sys
+
+path = os.path.dirname(os.path.realpath(__file__))
+sys.path.insert(0,path + os.sep + '..' + os.sep + '..' + os.sep)
+data_path = path + os.sep + '..' + os.sep + 'data' + os.sep
+
+####
 import matplotlib.pyplot as plt
 import numpy as np
 from lmfit import Minimizer, Parameters, report_fit
@@ -10,14 +16,14 @@ from kmap.library.sliceddata import SlicedData
 path = os.path.dirname(os.path.realpath(__file__)) + '/../data/'
 
 # Load experimental data-file and choose a constant-binding energy slice
-exp_data = SlicedData.init_from_hdf5(path + 'example4_3271.hdf5') 
+exp_data = SlicedData.init_from_hdf5(data_path + 'example4_3271.hdf5') 
 exp_kmap = exp_data.slice_from_index(2)   # take slice #2 from exp. data
 kx       = np.arange(0,3.0,0.05)
 ky       = kx
 exp_kmap.interpolate(kx,ky,update=True)
 
 # read pentacene HOMO cube-file from file 
-cubefile = open(path + 'pentacene_HOMO.cube').read() # read cube-file from file
+cubefile = open(data_path + 'pentacene_HOMO.cube').read() # read cube-file from file
 homo     = Orbital(cubefile,dk3D=0.15)        # 3D-FT 
 
 
