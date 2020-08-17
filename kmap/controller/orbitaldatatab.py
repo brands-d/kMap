@@ -153,6 +153,8 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         layout.insertWidget(2, self.colormap)
         layout.insertWidget(3, self.crosshair)
 
+        self.mini_real_plot.set_options(self.real_space_options)
+        
     def _connect(self):
 
         self.crosshair.crosshair_changed.connect(self.crosshair_changed)

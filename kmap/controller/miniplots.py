@@ -14,11 +14,12 @@ class MiniKSpacePlot(FixedSizeWidget, PyQtGraphPlot):
 
     def __init__(self, *args, **kwargs):
 
-        width = 300
+        width = 250
         self.ratio = 1
         self.ID = None
 
         super(MiniKSpacePlot, self).__init__(300, 1, *args, **kwargs)
+        self._setup()
 
     def plot(self, plot_data, ID):
 
@@ -40,10 +41,9 @@ class MiniKSpacePlot(FixedSizeWidget, PyQtGraphPlot):
 
 class MiniRealSpacePlot(GLViewWidget):
 
-    def __init__(self, *args, grid=True, iso_val=1 / 6, **kwargs):
+    def __init__(self, *args, **kwargs):
 
-        self.show_grid = grid
-        self.iso_val = iso_val
+        self.options = None
         self.grid = None
         self.bonds = []
         self.mesh = []
@@ -61,6 +61,11 @@ class MiniRealSpacePlot(GLViewWidget):
         self.orientation = [0, 0, 0]
 
         self.refresh_plot()
+
+    def set_options(self, options):
+
+        self.options = options
+        self._connect()
 
     def rotate_orbital(self, phi=0, theta=0, psi=0):
 
@@ -81,17 +86,11 @@ class MiniRealSpacePlot(GLViewWidget):
         self._refresh_bonds()
         self._refresh_mesh()
 
-    def mouseMoveEvent(self, event):
+    def reset_camera(self, distance=75, elevation=90, azimuth=-90):
 
-        event.ignore()
-
-    def mousePressEvent(self, event):
-
-        event.ignore()
-
-    def mouseReleaseEvent(self, event):
-
-        event.ignore()
+        # View from top
+        self.setCameraPosition(distance=distance, elevation=elevation,
+                               azimuth=azimuth)
 
     def _refresh_mesh(self):
 
@@ -101,12 +100,12 @@ class MiniRealSpacePlot(GLViewWidget):
 
             self.mesh = []
 
-        if self.orbital is None:
+        if self.orbital is None or not self.options.is_show_mesh():
             return
 
         data = self.orbital.psi['data']
-        plus_mesh = self._get_iso_mesh(data, 'red', self.iso_val)
-        minus_mesh = self._get_iso_mesh(data, 'blue', -self.iso_val)
+        plus_mesh = self._get_iso_mesh(data, 'red', 1)
+        minus_mesh = self._get_iso_mesh(data, 'blue', -1)
         self.addItem(plus_mesh)
         self.addItem(minus_mesh)
 
@@ -120,7 +119,7 @@ class MiniRealSpacePlot(GLViewWidget):
 
             self.bonds = []
 
-        if self.orbital is None:
+        if self.orbital is None or not self.options.is_show_bonds():
             return
 
         color = (1, 1, 0.5, 0.5)
@@ -138,14 +137,13 @@ class MiniRealSpacePlot(GLViewWidget):
             self.removeItem(self.grid)
             self.grid = None
 
-        if self.orbital is None:
+        if self.orbital is None or not self.options.is_show_grid():
             return
 
-        if self.show_grid:
-            self.grid = GLGridItem()
-            dx, dy, dz = [self.orbital.psi[key] for key in ['dx', 'dy', 'dz']]
-            self.grid.scale(1 / dx, 1 / dy, 1 / dz)
-            self.addItem(self.grid)
+        self.grid = GLGridItem()
+        dx, dy, dz = [self.orbital.psi[key] for key in ['dx', 'dy', 'dz']]
+        self.grid.scale(1 / dx, 1 / dy, 1 / dz)
+        self.addItem(self.grid)
 
     def _rotate_item(self, item, axes, phi, theta, psi, backward=False):
 
@@ -157,11 +155,12 @@ class MiniRealSpacePlot(GLViewWidget):
 
         else:
             item.rotate(-phi, axes[0][0], axes[0][1], axes[0][2], local=True)
-            item.rotate(-theta, axes[1][0], axes[1][1], axes[1][2],local=True)
+            item.rotate(-theta, axes[1][0], axes[1][1], axes[1][2], local=True)
             item.rotate(-psi, axes[2][0], axes[2][1], axes[2][2], local=True)
 
-    def _get_iso_mesh(self, data, color, iso_val):
+    def _get_iso_mesh(self, data, color, sign):
 
+        iso_val = sign * self.options.get_iso_val()
         vertices, faces = isosurface(data, iso_val * data.max())
         nx, ny, nz = data.shape
 
@@ -189,15 +188,22 @@ class MiniRealSpacePlot(GLViewWidget):
 
     def _setup(self):
 
-        # View from top
-        self.setCameraPosition(distance=75, elevation=90, azimuth=-90)
-
         # Set Fixed Size. Due to some unknown reason subclassing from a
         # second class like FixedSizeWidget while also
         # subclassing from gl.GLViewWidget throws error
-        width = 300
+        width = 250
         ratio = 1
         height = width * ratio
         self.resize(width, height)
         self.setMaximumSize(width, height)
         self.setMinimumSize(width, height)
+
+        self.reset_camera()
+
+    def _connect(self):
+
+        self.options.set_camera.connect(self.reset_camera)
+        self.options.show_grid_changed.connect(self._refresh_grid)
+        self.options.show_mesh_changed.connect(self._refresh_mesh)
+        self.options.show_bonds_changed.connect(self._refresh_bonds)
+        self.options.iso_val_changed.connect(self._refresh_mesh)
