@@ -1,7 +1,10 @@
 # Python Imports
+import logging
+import urllib.request
+
+# Third Party Imports
 import h5py
 import numpy as np
-import urllib.request
 
 # Own Imports
 from kmap.library.id import ID
@@ -103,7 +106,6 @@ class SlicedData(AbstractData):
 
     @classmethod
     def init_from_orbitals(cls, name, orbitals, parameters):
-
         """Returns a SlicedData object with the data[BE,kx,ky] 
            computed from the kmaps of several orbitals and
            broadened in energy.
@@ -134,16 +136,17 @@ class SlicedData(AbstractData):
             (SlicedData): SlicedData containing kmaps of all orbitals
         """
 
+        log = logging.getLogger('kmap')
         # extract parameters
-        photon_energy      = parameters[0]
-        fermi_energy       = parameters[1]
-        energy_broadening  = parameters[2]
-        dk                 = parameters[3]
-        phi, theta, psi    = parameters[4], parameters[5], parameters[6]
-        Ak_type            = parameters[7]
-        polarization       = parameters[8]
+        photon_energy = parameters[0]
+        fermi_energy = parameters[1]
+        energy_broadening = parameters[2]
+        dk = parameters[3]
+        phi, theta, psi = parameters[4], parameters[5], parameters[6]
+        Ak_type = parameters[7]
+        polarization = parameters[8]
         alpha, beta, gamma = parameters[9], parameters[10], parameters[11]
-        symmetrization     = parameters[12]
+        symmetrization = parameters[12]
 
         # determine axis_1 from minimal and maximal binding energy
         extend_range = 3 * energy_broadening
@@ -154,7 +157,8 @@ class SlicedData(AbstractData):
 
         BE_min = min(energies) - fermi_energy - extend_range
         BE_max = max(energies) - fermi_energy + extend_range
-        dBE = energy_broadening / 6  # set energy grid spacing 6 times smaller than broadening
+        # set energy grid spacing 6 times smaller than broadening
+        dBE = energy_broadening / 6
         nBE = int((BE_max - BE_min) / dBE) + 1
         BE = np.linspace(BE_min, BE_max, nBE)
         nBE = len(BE)
@@ -177,10 +181,12 @@ class SlicedData(AbstractData):
         orbital_names = []
 
         # add kmaps of orbitals to
-        print('Adding orbitals to SlicedData Object, please wait!')
+        log.info('Adding orbitals to SlicedData Object, please wait!')
         for orbital in orbitals:
-            BE0 = orbital[1]['energy'] - fermi_energy  # binding energy of orbital
-            E_kin = photon_energy - Phi + BE0      # kinetic energy of emitted electron
+            # binding energy of orbital
+            BE0 = orbital[1]['energy'] - fermi_energy
+            # kinetic energy of emitted electron
+            E_kin = photon_energy - Phi + BE0
 
             # Gaussian weight function
             norm = (1 / np.sqrt(2 * np.pi * energy_broadening**2))
@@ -188,21 +194,19 @@ class SlicedData(AbstractData):
                 np.exp(-((BE - BE0)**2 / (2 * energy_broadening**2)))
 
             url = orbital[0]
-
-            print('Loading from database: ', url)
+            log.info('Loading from database: %s' % url)
             with urllib.request.urlopen(url) as f:
                 file = f.read().decode('utf-8')
                 orbital_data = Orbital(file)
 
             orbital_names.append(orbital[1]['name'])
-            print('Computing k-map for ', orbital[1]['name'])
+            log.info('Computing k-map for %s' % orbital[1]['name'])
 
             kmap = orbital_data.get_kmap(E_kin, dk, phi, theta, psi,
                                          Ak_type, polarization, alpha, beta,
                                          gamma, symmetrization)
             kmap.interpolate(k_grid, k_grid, update=True)
-
-            print('Adding to 3D-array: ', orbital[1]['name'])
+            log.info('Adding to 3D-array: %s' % orbital[1]['name'])
             for i in range(len(BE)):
                 data[i, :, :] += weight[i] * kmap.data
 
