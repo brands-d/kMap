@@ -18,6 +18,7 @@ from kmap.controller.orbitaltable import OrbitalTable
 from kmap.controller.interpolation import Interpolation
 from kmap.controller.pyqtgraphplot import PyQtGraphPlot
 from kmap.controller.polarization import Polarization
+from kmap.library.sliceddata import Axis
 from kmap.config.config import config
 
 
@@ -155,11 +156,16 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         self.interpolation = Interpolation()
 
         layout = self.scroll_area.widget().layout()
-        layout.insertWidget(2, self.colormap)
-        layout.insertWidget(3, self.crosshair)
-        layout.insertWidget(4, self.interpolation)
+        layout.insertWidget(2, self.interpolation)
+        layout.insertWidget(4, self.colormap)
+        layout.insertWidget(5, self.crosshair)
 
         self.mini_real_plot.set_options(self.real_space_options)
+
+        # Rough axis values for all orbitals to set labels for interpolation
+        x = Axis('kx', '1/A', [-3, 3], 200)
+        y = Axis('ky', '1/A', [-3, 3], 200)
+        self.interpolation.set_label(x, y)
 
     def _connect(self):
 
