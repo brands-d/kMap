@@ -36,13 +36,14 @@ w.setCameraPosition(distance=100,elevation=90,azimuth=-90)  # view from top
 
 # display grid in (x,y)-plane
 g = gl.GLGridItem()
+g.setSize(x=8,y=8,z=8)
 g.scale(1/dx,1/dy,1/dz)
 w.addItem(g)
 
 # add coordinate axes object
-ax = gl.GLAxisItem()
-ax.setSize(10,10,10)
-w.addItem(ax)
+#ax = gl.GLAxisItem()
+#ax.setSize(5,5,5)
+#w.addItem(ax)
 
 # compute isosurface for positive and negative isovalues
 isovals = [+0.2*data.max(), -0.2*data.max()]
@@ -66,7 +67,17 @@ for isoval, color in zip(isovals, colors):
                       shader='edgeHilight')   # shader options: 'balloon', 'shaded', 'normalColor', 'edgeHilight'
     p.setGLOptions('translucent')  # choose between 'opaque', 'translucent' or 'additive'
     w.addItem(p)
-        
+ 
+# add hemisphere 
+R = 3.0     
+x = np.linspace(-R/dx, R/dx, 200)
+y = np.linspace(-R/dy, R/dy, 200)
+X,Y = np.meshgrid(x,y)
+Z = np.sqrt(R*R/(dx*dy) - X**2 - Y**2)
+hemisphere = gl.GLSurfacePlotItem(x=x, y=y, z=Z, color=(0.5, 0.5, 0.5, 0.7), shader='edgeHilight')
+hemisphere.setGLOptions('translucent')
+w.addItem(hemisphere)
+
 
 QtGui.QApplication.instance().exec_()
 
