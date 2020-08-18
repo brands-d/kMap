@@ -549,25 +549,39 @@ class Orbital():
                          'chemical_numbers': chemical_numbers,
                          'atomic_coordinates': atomic_coordinates}
 
-    def get_bonds(self,min_bond_length=0.8,max_bond_length=1.8):
+    def get_bonds(self,lower_factor=0.8,upper_factor=1.2):
         """ returns a list of bond used for plotting the molecular structure.
 
         Args:
-            min_bond_length (float): minimum distance between atoms 
-                                     for drawing bonds
-            max_bond_length (float): maximum distance between atoms 
-                                     for drawing bonds
+            lower_factor (float): lower bound for drawing bonds w.r.t sum of covalent radii
+            upper_factor (float): upper bound for drawing bonds w.r.t sum of covalent radii
         """
-        
+        covalent_R = {1:0.32, 2:0.32,  # H, He
+                      3:1.34, 4:0.90, 5:0.82, 6:0.77, 7:0.71, 8:0.73, 9:0.71,10:0.69, # Li - Ne
+                     11:1.54,12:1.30,13:1.18,14:1.11,15:1.06,16:1.02,17:0.99,18:0.97, # Na- Ar
+                     19:1.96,20:1.74,21:1.44,22:1.36,23:1.25,24:1.27,25:1.39,26:1.25, # K - Fe
+                     27:1.26,28:1.21,29:1.38,30:1.31,31:1.26,32:1.22,33:1.21,34:1.16, # Co- Se
+                     35:1.14,36:1.10,                                                 # Br, Kr
+                     37:2.11,38:1.92,39:1.62,40:1.48,41:1.37,41:1.45,43:1.31,44:1.26, # Rb -Ru
+                     45:1.35,46:1.31,47:1.53,48:1.48,49:1.44,50:1.41,51:1.38,52:1.35, # Rh -Te
+                     53:1.33,54:1.30,                                                 #  I, Xe
+                     55:2.25,56:1.98,57:1.69,72:1.50,73:1.38,74:1.46,75:1.59,76:1.28, # Cs -Os
+                     77:1.37,78:1.38,79:1.38,80:1.49,81:1.48,82:1.46,83:1.46,84:1.40, # Ir -Po
+                     85:1.45,86:1.45}                                                 # At, Rn
+               
         dx,dy,dz    = self.psi['dx'], self.psi['dy'], self.psi['dz'] 
         coordinates = self.molecule['atomic_coordinates']
+        Z_list      = self.molecule['chemical_numbers']                  
         bonds       = []
-        for atom1 in coordinates:
+        for atom1, Z1 in zip(coordinates, Z_list):
             x1,y1,z1 = atom1[0], atom1[1], atom1[2]
-            for atom2 in coordinates:
-                x2,y2,z2 = atom2[0], atom2[1], atom2[2]    
+            R1       = covalent_R[Z1]
+            for atom2, Z2 in zip(coordinates, Z_list):
+                x2,y2,z2 = atom2[0], atom2[1], atom2[2] 
+                R2       = covalent_R[Z2] 
+                R        = R1 + R2    # sum of covalent radii 
                 distance = np.sqrt((x1-x2)**2 + (y1-y2)**2 + (z1-z2)**2)
-                if min_bond_length <= distance <= max_bond_length:
+                if lower_factor*R <= distance <= upper_factor*R:
                     bond = [[x1/dx,y1/dy,z1/dz], [x2/dx,y2/dy,z2/dz]] 
                     bonds.append(np.array(bond))
 
