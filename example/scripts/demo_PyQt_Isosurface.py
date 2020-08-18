@@ -44,47 +44,34 @@ class Plot3DMolecule():
 
         # add bonds as LinePlotItems
         for bond in bonds:
-            line = gl.GLLinePlotItem(pos=bond, color=(0.5,1,0.5,0.5), width=5, antialias=True)
+            line = gl.GLLinePlotItem(pos=bond, color=(1,1,0.0,1), width=5, antialias=True)
             items.append(line)
             w.addItem(line)
 
-        # compute isosurface for positive isovalue
-        verts, faces = pg.isosurface(data, isoval*data.max())
+        # compute isosurface for positive and negative isovalues
+        isovals = [+isoval*data.max(), -isoval*data.max()]
+        colors  = [(1,0.2,0.2), (0.2,0.2,1)]  # red and blue
 
-        # center isosurface around origin
-        verts[:,0] = verts[:,0] - nx/2
-        verts[:,1] = verts[:,1] - ny/2
-        verts[:,2] = verts[:,2] - nz/2
+        for iso, color in zip(isovals, colors):
+            # compute isosurface and center around origin
+            verts, faces = pg.isosurface(data, iso)
+            verts[:,0] = verts[:,0] - nx/2
+            verts[:,1] = verts[:,1] - ny/2
+            verts[:,2] = verts[:,2] - nz/2
 
-        plus = gl.MeshData(vertexes=verts, faces=faces)
-        colors = np.zeros((plus.faceCount(), 4), dtype=float)
-        colors[:,0] = 0.5  # sets color to red (RGB, 0 = red, 1 = green, 2 = blue)
-        colors[:,3] = 0.5  # transparency (I guess)
-        plus.setFaceColors(colors)
+            isosurface = gl.MeshData(vertexes=verts, faces=faces)
+            rgbt = np.zeros((isosurface.faceCount(), 4), dtype=float)
+            for c in range(3):
+                rgbt[:,c] = color[c] 
+            rgbt[:,3] = 1  # transparency (I guess)
+            isosurface.setFaceColors(rgbt)
 
-        p = gl.GLMeshItem(meshdata=plus, smooth=True, shader='balloon')
-        p.setGLOptions('translucent')  # choose between 'opaque', 'translucent' or 'additive'
-        w.addItem(p)
-        items.append(p)
+            p = gl.GLMeshItem(meshdata=isosurface, smooth=True, 
+                      shader='edgeHilight')   # shader options: 'balloon', 'shaded', 'normalColor', 'edgeHilight'
+            p.setGLOptions('translucent')  # choose between 'opaque', 'translucent' or 'additive'
+            w.addItem(p)
 
-        # compute isosurface for negative isovalue  
-        verts, faces = pg.isosurface(data,-isoval*data.max())
-
-        # center isosurface around origin
-        verts[:,0] = verts[:,0] - nx/2
-        verts[:,1] = verts[:,1] - ny/2
-        verts[:,2] = verts[:,2] - nz/2
-
-        minus = gl.MeshData(vertexes=verts, faces=faces)
-        colors = np.zeros((minus.faceCount(), 4), dtype=float)
-        colors[:,2] = 0.5 # sets color to blue (RGB, 0 = red, 1 = green, 2 = blue)
-        colors[:,3] = 0.5
-        minus.setFaceColors(colors)
-
-        m = gl.GLMeshItem(meshdata=minus, smooth=True, shader='balloon')
-        m.setGLOptions('translucent') # choose between 'opaque', 'translucent' or 'additive'
-        w.addItem(m)
-        items.append(m)
+            items.append(p)
 
         self.items = items
         self.phi   = 0
@@ -120,9 +107,8 @@ class Plot3DMolecule():
         return
 
 
-### MAIN PROGRAM ######################################################
-#cubefile = open(path + 'pentacene_HOMO.cube').read()  # read cube-file from file
-cubefile = open(data_path + 'bisanthene_HOMO.cube').read()  # read cube-file from file
+### MAIN PROGRAM #######################################################
+cubefile = open(data_path + 'pentacene_HOMO.cube').read()  # read cube-file from file
 molecule = Orbital(cubefile) # Orbital object contains molecular geometry and psi(x,y,z)
 
 # initialize GLViewWidget()
