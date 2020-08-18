@@ -91,7 +91,7 @@ def resolution_to_num(range_, resolution):
 
 def num_to_resolution(range_, num):
 
-    resolution = (range_[1] - range_[0]) / resolution
+    resolution = (range_[1] - range_[0]) / num
 
     return resolution
 

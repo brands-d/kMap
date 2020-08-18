@@ -72,10 +72,11 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
 
         return title
 
-    def change_slice(self, index):
+    def change_slice(self, index=-1):
 
         axis = self.slider.get_axis()
-        data = self.model.change_slice(index, axis)
+        slice_index = index if index != -1 else self.slider.get_index()
+        data = self.model.change_slice(slice_index, axis)
 
         data = self.interpolation.interpolate(data)
         data = self.interpolation.smooth(data)
@@ -92,6 +93,7 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
         data = self.model.change_slice(index, axis)
 
         self.plot_item.set_label(axes[1], axes[0])
+        self.interpolation.set_label(axes[1], axes[0])
         self.plot_item.plot(data)
 
     def crosshair_changed(self):
@@ -135,3 +137,5 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
         self.crosshair.crosshair_changed.connect(self.crosshair_changed)
         self.slider.slice_changed.connect(self.change_slice)
         self.slider.axis_changed.connect(self.change_axis)
+        self.interpolation.smoothing_changed.connect(self.change_slice)
+        self.interpolation.interpolation_changed.connect(self.change_slice)

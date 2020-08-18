@@ -175,3 +175,6 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
             self.change_parameter)
         self.cube_options.resolution_changed.connect(
             self.change_parameter)
+
+        self.interpolation.smoothing_changed.connect(self.refresh_plot)
+        self.interpolation.interpolation_changed.connect(self.refresh_plot)

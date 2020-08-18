@@ -114,6 +114,10 @@ class PlotData():
     def smoothing(self, sigma_x, sigma_y, *args, mode='nearest',
                   update=False, **kwargs):
 
+        # gaussian filter needs number of pixel
+        sigma_x = round(sigma_x / self.step_size[0])
+        sigma_y = round(sigma_y / self.step_size[1])
+
         if update:
             gaussian_filter(
                 self.data, [sigma_x, sigma_y], mode=mode,

@@ -1,5 +1,6 @@
 # PyQt5 Imports
 from PyQt5 import uic
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QWidget
 
 # Own Imports
@@ -14,18 +15,22 @@ Interpolation_UI, _ = uic.loadUiType(UI_file)
 
 class Interpolation(QWidget, Interpolation_UI):
 
+    smoothing_changed = pyqtSignal()
+    interpolation_changed = pyqtSignal()
+
     def __init__(self):
 
         # Setup GUI
         super(Interpolation, self).__init__()
         self.setupUi(self)
+        self._connect()
 
     def interpolate(self, data):
 
         if self.interpolation_checkbox.isChecked():
             axes = self.get_axes()
             data.interpolate(*axes, update=True)
-            
+
         return data
 
     def smooth(self, data):
@@ -36,7 +41,7 @@ class Interpolation(QWidget, Interpolation_UI):
 
         return data
 
-    def get_sigma(self):
+    def get_sigma(self, pixel=True):
 
         sigma_x = self.sigma_x_spinbox.value()
         sigma_y = self.sigma_y_spinbox.value()
@@ -74,3 +79,86 @@ class Interpolation(QWidget, Interpolation_UI):
                 axis_from_range(range_[1], num[1])]
 
         return axes
+
+    def set_label(self, x, y):
+
+        # Set Label
+        self.x_label.setText('%s:' % x.label)
+        self.sigma_x_label.setText('Sigma %s:' % x.label)
+        self.y_label.setText('%s:' % y.label)
+        self.sigma_y_label.setText('Sigma %s:' % y.label)
+
+        # Set Unit
+        self.x_resolution_spinbox.setSuffix('  %s' % x.units)
+        self.sigma_x_spinbox.setSuffix('  %s' % x.units)
+        self.y_resolution_spinbox.setSuffix('  %s' % y.units)
+        self.sigma_y_spinbox.setSuffix('  %s' % y.units)
+        self.x_min_spinbox.setSuffix('  %s' % x.units)
+        self.x_max_spinbox.setSuffix('  %s' % x.units)
+        self.y_min_spinbox.setSuffix('  %s' % y.units)
+        self.y_max_spinbox.setSuffix('  %s' % y.units)
+
+        # Set Range
+        self.sigma_x_spinbox.setMinimum(0)
+        self.sigma_x_spinbox.setMaximum(15 * x.stepsize)
+        self.sigma_y_spinbox.setMinimum(0)
+        self.sigma_y_spinbox.setMaximum(15 * y.stepsize)
+        # Set min/max of min/max spinbox to twice the range
+        self.x_min_spinbox.setMinimum(x.range[0] - abs(x.range[0]))
+        self.y_min_spinbox.setMinimum(y.range[0] - abs(y.range[0]))
+        self.x_max_spinbox.setMaximum(x.range[1] + abs(x.range[1]))
+        self.y_max_spinbox.setMaximum(y.range[1] + abs(y.range[1]))
+
+        # Set Value
+        self.sigma_x_spinbox.setValue(3 * x.stepsize)
+        self.x_min_spinbox.setValue(x.range[0])
+        self.x_max_spinbox.setValue(x.range[-1])
+        self.sigma_y_spinbox.setValue(3 * y.stepsize)
+        self.y_min_spinbox.setValue(y.range[0])
+        self.y_max_spinbox.setValue(y.range[-1])
+
+        self._update_dynamic_range_spinboxes()
+
+    def _update_dynamic_range_spinboxes(self):
+
+        # Set max/min of min/max spinbox to value of other spinbox
+        self.x_min_spinbox.setMaximum(self.x_max_spinbox.value() - 1)
+        self.y_min_spinbox.setMaximum(self.y_max_spinbox.value() - 1)
+        self.x_max_spinbox.setMinimum(self.x_min_spinbox.value() + 1)
+        self.y_max_spinbox.setMinimum(self.y_min_spinbox.value() + 1)
+
+    def _change_smoothing(self):
+
+        self.smoothing_changed.emit()
+
+    def _change_interpolation(self):
+
+        self.interpolation_changed.emit()
+
+    def _connect(self):
+
+        self.sigma_x_spinbox.valueChanged.connect(self._change_smoothing)
+        self.sigma_y_spinbox.valueChanged.connect(self._change_smoothing)
+        self.smoothing_checkbox.stateChanged.connect(
+            self._change_smoothing)
+
+        self.x_min_spinbox.valueChanged.connect(
+            self._update_dynamic_range_spinboxes)
+        self.x_max_spinbox.valueChanged.connect(
+            self._update_dynamic_range_spinboxes)
+        self.y_min_spinbox.valueChanged.connect(
+            self._update_dynamic_range_spinboxes)
+        self.y_max_spinbox.valueChanged.connect(
+            self._update_dynamic_range_spinboxes)
+
+        self.x_min_spinbox.valueChanged.connect(self._change_interpolation)
+        self.x_max_spinbox.valueChanged.connect(self._change_interpolation)
+        self.y_min_spinbox.valueChanged.connect(self._change_interpolation)
+        self.y_max_spinbox.valueChanged.connect(self._change_interpolation)
+        self.interpolation_checkbox.stateChanged.connect(
+            self._change_interpolation)
+
+        self.x_resolution_spinbox.valueChanged.connect(
+            self._change_interpolation)
+        self.y_resolution_spinbox.valueChanged.connect(
+            self._change_interpolation)
