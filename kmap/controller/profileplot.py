@@ -28,8 +28,8 @@ class ProfilePlot(PlotWidget):
             # Circular parametrization starting at top going counter
             # clockwise
             angles = np.linspace(np.pi / 2, -3 / 2 * np.pi,
-                                 num=20, endpoint=False)
-            x = np.linspace(0, 360, num=20, endpoint=False)
+                                 num=180, endpoint=False)
+            x = np.linspace(0, 360, num=180, endpoint=False)
             y = []
             x_center = crosshair.x
             y_center = crosshair.y
