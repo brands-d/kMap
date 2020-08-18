@@ -119,7 +119,7 @@ class TabWidget(QWidget, TabWidget_UI):
         for index in range(self.tab_widget.count()):
             tab = self.tab_widget.widget(index)
 
-            if type(tab) == type_:
+            if type(tab) == type_ or type_ is None:
                 tabs.append(tab)
 
         return tabs

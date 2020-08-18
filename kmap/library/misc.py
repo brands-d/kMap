@@ -1,5 +1,7 @@
 import re
 import numpy as np
+from math import isclose
+
 
 
 def round_to(x, base):
@@ -110,3 +112,53 @@ def get_rotation_axes(phi, theta):
              sin_theta, cos_theta]  # z'' axis
 
     return [axis1, axis2, axis3]
+
+
+def profile_line_phi(plot_data, phi, x_center, y_center):
+
+    if isclose(abs(phi), np.pi / 2):
+        # Catch vertical lines
+        # For vertical lines the endpoint is (x_center, min(y)/max(y))
+        x_end_idx = idx_closest_value(plot_data.x_axis, x_center)
+        y_end_idx = 0 if phi > 0 else len(plot_data.y_axis) - 1
+
+    elif isclose(phi, 0) or isclose(phi, -np.pi):
+        # Catch horizontal lines
+        x_end_idx = len(plot_data.x_axis) - 1 if phi > -np.pi / 2 else 0
+        y_end_idx = idx_closest_value(plot_data.y_axis, y_center)
+
+    else:
+        # Line we are looking for is radius of unit circle at
+        # angle phi
+        x_unit = np.cos(phi) + x_center
+        # y axis in image data is reversed, thus reverse circle
+        y_unit = -(np.sin(phi) + y_center)
+        slope = (y_unit - y_center) / (x_unit - x_center)
+        intercept = y_unit - slope * x_unit
+        # Upper half: y endpoint == y_axis[0]
+        # Lower half: y endpoint == y_axis[-1]
+        if phi < 0 and phi > -np.pi:
+            x_max_end = (plot_data.y_axis[-1] - intercept) / slope
+
+        else:
+            x_max_end = (plot_data.y_axis[0] - intercept) / slope
+
+        # x_end can be at most the first or last element of axis
+        # depending on left or right half
+        if phi < np.pi / 2 and phi > -np.pi / 2:
+            x_end = min(x_max_end, plot_data.x_axis[-1])
+
+        else:
+            x_end = max(x_max_end, plot_data.x_axis[0])
+
+        y_end = x_end * slope + intercept
+        x_end_idx = idx_closest_value(plot_data.x_axis, x_end)
+        y_end_idx = idx_closest_value(plot_data.y_axis, y_end)
+
+    x_start_idx = idx_closest_value(plot_data.x_axis, x_center)
+    y_start_idx = idx_closest_value(plot_data.y_axis, y_center)
+
+    start = [y_start_idx, x_start_idx]
+    end = [y_end_idx, x_end_idx]
+
+    return start, end

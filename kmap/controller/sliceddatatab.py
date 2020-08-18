@@ -119,6 +119,14 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
 
         return text
 
+    def get_displayed_plot_data(self):
+
+        return self.model.displayed_plot_data
+
+    def get_crosshair(self):
+
+        return self.crosshair
+
     def _setup(self):
 
         self.slider = DataSlider(self.model.data)

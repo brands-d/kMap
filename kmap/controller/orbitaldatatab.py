@@ -88,6 +88,10 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
 
         self.mini_real_plot.rotate_orbital(phi, theta, psi)
 
+    def get_crosshair(self):
+
+        return self.crosshair
+        
     def get_parameters(self, ID):
 
         kinetic_energy, dk = self.cube_options.get_parameters()
@@ -101,6 +105,10 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
     def get_use(self, ID):
 
         return self.table.get_use_by_ID(ID)
+
+    def get_displayed_plot_data(self):
+
+        return self.model.displayed_plot_data
 
     def crosshair_changed(self):
 
