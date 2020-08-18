@@ -158,10 +158,10 @@ class Orbital():
 
         # decide whether real, imaginry part, absolute value, or squared absolute value is used
         if value == 'real':
-            psik = np.real(psik)
+            psik = np.asarray(np.real(psik), order='C')
 
         elif value == 'imag':
-            psik = np.imag(psik)
+            psik = np.asarray(np.imag(psik), order='C')
 
         elif value == 'abs':
             psik = np.abs(psik)

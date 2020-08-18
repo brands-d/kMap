@@ -196,15 +196,19 @@ class MiniRealSpacePlot(GLViewWidget):
         colors = np.zeros((mesh_data.faceCount(), 4), dtype=float)
         # Sets color to Red (RGB, 0 = red, 1 = green, 2 = blue)
         if color == 'red':
-            colors[:, 0] = 0.5
+            colors[:, 0] = 1.0
+            colors[:, 1] = 0.2
+            colors[:, 2] = 0.2
 
         elif color == 'blue':
-            colors[:, 2] = 0.5
+            colors[:, 0] = 0.2
+            colors[:, 1] = 0.2
+            colors[:, 2] = 1.0
         # Transparency (I guess)
-        colors[:, 3] = 0.5
+        colors[:, 3] = 1
         mesh_data.setFaceColors(colors)
 
-        mesh = GLMeshItem(meshdata=mesh_data, smooth=True, shader='balloon')
+        mesh = GLMeshItem(meshdata=mesh_data, smooth=True, shader='edgeHilight')
         mesh.setGLOptions('translucent')
 
         return mesh
