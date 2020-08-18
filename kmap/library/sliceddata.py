@@ -208,7 +208,17 @@ class SlicedData(AbstractData):
             kmap.interpolate(k_grid, k_grid, update=True)
             log.info('Adding to 3D-array: %s' % orbital[1]['name'])
             for i in range(len(BE)):
-                data[i, :, :] += weight[i] * kmap.data
+                data[i, :, :] += weight[i] * np.nan_to_num(kmap.data)
+
+        # set NaNs outside photoemission horizon
+        KX, KY = np.meshgrid(k_grid, k_grid)
+        for i in range(len(BE)):
+            E_kin = photon_energy - Phi + BE[i]   
+            k_max = np.sqrt(fac * E_kin)
+            out = np.sqrt(KX**2 + KY**2) > k_max
+            tmp = data[i,:,:]
+            tmp[out] = np.NaN
+            data[i,:,:] = tmp
 
         # define meta-data for tool-tip display
         orbital_info = {}
@@ -229,44 +239,56 @@ class SlicedData(AbstractData):
 
 
     @classmethod
-    def init_from_orbital_psi(cls, orbital):
+    def init_from_orbital_psi(cls, cube_file, domain, dk3D=0.15, E_kin_max=150, value='abs2'):
         """Returns a SlicedData object with the data[x,y,z] 
            taken from the real space wave function in orbital.
 
         Args:
-            orbital (Orbital): from kmap.library.orbital
+            cube_file (str): either full path to local cube-file or URL to cube-file
+            domain (str): either 'real-space' or 'k-space'
+            dk3D (float): Desired resolution for 3D-Fourier-Transform.
+                Single number.
+            E_kin_max (float): maximum kinetic energy in eV is used to
+                reduce the size of the 3D-numpy-array in momentum space
+            value (string): choose between 'real', 'imag', 'abs' or 'abs2'
+                for Re(), Im(), |..| or |..|^2
  
         Returns:
             (SlicedData): SlicedData containing the real space orbital
         """
-        name   = orbital.psi['name']
-        axis_1 = ['x', 'A', [orbital.psi['x'][0], orbital.psi['x'][-1] ] ]
-        axis_2 = ['y', 'A', [orbital.psi['y'][0], orbital.psi['y'][-1] ] ]
-        axis_3 = ['z', 'A', [orbital.psi['z'][0], orbital.psi['z'][-1] ] ]
-        data   = orbital.psi['data']
-        meta_data = {}
+        
+        # decision if reading cube-file from URL or local file
+        if cube_file[:4] == 'http':
+            with urllib.request.urlopen(cube_file) as f:
+                file = f.read().decode('utf-8')
+        
+        else:            
+            file = open(cube_file).read()
 
-        return cls(name, axis_1, axis_2, axis_3, data, meta_data)
-
-    @classmethod
-    def init_from_orbital_psik(cls, orbital):
-        """Returns a SlicedData object with the data[kx,ky,kz] 
-           taken from the momentum space wave function in orbital.
-
-        Args:
-            orbital (Orbital): from kmap.library.orbital
+                
+        orbital = Orbital(file, dk3D=dk3D, E_kin_max=E_kin_max, value=value)
  
-        Returns:
-            (SlicedData): SlicedData containing the momentum space orbital
-        """
-        name   = orbital.psi['name']
-        axis_1 = ['kx', '1/A', [orbital.psik['kx'][0], orbital.psik['kx'][-1] ] ]
-        axis_2 = ['ky', '1/A', [orbital.psik['ky'][0], orbital.psik['ky'][-1] ] ]
-        axis_3 = ['kz', '1/A', [orbital.psik['kz'][0], orbital.psik['kz'][-1] ] ]
-        data   = orbital.psik['data']
+        # set name for SliceData object           
+        name = orbital.psi['name']
+
+        # set axis and data
+        if domain == 'real-space':
+            axis_1 = ['x', 'A', [orbital.psi['x'][0], orbital.psi['x'][-1] ] ]
+            axis_2 = ['y', 'A', [orbital.psi['y'][0], orbital.psi['y'][-1] ] ]
+            axis_3 = ['z', 'A', [orbital.psi['z'][0], orbital.psi['z'][-1] ] ]
+            data = orbital.psi['data']
+
+        else:
+            axis_1 = ['kx', '1/A', [orbital.psik['kx'][0], orbital.psik['kx'][-1] ] ]
+            axis_2 = ['ky', '1/A', [orbital.psik['ky'][0], orbital.psik['ky'][-1] ] ]
+            axis_3 = ['kz', '1/A', [orbital.psik['kz'][0], orbital.psik['kz'][-1] ] ]
+            data = orbital.psik['data']
+
+        # no meta data
         meta_data = {}
 
         return cls(name, axis_1, axis_2, axis_3, data, meta_data)
+
 
     def slice_from_index(self, index, axis=0):
 

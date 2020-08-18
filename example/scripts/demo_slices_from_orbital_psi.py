@@ -13,14 +13,23 @@ data_path = path + os.sep + '..' + os.sep + 'data' + os.sep
 from kmap.library.orbital import Orbital
 from kmap.library.sliceddata import SlicedData
 
-cubefile    = open(data_path + 'pentacene_HOMO.cube').read()  # read cube-file from file
-homo        = Orbital(cubefile)    # compute 3D Fourier transform (see Eqs. 6-11) 
- 
-real_space  = False   # True: real space plot, False: momentum space plots
-if real_space:
-    orbital_slices = SlicedData.init_from_orbital_psi(homo)  
-else:
-    orbital_slices = SlicedData.init_from_orbital_psik(homo) 
+# choose local path to cube-file
+cube_file   = data_path + 'pentacene_HOMO.cube'   
+
+# ... or choose URL pointing to cubefile
+# cube_file = 'http://143.50.77.12/OrganicMolecule/B3LYP/5A/charge0mult1/5A_MO_73'
+
+
+# uncomment to create real-space SlicedData
+#orbital_slices = SlicedData.init_from_orbital_psi(cube_file, 
+#                                                  domain='real-space')  
+
+# ... or uncomment for k-space SlicedData
+orbital_slices = SlicedData.init_from_orbital_psi(cube_file, 
+                                                  domain='k-space',
+                                                  dk3D=0.15, 
+                                                  E_kin_max=150, 
+                                                  value='imag')  
 
 # Plot some slices
 fig, _ax = plt.subplots(3,3)
