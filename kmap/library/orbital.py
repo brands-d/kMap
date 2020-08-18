@@ -110,6 +110,11 @@ class Orbital():
             int(2 * np.pi / (dk3D * self.psi['dy'])) - self.psi['ny'], 0)
         pad_z = max(
             int(2 * np.pi / (dk3D * self.psi['dz'])) - self.psi['nz'], 0)
+
+        if pad_x%2 == 1: pad_x += 1  # make sure it's an even number
+        if pad_y%2 == 1: pad_y += 1  # make sure it's an even number
+        if pad_z%2 == 1: pad_z += 1  # make sure it's an even number
+
         nkx = self.psi['nx'] + pad_x
         nky = self.psi['ny'] + pad_y
         nkz = self.psi['nz'] + pad_z
@@ -120,8 +125,19 @@ class Orbital():
         kz = self.set_3Dkgrid(nkz, self.psi['dz'])
 
         # Compute 3D FFT
-        psik = np.fft.fftshift(np.fft.fftn(self.psi['data'],
-                                           s=[nkx, nky, nkz]))
+        # !! TESTING !!! This is supposed to yield also proper Real- and Imaginary parts!!
+#        print(nkx, nky, nkz)
+#        print(pad_x, pad_y, pad_z)
+        psi_padded = np.pad(self.psi['data'], 
+                      pad_width=((pad_x//2,pad_x//2), (pad_y//2,pad_y//2), (pad_z//2,pad_z//2)),
+                      mode='constant',
+                      constant_values=(0,0))
+        psi_padded = np.fft.ifftshift(psi_padded)                                
+        psik = np.fft.fftshift(np.fft.fftn(psi_padded))
+
+       # THIS IS THE OLD AND WELL TESTED WAY TO Compute 3D FFT
+#        psik = np.fft.fftshift(np.fft.fftn(self.psi['data'],
+#                                           s=[nkx, nky, nkz]))
 
         # properly normalize wave function in momentum space
         dkx, dky, dkz = kx[1]-kx[0], ky[1]-ky[0], kz[1]-kz[0]

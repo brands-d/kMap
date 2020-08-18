@@ -29,7 +29,7 @@ orbital_slices = SlicedData.init_from_orbital_psi(cube_file,
                                                   domain='k-space',
                                                   dk3D=0.15, 
                                                   E_kin_max=150, 
-                                                  value='imag')  
+                                                  value='real')  
 
 # Plot some slices
 fig, _ax = plt.subplots(3,3)
