@@ -1,3 +1,6 @@
+# Third Party Imports
+import numpy as np
+
 # PyQt5 Imports
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSignal
@@ -37,7 +40,17 @@ class Interpolation(QWidget, Interpolation_UI):
 
         if self.smoothing_checkbox.isChecked():
             sigma = self.get_sigma()
-            data.smoothing(*sigma, update=True)
+
+            if self.fill_combobox.currentIndex() == 0:
+                fill_value = np.nanmean(data.data)
+
+            elif self.fill_combobox.currentIndex() == 1:
+                fill_value = 0
+
+            else:
+                fill_value = np.nan
+
+            data.smoothing(*sigma, update=True, fill_value=fill_value)
 
         return data
 

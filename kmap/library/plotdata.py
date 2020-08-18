@@ -112,16 +112,21 @@ class PlotData():
         return new_data
 
     def smoothing(self, sigma_x, sigma_y, *args, mode='nearest',
-                  update=False, **kwargs):
+                  update=False, fill_value=np.nan, **kwargs):
 
         # gaussian filter needs number of pixel
         sigma_x = round(sigma_x / self.step_size[0])
         sigma_y = round(sigma_y / self.step_size[1])
 
+        fill_mask = np.zeros(self.data.shape, dtype=bool)
+        fill_mask[np.isnan(self.data)] = True
+        self.data[fill_mask] = fill_value
+        
         if update:
             gaussian_filter(
                 self.data, [sigma_x, sigma_y], mode=mode,
                 output=self.data, **kwargs)
+            self.data[fill_mask] = np.nan
 
             return self
 
@@ -129,6 +134,7 @@ class PlotData():
             smoothed = gaussian_filter(
                 self.data, [sigma_y, sigma_x], mode=mode, **kwargs)
             new_plot_data = PlotData(smoothed, self.range)
+            self.data[fill_mask] = np.nan
 
             return new_plot_data
 

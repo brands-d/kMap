@@ -375,17 +375,78 @@
       <item>
        <layout class="QVBoxLayout" name="layout_5">
         <item>
-         <widget class="QCheckBox" name="smoothing_checkbox">
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>Gaussian Filter</string>
-          </property>
-         </widget>
+         <layout class="QHBoxLayout" name="layout_7">
+          <item>
+           <widget class="QCheckBox" name="smoothing_checkbox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Gaussian Filter</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="spacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLabel" name="fill_label">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Fill Value:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="fill_combobox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="maxVisibleItems">
+             <number>3</number>
+            </property>
+            <property name="maxCount">
+             <number>3</number>
+            </property>
+            <item>
+             <property name="text">
+              <string>Mean</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Zero</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>NaN</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+         </layout>
         </item>
         <item>
          <layout class="QGridLayout" name="layout_6">
