@@ -46,7 +46,7 @@
         <x>0</x>
         <y>0</y>
         <width>748</width>
-        <height>517</height>
+        <height>513</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -101,7 +101,7 @@
           </spacer>
          </item>
          <item>
-          <widget class="MiniKSpacePlot" name="mini_kspace_plot" native="true"/>
+          <widget class="Mini3DKSpacePlot" name="mini_3Dkspace_plot" native="true"/>
          </item>
         </layout>
        </item>
@@ -157,12 +157,6 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>MiniKSpacePlot</class>
-   <extends>QWidget</extends>
-   <header>kmap/controller/miniplots</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>MiniRealSpacePlot</class>
    <extends>QWidget</extends>
    <header>kmap/controller/miniplots</header>
@@ -172,6 +166,12 @@
    <class>RealPlotOptions</class>
    <extends>QWidget</extends>
    <header>kmap/controller/realplotoptions</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Mini3DKSpacePlot</class>
+   <extends>QWidget</extends>
+   <header>kmap/controller/miniplots</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

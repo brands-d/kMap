@@ -78,14 +78,17 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
     def refresh_mini_plots(self, ID, orbital_changed=True):
 
         data = self.model.get_orbital_kmap_by_ID(ID)
-        phi, theta, psi = self.get_parameters(ID)[3:6]
-
-        self.mini_kspace_plot.plot(data, ID)
+        parameters = self.get_parameters(ID)
+        phi, theta, psi = parameters[3:6]
+        E_kin = parameters[1]
 
         if orbital_changed:
             orbital = self.model.ID_to_orbital(ID)
+            self.mini_3Dkspace_plot.set_orbital(orbital, ID)
             self.mini_real_plot.set_orbital(orbital)
 
+        self.mini_3Dkspace_plot.change_energy(E_kin)
+        self.mini_3Dkspace_plot.rotate_orbital(phi, theta, psi)
         self.mini_real_plot.rotate_orbital(phi, theta, psi)
 
     def refresh_mini_plot_polarization(self):
@@ -124,7 +127,7 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
 
         self.refresh_plot()
 
-        ID = self.mini_kspace_plot.ID
+        ID = self.mini_3Dkspace_plot.ID
         if ID is not None:
             self.refresh_mini_plots(ID, orbital_changed=False)
 
@@ -132,7 +135,7 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
 
         self.refresh_plot()
 
-        current_ID = self.mini_kspace_plot.ID
+        current_ID = self.mini_3Dkspace_plot.ID
         if current_ID is None or current_ID == ID:
             self.refresh_mini_plots(ID, orbital_changed=False)
 
@@ -166,7 +169,7 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
     def _setup(self):
 
         self.crosshair = CrosshairAnnulus(self.plot_item)
-        self.colormap = Colormap([self.plot_item, self.mini_kspace_plot])
+        self.colormap = Colormap([self.plot_item])
         self.interpolation = Interpolation()
 
         layout = self.scroll_area.widget().layout()
@@ -175,6 +178,7 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         layout.insertWidget(5, self.crosshair)
 
         self.mini_real_plot.set_options(self.real_space_options)
+        self.mini_3Dkspace_plot.set_options(self.real_space_options)
 
         # Rough axis values for all orbitals to set labels for interpolation
         x = Axis('kx', '1/A', [-3, 3], 200)
