@@ -111,6 +111,21 @@ class PlotData():
 
         return new_data
 
+    def interpolate_points(self, x, y, interpolator='rgi',
+                           bounds_error=False, *args, **kwargs):
+
+        if interpolator == 'rgi':
+            points = np.transpose([y, x])
+            rgi = RGI((self.y_axis, self.x_axis), self.data,
+                      bounds_error=bounds_error, *args, **kwargs)
+
+            intensities = np.array(rgi(points), dtype=np.float64)
+
+        else:
+            NotImplementedError('Chosen interpolator is unknown')
+
+        return intensities
+
     def smoothing(self, sigma_x, sigma_y, *args, mode='nearest',
                   update=False, fill_value=np.nan, **kwargs):
 
@@ -121,7 +136,7 @@ class PlotData():
         fill_mask = np.zeros(self.data.shape, dtype=bool)
         fill_mask[np.isnan(self.data)] = True
         self.data[fill_mask] = fill_value
-        
+
         if update:
             gaussian_filter(
                 self.data, [sigma_x, sigma_y], mode=mode,
