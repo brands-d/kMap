@@ -100,10 +100,10 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         
     def get_parameters(self, ID):
 
-        kinetic_energy, dk = self.cube_options.get_parameters()
+        kinetic_energy, dk, symmetry = self.cube_options.get_parameters()
         parameters = self.table.get_parameters_by_ID(ID)
         weight, *orientation = parameters
-        *polarization, symmetry = self.polarization.get_parameters()
+        polarization = self.polarization.get_parameters()
 
         return (weight, kinetic_energy, dk,
                 *orientation, *polarization, symmetry)
@@ -191,7 +191,7 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
             self.change_parameter)
         self.polarization.polarization_changed.connect(
             self.refresh_mini_plot_polarization)
-        self.polarization.symmetrization_changed.connect(
+        self.cube_options.symmetrization_changed.connect(
             self.change_parameter)
         self.cube_options.energy_changed.connect(
             self.change_parameter)

@@ -17,7 +17,6 @@ Polarization_UI, _ = uic.loadUiType(UI_file)
 class Polarization(QWidget, Polarization_UI):
 
     polarization_changed = pyqtSignal()
-    symmetrization_changed = pyqtSignal()
 
     def __init__(self, *args, **kwargs):
 
@@ -30,19 +29,14 @@ class Polarization(QWidget, Polarization_UI):
 
         self.polarization_changed.emit()
 
-    def change_symmetrization(self):
-
-        self.symmetrization_changed.emit()
-
     def get_parameters(self):
 
         Ak_type, polarization = self._get_polarization()
         factor = self._get_factor()
         Ak_type = factor if factor == 'no' else factor + Ak_type
-        symmetry = self._get_symmetry()
         angles = self._get_angles()
 
-        return (Ak_type, polarization, *angles, symmetry)
+        return (Ak_type, polarization, *angles)
 
     def _get_factor(self):
 
@@ -87,15 +81,6 @@ class Polarization(QWidget, Polarization_UI):
 
         return Ak_type, polarization
 
-    def _get_symmetry(self):
-
-        index = self.symmetrize_combobox.currentIndex()
-        available_symmetries = ['no', '2-fold', '2-fold+mirror',
-                                '3-fold', '3-fold+mirror', '4-fold',
-                                '4-fold+mirror']
-
-        return available_symmetries[index]
-
     def _get_angles(self):
 
         alpha = self.angle_spinbox.value()
@@ -110,6 +95,4 @@ class Polarization(QWidget, Polarization_UI):
             self.change_polarization)
         self.angle_spinbox.valueChanged.connect(self.change_polarization)
         self.azimuth_spinbox.valueChanged.connect(self.change_polarization)
-        self.symmetrize_combobox.currentIndexChanged.connect(
-            self.change_symmetrization)
         self.ak_combobox.currentIndexChanged.connect(self.change_polarization)

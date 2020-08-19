@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>470</width>
-    <height>129</height>
+    <width>319</width>
+    <height>138</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -41,19 +41,21 @@
       <set>Qt::AlignCenter</set>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
-       <widget class="QLabel" name="energy_label">
-        <property name="font">
-         <font>
-          <weight>50</weight>
-          <bold>false</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>Kinetic Energy:</string>
-        </property>
-       </widget>
-      </item>
+      <property name="leftMargin">
+       <number>5</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>5</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <property name="spacing">
+       <number>3</number>
+      </property>
       <item row="0" column="1">
        <widget class="QDoubleSpinBox" name="energy_spinbox">
         <property name="font">
@@ -88,19 +90,6 @@
         </property>
         <property name="value">
          <double>30.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="resolution_label">
-        <property name="font">
-         <font>
-          <weight>50</weight>
-          <bold>false</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>Resolution:</string>
         </property>
        </widget>
       </item>
@@ -140,6 +129,118 @@
          <double>0.030000000000000</double>
         </property>
        </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QComboBox" name="symmetrize_combobox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <property name="maxVisibleItems">
+         <number>7</number>
+        </property>
+        <property name="maxCount">
+         <number>7</number>
+        </property>
+        <item>
+         <property name="text">
+          <string>No Symmetry</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>2-Fold</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>2-Fold + Mirror</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>3-Fold</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>3-Fold + Mirror</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>3-Fold</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>4-Fold + Mirror</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="symmetrize_label">
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Symmetrization:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="energy_label">
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Kinetic Energy:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="resolution_label">
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Resolution:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <spacer name="spacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
       </item>
      </layout>
     </widget>

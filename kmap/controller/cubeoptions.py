@@ -19,6 +19,7 @@ class CubeOptions(QWidget, CubeOptions_UI):
 
     energy_changed = pyqtSignal()
     resolution_changed = pyqtSignal()
+    symmetrization_changed = pyqtSignal()
 
     def __init__(self, *args, **kwargs):
 
@@ -31,6 +32,10 @@ class CubeOptions(QWidget, CubeOptions_UI):
 
         self.energy_changed.emit()
 
+    def change_symmetrization(self):
+
+        self.symmetrization_changed.emit()
+
     def change_resolution(self):
 
         self.resolution_changed.emit()
@@ -39,10 +44,22 @@ class CubeOptions(QWidget, CubeOptions_UI):
 
         energy = self.energy_spinbox.value()
         resolution = self.resolution_spinbox.value()
+        symmetry = self._get_symmetry()
 
-        return energy, resolution
+        return energy, resolution, symmetry
+
+    def _get_symmetry(self):
+
+        index = self.symmetrize_combobox.currentIndex()
+        available_symmetries = ['no', '2-fold', '2-fold+mirror',
+                                '3-fold', '3-fold+mirror', '4-fold',
+                                '4-fold+mirror']
+
+        return available_symmetries[index]
 
     def _connect(self):
 
         self.energy_spinbox.valueChanged.connect(self.change_energy)
         self.resolution_spinbox.valueChanged.connect(self.change_resolution)
+        self.symmetrize_combobox.currentIndexChanged.connect(
+            self.change_symmetrization)
