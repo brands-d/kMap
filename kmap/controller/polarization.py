@@ -54,7 +54,7 @@ class Polarization(QWidget, Polarization_UI):
         elif Ak_index == 1:
             Ak_type = 'toroid'
 
-        else:
+        elif 2 <= Ak_index <= 6:
             Ak_type = 'NanoESCA'
 
             if Ak_index == 3:
@@ -68,6 +68,25 @@ class Polarization(QWidget, Polarization_UI):
 
             elif Ak_index == 6:
                 polarization = 'CDAD'
+
+        elif Ak_index == 7:
+            Ak_type = 'only-toroid'
+
+        elif 8 <= Ak_index <= 12:
+            Ak_type = 'only-NanoESCA'
+
+            if Ak_index == 9:
+                polarization = 's'
+
+            elif Ak_index == 10:
+                polarization = 'C+'
+
+            elif Ak_index == 11:
+                polarization = 'C-'
+
+            elif Ak_index == 12:
+                polarization = 'CDAD'
+
 
         return Ak_type, polarization
 

@@ -113,6 +113,36 @@
             <string>CDAD</string>
            </property>
           </item>
+          <item>
+           <property name="text">
+            <string>Only |A.k|^2: Toroid (p-pol)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Only |A.k|^2: NANO-ESCA: p-pol</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Only |A.k|^2: NANO-ESCA: s-pol</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Only |A.k|^2: NANO-ESCA: circ+</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Only |A.k|^2: NANO-ESCA: circ-</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Only |A.k|^2: CDAD</string>
+           </property>
+          </item>
          </widget>
         </item>
         <item row="1" column="1">

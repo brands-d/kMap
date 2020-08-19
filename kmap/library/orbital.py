@@ -56,7 +56,7 @@ class Orbital():
             theta (float): Euler orientation angle theta in degree.
             psi (float): Euler orientation angle psi in degree.
             Ak_type (string): Treatment of |A.k|^2: either 'no',
-                'toroid' or 'NanoESCA'.
+                'toroid', 'NanoESCA', 'only-toroid' or 'only-NanoESCA'.
             polarization (string): Either 'p', 's', 'C+', 'C-' or
                 'CDAD'.   
             alpha (float): Angle of incidence plane in degree.
@@ -86,7 +86,11 @@ class Orbital():
         if new_cut or new_Ak: self.set_polarization(Ak_type, polarization, 
                                          alpha, beta,gamma)
 
-        return PlotData(self.Ak['data']*self.kmap['data'], 
+        if Ak_type == 'only-toroid' or Ak_type == 'only-NanoESCA':
+            return PlotData(self.Ak['data'], self.kmap['krange'])
+        
+        else:
+            return PlotData(self.Ak['data']*self.kmap['data'], 
                         self.kmap['krange'])
 
 
@@ -308,7 +312,7 @@ class Orbital():
 
         # At the toroid, the emitted electron is always in the plane of
         # incidence and the sample is rotated
-        if Ak_type == 'toroid':
+        if Ak_type == 'toroid' or Ak_type == 'only-toroid':
             # Magnitude of k-vector
             k = kx**2 + ky**2 + kz**2
             # Parallel component of k-vector
@@ -318,7 +322,7 @@ class Orbital():
 
         # At the NanoESCA, either p-polarization ,s-polarization, or
         # circularly polarized light can be simulated
-        elif Ak_type == 'NanoESCA':
+        elif Ak_type == 'NanoESCA' or Ak_type == 'only-NanoESCA':
             # In-plane = p-polarization
             if polarization == 'p':
                 Ak = kx * cos_a * cos_b + ky * cos_a * sin_b + kz * sin_a
