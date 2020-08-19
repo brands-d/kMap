@@ -26,7 +26,9 @@ orbital  = [molecule.orbitals[i].URL,
            {'energy':molecule.orbitals[i].energy,'name':molecule.orbitals[i].name}]
 
 # set parameters
-parameters =[[20, 100, 2],  # photon_energy (list): [lower_value, upper_value, step_size] .
+parameters =[20,    # minimal photon_energy (float)
+             100,   # maximal photon_energy (float)
+             2,     # step size for photon_energy (float)
              0.0,   # fermi_energy (float): Fermi energy in eV
              0.02,  # dk (float): Desired k-resolution in kmap in Angstroem^-1. 
              0,     # phi (float): Euler orientation angle phi in degree. 

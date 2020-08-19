@@ -299,7 +299,9 @@ class SlicedData(AbstractData):
             orbital (list): [ 'URL',dict ]
                 dict needs keys: 'energy' and 'name' 
             parameters (list): list of parameters
-                photon_energy (list): [lower_value, upper_value, step_size]
+                hnu_min (float): minimal photon energy
+                hnu_max (float): maximal photon energy
+                hnu_step (float): stepsize for photon energy
                 fermi_energy (float): Fermi energy in eV
                 dk (float): Desired k-resolution in kmap in Angstroem^-1.
                 phi (float): Euler orientation angle phi in degree.
@@ -320,25 +322,25 @@ class SlicedData(AbstractData):
         """
 
         log = logging.getLogger('kmap')
+
         # extract parameters
-        photon_energy = parameters[0]
-        fermi_energy = parameters[1]
-        dk = parameters[2]
-        phi, theta, psi = parameters[3], parameters[4], parameters[5]
-        Ak_type = parameters[6]
-        polarization = parameters[7]
-        alpha, beta, gamma = parameters[8], parameters[9], parameters[10]
-        symmetrization = parameters[11]
+        hnu_min = parameters[0]
+        hnu_max = parameters[1]
+        hnu_step = parameters[2]
+        fermi_energy = parameters[3]
+        dk = parameters[4]
+        phi, theta, psi = parameters[5], parameters[6], parameters[7]
+        Ak_type = parameters[8]
+        polarization = parameters[9]
+        alpha, beta, gamma = parameters[10], parameters[11], parameters[12]
+        symmetrization = parameters[13]
 
         # binding energy of orbital and work function
         BE = orbital[1]['energy'] - fermi_energy
         Phi = -fermi_energy  # work function
 
         # determine axis_1 = photon energy
-        hnu_min = photon_energy[0]
-        hnu_max = photon_energy[1]
-        dhnu = photon_energy[2]
-        hnu = np.arange(hnu_min, hnu_max, dhnu)
+        hnu = np.arange(hnu_min, hnu_max, hnu_step)
         n_hnu = len(hnu)
 
         axis_1 = ['photonenergy', 'eV', [hnu_min, hnu_max]]
@@ -378,8 +380,7 @@ class SlicedData(AbstractData):
         # define meta-data for tool-tip display
         orbital_info = orbital[1]
 
-        meta_data = {'Photon energy (eV)': photon_energy,
-                     'Fermi energy (eV)': fermi_energy,
+        meta_data = {'Fermi energy (eV)': fermi_energy,
                      'Molecular orientation': (phi, theta, psi),
                      '|A.k|^2 factor': Ak_type,
                      'Polarization': polarization,
