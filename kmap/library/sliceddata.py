@@ -10,7 +10,7 @@ import numpy as np
 from kmap.library.id import ID
 from kmap.library.plotdata import PlotData
 from kmap.library.abstractdata import AbstractData
-from kmap.library.misc import axis_from_range
+from kmap.library.misc import axis_from_range, energy_to_k
 from kmap.library.database import Database
 from kmap.library.orbital import Orbital
 
@@ -167,9 +167,7 @@ class SlicedData(AbstractData):
         # determine axis_2 and axis_3 kmax at BE_max
         Phi = -fermi_energy  # work function
         E_kin_max = photon_energy - Phi + BE_max
-        m, hbar, e = 9.10938356e-31, 1.0545718e-34, 1.60217662e-19
-        fac = 2 * 1e-20 * e * m / hbar**2
-        k_max = np.sqrt(fac * E_kin_max)
+        k_max = energy_to_k(E_kin_max)
         nk = int((2 * k_max) / dk) + 1
         k_grid = np.linspace(-k_max, +k_max, nk)
         nk = len(k_grid)
@@ -214,7 +212,7 @@ class SlicedData(AbstractData):
         KX, KY = np.meshgrid(k_grid, k_grid)
         for i in range(len(BE)):
             E_kin = photon_energy - Phi + BE[i]
-            k_max = np.sqrt(fac * E_kin)
+            k_max = energy_to_k(E_kin)
             out = np.sqrt(KX**2 + KY**2) > k_max
             tmp = data[i, :, :]
             tmp[out] = np.NaN
@@ -347,9 +345,7 @@ class SlicedData(AbstractData):
 
         # determine axis_2 and axis_3 kmax at BE_max
         E_kin_max = hnu[-1] - Phi + BE
-        m, hbar, e = 9.10938356e-31, 1.0545718e-34, 1.60217662e-19
-        fac = 2 * 1e-20 * e * m / hbar**2
-        k_max = np.sqrt(fac * E_kin_max)
+        k_max = energy_to_k(E_kin_max)
         nk = int((2 * k_max) / dk) + 1
         k_grid = np.linspace(-k_max, +k_max, nk)
         nk = len(k_grid)

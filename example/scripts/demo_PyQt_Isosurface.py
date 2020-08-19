@@ -22,7 +22,7 @@ from kmap.library.misc import get_rotation_axes
 
 class Plot3DMolecule():
 
-    def __init__(self, w, orbital, grid=True, isoval=1/6):
+    def __init__(self, w, orbital, grid=True, photon={}, isoval=1/6):
 
         data     = orbital.psi['data']
         dx,dy,dz = orbital.psi['dx'], orbital.psi['dy'], orbital.psi['dz'] 
@@ -44,7 +44,7 @@ class Plot3DMolecule():
 
         # add bonds as LinePlotItems
         for bond in bonds:
-            line = gl.GLLinePlotItem(pos=bond, color=(1,1,0.0,1), width=5, antialias=True)
+            line = gl.GLLinePlotItem(pos=bond, color=(0.8,0.8,0.8,1), width=5, antialias=True)
             items.append(line)
             w.addItem(line)
 
@@ -72,6 +72,53 @@ class Plot3DMolecule():
             w.addItem(p)
 
             items.append(p)
+
+        if 'polarization' in photon:    # display incident photon
+            alpha = photon['alpha']*np.pi/180
+            beta = (180 + photon['beta'])*np.pi/180
+            direction = [np.sin(alpha)*np.cos(beta), np.sin(alpha)*np.sin(beta), np.cos(alpha)]
+            polarization = photon['polarization']
+
+            ray_length = 50  # length of wavy light ray
+            amplitude = 5    # amplitude of oscillation
+            wavelength = 5   # wavelength of oscillation
+            n_points = 200    # number of points along wavy light ray
+
+            x0 = np.linspace(0, ray_length*direction[0], n_points)
+            y0 = np.linspace(0, ray_length*direction[1], n_points)
+            z0 = np.linspace(0, ray_length*direction[2], n_points)
+            t  = np.linspace(0, ray_length, n_points)
+            
+            if polarization == 's':
+                pol_1 = [np.sin(beta), -np.cos(beta), 0]
+                pol_2 = [0, 0, 0]
+
+            elif polarization == 'p':
+                pol_1 = [0, 0, 0]
+                pol_2 = [np.cos(alpha)*np.cos(beta), np.cos(alpha)*np.sin(beta),-np.sin(alpha)]
+
+            elif polarization == 'C+':
+                pol_1 = [np.sin(beta), -np.cos(beta), 0]
+                pol_2 = [np.cos(alpha)*np.cos(beta), np.cos(alpha)*np.sin(beta),-np.sin(alpha)]
+
+            elif polarization == 'C-':
+                pol_1 = [np.sin(beta), -np.cos(beta), 0]
+                pol_2 = [-np.cos(alpha)*np.cos(beta),-np.cos(alpha)*np.sin(beta),+np.sin(alpha)]
+
+            elif polarization == 'CDAD': # show C+ spiral ... until I have a better idea ...
+                pol_1 = [np.sin(beta), -np.cos(beta), 0]
+                pol_2 = [np.cos(alpha)*np.cos(beta), np.cos(alpha)*np.sin(beta),-np.sin(alpha)]
+
+            dx = amplitude*pol_1[0]*np.cos(2*np.pi*t/wavelength) + amplitude*pol_2[0]*np.sin(2*np.pi*t/wavelength)
+            dy = amplitude*pol_1[1]*np.cos(2*np.pi*t/wavelength) + amplitude*pol_2[1]*np.sin(2*np.pi*t/wavelength)
+            dz = amplitude*pol_1[2]*np.cos(2*np.pi*t/wavelength) + amplitude*pol_2[2]*np.sin(2*np.pi*t/wavelength)
+
+            pos = np.array([x0+dx, y0+dy, z0+dz]).T            
+
+            photon_line = gl.GLLinePlotItem(pos=pos, color=(1,1,0.0,1), width=5, antialias=True)
+            photon_line.setGLOptions('translucent')
+            w.addItem(photon_line)
+
 
         self.items = items
         self.phi   = 0
@@ -118,7 +165,8 @@ w.show()
 w.setWindowTitle('test')
 w.setCameraPosition(distance=100,elevation=90,azimuth=-90)  # view from top
 
-molecule_view = Plot3DMolecule(w, molecule)
+molecule_view = Plot3DMolecule(w, molecule, 
+                photon={'polarization':'C-', 'alpha':45, 'beta': 0})
 
 
 #xdirection = gl.GLLinePlotItem(pos=np.array([[0,0,0],[20,0,0]]), color=(1,1,1,0.5), width=5, antialias=True)
@@ -129,14 +177,14 @@ molecule_view = Plot3DMolecule(w, molecule)
 
 # a few tests to see if the roration works as desired ...
 # (note: only last is shown, so uncomment all others)
-molecule_view.rotate_molecule(phi=20,theta= 0,psi= 0)
-molecule_view.rotate_molecule(phi= 0,theta= 0,psi= 0)
-molecule_view.rotate_molecule(phi= 0,theta=40,psi= 0)
-molecule_view.rotate_molecule(phi= 0,theta= 0,psi= 0)
-molecule_view.rotate_molecule(phi=90,theta=20,psi= 0)
-molecule_view.rotate_molecule(phi= 0,theta= 0,psi= 0)
-molecule_view.rotate_molecule(phi=90,theta=20,psi=90)
-molecule_view.rotate_molecule(phi= 0,theta= 0,psi= 0)
+#molecule_view.rotate_molecule(phi=20,theta= 0,psi= 0)
+#molecule_view.rotate_molecule(phi= 0,theta= 0,psi= 0)
+#molecule_view.rotate_molecule(phi= 0,theta=40,psi= 0)
+#molecule_view.rotate_molecule(phi= 0,theta= 0,psi= 0)
+#molecule_view.rotate_molecule(phi=90,theta=20,psi= 0)
+#molecule_view.rotate_molecule(phi= 0,theta= 0,psi= 0)
+molecule_view.rotate_molecule(phi=0,theta=0,psi=0)
+#molecule_view.rotate_molecule(phi= 0,theta= 0,psi= 0)
 
 # ... all these tests were in agreement with the kmaps shown in the kMap GasPhaseSim-Tab!
 

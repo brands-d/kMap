@@ -17,7 +17,7 @@ import pyqtgraph.opengl as gl   # pip install PyOpenGL
 
 # local imports 
 from kmap.library.orbital import Orbital
-
+from kmap.library.misc import energy_to_k
 
 ### MAIN PROGRAM ######################################################
 cubefile = open(data_path + 'pentacene_HOMO.cube').read()  # read cube-file from file
@@ -68,12 +68,13 @@ for isoval, color in zip(isovals, colors):
     p.setGLOptions('translucent')  # choose between 'opaque', 'translucent' or 'additive'
     w.addItem(p)
  
-# add hemisphere 
-R = 3.0     
-x = np.linspace(-R/dx, R/dx, 200)
-y = np.linspace(-R/dy, R/dy, 200)
+# add hemisphere for a given kinetic energy
+E_kin = 35.0
+k = energy_to_k(E_kin)    
+x = np.linspace(-k/dx, k/dx, 200)
+y = np.linspace(-k/dy, k/dy, 200)
 X,Y = np.meshgrid(x,y)
-Z = np.sqrt(R*R/(dx*dy) - X**2 - Y**2)
+Z = np.sqrt(k**2/(dx*dy) - X**2 - Y**2)
 hemisphere = gl.GLSurfacePlotItem(x=x, y=y, z=Z, color=(0.5, 0.5, 0.5, 0.7), shader='edgeHilight')
 hemisphere.setGLOptions('translucent')
 w.addItem(hemisphere)

@@ -162,3 +162,49 @@ def profile_line_phi(plot_data, phi, x_center, y_center):
     end = [y_end_idx, x_end_idx]
 
     return start, end
+
+
+def energy_to_k(E_kin):
+    """ Convert kinetic energy in eV to k in Anstroem^-1."""
+
+    # Electron mass
+    m = 9.10938356e-31
+    # Reduced Planck constant
+    hbar = 1.0545718e-34
+    # Electron charge
+    e = 1.60217662e-19
+
+    fac = 2 * 1e-20 * e * m / hbar**2
+
+    return np.sqrt(fac * E_kin)
+
+
+def compute_Euler_matrix(phi, theta, psi):
+    """Compute rotation matrix according to Eq. (M3.10.3) of
+       Lang-Pucker"""
+
+    # Compute sines and cosines of angles
+    sin_phi = np.sin(np.radians(phi))
+    cos_phi = np.cos(np.radians(phi))
+    sin_theta = np.sin(np.radians(theta))
+    cos_theta = np.cos(np.radians(theta))
+    sin_psi = np.sin(np.radians(psi))
+    cos_psi = np.cos(np.radians(psi))
+
+    # Euler matrix r according to eq. (M3.10.3) of Lang-Pucker
+    r = np.zeros((3, 3))
+    r[0, 0] = cos_phi * cos_psi - sin_phi * cos_theta * sin_psi
+    r[1, 0] = -cos_phi * sin_psi - sin_phi * cos_theta * cos_psi
+    r[2, 0] = sin_phi * sin_theta
+
+    r[0, 1] = sin_phi * cos_psi + cos_phi * cos_theta * sin_psi
+    r[1, 1] = -sin_phi * sin_psi + cos_phi * cos_theta * cos_psi
+    r[2, 1] = -cos_phi * sin_theta
+
+    r[0, 2] = sin_theta * sin_psi
+    r[1, 2] = sin_theta * cos_psi
+    r[2, 2] = cos_theta
+
+    return r
+
+

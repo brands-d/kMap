@@ -162,7 +162,7 @@ class MiniRealSpacePlot(GLViewWidget):
         if self.orbital is None or not self.options.is_show_bonds():
             return
 
-        color = (1, 1, 0.5, 0.5)
+        color = (0.8,0.8,0.8,1)  # light gray
 
         for bond in self.orbital.get_bonds():
             new_bond = GLLinePlotItem(pos=bond, color=color,
@@ -174,17 +174,55 @@ class MiniRealSpacePlot(GLViewWidget):
     def _refresh_photon(self):
 
         polarization, alpha, beta = self.photon_parameters
-        #print(polarization, alpha, beta)
+        
         if not self.options.is_show_photon():
             return
 
-        color = (1, 1, 0.5, 0.5)
+        color = (1, 1, 0.0, 1)  # color for wavy light ray (yellow)
+        ray_length = 50  # length of wavy light ray
+        amplitude = 5    # amplitude of oscillation
+        wavelength = 5   # wavelength of oscillation
+        n_points = 200    # number of points along wavy light ray
 
-        some_line_test = GLLinePlotItem(pos=np.array([[0,0,0],[10,10,10]]), color=color,
-                                        width=5, antialias=True)
-        self.photon = some_line_test
+        alpha = alpha*np.pi/180
+        beta = (180 + beta)*np.pi/180
+        direction = [np.sin(alpha)*np.cos(beta), np.sin(alpha)*np.sin(beta), np.cos(alpha)]
 
-        self.addItem(some_line_test)
+        x0 = np.linspace(0, ray_length*direction[0], n_points)
+        y0 = np.linspace(0, ray_length*direction[1], n_points)
+        z0 = np.linspace(0, ray_length*direction[2], n_points)
+        t  = np.linspace(0, ray_length, n_points)
+            
+        if polarization == 's':
+            pol_1 = [np.sin(beta), -np.cos(beta), 0]
+            pol_2 = [0, 0, 0]
+
+        elif polarization == 'p':
+            pol_1 = [0, 0, 0]
+            pol_2 = [np.cos(alpha)*np.cos(beta), np.cos(alpha)*np.sin(beta),-np.sin(alpha)]
+
+        elif polarization == 'C+':
+            pol_1 = [np.sin(beta), -np.cos(beta), 0]
+            pol_2 = [np.cos(alpha)*np.cos(beta), np.cos(alpha)*np.sin(beta),-np.sin(alpha)]
+
+        elif polarization == 'C-':
+            pol_1 = [np.sin(beta), -np.cos(beta), 0]
+            pol_2 = [-np.cos(alpha)*np.cos(beta),-np.cos(alpha)*np.sin(beta),+np.sin(alpha)]
+
+        elif polarization == 'CDAD': # show C+ spiral ... until I have a better idea ...
+            pol_1 = [np.sin(beta), -np.cos(beta), 0]
+            pol_2 = [np.cos(alpha)*np.cos(beta), np.cos(alpha)*np.sin(beta),-np.sin(alpha)]
+
+        dx = amplitude*pol_1[0]*np.cos(2*np.pi*t/wavelength) + amplitude*pol_2[0]*np.sin(2*np.pi*t/wavelength)
+        dy = amplitude*pol_1[1]*np.cos(2*np.pi*t/wavelength) + amplitude*pol_2[1]*np.sin(2*np.pi*t/wavelength)
+        dz = amplitude*pol_1[2]*np.cos(2*np.pi*t/wavelength) + amplitude*pol_2[2]*np.sin(2*np.pi*t/wavelength)
+
+        pos = np.array([x0+dx, y0+dy, z0+dz]).T            
+
+        photon_line = GLLinePlotItem(pos=pos, color=color, width=5, antialias=True)
+        photon_line.setGLOptions('translucent')
+        self.photon = photon_line
+        self.addItem(photon_line)
 
 
     def _refresh_grid(self):
