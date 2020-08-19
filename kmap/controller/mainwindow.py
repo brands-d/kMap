@@ -234,11 +234,13 @@ class MainWindow(QMainWindow, MainWindow_UI):
 
         actions = [self.load_hdf5_action,
                    self.load_sliced_online_action,
+                   self.load_sliced_online_action2,
                    self.show_matplotlib,
                    self.log_file_action, self.load_cube_online_action,
                    self.load_cube_file_action]
 
-        alias = ['load_hdf5', 'load_sliced_online_action', 'show_matplotlib', 'open_log',
+        alias = ['load_hdf5', 'load_sliced_online_action', 'load_sliced_online_action2',
+                 'show_matplotlib', 'open_log',
                  'load_cube_online', 'load_cube_file']
 
         for action, alias in zip(actions, alias):
@@ -252,6 +254,8 @@ class MainWindow(QMainWindow, MainWindow_UI):
         # File menu
         self.load_hdf5_action.triggered.connect(self.load_hdf5_files)
         self.load_sliced_online_action.triggered.connect(
+            self.open_sliceddatabase_browser)
+        self.load_sliced_online_action2.triggered.connect(
             self.open_sliceddatabase_browser)
         self.load_cube_file_action.triggered.connect(
             self.load_cube_files_locally)

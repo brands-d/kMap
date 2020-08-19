@@ -88,6 +88,12 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
 
         self.mini_real_plot.rotate_orbital(phi, theta, psi)
 
+    def refresh_mini_plot_polarization(self):
+
+        polarization, alpha, beta = self.polarization.get_parameters()[1:4]
+       
+        self.mini_real_plot.rotate_photon(polarization, alpha, beta)
+
     def get_crosshair(self):
 
         return self.crosshair
@@ -164,8 +170,8 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         self.interpolation = Interpolation()
 
         layout = self.scroll_area.widget().layout()
-        layout.insertWidget(2, self.interpolation)
-        layout.insertWidget(4, self.colormap)
+        layout.insertWidget(4, self.interpolation)
+        layout.insertWidget(3, self.colormap)
         layout.insertWidget(5, self.crosshair)
 
         self.mini_real_plot.set_options(self.real_space_options)
@@ -183,6 +189,8 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         self.table.orbital_selected.connect(self.refresh_mini_plots)
         self.polarization.polarization_changed.connect(
             self.change_parameter)
+        self.polarization.polarization_changed.connect(
+            self.refresh_mini_plot_polarization)
         self.polarization.symmetrization_changed.connect(
             self.change_parameter)
         self.cube_options.energy_changed.connect(

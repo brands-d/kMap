@@ -17,6 +17,7 @@ class RealPlotOptions(QWidget, RealPlotOptions_UI):
     show_grid_changed = pyqtSignal(int)
     show_mesh_changed = pyqtSignal(int)
     show_bonds_changed = pyqtSignal(int)
+    show_photon_changed = pyqtSignal(int)
     iso_val_changed = pyqtSignal()
 
     def __init__(self, plot_item):
@@ -41,6 +42,10 @@ class RealPlotOptions(QWidget, RealPlotOptions_UI):
 
         return self.show_bond_checkbox.isChecked()
 
+    def is_show_photon(self):
+
+        return self.show_photon_checkbox.isChecked()
+
     def is_show_mesh(self):
 
         return self.show_isosurface_checkbox.isChecked()
@@ -52,6 +57,10 @@ class RealPlotOptions(QWidget, RealPlotOptions_UI):
     def _change_bonds_show(self, state):
 
         self.show_bonds_changed.emit(state)
+
+    def _change_photon_show(self, state):
+
+        self.show_photon_changed.emit(state)
 
     def _change_grid_show(self, state):
 
@@ -69,6 +78,7 @@ class RealPlotOptions(QWidget, RealPlotOptions_UI):
 
         self.reset_camera_button.clicked.connect(self.reset_camera)
         self.show_bond_checkbox.stateChanged.connect(self._change_bonds_show)
+        self.show_photon_checkbox.stateChanged.connect(self._change_photon_show)
         self.show_grid_checkbox.stateChanged.connect(self._change_grid_show)
         self.show_isosurface_checkbox.stateChanged.connect(
             self._change_mesh_show)

@@ -290,6 +290,111 @@ class SlicedData(AbstractData):
 
         return cls(name, axis_1, axis_2, axis_3, data, meta_data)
 
+    @classmethod
+    def init_from_orbital_photonenergy(cls, name, orbital, parameters):
+        """Returns a SlicedData object with the data[photonenergy,kx,ky] 
+           computed from the kmaps of one orbital for a series of
+           photon energies.
+
+        Args:
+            name (str): name for SlicedData object
+            orbital (list): [ 'URL',dict ]
+                dict needs keys: 'energy' and 'name' 
+            parameters (list): list of parameters
+                photon_energy (list): [lower_value, upper_value, step_size]
+                fermi_energy (float): Fermi energy in eV
+                dk (float): Desired k-resolution in kmap in Angstroem^-1.
+                phi (float): Euler orientation angle phi in degree.
+                theta (float): Euler orientation angle theta in degree.
+                psi (float): Euler orientation angle psi in degree.
+                Ak_type (string): Treatment of |A.k|^2: either 'no',
+                        'toroid' or 'NanoESCA'.
+                polarization (string): Either 'p', 's', 'C+', 'C-' or
+                        'CDAD'.   
+                alpha (float): Angle of incidence plane in degree.
+                beta (float): Azimuth of incidence plane in degree.
+                gamma (float/str): Damping factor for final state in
+                        Angstroem^-1. str = 'auto' sets gamma automatically
+                symmetrization (str): either 'no', '2-fold', '2-fold+mirror',
+                        '3-fold', '3-fold+mirror','4-fold', '4-fold+mirror'
+        Returns:
+            (SlicedData): SlicedData containing kmaps for various photon energies
+        """
+
+        log = logging.getLogger('kmap')
+        # extract parameters
+        photon_energy = parameters[0]
+        fermi_energy = parameters[1]
+        dk = parameters[2]
+        phi, theta, psi = parameters[3], parameters[4], parameters[5]
+        Ak_type = parameters[6]
+        polarization = parameters[7]
+        alpha, beta, gamma = parameters[8], parameters[9], parameters[10]
+        symmetrization = parameters[11]
+
+        # binding energy of orbital and work function
+        BE = orbital[1]['energy'] - fermi_energy
+        Phi = -fermi_energy  # work function
+
+        # determine axis_1 = photon energy
+        hnu_min = photon_energy[0]
+        hnu_max = photon_energy[1]
+        dhnu = photon_energy[2]
+        hnu = np.arange(hnu_min, hnu_max, dhnu)
+        n_hnu = len(hnu)
+
+        axis_1 = ['photonenergy', 'eV', [hnu_min, hnu_max]]
+
+        # determine axis_2 and axis_3 kmax at BE_max
+        E_kin_max = hnu[-1] - Phi + BE
+        m, hbar, e = 9.10938356e-31, 1.0545718e-34, 1.60217662e-19
+        fac = 2 * 1e-20 * e * m / hbar**2
+        k_max = np.sqrt(fac * E_kin_max)
+        nk = int((2 * k_max) / dk) + 1
+        k_grid = np.linspace(-k_max, +k_max, nk)
+        nk = len(k_grid)
+        axis_2 = ['kx', '1/A', [-k_max, +k_max]]
+        axis_3 = ['ky', '1/A', [-k_max, +k_max]]
+
+        # initialize 3D-numpy array with zeros
+        data = np.zeros((n_hnu, nk, nk))
+        orbital_names = []
+    
+        log.info('Adding orbital to SlicedData Object, please wait!')
+        # read orbital from cube-file database
+        url = orbital[0]
+        log.info('Loading from database: %s' % url)
+        with urllib.request.urlopen(url) as f:
+            file = f.read().decode('utf-8')
+            orbital_data = Orbital(file)
+
+        # loop over photon energies
+        for i in range(len(hnu)):
+
+            # kinetic energy of emitted electron
+            E_kin = hnu[i] - Phi + BE
+            kmap = orbital_data.get_kmap(E_kin, dk, phi, theta, psi,
+                                         Ak_type, polarization, alpha, beta,
+                                         gamma, symmetrization)
+            kmap.interpolate(k_grid, k_grid, update=True)
+            data[i, :, :] = kmap.data
+
+        # define meta-data for tool-tip display
+        orbital_info = orbital[1]
+
+        meta_data = {'Photon energy (eV)': photon_energy,
+                     'Fermi energy (eV)': fermi_energy,
+                     'Molecular orientation': (phi, theta, psi),
+                     '|A.k|^2 factor': Ak_type,
+                     'Polarization': polarization,
+                     'Incidence direction': (alpha, beta),
+                     'Symmetrization': symmetrization,
+                     'Orbital Info': orbital_info}
+
+        return cls(name, axis_1, axis_2, axis_3, data, meta_data)
+
+
+
     def slice_from_index(self, index, axis=0):
 
         if axis == 0:

@@ -46,6 +46,8 @@ class MiniRealSpacePlot(GLViewWidget):
         self.options = None
         self.grid = None
         self.bonds = []
+        self.photon = None
+        self.photon_parameters = ['p', 0, 0]
         self.mesh = []
         self.orbital = None
         self.orientation = [0, 0, 0]
@@ -80,10 +82,20 @@ class MiniRealSpacePlot(GLViewWidget):
 
         self.orientation = [phi, theta, psi]
 
+    def rotate_photon(self, polarization='p', alpha=0, beta=0):
+
+        if self.photon is not None:
+            self.removeItem(self.photon)
+            self.photon = None
+
+        self.photon_parameters = [polarization, alpha, beta]
+        self._refresh_photon()
+
     def refresh_plot(self):
 
         self._refresh_grid()
         self._refresh_bonds()
+        self._refresh_photon()
         self._refresh_mesh()
 
     def reset_camera(self, distance=75, elevation=90, azimuth=-90):
@@ -102,6 +114,11 @@ class MiniRealSpacePlot(GLViewWidget):
         if self.bonds:
             for bond in self.bonds:
                 bond.setVisible(state)
+
+    def toggle_show_photon(self, state):
+
+        if self.photon is not None:
+            self.photon.setVisible(state)
 
     def toggle_show_mesh(self, state):
 
@@ -153,6 +170,22 @@ class MiniRealSpacePlot(GLViewWidget):
             self.bonds.append(new_bond)
 
             self.addItem(new_bond)
+
+    def _refresh_photon(self):
+
+        polarization, alpha, beta = self.photon_parameters
+        print(polarization, alpha, beta)
+        if not self.options.is_show_photon():
+            return
+
+        color = (1, 1, 0.5, 0.5)
+
+        some_line_test = GLLinePlotItem(pos=np.array([[0,0,0],[10,10,10]]), color=color,
+                                        width=5, antialias=True)
+        self.photon = some_line_test
+
+        self.addItem(some_line_test)
+
 
     def _refresh_grid(self):
 
@@ -233,4 +266,5 @@ class MiniRealSpacePlot(GLViewWidget):
         self.options.show_grid_changed.connect(self.toggle_show_grid)
         self.options.show_mesh_changed.connect(self.toggle_show_mesh)
         self.options.show_bonds_changed.connect(self.toggle_show_bonds)
+        self.options.show_photon_changed.connect(self.toggle_show_photon)
         self.options.iso_val_changed.connect(self._refresh_mesh)
