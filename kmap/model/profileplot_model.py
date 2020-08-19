@@ -4,7 +4,7 @@ import numpy as np
 class ProfilePlotModel():
 
     def get_plot_data(self, data, crosshair, region,
-                      phi_sample=24, line_sample=100):
+                      phi_sample=180, line_sample=50):
 
         if region == 'x':
             x_points = line_sample * [crosshair.x]

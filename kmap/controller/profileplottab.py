@@ -39,26 +39,40 @@ class ProfilePlotTab(QWidget, ProfilePlotTab_UI):
     def refresh_plot(self):
 
         is_line_plot = self.line_radiobutton.isChecked()
+        phi_sample = self.phi_sample_spinbox.value()
+        line_sample = self.line_sample_spinbox.value()
+
         self.plot_item.clear()
 
         for tab, show_options in zip(self.tabs, self.show_options):
             data = tab.get_displayed_plot_data()
             crosshair = tab.get_crosshair().model
-
+            title = tab.get_title()
+            
             if is_line_plot and show_options[0]:
-                self.plot_item.plot(data, crosshair, region='x')
+                self.plot_item.plot(data, title, crosshair, region='x',
+                                    phi_sample=phi_sample,
+                                    line_sample=line_sample)
 
             if is_line_plot and show_options[1]:
-                self.plot_item.plot(data, crosshair, region='y')
+                self.plot_item.plot(data, title, crosshair, region='y',
+                                    phi_sample=phi_sample,
+                                    line_sample=line_sample)
 
             if not is_line_plot and show_options[2]:
-                self.plot_item.plot(data, crosshair, region='roi')
+                self.plot_item.plot(data, title, crosshair, region='roi',
+                                    phi_sample=phi_sample,
+                                    line_sample=line_sample)
 
             if not is_line_plot and show_options[3]:
-                self.plot_item.plot(data, crosshair, region='border')
+                self.plot_item.plot(data, title, crosshair, region='border',
+                                    phi_sample=phi_sample,
+                                    line_sample=line_sample)
 
             if not is_line_plot and show_options[4]:
-                self.plot_item.plot(data, crosshair, region='ring')
+                self.plot_item.plot(data, title, crosshair, region='ring',
+                                    phi_sample=phi_sample,
+                                    line_sample=line_sample)
 
     def load_tabs(self, tab_widget):
 
@@ -107,6 +121,14 @@ class ProfilePlotTab(QWidget, ProfilePlotTab_UI):
                 widget.setVisible(not show_line_bool)
 
             widget.blockSignals(False)
+
+        if show_line_bool:
+            x_label = ['Axis', 'a.u.']
+
+        else:
+            x_label = ['Angle Phi', '°']
+
+        self.plot_item.set_label(x_label, ['Intensity', 'a.u.'])
 
     def _change_tab(self, index):
 
