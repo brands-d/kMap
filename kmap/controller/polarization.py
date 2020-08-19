@@ -24,7 +24,6 @@ class Polarization(QWidget, Polarization_UI):
         # Setup GUI
         super(Polarization, self).__init__(*args, **kwargs)
         self.setupUi(self)
-        self._setup()
         self._connect()
 
     def change_polarization(self):
@@ -38,54 +37,53 @@ class Polarization(QWidget, Polarization_UI):
     def get_parameters(self):
 
         Ak_type, polarization = self._get_polarization()
+        factor = self._get_factor()
+        Ak_type = factor if factor == 'no' else factor + Ak_type
         symmetry = self._get_symmetry()
         angles = self._get_angles()
 
         return (Ak_type, polarization, *angles, symmetry)
 
-    def _get_polarization(self):
+    def _get_factor(self):
 
-        Ak_index = self.polarization_combobox.currentIndex()
-        polarization = 'p'
+        Ak_index = self.ak_combobox.currentIndex()
+
         if Ak_index == 0:
             Ak_type = 'no'
 
         elif Ak_index == 1:
-            Ak_type = 'toroid'
+            Ak_type = 'only-'
 
-        elif 2 <= Ak_index <= 6:
+        else:
+            Ak_type = ''
+
+        return Ak_type
+
+    def _get_polarization(self):
+
+        Ak_index = self.polarization_combobox.currentIndex()
+
+        if Ak_index == 0:
+            Ak_type = 'toroid'
+            polarization = 'p'
+
+        else:
             Ak_type = 'NanoESCA'
 
-            if Ak_index == 3:
+            if Ak_index == 1:
+                polarization = 'p'
+
+            elif Ak_index == 2:
                 polarization = 's'
+
+            elif Ak_index == 3:
+                polarization = 'C+'
 
             elif Ak_index == 4:
-                polarization = 'C+'
+                polarization = 'C-'
 
             elif Ak_index == 5:
-                polarization = 'C-'
-
-            elif Ak_index == 6:
                 polarization = 'CDAD'
-
-        elif Ak_index == 7:
-            Ak_type = 'only-toroid'
-
-        elif 8 <= Ak_index <= 12:
-            Ak_type = 'only-NanoESCA'
-
-            if Ak_index == 9:
-                polarization = 's'
-
-            elif Ak_index == 10:
-                polarization = 'C+'
-
-            elif Ak_index == 11:
-                polarization = 'C-'
-
-            elif Ak_index == 12:
-                polarization = 'CDAD'
-
 
         return Ak_type, polarization
 
@@ -106,11 +104,6 @@ class Polarization(QWidget, Polarization_UI):
 
         return alpha, beta, gamma
 
-    def _setup(self):
-
-        # Can't add sub and superscript text in QtCreator
-        self.polarization_combobox.setItemText(0, 'no |A\u2096|\u00B2')
-
     def _connect(self):
 
         self.polarization_combobox.currentIndexChanged.connect(
@@ -119,3 +112,4 @@ class Polarization(QWidget, Polarization_UI):
         self.azimuth_spinbox.valueChanged.connect(self.change_polarization)
         self.symmetrize_combobox.currentIndexChanged.connect(
             self.change_symmetrization)
+        self.ak_combobox.currentIndexChanged.connect(self.change_polarization)

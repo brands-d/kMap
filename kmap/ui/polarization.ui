@@ -6,25 +6,28 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>540</width>
-    <height>199</height>
+    <width>334</width>
+    <height>248</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
    <property name="leftMargin">
-    <number>5</number>
+    <number>2</number>
    </property>
    <property name="topMargin">
-    <number>5</number>
+    <number>2</number>
    </property>
    <property name="rightMargin">
-    <number>5</number>
+    <number>2</number>
    </property>
    <property name="bottomMargin">
-    <number>5</number>
+    <number>2</number>
    </property>
    <item>
     <widget class="QGroupBox" name="groupbox">
@@ -41,34 +44,49 @@
       <set>Qt::AlignCenter</set>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
+      <property name="spacing">
+       <number>0</number>
+      </property>
       <property name="leftMargin">
-       <number>5</number>
+       <number>0</number>
       </property>
       <property name="topMargin">
-       <number>5</number>
+       <number>0</number>
       </property>
       <property name="rightMargin">
-       <number>5</number>
+       <number>0</number>
       </property>
       <property name="bottomMargin">
-       <number>5</number>
+       <number>0</number>
       </property>
       <item>
        <layout class="QGridLayout" name="layout">
         <property name="leftMargin">
-         <number>5</number>
+         <number>0</number>
         </property>
         <property name="topMargin">
-         <number>5</number>
+         <number>0</number>
         </property>
         <property name="rightMargin">
-         <number>5</number>
+         <number>0</number>
         </property>
         <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <property name="horizontalSpacing">
          <number>5</number>
         </property>
-        <item row="0" column="1">
+        <property name="verticalSpacing">
+         <number>3</number>
+        </property>
+        <item row="1" column="1">
          <widget class="QComboBox" name="polarization_combobox">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="font">
            <font>
             <weight>50</weight>
@@ -78,11 +96,9 @@
           <property name="toolTip">
            <string>Choose one type of polarization.</string>
           </property>
-          <item>
-           <property name="text">
-            <string>No |A.k|^2</string>
-           </property>
-          </item>
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
           <item>
            <property name="text">
             <string>Toroid (p-pol)</string>
@@ -113,40 +129,16 @@
             <string>CDAD</string>
            </property>
           </item>
-          <item>
-           <property name="text">
-            <string>Only |A.k|^2: Toroid (p-pol)</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Only |A.k|^2: NANO-ESCA: p-pol</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Only |A.k|^2: NANO-ESCA: s-pol</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Only |A.k|^2: NANO-ESCA: circ+</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Only |A.k|^2: NANO-ESCA: circ-</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Only |A.k|^2: CDAD</string>
-           </property>
-          </item>
          </widget>
         </item>
-        <item row="1" column="1">
+        <item row="2" column="1">
          <widget class="QDoubleSpinBox" name="angle_spinbox">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="font">
            <font>
             <weight>50</weight>
@@ -182,33 +174,7 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="0">
-         <widget class="QLabel" name="polarization_label">
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>Polarization:</string>
-          </property>
-         </widget>
-        </item>
         <item row="2" column="0">
-         <widget class="QLabel" name="azimuth_label">
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>Azimuth of Incidence:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
          <widget class="QLabel" name="angle_label">
           <property name="font">
            <font>
@@ -217,12 +183,31 @@
            </font>
           </property>
           <property name="text">
-           <string>Angle of Incidence:</string>
+           <string>Angle of Inc.:</string>
           </property>
          </widget>
         </item>
-        <item row="2" column="1">
+        <item row="4" column="0">
+         <widget class="QLabel" name="symmetrize_label">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Symmetrization:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
          <widget class="QDoubleSpinBox" name="azimuth_spinbox">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="font">
            <font>
             <weight>50</weight>
@@ -255,26 +240,22 @@
           </property>
          </widget>
         </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="symmetrize_label">
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>Symmetrization:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="1">
+        <item row="4" column="1">
          <widget class="QComboBox" name="symmetrize_combobox">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="font">
            <font>
             <weight>50</weight>
             <bold>false</bold>
            </font>
+          </property>
+          <property name="currentIndex">
+           <number>0</number>
           </property>
           <property name="maxVisibleItems">
            <number>7</number>
@@ -317,6 +298,94 @@
             <string>4-Fold + Mirror</string>
            </property>
           </item>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="azimuth_label">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Azimuth of Inc.:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="ak_label">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="toolTip">
+           <string>Ψ</string>
+          </property>
+          <property name="text">
+           <string>Factor:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QComboBox" name="ak_combobox">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <property name="maxVisibleItems">
+           <number>3</number>
+          </property>
+          <property name="maxCount">
+           <number>3</number>
+          </property>
+          <item>
+           <property name="text">
+            <string>|Ψ|²</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>|A.k|²</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>|A.k|² x |Ψ|² </string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="polarization_label">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Polarization:</string>
+          </property>
          </widget>
         </item>
        </layout>
