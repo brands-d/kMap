@@ -1,13 +1,14 @@
 # PyQt5 Imports
 from PyQt5 import uic
 from PyQt5.QtWidgets import QWidget
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QDir
 
 # Own Imports
 from kmap import __directory__
 
 # Load .ui File
-UI_file = __directory__ + '/ui/sliceddatabaseoptions.ui'
+UI_file = __directory__ + \
+    QDir.toNativeSeparators('/ui/sliceddatabaseoptions.ui')
 SlicedDataBaseOptions_UI, _ = uic.loadUiType(UI_file)
 
 
@@ -19,7 +20,7 @@ class SlicedDataBaseOptions(QWidget, SlicedDataBaseOptions_UI):
         super(SlicedDataBaseOptions, self).__init__(*args, **kwargs)
         self.setupUi(self)
         self._setup()
-        
+
     def get_parameters(self):
 
         name = self.line_edit.text()

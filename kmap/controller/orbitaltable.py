@@ -3,7 +3,7 @@ import logging
 
 # PyQt5 Imports
 from PyQt5 import uic
-from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtCore import Qt, pyqtSignal, QDir
 from PyQt5.QtWidgets import QWidget, QHeaderView, QHBoxLayout
 
 # Own Imports
@@ -11,7 +11,7 @@ from kmap import __directory__
 from kmap.controller.orbitaltablerow import OrbitalTableRow
 
 # Load .ui File
-UI_file = __directory__ + '/ui/orbitaltable.ui'
+UI_file = __directory__ + QDir.toNativeSeparators('/ui/orbitaltable.ui')
 OrbitalTable_UI, _ = uic.loadUiType(UI_file)
 
 

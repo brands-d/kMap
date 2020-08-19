@@ -1,6 +1,6 @@
 # PyQt5 Imports
 from PyQt5 import uic
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import pyqtSignal, QDir
 from PyQt5.QtWidgets import QWidget
 
 # Third Party Imports
@@ -14,7 +14,7 @@ from kmap.library.misc import normalize
 from kmap.model.crosshair_model import CrosshairModel
 
 # Load .ui File
-UI_file = __directory__ + '/ui/crosshair.ui'
+UI_file = __directory__ + QDir.toNativeSeparators('/ui/crosshair.ui')
 Crosshair_UI, _ = uic.loadUiType(UI_file)
 
 

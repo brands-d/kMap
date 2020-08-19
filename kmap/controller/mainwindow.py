@@ -6,6 +6,7 @@ import traceback
 from PyQt5 import uic
 from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox
+from PyQt5.QtCore import QDir
 
 # Own Imports
 from kmap import __directory__, __version__
@@ -17,7 +18,7 @@ from kmap.config.config import config
 
 
 # Load .ui File
-UI_file = __directory__ + '/ui/mainwindow.ui'
+UI_file = __directory__ + QDir.toNativeSeparators('/ui/mainwindow.ui')
 MainWindow_UI, _ = uic.loadUiType(UI_file)
 
 
@@ -116,7 +117,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
     def open_log_file(self):
         # Open log file
 
-        path = __directory__ + '/../default.log'
+        path = __directory__ + QDir.toNativeSeparators('/../default.log')
         title = 'Log File'
 
         self.tab_widget.open_file_tab(
@@ -125,7 +126,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
     def open_mod_log_file(self):
         # Open module log file
 
-        path = __directory__ + '/../modules.log'
+        path = __directory__ + QDir.toNativeSeparators('/../modules.log')
         title = 'Modules Log File'
 
         self.tab_widget.open_file_tab(
@@ -134,7 +135,8 @@ class MainWindow(QMainWindow, MainWindow_UI):
     def open_general_settings(self):
         # Open general user settings
 
-        path = __directory__ + '/config/settings_user.ini'
+        path = __directory__ + \
+            QDir.toNativeSeparators('/config/settings_user.ini')
         title = 'General Settings'
 
         self.tab_widget.open_file_tab(
@@ -147,11 +149,12 @@ class MainWindow(QMainWindow, MainWindow_UI):
     def open_profile_tab(self):
 
         self.tab_widget.open_profile_tab()
-        
+
     def open_logging_settings(self):
         # Open logging user settings
 
-        path = __directory__ + '/config/logging_user.ini'
+        path = __directory__ + \
+            QDir.toNativeSeparators('/config/logging_user.ini')
         title = 'Logging Settings'
 
         self.tab_widget.open_file_tab(
@@ -160,7 +163,8 @@ class MainWindow(QMainWindow, MainWindow_UI):
     def open_general_default_settings(self):
         # Open general default settings
 
-        path = __directory__ + '/config/settings_default.ini'
+        path = __directory__ + \
+            QDir.toNativeSeparators('/config/settings_default.ini')
         title = 'General Settings (Default)'
 
         self.tab_widget.open_file_tab(
@@ -169,7 +173,8 @@ class MainWindow(QMainWindow, MainWindow_UI):
     def open_logging_default_settings(self):
         # Open logging default settings
 
-        path = __directory__ + '/config/logging_default.ini'
+        path = __directory__ + \
+            QDir.toNativeSeparators('/config/logging_default.ini')
         title = 'Logging Settings (Default)'
 
         self.tab_widget.open_file_tab(
@@ -178,7 +183,8 @@ class MainWindow(QMainWindow, MainWindow_UI):
     def open_readme(self):
         # Open a README page
 
-        path = __directory__ + '/resources/texts/readme.txt'
+        path = __directory__ + \
+            QDir.toNativeSeparators('/resources/texts/readme.txt')
         title = 'README'
 
         self.tab_widget.open_file_tab(
@@ -187,7 +193,8 @@ class MainWindow(QMainWindow, MainWindow_UI):
     def open_welcome(self):
         # Open a welcome page
 
-        path = __directory__ + '/resources/texts/welcome.txt'
+        path = __directory__ + \
+            QDir.toNativeSeparators('/resources/texts/welcome.txt')
         title = 'Welcome'
 
         self.tab_widget.open_file_tab(
@@ -196,7 +203,8 @@ class MainWindow(QMainWindow, MainWindow_UI):
     def open_about(self):
         # Open an about window
 
-        path = __directory__ + '/resources/texts/about.txt'
+        path = __directory__ + \
+            QDir.toNativeSeparators('/resources/texts/about.txt')
         title, text = self.model.get_about_text(path)
         QMessageBox.about(self, title, text)
 
@@ -226,8 +234,9 @@ class MainWindow(QMainWindow, MainWindow_UI):
         if config.get_key('app', 'fullscreen') == 'True':
             self.showMaximized()
         self.setWindowTitle('kMap')
-        self.setWindowIcon(
-            QIcon(__directory__ + '/resources/images/icon.png'))
+        self.setWindowIcon(QIcon(__directory__ +
+                                 QDir.toNativeSeparators(
+                                     '/resources/images/icon.png')))
         self.show()
 
     def _initialize_shortcuts(self):
@@ -239,7 +248,8 @@ class MainWindow(QMainWindow, MainWindow_UI):
                    self.log_file_action, self.load_cube_online_action,
                    self.load_cube_file_action]
 
-        alias = ['load_hdf5', 'load_sliced_online_action', 'load_sliced_online_action2',
+        alias = ['load_hdf5', 'load_sliced_online_action',
+                 'load_sliced_online_action2',
                  'show_matplotlib', 'open_log',
                  'load_cube_online', 'load_cube_file']
 

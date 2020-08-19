@@ -3,6 +3,7 @@ import logging
 
 # PyQt5 Imports
 from PyQt5 import uic
+from PyQt5.QtCore import QDir
 
 # Own Imports
 from kmap import __directory__
@@ -18,7 +19,7 @@ from kmap.controller.colormap import Colormap
 
 
 # Load .ui File
-UI_file = __directory__ + '/ui/sliceddatatab.ui'
+UI_file = __directory__ + QDir.toNativeSeparators('/ui/sliceddatatab.ui')
 SlicedDataTab_UI, _ = uic.loadUiType(UI_file)
 
 

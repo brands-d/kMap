@@ -3,7 +3,7 @@ import numpy as np
 
 # PyQt5 Imports
 from PyQt5 import uic
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import pyqtSignal, QDir
 from PyQt5.QtWidgets import QWidget
 
 # Own Imports
@@ -12,7 +12,7 @@ from kmap.library.misc import (
     resolution_to_num, num_to_resolution, axis_from_range)
 
 # Load .ui File
-UI_file = __directory__ + '/ui/interpolation.ui'
+UI_file = __directory__ + QDir.toNativeSeparators('/ui/interpolation.ui')
 Interpolation_UI, _ = uic.loadUiType(UI_file)
 
 
