@@ -1,13 +1,13 @@
 # PyQt5 Imports
 from PyQt5 import uic
 from PyQt5.QtWidgets import QWidget
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import pyqtSignal, QDir
 
 # Own Imports
 from kmap import __directory__
 
 # Load .ui File
-UI_file = __directory__ + '/ui/realplotoptions.ui'
+UI_file = __directory__ + QDir.toNativeSeparators('/ui/realplotoptions.ui')
 RealPlotOptions_UI, _ = uic.loadUiType(UI_file)
 
 

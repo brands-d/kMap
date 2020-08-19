@@ -174,7 +174,7 @@ class MiniRealSpacePlot(GLViewWidget):
     def _refresh_photon(self):
 
         polarization, alpha, beta = self.photon_parameters
-        print(polarization, alpha, beta)
+        #print(polarization, alpha, beta)
         if not self.options.is_show_photon():
             return
 
