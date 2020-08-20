@@ -13,6 +13,11 @@ class ProfilePlot(PlotWidget):
 
         self.plot_item = self.getPlotItem()
         self.model = ProfilePlotModel()
+        self.title_suffixes = {'x': ' - Vertical Line',
+                               'y': ' - Horizontal Line',
+                               'roi': ' - Region of Interest',
+                               'border': ' - Border of ROI',
+                               'ring': ' - Annulus'}
 
     def clear(self):
 
@@ -32,7 +37,8 @@ class ProfilePlot(PlotWidget):
         x, y = self.model.get_plot_data(
             data, crosshair, region, phi_sample, line_sample)
 
-        self.plot_item.plot(x, y, name=title,
+        self.plot_item.plot(x, y,
+                            name=title + self.title_suffixes[region],
                             pen=mkPen(color, width=line_width),
                             symbol=symbol,
                             symbolPen=mkPen(color, width=symbol_size),
