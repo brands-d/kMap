@@ -41,38 +41,43 @@ class ProfilePlotTab(QWidget, ProfilePlotTab_UI):
         is_line_plot = self.line_radiobutton.isChecked()
         phi_sample = self.phi_sample_spinbox.value()
         line_sample = self.line_sample_spinbox.value()
-
+        normalized = self.normalize_checkbox.isChecked()
         self.plot_item.clear()
 
         for tab, show_options in zip(self.tabs, self.show_options):
             data = tab.get_displayed_plot_data()
             crosshair = tab.get_crosshair().model
             title = tab.get_title()
-            
+
             if is_line_plot and show_options[0]:
                 self.plot_item.plot(data, title, crosshair, region='x',
                                     phi_sample=phi_sample,
-                                    line_sample=line_sample)
+                                    line_sample=line_sample,
+                                    normalized=normalized)
 
             if is_line_plot and show_options[1]:
                 self.plot_item.plot(data, title, crosshair, region='y',
                                     phi_sample=phi_sample,
-                                    line_sample=line_sample)
+                                    line_sample=line_sample,
+                                    normalized=normalized)
 
             if not is_line_plot and show_options[2]:
                 self.plot_item.plot(data, title, crosshair, region='roi',
                                     phi_sample=phi_sample,
-                                    line_sample=line_sample)
+                                    line_sample=line_sample,
+                                    normalized=normalized)
 
             if not is_line_plot and show_options[3]:
                 self.plot_item.plot(data, title, crosshair, region='border',
                                     phi_sample=phi_sample,
-                                    line_sample=line_sample)
+                                    line_sample=line_sample,
+                                    normalized=normalized)
 
             if not is_line_plot and show_options[4]:
                 self.plot_item.plot(data, title, crosshair, region='ring',
                                     phi_sample=phi_sample,
-                                    line_sample=line_sample)
+                                    line_sample=line_sample,
+                                    normalized=normalized)
 
     def load_tabs(self, tab_widget):
 

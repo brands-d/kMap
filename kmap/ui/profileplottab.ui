@@ -217,6 +217,22 @@
              </widget>
             </item>
             <item>
+             <widget class="QCheckBox" name="normalize_checkbox">
+              <property name="font">
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>Normalized</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
              <layout class="QGridLayout" name="layout_2">
               <item row="0" column="0">
                <widget class="QLabel" name="phi_sample_label">
@@ -228,19 +244,6 @@
                 </property>
                 <property name="text">
                  <string>Phi Sample Points:</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="line_sample_label">
-                <property name="font">
-                 <font>
-                  <weight>50</weight>
-                  <bold>false</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Line Sample Points:</string>
                 </property>
                </widget>
               </item>
@@ -309,6 +312,19 @@
                 </property>
                 <property name="value">
                  <number>500</number>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="line_sample_label">
+                <property name="font">
+                 <font>
+                  <weight>50</weight>
+                  <bold>false</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Line Sample Points:</string>
                 </property>
                </widget>
               </item>

@@ -24,7 +24,7 @@ class ProfilePlot(PlotWidget):
         self.plot_item.clear()
 
     def plot(self, data, title, crosshair, region, phi_sample=720,
-             line_sample=500):
+             line_sample=500, normalized=False):
 
         index = len(self.plot_item.listDataItems())
         colors = config.get_key('profile_plot', 'colors')
@@ -36,6 +36,9 @@ class ProfilePlot(PlotWidget):
 
         x, y = self.model.get_plot_data(
             data, crosshair, region, phi_sample, line_sample)
+
+        if normalized:
+            y = y / max(y)
 
         self.plot_item.plot(x, y,
                             name=title + self.title_suffixes[region],
