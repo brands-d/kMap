@@ -85,6 +85,9 @@
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
+           <property name="focusPolicy">
+            <enum>Qt::WheelFocus</enum>
+           </property>
           </widget>
          </item>
          <item>
@@ -101,7 +104,11 @@
           </spacer>
          </item>
          <item>
-          <widget class="Mini3DKSpacePlot" name="mini_3Dkspace_plot" native="true"/>
+          <widget class="Mini3DKSpacePlot" name="mini_3Dkspace_plot" native="true">
+           <property name="focusPolicy">
+            <enum>Qt::WheelFocus</enum>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>

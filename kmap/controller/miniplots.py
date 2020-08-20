@@ -127,6 +127,12 @@ class MiniRealSpacePlot(GLViewWidget):
             for mesh in self.mesh:
                 mesh.setVisible(state)
 
+    def wheelEvent(self, event, *args, **kwargs):
+
+        event.accept()
+
+        super().wheelEvent(event, *args, **kwargs)
+
     def _refresh_mesh(self):
 
         if self.mesh:
@@ -174,7 +180,9 @@ class MiniRealSpacePlot(GLViewWidget):
 
     def _refresh_photon(self):
 
-        if self.photon and self.options.is_show_photon():
+        # Couldn't find the bug without second part of if so I removed
+        # it for now
+        if self.photon:
             self.removeItem(self.photon)
 
         polarization, alpha, beta = self.photon_parameters
@@ -413,6 +421,14 @@ class Mini3DKSpacePlot(GLViewWidget):
         axes = get_rotation_axes(*self.orientation[:2])
         self._rotate_item(self.mesh, axes, *self.orientation, backward=False)
 
+
+    def wheelEvent(self, event, *args, **kwargs):
+
+        event.accept()
+
+        super().wheelEvent(event, *args, **kwargs)
+
+
     def _refresh_hemisphere(self):
 
         if self.hemisphere is not None:
@@ -429,24 +445,25 @@ class Mini3DKSpacePlot(GLViewWidget):
 
         # this produces a hemisphere using the GLSurfacePlotItem, however,
         # the resulting hemisphere appears a little ragged at the circular
-        # boundary        
+        # boundary
         #x = np.linspace(-k / self.dx, k / self.dx, 200)
         #y = np.linspace(-k / self.dy, k / self.dy, 200)
         #X, Y = np.meshgrid(x, y)
         #Z = np.sqrt(k**2 / (self.dx * self.dy) - X**2 - Y**2)
 
-        #self.hemisphere = GLSurfacePlotItem(x=x, y=y, z=Z, color=(
+        # self.hemisphere = GLSurfacePlotItem(x=x, y=y, z=Z, color=(
         #    0.5, 0.5, 0.5, 0.7), shader='edgeHilight')
-        #self.hemisphere.setGLOptions('translucent')
+        # self.hemisphere.setGLOptions('translucent')
 
-        # NEW method:   
+        # NEW method:
         nz = len(kz)
-        X, Y, Z = np.meshgrid(kx/self.dx, ky/self.dy, kz[nz//2:]/self.dz)
+        X, Y, Z = np.meshgrid(kx / self.dx, ky / self.dy,
+                              kz[nz // 2:] / self.dz)
         data = X**2 + Y**2 + Z**2
-        iso = k**2/(self.dx*self.dy)   
-        color = (0.5, 0.5, 0.5, 0.8)     
-        self.hemisphere = self._get_iso_mesh(data,iso,color,z_shift=False)
-        
+        iso = k**2 / (self.dx * self.dy)
+        color = (0.5, 0.5, 0.5, 0.8)
+        self.hemisphere = self._get_iso_mesh(data, iso, color, z_shift=False)
+
         self.addItem(self.hemisphere)
 
     def _refresh_grid(self):
@@ -476,7 +493,7 @@ class Mini3DKSpacePlot(GLViewWidget):
             item.rotate(-theta, axes[1][0], axes[1][1], axes[1][2], local=True)
             item.rotate(-psi, axes[2][0], axes[2][1], axes[2][2], local=True)
 
-    def _get_iso_mesh(self, data, iso=None, color=(1,0.2,0.2,1),z_shift=True):
+    def _get_iso_mesh(self, data, iso=None, color=(1, 0.2, 0.2, 1), z_shift=True):
 
         if iso is None:
             iso_val = self.options.get_iso_val() * data.max()
@@ -489,14 +506,13 @@ class Mini3DKSpacePlot(GLViewWidget):
         # Center Isosurface around Origin
         vertices[:, 0] = vertices[:, 0] - nx / 2
         vertices[:, 1] = vertices[:, 1] - ny / 2
-        if z_shift: 
+        if z_shift:
             vertices[:, 2] = vertices[:, 2] - nz / 2
 
         mesh_data = MeshData(vertexes=vertices, faces=faces)
         colors = np.zeros((mesh_data.faceCount(), 4), dtype=float)
         for idx in range(4):
             colors[:, idx] = color[idx]
-
 
         mesh_data.setFaceColors(colors)
 
