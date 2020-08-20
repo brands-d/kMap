@@ -71,11 +71,33 @@ for isoval, color in zip(isovals, colors):
 # add hemisphere for a given kinetic energy
 E_kin = 35.0
 k = energy_to_k(E_kin)    
-x = np.linspace(-k/dx, k/dx, 200)
-y = np.linspace(-k/dy, k/dy, 200)
-X,Y = np.meshgrid(x,y)
-Z = np.sqrt(k**2/(dx*dy) - X**2 - Y**2)
-hemisphere = gl.GLSurfacePlotItem(x=x, y=y, z=Z, color=(0.5, 0.5, 0.5, 0.7), shader='edgeHilight')
+
+#x = np.linspace(-k/dx, k/dx, 200)
+#y = np.linspace(-k/dy, k/dy, 200)
+#X,Y = np.meshgrid(x,y)
+#Z = np.sqrt(k**2/(dx*dy) - X**2 - Y**2)
+#hemisphere = gl.GLSurfacePlotItem(x=x, y=y, z=Z, color=(0.5, 0.5, 0.5, 0.7), shader='edgeHilight')
+
+x = np.linspace(kx[0]/dx, kx[-1]/dx, nx)
+y = np.linspace(ky[0]/dy, ky[-1]/dy, ny)
+z = np.linspace(    0,    kz[-1]/dz, nz//2)
+X, Y, Z = np.meshgrid(x,y,z)
+scalar_field = X**2 + Y**2 + Z**2
+isoval = k**2/(dx*dy)
+color = (0.5, 0.5, 0.5, 0.8)
+verts, faces = pg.isosurface(scalar_field, isoval)
+verts[:,0] = verts[:,0] - nx/2
+verts[:,1] = verts[:,1] - ny/2
+verts[:,2] = verts[:,2] 
+
+isosurface = gl.MeshData(vertexes=verts, faces=faces)
+rgbt = np.zeros((isosurface.faceCount(), 4), dtype=float)
+for c in range(3):
+    rgbt[:,c] = color[c] 
+rgbt[:,3] = color[3]  # transparency (I guess)
+isosurface.setFaceColors(rgbt)
+
+hemisphere = gl.GLMeshItem(meshdata=isosurface, smooth=True,shader='edgeHilight')   
 hemisphere.setGLOptions('translucent')
 w.addItem(hemisphere)
 
