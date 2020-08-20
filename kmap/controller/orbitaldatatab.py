@@ -94,13 +94,13 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
     def refresh_mini_plot_polarization(self):
 
         polarization, alpha, beta = self.polarization.get_parameters()[1:4]
-       
+
         self.mini_real_plot.rotate_photon(polarization, alpha, beta)
 
     def get_crosshair(self):
 
         return self.crosshair
-        
+
     def get_parameters(self, ID):
 
         kinetic_energy, dk, symmetry = self.cube_options.get_parameters()
@@ -166,6 +166,12 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
 
         Tab.closeEvent(self, event)
 
+    def get_plot_labels(self):
+
+        bottom = self.plot_item.get_label('bottom')
+        left = self.plot_item.get_label('left')
+        return bottom, left
+
     def _setup(self):
 
         self.crosshair = CrosshairAnnulus(self.plot_item)
@@ -184,6 +190,7 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         x = Axis('kx', '1/A', [-3, 3], 200)
         y = Axis('ky', '1/A', [-3, 3], 200)
         self.interpolation.set_label(x, y)
+        self.plot_item.set_label(x, y)
 
     def _connect(self):
 

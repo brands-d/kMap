@@ -49,8 +49,8 @@ class ProfilePlot(PlotWidget):
 
     def set_label(self, x, y):
 
-        self.setLabel('left', text=y[0], units=y[1])
-        self.setLabel('bottom', text=x[0], units=x[1])
+        self.setLabel('left', text=y)
+        self.setLabel('bottom', text=x)
 
     def _setup(self):
 

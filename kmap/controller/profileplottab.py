@@ -46,6 +46,7 @@ class ProfilePlotTab(QWidget, ProfilePlotTab_UI):
 
         for tab, show_options in zip(self.tabs, self.show_options):
             data = tab.get_displayed_plot_data()
+            bottom_label, left_label = tab.get_plot_labels()
             crosshair = tab.get_crosshair().model
             title = tab.get_title()
 
@@ -54,30 +55,37 @@ class ProfilePlotTab(QWidget, ProfilePlotTab_UI):
                                     phi_sample=phi_sample,
                                     line_sample=line_sample,
                                     normalized=normalized)
+                x_label = left_label
 
             if is_line_plot and show_options[1]:
                 self.plot_item.plot(data, title, crosshair, region='y',
                                     phi_sample=phi_sample,
                                     line_sample=line_sample,
                                     normalized=normalized)
+                x_label = bottom_label
 
             if not is_line_plot and show_options[2]:
                 self.plot_item.plot(data, title, crosshair, region='roi',
                                     phi_sample=phi_sample,
                                     line_sample=line_sample,
                                     normalized=normalized)
+                x_label = 'Angle Phi [°]'
 
             if not is_line_plot and show_options[3]:
                 self.plot_item.plot(data, title, crosshair, region='border',
                                     phi_sample=phi_sample,
                                     line_sample=line_sample,
                                     normalized=normalized)
+                x_label = 'Angle Phi [°]'
 
             if not is_line_plot and show_options[4]:
                 self.plot_item.plot(data, title, crosshair, region='ring',
                                     phi_sample=phi_sample,
                                     line_sample=line_sample,
                                     normalized=normalized)
+                x_label = 'Angle Phi [°]'
+
+            self.plot_item.set_label(x_label, 'Intensity [a.u.]')
 
     def load_tabs(self, tab_widget):
 
@@ -126,14 +134,6 @@ class ProfilePlotTab(QWidget, ProfilePlotTab_UI):
                 widget.setVisible(not show_line_bool)
 
             widget.blockSignals(False)
-
-        if show_line_bool:
-            x_label = ['Axis', 'a.u.']
-
-        else:
-            x_label = ['Angle Phi', '°']
-
-        self.plot_item.set_label(x_label, ['Intensity', 'a.u.'])
 
     def _change_tab(self, index):
 

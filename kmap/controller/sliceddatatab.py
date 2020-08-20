@@ -128,6 +128,12 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
 
         return self.crosshair
 
+    def get_plot_labels(self):
+
+        bottom = self.plot_item.get_label('bottom')
+        left = self.plot_item.get_label('left')
+        return bottom, left
+        
     def _setup(self):
 
         self.slider = DataSlider(self.model.data)

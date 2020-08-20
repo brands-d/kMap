@@ -90,6 +90,10 @@ class PyQtGraphPlot(ImageView):
 
         self.view.setAxisItems({'bottom': x_axis, 'left': y_axis})
 
+    def get_label(self, side):
+
+        return self.plot_view.getAxis(side).label.toHtml()
+
     def _setup(self):
 
         self.view.invertY(False)
