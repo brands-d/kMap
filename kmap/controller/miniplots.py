@@ -184,10 +184,11 @@ class MiniRealSpacePlot(GLViewWidget):
         # it for now
         if self.photon:
             self.removeItem(self.photon)
-
+            self.photon = None
+            
         polarization, alpha, beta = self.photon_parameters
 
-        if not self.options.is_show_photon():
+        if self.orbital is None or not self.options.is_show_photon():
             return
 
         color = (1, 1, 0.0, 1)  # color for wavy light ray (yellow)
@@ -435,7 +436,7 @@ class Mini3DKSpacePlot(GLViewWidget):
             self.removeItem(self.hemisphere)
             self.hemisphere = None
 
-        if not self.options.is_show_hemisphere():
+        if self.orbital is None or not self.options.is_show_hemisphere():
             return
 
         k = energy_to_k(self.E_kin)
