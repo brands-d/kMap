@@ -174,6 +174,9 @@ class MiniRealSpacePlot(GLViewWidget):
 
     def _refresh_photon(self):
 
+        if self.photon and self.options.is_show_photon():
+            self.removeItem(self.photon)
+
         polarization, alpha, beta = self.photon_parameters
 
         if not self.options.is_show_photon():
@@ -436,7 +439,7 @@ class Mini3DKSpacePlot(GLViewWidget):
         #    0.5, 0.5, 0.5, 0.7), shader='edgeHilight')
         #self.hemisphere.setGLOptions('translucent')
 
-        # NEW method: use the  
+        # NEW method:   
         nz = len(kz)
         X, Y, Z = np.meshgrid(kx/self.dx, ky/self.dy, kz[nz//2:]/self.dz)
         data = X**2 + Y**2 + Z**2
@@ -479,7 +482,6 @@ class Mini3DKSpacePlot(GLViewWidget):
             iso_val = self.options.get_iso_val() * data.max()
         else:
             iso_val = iso
-        print(iso_val)
 
         vertices, faces = isosurface(data, iso_val)
         nx, ny, nz = data.shape
