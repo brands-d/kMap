@@ -10,6 +10,7 @@ from PyQt5.QtWidgets import QMainWindow, QTreeWidgetItem, QHeaderView
 from kmap import __directory__
 from kmap.library.database import Database
 from kmap.controller.sliceddatabaseoptions import SlicedDataBaseOptions
+from kmap.controller.sliceddatabaseoptions2 import SlicedDataBaseOptions2
 from kmap.config.config import config
 
 # Load .ui File for SlicedDataDatabase
@@ -221,7 +222,7 @@ class OrbitalDatabase(DatabaseWindowBase, DatabaseWindow_UI):
 
 class SlicedDatabaseWindow(DatabaseWindowBase, SlicedDatabaseWindow_UI):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, mode, *args, **kwargs):
 
         super(SlicedDatabaseWindow, self).__init__(*args, **kwargs)
         self.setupUi(self)
@@ -233,7 +234,11 @@ class SlicedDatabaseWindow(DatabaseWindowBase, SlicedDatabaseWindow_UI):
         self.database = Database(path)
 
         # Open Options Window
-        self.options = SlicedDataBaseOptions()
+        if mode == 'binding-energy':
+            self.options = SlicedDataBaseOptions()
+
+        elif mode == 'photon-energy':
+            self.options = SlicedDataBaseOptions2()
 
         # URLs (with extra information if available) chosen
         self.URLs = []

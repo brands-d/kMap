@@ -322,6 +322,7 @@ class SlicedData(AbstractData):
         """
 
         log = logging.getLogger('kmap')
+        orbital = orbital[0] # only consider first orbital in list!
 
         # extract parameters
         hnu_min = parameters[0]

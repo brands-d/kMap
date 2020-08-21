@@ -47,6 +47,14 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
         return cls(model)
 
     @classmethod
+    def init_from_URL(cls, URL):
+
+        model = SlicedDataTabModel()
+        model.load_data_from_URL(URL)
+
+        return cls(model)
+
+    @classmethod
     def init_from_path(cls, path):
 
         model = SlicedDataTabModel()

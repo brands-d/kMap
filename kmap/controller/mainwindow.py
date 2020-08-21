@@ -63,16 +63,29 @@ class MainWindow(QMainWindow, MainWindow_UI):
 
     def open_sliceddatabase_browser(self):
 
-        self.database = SlicedDatabaseWindow()
+        self.database = SlicedDatabaseWindow(mode='binding-energy')
         self.database.files_chosen.connect(self.load_sliced_files_online)
 
+    def open_sliceddatabase_browser2(self):
+
+        self.database = SlicedDatabaseWindow(mode='photon-energy')
+        self.database.files_chosen.connect(self.load_sliced_file_online)        
+
     def load_sliced_files_online(self, URLs):
-        # Load one or more cube files as sliced data
+        # Load one or more cube files as sliced data[BE, kx, ky]
 
         log = logging.getLogger('kmap')
-        log.info('Loading .cube file(s) as sliced data...')
+        log.info('Loading .cube file(s) as sliced data[BE, kx, ky]...')
 
-        self.tab_widget.open_sliced_data_tab_by_URL(URLs)
+        self.tab_widget.open_sliced_data_tab_by_URLs(URLs)
+
+    def load_sliced_file_online(self, URL):
+        # Load one cube file as sliced data[photon_energy, kx, ky]
+
+        log = logging.getLogger('kmap')
+        log.info('Loading .cube file as sliced data[photon_energy, kx, ky]...')
+
+        self.tab_widget.open_sliced_data_tab_by_URL(URL)        
 
     def load_cube_files_online(self, URLs):
 
@@ -270,7 +283,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
         self.load_sliced_online_action.triggered.connect(
             self.open_sliceddatabase_browser)
         self.load_sliced_online_action2.triggered.connect(
-            self.open_sliceddatabase_browser)
+            self.open_sliceddatabase_browser2)
         self.load_cube_file_action.triggered.connect(
             self.load_cube_files_locally)
         self.load_cube_online_action.triggered.connect(

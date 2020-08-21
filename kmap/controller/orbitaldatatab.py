@@ -108,6 +108,7 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         weight, *orientation = parameters
         polarization = self.polarization.get_parameters()
 
+
         return (weight, kinetic_energy, dk,
                 *orientation, *polarization, symmetry)
 

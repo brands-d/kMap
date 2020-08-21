@@ -8,7 +8,7 @@ class SlicedDataTabModel():
 
         self.data = None
 
-    def load_data_from_URLs(self, URLs):
+    def load_data_from_URLs(self, URLs):  # -> create data[BE,kx,ky]
 
         # Last element in URLs are the parameters. All other elements
         # are individual orbitals to load. Each is a list of length 2
@@ -19,6 +19,19 @@ class SlicedDataTabModel():
         self.data = SlicedData.init_from_orbitals(name, orbitals, parameters)
 
         self.change_slice(0, 0)
+
+    def load_data_from_URL(self, URL):  # -> create data[photon_energy,kx,ky]
+
+        # Last element in URL are the parameters. The first element
+        # is the orbital to load as a list of length 2
+        # with first entry being the URL, the second the meta_data
+        # dictionary
+        *orbital, options = URL
+        name, *parameters = options
+        self.data = SlicedData.init_from_orbital_photonenergy(name, orbital, parameters)
+
+        self.change_slice(0, 0)
+
 
     def load_data_from_path(self, path):
 
