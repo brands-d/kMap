@@ -190,7 +190,7 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         x = Axis('kx', '1/A', [-3, 3], 200)
         y = Axis('ky', '1/A', [-3, 3], 200)
         self.interpolation.set_label(x, y)
-        self.plot_item.set_label(x, y)
+        self.plot_item.set_labels(x, y)
 
     def _connect(self):
 

@@ -12,6 +12,7 @@ from kmap import __directory__
 from kmap.controller.sliceddatatab import SlicedDataTab
 from kmap.controller.orbitaldatatab import OrbitalDataTab
 from kmap.controller.profileplottab import ProfilePlotTab
+from kmap.controller.lmfittab import LMFitTab
 from kmap.controller.filetab import FileViewerTab, FileEditorTab
 from kmap.library.qwidgetsub import Tab
 from kmap.config.config import config
@@ -81,6 +82,12 @@ class TabWidget(QWidget, TabWidget_UI):
             tab = FileViewerTab(path, richText=richText)
 
         self._open_tab(tab, title)
+
+    def open_lmfit_tab(self):
+        
+        tab = LMFitTab()
+
+        self._open_tab(tab, 'LM-Fit Tab')
 
     def open_profile_tab(self):
 

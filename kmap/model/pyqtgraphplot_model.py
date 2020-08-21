@@ -15,14 +15,13 @@ class PyQtGraphPlotModel():
 
         image = self.plot_data.data
         scale = self.plot_data.step_size
-        pos = self._calculate_pos(scale)
-        range_ = self._calculate_range(scale)
+        pixel_center = config.get_key('pyqtgraph', 'pixel_center') == 'True'
+        pos = self._calculate_pos(scale, pixel_center=pixel_center)
+        range_ = self._calculate_range(scale, pixel_center=pixel_center)
 
         return image, pos, scale, range_
 
-    def _calculate_pos(self, scale):
-
-        pixel_center = config.get_key('pyqtgraph', 'pixel_center') == 'True'
+    def _calculate_pos(self, scale, pixel_center=True):
 
         if pixel_center:
             pos = self.plot_data.range[:, 0] - scale / 2
@@ -31,18 +30,15 @@ class PyQtGraphPlotModel():
 
         return pos
 
-    def _calculate_range(self, scale):
+    def _calculate_range(self, scale, pixel_center=True):
 
-        pixel_center = config.get_key('pyqtgraph', 'pixel_center') == 'True'
+        old_range = self.plot_data.range
 
         if pixel_center:
-            old_x_range = self.plot_data.range[0, [0, -1]]
-            old_y_range = self.plot_data.range[1, [0, -1]]
-            x_range = old_x_range + np.array([-1, 1]) * scale[0] / 2
-            y_range = old_y_range + np.array([-1, 1]) * scale[1] / 2
+            shift = np.array([[-1, 1], [-1, 1]]) * scale / 2
+            new_range = old_range + shift
 
         else:
-            x_range = self.plot_data.range[0, [0, -1]]
-            y_range = self.plot_data.range[1, [0, -1]]
+            new_range = old_range
 
-        return [x_range, y_range]
+        return new_range

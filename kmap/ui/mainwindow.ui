@@ -86,6 +86,7 @@
     </property>
     <addaction name="open_sim_tab_action"/>
     <addaction name="open_profile_tab_action"/>
+    <addaction name="open_lmfit_tab_action"/>
    </widget>
    <widget class="QMenu" name="settings_menu">
     <property name="title">
@@ -216,6 +217,11 @@
   <action name="open_profile_tab_action">
    <property name="text">
     <string>Open new Profile Tab</string>
+   </property>
+  </action>
+  <action name="open_lmfit_tab_action">
+   <property name="text">
+    <string>Open new LM-Fit Tab</string>
    </property>
   </action>
  </widget>

@@ -208,6 +208,10 @@ class MainWindow(QMainWindow, MainWindow_UI):
         title, text = self.model.get_about_text(path)
         QMessageBox.about(self, title, text)
 
+    def open_lmfit_tab(self):
+
+        self.tab_widget.open_lmfit_tab()
+        
     def open_in_matplotlib(self):
 
         current_tab = self.tab_widget.get_current_tab()
@@ -278,6 +282,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
         # Tabs menu
         self.open_sim_tab_action.triggered.connect(self.open_orbital_data_tab)
         self.open_profile_tab_action.triggered.connect(self.open_profile_tab)
+        self.open_lmfit_tab_action.triggered.connect(self.open_lmfit_tab)
 
         # Preferences menu
         self.general_action.triggered.connect(self.open_general_settings)
