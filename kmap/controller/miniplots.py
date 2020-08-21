@@ -48,7 +48,7 @@ class MiniRealSpacePlot(GLViewWidget):
         self.grid = None
         self.bonds = []
         self.photon = None
-        self.photon_parameters = ['p', 0, 0]
+        self.photon_parameters = ['p', 45, 0]
         self.mesh = []
         self.orbital = None
         self.orientation = [0, 0, 0]
