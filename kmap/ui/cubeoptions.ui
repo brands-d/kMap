@@ -80,13 +80,13 @@
          <number>1</number>
         </property>
         <property name="minimum">
-         <double>1.000000000000000</double>
+         <double>5.000000000000000</double>
         </property>
         <property name="maximum">
-         <double>100.000000000000000</double>
+         <double>150.000000000000000</double>
         </property>
         <property name="singleStep">
-         <double>0.100000000000000</double>
+         <double>1.000000000000000</double>
         </property>
         <property name="value">
          <double>30.000000000000000</double>
@@ -180,7 +180,7 @@
         </item>
         <item>
          <property name="text">
-          <string>3-Fold</string>
+          <string>4-Fold</string>
          </property>
         </item>
         <item>

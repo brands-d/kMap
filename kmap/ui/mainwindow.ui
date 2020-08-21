@@ -125,7 +125,7 @@
   </widget>
   <action name="open_sim_tab_action">
    <property name="text">
-    <string>Open new Sim. Tab</string>
+    <string>Open new Orbital Tab</string>
    </property>
   </action>
   <action name="load_cube_file_action">

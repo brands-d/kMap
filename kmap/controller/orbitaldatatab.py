@@ -141,7 +141,7 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
 
     def get_title(self):
 
-        return 'Gas Phase Simulation'
+        return 'Orbitals'
 
     def remove_orbital_by_ID(self, ID):
 
