@@ -58,7 +58,7 @@ class Molecule():
 
         self.orbitals = []
         for index, line in enumerate(lines[3:], 1):
-            new_orbital = Orbital(index, line, self.URL, self.orientation)
+            new_orbital = Orbital(index, line, self.URL, self.orientation, self.short_name)
             self.orbitals.append(new_orbital)
 
     def to_string(self):
@@ -84,12 +84,12 @@ class Molecule():
 
 class Orbital():
 
-    def __init__(self, ID, line, URL='', orientation='xy'):
+    def __init__(self, ID, line, URL='', orientation='xy', shortname=''):
 
         self.ID = ID
         parts = line.split(',')
         self.URL = URL + parts[0].split('=')[1]
-        self.name = parts[1].split('=')[1]
+        self.name = shortname + ' ' + parts[1].split('=')[1]
         self.energy = float(parts[2].split('=')[1])
         self.occupation = int(parts[3].split('=')[1])
         self.symmetry = parts[4].split('=')[1][:-1]

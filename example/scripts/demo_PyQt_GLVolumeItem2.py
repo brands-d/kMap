@@ -33,7 +33,7 @@ x, y, z  = orbital.psi['x'], orbital.psi['y'], orbital.psi['z']
 colors = [
     (255,   0,  0, 100),   # red, semi-transparent
     (255, 255, 255,   0),  # white, fully transparent
-    (  0,   0, 255, 100)   # light blue, semi-transparent
+    (  0,   0, 255, 100)   # blue, semi-transparent
 ]
 
 # prepare data for volume visualization
