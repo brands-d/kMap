@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>main_window</class>
+ <widget class="QMainWindow" name="main_window">
+  <property name="windowModality">
+   <enum>Qt::NonModal</enum>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1129</width>
+    <height>566</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Load .cube files online...</string>
+  </property>
+  <widget class="QWidget" name="central_widget">
+   <layout class="QVBoxLayout" name="verticalLayout" stretch="3">
+    <item>
+     <widget class="QGroupBox" name="database_groupbox">
+      <property name="font">
+       <font>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="title">
+       <string>Database</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QTreeWidget" name="tree">
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>A tree consisting of molecules and their orbitals listed in the database file.
+Choose one or more orbitals by selecting the wanted orbitals and click 'Load'.
+
+To load multiple orbitals keep the Ctrl (or Shift) key pressed during the selection process.
+
+To load an entire molecule, simply select the molecule row.</string>
+         </property>
+         <property name="horizontalScrollBarPolicy">
+          <enum>Qt::ScrollBarAlwaysOff</enum>
+         </property>
+         <property name="alternatingRowColors">
+          <bool>true</bool>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::ExtendedSelection</enum>
+         </property>
+         <property name="verticalScrollMode">
+          <enum>QAbstractItemView::ScrollPerPixel</enum>
+         </property>
+         <property name="sortingEnabled">
+          <bool>true</bool>
+         </property>
+         <property name="allColumnsShowFocus">
+          <bool>true</bool>
+         </property>
+         <property name="columnCount">
+          <number>7</number>
+         </property>
+         <attribute name="headerMinimumSectionSize">
+          <number>10</number>
+         </attribute>
+         <attribute name="headerDefaultSectionSize">
+          <number>67</number>
+         </attribute>
+         <attribute name="headerStretchLastSection">
+          <bool>false</bool>
+         </attribute>
+         <column>
+          <property name="text">
+           <string notr="true">1</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string notr="true">2</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string notr="true">3</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string notr="true">4</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string notr="true">5</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string notr="true">6</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string notr="true">7</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="database_layout" stretch="1,3,0,2,0">
+         <item>
+          <widget class="QComboBox" name="combobox">
+           <property name="minimumSize">
+            <size>
+             <width>150</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="toolTip">
+            <string>Choose a filter for XC-functionals.</string>
+           </property>
+           <property name="editable">
+            <bool>false</bool>
+           </property>
+           <property name="frame">
+            <bool>true</bool>
+           </property>
+           <item>
+            <property name="text">
+             <string>No Filter</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>B3LYP</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>HSE</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>OT-RSH</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>PBE</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="line_edit">
+           <property name="minimumSize">
+            <size>
+             <width>250</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="toolTip">
+            <string>Search a molecule by name.</string>
+           </property>
+           <property name="placeholderText">
+            <string>Enter search here...</string>
+           </property>
+           <property name="clearButtonEnabled">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="find_button">
+           <property name="font">
+            <font>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="toolTip">
+            <string>Searches for the molecule entered in the line edit.</string>
+           </property>
+           <property name="text">
+            <string>Find</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="top_spacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="database_load_button">
+           <property name="font">
+            <font>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="toolTip">
+            <string>Load all selected molecules and orbitals.</string>
+           </property>
+           <property name="text">
+            <string>Load</string>
+           </property>
+           <property name="autoDefault">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -11,7 +11,12 @@ class ColormapModel():
     def __init__(self, plot_item):
 
         self.colormaps = []
-        self.plot_item = plot_item
+
+        if isinstance(plot_item, list):
+            self.plot_item = plot_item
+
+        else:
+            self.plot_item = [plot_item]
 
     def load_colormaps(self, path):
         # Load colormaps from json file
@@ -28,10 +33,10 @@ class ColormapModel():
 
                 self.add_colormap(name, pos, colors)
 
-    def add_colormap_from_plot(self, name):
+    def add_colormap_from_plot(self, name, ID=0):
         # Add current plot_item colormap as new colormap
 
-        colormap = self.plot_item.ui.histogram.gradient.colorMap()
+        colormap = self.plot_item[ID].ui.histogram.gradient.colorMap()
         pos = colormap.pos.tolist()
         colors = colormap.getColors().tolist()
 
@@ -77,7 +82,8 @@ class ColormapModel():
 
         pos = self.colormaps[index].pos
         colors = self.colormaps[index].colors
-        self.plot_item.setColorMap(ColorMap(pos, colors))
+        for plot_item in self.plot_item:
+            plot_item.setColorMap(ColorMap(pos, colors))
 
     def _name_to_index(self, name):
 

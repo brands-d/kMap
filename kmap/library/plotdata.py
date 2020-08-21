@@ -8,9 +8,11 @@ interpolations methods.
 
 from numbers import Number
 import numpy as np
+from scipy.ndimage import gaussian_filter
 import itertools as it
 from scipy.interpolate import RegularGridInterpolator as RGI
 from kmap.library.misc import axis_from_range
+
 
 class PlotData():
     """Basic data class holding necessary information for plotting.
@@ -88,22 +90,68 @@ class PlotData():
 
         """
         if interpolator == 'rgi':
-            points = list(it.product(x_axis, y_axis))
-            rgi = RGI((self.x_axis, self.y_axis), self.data,
+            points = list(it.product(y_axis, x_axis))
+            rgi = RGI((self.y_axis, self.x_axis), self.data,
                       bounds_error=bounds_error, *args, **kwargs)
 
             new_data = np.array(rgi(points), dtype=np.float64).reshape(
-                len(x_axis), len(y_axis))
+                len(y_axis), len(x_axis))
 
         else:
-            ValueError('Chosen interpolator is unknown')
+            NotImplementedError('Chosen interpolator is unknown')
 
         if update:
             self.data = new_data
             self.x_axis = x_axis
             self.y_axis = y_axis
+            self.range = np.array(
+                [[x_axis[0], x_axis[-1]], [y_axis[0], y_axis[-1]]])
+            self.step_size = np.array(
+                [abs(x_axis[1] - x_axis[0]), abs(y_axis[1] - y_axis[0])])
 
         return new_data
+
+    def interpolate_points(self, x, y, interpolator='rgi',
+                           bounds_error=False, *args, **kwargs):
+
+        if interpolator == 'rgi':
+            points = np.transpose([y, x])
+            rgi = RGI((self.y_axis, self.x_axis), self.data,
+                      bounds_error=bounds_error, *args, **kwargs)
+
+            intensities = np.array(rgi(points), dtype=np.float64)
+
+        else:
+            NotImplementedError('Chosen interpolator is unknown')
+
+        return intensities
+
+    def smoothing(self, sigma_x, sigma_y, *args, mode='nearest',
+                  update=False, fill_value=np.nan, **kwargs):
+
+        # gaussian filter needs number of pixel
+        sigma_x = round(sigma_x / self.step_size[0])
+        sigma_y = round(sigma_y / self.step_size[1])
+
+        fill_mask = np.zeros(self.data.shape, dtype=bool)
+        fill_mask[np.isnan(self.data)] = True
+        self.data[fill_mask] = fill_value
+
+        if update:
+            gaussian_filter(
+                self.data, [sigma_x, sigma_y], mode=mode,
+                output=self.data, **kwargs)
+            self.data[fill_mask] = np.nan
+
+            return self
+
+        else:
+            smoothed = gaussian_filter(
+                self.data, [sigma_y, sigma_x], mode=mode, **kwargs)
+            new_plot_data = PlotData(smoothed, self.range)
+            self.data[fill_mask] = np.nan
+
+            return new_plot_data
 
     def __add__(self, other):
 

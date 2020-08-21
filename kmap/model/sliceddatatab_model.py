@@ -4,20 +4,25 @@ from kmap.library.sliceddata import SlicedData
 
 class SlicedDataTabModel():
 
-    def __init__(self, path, delayed_access=False):
+    def __init__(self):
 
-        self.path = path
         self.data = None
-        self.displayed_plot_data = None
 
-        # For later use
-        self.delayed_access = delayed_access
+    def load_data_from_URLs(self, URLs):
 
-        self.load_data_from_path(path)
+        # Last element in URLs are the parameters. All other elements
+        # are individual orbitals to load. Each is a list of length 2
+        # with first entry being the URL, the second the meta_data
+        # dictionary
+        *orbitals, options = URLs
+        name, *parameters = options
+        self.data = SlicedData.init_from_orbitals(name, orbitals, parameters)
+
+        self.change_slice(0, 0)
 
     def load_data_from_path(self, path):
 
-        self.data = SlicedData.init_from_hdf5(path,)
+        self.data = SlicedData.init_from_hdf5(path)
 
         self.change_slice(0, 0)
 
@@ -29,6 +34,6 @@ class SlicedDataTabModel():
 
     def to_string(self):
 
-        rep = 'Path:\t%s\n%s' % (self.path, str(self.data))
+        rep = '%s' % str(self.data)
 
         return rep

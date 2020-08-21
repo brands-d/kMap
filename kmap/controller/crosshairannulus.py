@@ -4,6 +4,7 @@ import pyqtgraph as pg
 
 # PyQt5 Imports
 from PyQt5 import uic
+from PyQt5.QtCore import QDir
 
 # Own Imports
 from kmap import __directory__
@@ -13,7 +14,7 @@ from kmap.model.crosshair_model import CrosshairAnnulusModel
 from kmap.controller.crosshairroi import CrosshairROIBase
 
 # Load .ui File
-UI_file = __directory__ + '/ui/crosshairannulus.ui'
+UI_file = __directory__ + QDir.toNativeSeparators('/ui/crosshairannulus.ui')
 CrosshairAnnulus_UI, _ = uic.loadUiType(UI_file)
 
 

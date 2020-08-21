@@ -1,15 +1,14 @@
-# Python Imports
-import numpy as np
-
 # PyQt5 Imports
 from PyQt5 import uic
 from PyQt5.QtWidgets import QWidget
 
 # Third Party Imports
+import numpy as np
 from pyqtgraph import ImageView, PlotItem, AxisItem
 
 # Own Imports
 from kmap.model.pyqtgraphplot_model import PyQtGraphPlotModel
+from kmap.library.axis import Axis
 from kmap.config.config import config
 
 
@@ -19,7 +18,8 @@ class PyQtGraphPlot(ImageView):
 
         # Setup GUI
         self.plot_view = PlotItem()
-        super(PyQtGraphPlot, self).__init__(view=self.plot_view)
+        super(PyQtGraphPlot, self).__init__(
+            *args, view=self.plot_view, **kwargs)
         self._setup()
 
         self.model = PyQtGraphPlotModel(plot_data)
@@ -48,15 +48,55 @@ class PyQtGraphPlot(ImageView):
         self.setImage(image, autoRange=True,
                       autoLevels=True, pos=pos, scale=scale)
 
-        # Fit Range
+        self.set_range(range_)
+        ratio = (range_[1][1] - range_[1][0]) / (range_[0][1] - range_[0][0])
+        self.set_aspect_ratio(ratio)
+
+    def set_range(self, range_):
+
         padding = float(config.get_key('pyqtgraph', 'padding'))
-        x_range, y_range = range_
-        self.view.setRange(xRange=x_range, yRange=y_range,
+        self.view.setRange(xRange=range_[0], yRange=range_[1],
                            update=True, padding=padding)
 
-        # set AspectRatio
-        self.plot_view.setAspectLocked(True, ratio=(
-            y_range[1] - y_range[0]) / (x_range[1] - x_range[0]))
+    def set_aspect_ratio(self, ratio):
+
+        self.plot_view.setAspectLocked(True, ratio=ratio)
+
+    def set_labels(self, x, y):
+
+        color = config.get_key('pyqtgraph', 'axis_color')
+        size = config.get_key('pyqtgraph', 'axis_size')
+
+        if isinstance(x, list):
+            self.set_label('bottom', x[0], x[1], color, size)
+
+        elif isinstance(x, Axis):
+            self.set_label('bottom', x.label, x.units, color, size)
+
+        else:
+            self.set_label('bottom', str(x), None, color, size)
+
+        if isinstance(y, list):
+            self.set_label('left', y[0], y[1], color, size)
+
+        elif isinstance(y, Axis):
+            self.set_label('left', y.label, y.units, color, size)
+
+        else:
+            self.set_label('left', str(y), None, color, size)
+
+    def set_label(self, side, label, units=None, color='k', size=1):
+
+        axis = AxisItem(side, text=label, units=units,
+                        **{'color': color, 'font-size': size})
+
+        if config.get_key('pyqtgraph', 'show_axis_label') == 'True':
+            axis.showLabel(True)
+
+        else:
+            axis.showLabel(False)
+
+        self.view.setAxisItems({side: axis})
 
     def get_plot_data(self):
 
@@ -69,25 +109,9 @@ class PyQtGraphPlot(ImageView):
 
         return LUT
 
-    def set_label(self, x, y):
+    def get_label(self, side):
 
-        color = config.get_key('pyqtgraph', 'axis_color')
-        size = config.get_key('pyqtgraph', 'axis_size')
-
-        x_axis = AxisItem('bottom', text=x.label, units=x.units,
-                          **{'color': color, 'font-size': size})
-        y_axis = AxisItem('left', text=y.label, units=y.units,
-                          **{'color': color, 'font-size': size})
-
-        if config.get_key('pyqtgraph', 'show_axis_label') != 'True':
-            x_axis.showLabel(True)
-            y_axis.showLabel(True)
-
-        else:
-            x_axis.showLabel(True)
-            y_axis.showLabel(True)
-
-        self.view.setAxisItems({'bottom': x_axis, 'left': y_axis})
+        return self.plot_view.getAxis(side).label.toHtml()
 
     def _setup(self):
 

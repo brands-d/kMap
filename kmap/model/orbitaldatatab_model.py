@@ -38,33 +38,52 @@ class OrbitalDataTabModel():
 
         del self.orbitals[index]
 
+    def get_orbital_kmap_by_ID(self, ID):
+
+        orbital = self.ID_to_orbital(ID)
+        if orbital is None:
+            raise IndexError('wrong ID')
+
+        parameters = self.controller.get_parameters(ID)
+        # Split of first element
+        weight, *other = parameters
+        # Get scaled kmap
+        kmap = weight * orbital.get_kmap(*other)
+
+        return kmap
+
     def update_displayed_plot_data(self):
 
-        aux = []
+        kmaps = []
 
         for orbital in self.orbitals:
+            ID = orbital.ID
 
-            if self.controller.get_use(orbital.ID):
+            if self.controller.get_use(ID):
                 # Get all parameters for this orbital
-                parameters = self.controller.get_parameters(orbital.ID)
-                # Split of first element
-                weight, *other = parameters
-                # Get scaled kmap
-                kmap = weight * orbital.get_kmap(*other)
-                aux.append(kmap)
+                kmap = self.get_orbital_kmap_by_ID(ID)
+                kmaps.append(kmap)
 
-        if aux:
+        if kmaps:
             # Sum kmaps
-            self.displayed_plot_data = np.nansum(aux)
+            self.displayed_plot_data = np.nansum(kmaps)
 
         else:
             self.displayed_plot_data = None
 
         return self.displayed_plot_data
 
-    def remove_orbital_by_ID(self, ID_):
+    def remove_orbital_by_ID(self, ID):
+
+        orbital = self.ID_to_orbital(ID)
+
+        if orbital is not None:
+            self.orbitals.remove(orbital)
+
+    def ID_to_orbital(self, ID):
 
         for orbital in self.orbitals:
-            if orbital.ID == ID_:
-                self.orbitals.remove(orbital)
-                del orbitals
+            if orbital.ID == ID:
+                return orbital
+
+        return None

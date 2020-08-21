@@ -3,7 +3,7 @@ import logging
 
 # PyQt5 Imports
 from PyQt5 import uic
-from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtCore import Qt, pyqtSignal, QDir
 from PyQt5.QtWidgets import QWidget, QHeaderView, QHBoxLayout
 
 # Own Imports
@@ -11,7 +11,7 @@ from kmap import __directory__
 from kmap.controller.orbitaltablerow import OrbitalTableRow
 
 # Load .ui File
-UI_file = __directory__ + '/ui/orbitaltable.ui'
+UI_file = __directory__ + QDir.toNativeSeparators('/ui/orbitaltable.ui')
 OrbitalTable_UI, _ = uic.loadUiType(UI_file)
 
 
@@ -19,6 +19,7 @@ class OrbitalTable(QWidget, OrbitalTable_UI):
 
     orbital_changed = pyqtSignal(int)
     orbital_removed = pyqtSignal(int)
+    orbital_selected = pyqtSignal(int)
 
     def __init__(self, *args, **kwargs):
 
@@ -75,6 +76,8 @@ class OrbitalTable(QWidget, OrbitalTable_UI):
         self.table.insertRow(row_index)
         self._embed_row(new_row, row_index)
         self._connet_row(new_row)
+        # "Select" newly added row to trigger miniplots
+        self.table.cellClicked.emit(row_index, 2)
 
     def _ID_to_row_index(self, ID):
 
@@ -116,8 +119,14 @@ class OrbitalTable(QWidget, OrbitalTable_UI):
         for col, widget in enumerate(widgets):
             self.table.setCellWidget(row_index, col, widget)
 
+    def _row_selected(self, row):
+
+        self.orbital_selected.emit(self.rows[row].ID)
+
     def _connet_row(self, row):
 
         row.row_removed.connect(self.remove_orbital_by_ID)
         row.parameter_changed.connect(self.change_parameter)
         row.use_changed.connect(self.change_use)
+
+        self.table.cellClicked.connect(self._row_selected)

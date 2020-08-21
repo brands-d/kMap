@@ -1,9 +1,13 @@
 import os
 import logging
 import logging.config
-import pyqtgraph as pg
+
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QApplication
+from PyQt5.QtCore import QDir
+
+import pyqtgraph as pg
+
 from kmap.config.config import config
 from kmap.controller.mainwindow import MainWindow
 from kmap import __version__, __project__, __directory__
@@ -42,7 +46,8 @@ class kMap(QApplication):
         # Logging
         # Delete old log files if user set to do so
         if startup and config.get_key('logging', 'persistent') == 'False':
-            log_file = __directory__ + '/../default.log'
+            log_file = __directory__ + \
+                QDir.toNativeSeparators('/../default.log')
             if os.path.exists(log_file):
                 os.remove(log_file)
 

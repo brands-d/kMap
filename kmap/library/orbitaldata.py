@@ -44,7 +44,7 @@ class OrbitalData(Orbital, AbstractData):
             name, keys = OrbitalData._get_metadata(file, url)
             meta_data.update(keys)
 
-        return cls(file, ID, name=name, meta_data=meta_data)
+        return cls(file, ID, name=meta_data['name'], meta_data=meta_data)
 
     def __str__(self):
 

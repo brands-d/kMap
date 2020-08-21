@@ -1,5 +1,8 @@
 import os
 from configparser import ConfigParser
+
+from PyQt5.QtCore import QDir
+
 from kmap import __directory__
 
 
@@ -7,18 +10,25 @@ class Config:
 
     def __init__(self):
 
-        self.path_settings_default = (__directory__ +
-                                      '/config/settings_default.ini')
-        self.path_settings_user = (__directory__ +
-                                   '/config/settings_user.ini')
-        self.path_logging_default = (__directory__ +
-                                     '/config/logging_default.ini')
-        self.path_logging_user = (__directory__ +
-                                  '/config/logging_user.ini')
-        self.path_shortcut_default = (__directory__ +
-                                      '/config/shortcut_default.ini')
-        self.path_shortcut_user = (__directory__ +
-                                   '/config/shortcut_user.ini')
+        settings_default = QDir.toNativeSeparators(
+            '/config/settings_default.ini')
+        settings_user = QDir.toNativeSeparators(
+            '/config/settings_user.ini')
+        logging_default = QDir.toNativeSeparators(
+            '/config/logging_default.ini')
+        logging_user = QDir.toNativeSeparators(
+            '/config/logging_user.ini')
+        shortcut_default = QDir.toNativeSeparators(
+            '/config/shortcut_default.ini')
+        shortcut_user = QDir.toNativeSeparators(
+            '/config/shortcut_user.ini')
+
+        self.path_settings_default = __directory__ + settings_default
+        self.path_settings_user = __directory__ + settings_user
+        self.path_logging_default = __directory__ + logging_default
+        self.path_logging_user = __directory__ + logging_user
+        self.path_shortcut_default = __directory__ + shortcut_default
+        self.path_shortcut_user = __directory__ + shortcut_user
 
         self._general_settings = ''
         self._logging_settings = ''

@@ -1,15 +1,18 @@
+import os, sys
+
+path = os.path.dirname(os.path.realpath(__file__))
+sys.path.insert(0,path + os.sep + '..' + os.sep + '..' + os.sep)
+data_path = path + os.sep + '..' + os.sep + 'data' + os.sep
+
+####
 import matplotlib.pyplot as plt
 import numpy as np
 from lmfit import Minimizer, Parameters, report_fit
-
-# for local imports include parent path for import of kMap classes
-import os,sys,inspect
 
 # now import classes from kMap
 from kmap.library.orbital import Orbital
 from kmap.library.sliceddata import SlicedData
 
-path = os.path.dirname(os.path.realpath(__file__)) + '/../data/'
 
 # define common (kx,ky)-grid for deconvolution
 dk = 0.05
@@ -22,7 +25,7 @@ params = Parameters() # parameters object for minimization
 
 sim_kmaps = []
 for name in names:
-    cuberead = open(path + name +'.cube').read()       # read cube-file from file
+    cuberead = open(data_path + name +'.cube').read()       # read cube-file from file
     orbital  = Orbital(cuberead,dk3D=0.15)     # 3D-FT 
     sim_kmap = orbital.get_kmap(E_kin=28,     
                          phi=0,theta=0,psi=0,  # Euler angles 
@@ -36,7 +39,7 @@ for name in names:
 params.add('background',value=1, min=0)   # also use constant background as fit parameter
 
 # Load experimental data-file: ARPES data of M3-feature of PTCDA/Ag(110)
-exp_data = SlicedData.init_from_hdf5(path + 'example5_6584.hdf5') 
+exp_data = SlicedData.init_from_hdf5(data_path + 'example5_6584.hdf5') 
 
 # define function to be minimized
 def chi2_function(params,data):

@@ -2,7 +2,7 @@
 from abc import abstractmethod
 
 # PyQt5 Imports
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import QLabel, QCheckBox, QDoubleSpinBox, QWidget
 
 
@@ -54,6 +54,18 @@ class WeightSpinBox(QDoubleSpinBox):
         self.setKeyboardTracking(False)
         self.setAlignment(Qt.AlignHCenter)
         self.setObjectName('weight')
+
+
+class FixedSizeWidget(QWidget):
+
+    def __init__(self, width, ratio, *args, **kwargs):
+
+        super(FixedSizeWidget, self).__init__()
+        
+        height = width * ratio
+        self.resize(width, height)
+        self.setMaximumSize(width, height)
+        self.setMinimumSize(width, height)
 
 
 class AspectWidget(QWidget):
@@ -125,6 +137,8 @@ class AspectWidget(QWidget):
 
 class Tab(QWidget):
 
+    close_requested = pyqtSignal()
+
     def __init__(self, *args, **kwargs):
 
         super(Tab, self).__init__(*args, **kwargs)
@@ -135,5 +149,6 @@ class Tab(QWidget):
 
     def closeEvent(self, event):
 
+        self.close_requested.emit()
         self.deleteLater()
         event.accept()

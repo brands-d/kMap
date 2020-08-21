@@ -3,42 +3,33 @@ import logging
 
 # PyQt5 Imports
 from PyQt5 import uic
-from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtCore import Qt, pyqtSignal, QDir
 from PyQt5.QtWidgets import QMainWindow, QTreeWidgetItem, QHeaderView
 
 # Own Imports
 from kmap import __directory__
 from kmap.library.database import Database
+from kmap.controller.sliceddatabaseoptions import SlicedDataBaseOptions
 from kmap.config.config import config
 
-# Load .ui File
-UI_file = __directory__ + '/ui/databasewindow.ui'
+# Load .ui File for SlicedDataDatabase
+UI_file = __directory__ + QDir.toNativeSeparators('/ui/databasewindow.ui')
 DatabaseWindow_UI, _ = uic.loadUiType(UI_file)
+# Load .ui File for OrbitalDatabase
+UI_file = __directory__ + \
+    QDir.toNativeSeparators('/ui/sliceddatabasewindow.ui')
+SlicedDatabaseWindow_UI, _ = uic.loadUiType(UI_file)
 
 
-class DatabaseWindow(QMainWindow, DatabaseWindow_UI):
+class DatabaseWindowBase(QMainWindow):
 
     files_chosen = pyqtSignal(list)
-    
+
     def __init__(self):
 
         # Setup GUI
-        super(DatabaseWindow, self).__init__()
+        super(DatabaseWindowBase, self).__init__()
         self.setAttribute(Qt.WA_DeleteOnClose, True)
-        self.setupUi(self)
-        self._setup_tree()
-        self._connect()
-
-        # Setup database
-        path = __directory__ + config.get_key('paths', 'database')
-        self.database = Database(path)
-
-        # URLs that will be returned upon closing
-        self.URLs = []
-
-        self.fill_tree()
-
-        self.show()
 
     def fill_tree(self):
 
@@ -87,35 +78,6 @@ class DatabaseWindow(QMainWindow, DatabaseWindow_UI):
         # Add item to tree
         molecule_item.addChild(orbital_item)
 
-    def load_urls(self):
-
-        text = self.text_edit.toPlainText()
-
-        # Nothing entered
-        if not text:
-            self.URLs = []
-
-        # Multiple URLs entered
-        elif '\n' in text:
-            self.URLs = text.split('\n')
-
-        # Only one URL entered
-        else:
-            self.URLs.append([text, {}])
-
-        self.close()
-
-    def load_database(self):
-
-        orbitals_chosen = self._get_chosen_orbitals()
-
-        for orbital in orbitals_chosen:
-            URL = orbital.URL
-            meta_data = orbital.get_meta_data()
-            self.URLs.append([URL, meta_data])
-
-        self.close()
-
     def find(self):
 
         search_text = self.line_edit.text()
@@ -139,6 +101,17 @@ class DatabaseWindow(QMainWindow, DatabaseWindow_UI):
 
         next_item = items[next_index]
         self.tree.setCurrentItem(next_item)
+
+    def load_database(self):
+
+        orbitals_chosen = self._get_chosen_orbitals()
+
+        for orbital in orbitals_chosen:
+            URL = orbital.URL
+            meta_data = orbital.get_meta_data()
+            self.URLs.append([URL, meta_data])
+
+        self.close()
 
     def closeEvent(self, event):
 
@@ -196,9 +169,98 @@ class DatabaseWindow(QMainWindow, DatabaseWindow_UI):
     def _connect(self):
 
         self.combobox.currentTextChanged.connect(self.fill_tree)
-        self.url_load_button.clicked.connect(self.load_urls)
+
         self.database_load_button.clicked.connect(self.load_database)
         self.find_button.clicked.connect(self.find)
+
+
+class OrbitalDatabase(DatabaseWindowBase, DatabaseWindow_UI):
+
+    def __init__(self, *args, **kwargs):
+
+        super(OrbitalDatabase, self).__init__(*args, **kwargs)
+        self.setupUi(self)
+        self._setup_tree()
+        self._connect()
+
+        # Setup database
+        path = __directory__ + config.get_key('paths', 'database')
+        self.database = Database(path)
+
+        # URLs (with extra information if available) chosen
+        self.URLs = []
+
+        self.fill_tree()
+
+        self.show()
+
+    def load_urls(self):
+
+        text = self.text_edit.toPlainText()
+
+        # Nothing entered
+        if not text:
+            self.URLs = []
+
+        # Multiple URLs entered
+        elif '\n' in text:
+            self.URLs = text.split('\n')
+
+        # Only one URL entered
+        else:
+            self.URLs.append([text, {}])
+
+        self.close()
+
+    def _connect(self):
+
+        DatabaseWindowBase._connect(self)
+
+        self.url_load_button.clicked.connect(self.load_urls)
+
+
+class SlicedDatabaseWindow(DatabaseWindowBase, SlicedDatabaseWindow_UI):
+
+    def __init__(self, *args, **kwargs):
+
+        super(SlicedDatabaseWindow, self).__init__(*args, **kwargs)
+        self.setupUi(self)
+        self._setup_tree()
+        self._connect()
+
+        # Setup database
+        path = __directory__ + config.get_key('paths', 'database')
+        self.database = Database(path)
+
+        # Open Options Window
+        self.options = SlicedDataBaseOptions()
+
+        # URLs (with extra information if available) chosen
+        self.URLs = []
+
+        self.fill_tree()
+
+        self.show()
+        self.options.show()
+
+    def load_database(self):
+
+        orbitals_chosen = self._get_chosen_orbitals()
+
+        for orbital in orbitals_chosen:
+            URL = orbital.URL
+            meta_data = orbital.get_meta_data()
+            options = self.options.get_parameters()
+            self.URLs.append([URL, meta_data])
+
+        self.URLs.append(options)
+
+        self.close()
+
+    def closeEvent(self, event):
+
+        DatabaseWindowBase.closeEvent(self, event)
+        self.options.deleteLater()
 
 
 class TreeWidgetItem(QTreeWidgetItem):

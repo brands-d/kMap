@@ -47,7 +47,7 @@
     </property>
     <widget class="QMenu" name="cube_menu">
      <property name="title">
-      <string>Open .cube File(s)...</string>
+      <string>Load Orbital Data...</string>
      </property>
      <addaction name="load_cube_file_action"/>
      <addaction name="load_cube_online_action"/>
@@ -65,7 +65,15 @@
      <addaction name="log_file_action"/>
      <addaction name="mod_log_file_action"/>
     </widget>
-    <addaction name="load_hdf5_action"/>
+    <widget class="QMenu" name="load_hdf5_menu">
+     <property name="title">
+      <string>Load Sliced Data...</string>
+     </property>
+     <addaction name="load_hdf5_action"/>
+     <addaction name="load_sliced_online_action"/>
+     <addaction name="load_sliced_online_action2"/>
+    </widget>
+    <addaction name="load_hdf5_menu"/>
     <addaction name="cube_menu"/>
     <addaction name="separator"/>
     <addaction name="export_menu"/>
@@ -74,9 +82,11 @@
    </widget>
    <widget class="QMenu" name="edit_menu">
     <property name="title">
-     <string>Edit</string>
+     <string>Tabs</string>
     </property>
     <addaction name="open_sim_tab_action"/>
+    <addaction name="open_profile_tab_action"/>
+    <addaction name="open_lmfit_tab_action"/>
    </widget>
    <widget class="QMenu" name="settings_menu">
     <property name="title">
@@ -114,14 +124,9 @@
    <addaction name="settings_menu"/>
    <addaction name="help_menu"/>
   </widget>
-  <action name="load_hdf5_action">
-   <property name="text">
-    <string>Open .hdf5 File(s)...</string>
-   </property>
-  </action>
   <action name="open_sim_tab_action">
    <property name="text">
-    <string>Open new Sim. Tab</string>
+    <string>Open new Orbital Tab</string>
    </property>
   </action>
   <action name="load_cube_file_action">
@@ -192,6 +197,31 @@
   <action name="ref_action">
    <property name="text">
     <string>Print References</string>
+   </property>
+  </action>
+  <action name="load_hdf5_action">
+   <property name="text">
+    <string>Locally...</string>
+   </property>
+  </action>
+  <action name="load_sliced_online_action">
+   <property name="text">
+    <string>From Orbitals ...</string>
+   </property>
+  </action>
+  <action name="load_sliced_online_action2">
+   <property name="text">
+    <string>From hnu-dependence ...</string>
+   </property>
+  </action>
+  <action name="open_profile_tab_action">
+   <property name="text">
+    <string>Open new Profile Tab</string>
+   </property>
+  </action>
+  <action name="open_lmfit_tab_action">
+   <property name="text">
+    <string>Open new LM-Fit Tab</string>
    </property>
   </action>
  </widget>

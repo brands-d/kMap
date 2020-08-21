@@ -6,17 +6,19 @@ import traceback
 from PyQt5 import uic
 from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox
+from PyQt5.QtCore import QDir
 
 # Own Imports
 from kmap import __directory__, __version__
-from kmap.controller.databasewindow import DatabaseWindow
+from kmap.controller.databasewindows import (
+    OrbitalDatabase, SlicedDatabaseWindow)
 from kmap.controller.tabwidget import TabWidget
 from kmap.model.mainwindow_model import MainWindowModel
 from kmap.config.config import config
 
 
 # Load .ui File
-UI_file = __directory__ + '/ui/mainwindow.ui'
+UI_file = __directory__ + QDir.toNativeSeparators('/ui/mainwindow.ui')
 MainWindow_UI, _ = uic.loadUiType(UI_file)
 
 
@@ -54,10 +56,23 @@ class MainWindow(QMainWindow, MainWindow_UI):
 
             self.tab_widget.open_sliced_data_tab(path)
 
-    def open_database_browser(self):
+    def open_orbitaldatabase_browser(self):
 
-        self.database = DatabaseWindow()
+        self.database = OrbitalDatabase()
         self.database.files_chosen.connect(self.load_cube_files_online)
+
+    def open_sliceddatabase_browser(self):
+
+        self.database = SlicedDatabaseWindow()
+        self.database.files_chosen.connect(self.load_sliced_files_online)
+
+    def load_sliced_files_online(self, URLs):
+        # Load one or more cube files as sliced data
+
+        log = logging.getLogger('kmap')
+        log.info('Loading .cube file(s) as sliced data...')
+
+        self.tab_widget.open_sliced_data_tab_by_URL(URLs)
 
     def load_cube_files_online(self, URLs):
 
@@ -102,7 +117,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
     def open_log_file(self):
         # Open log file
 
-        path = __directory__ + '/../default.log'
+        path = __directory__ + QDir.toNativeSeparators('/../default.log')
         title = 'Log File'
 
         self.tab_widget.open_file_tab(
@@ -111,7 +126,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
     def open_mod_log_file(self):
         # Open module log file
 
-        path = __directory__ + '/../modules.log'
+        path = __directory__ + QDir.toNativeSeparators('/../modules.log')
         title = 'Modules Log File'
 
         self.tab_widget.open_file_tab(
@@ -120,7 +135,8 @@ class MainWindow(QMainWindow, MainWindow_UI):
     def open_general_settings(self):
         # Open general user settings
 
-        path = __directory__ + '/config/settings_user.ini'
+        path = __directory__ + \
+            QDir.toNativeSeparators('/config/settings_user.ini')
         title = 'General Settings'
 
         self.tab_widget.open_file_tab(
@@ -129,11 +145,16 @@ class MainWindow(QMainWindow, MainWindow_UI):
     def open_orbital_data_tab(self):
 
         self.tab_widget.open_orbital_data_tab()
-        
+
+    def open_profile_tab(self):
+
+        self.tab_widget.open_profile_tab()
+
     def open_logging_settings(self):
         # Open logging user settings
 
-        path = __directory__ + '/config/logging_user.ini'
+        path = __directory__ + \
+            QDir.toNativeSeparators('/config/logging_user.ini')
         title = 'Logging Settings'
 
         self.tab_widget.open_file_tab(
@@ -142,7 +163,8 @@ class MainWindow(QMainWindow, MainWindow_UI):
     def open_general_default_settings(self):
         # Open general default settings
 
-        path = __directory__ + '/config/settings_default.ini'
+        path = __directory__ + \
+            QDir.toNativeSeparators('/config/settings_default.ini')
         title = 'General Settings (Default)'
 
         self.tab_widget.open_file_tab(
@@ -151,7 +173,8 @@ class MainWindow(QMainWindow, MainWindow_UI):
     def open_logging_default_settings(self):
         # Open logging default settings
 
-        path = __directory__ + '/config/logging_default.ini'
+        path = __directory__ + \
+            QDir.toNativeSeparators('/config/logging_default.ini')
         title = 'Logging Settings (Default)'
 
         self.tab_widget.open_file_tab(
@@ -160,7 +183,8 @@ class MainWindow(QMainWindow, MainWindow_UI):
     def open_readme(self):
         # Open a README page
 
-        path = __directory__ + '/resources/texts/readme.txt'
+        path = __directory__ + \
+            QDir.toNativeSeparators('/resources/texts/readme.txt')
         title = 'README'
 
         self.tab_widget.open_file_tab(
@@ -169,7 +193,8 @@ class MainWindow(QMainWindow, MainWindow_UI):
     def open_welcome(self):
         # Open a welcome page
 
-        path = __directory__ + '/resources/texts/welcome.txt'
+        path = __directory__ + \
+            QDir.toNativeSeparators('/resources/texts/welcome.txt')
         title = 'Welcome'
 
         self.tab_widget.open_file_tab(
@@ -178,10 +203,15 @@ class MainWindow(QMainWindow, MainWindow_UI):
     def open_about(self):
         # Open an about window
 
-        path = __directory__ + '/resources/texts/about.txt'
+        path = __directory__ + \
+            QDir.toNativeSeparators('/resources/texts/about.txt')
         title, text = self.model.get_about_text(path)
         QMessageBox.about(self, title, text)
 
+    def open_lmfit_tab(self):
+
+        self.tab_widget.open_lmfit_tab()
+        
     def open_in_matplotlib(self):
 
         current_tab = self.tab_widget.get_current_tab()
@@ -208,17 +238,23 @@ class MainWindow(QMainWindow, MainWindow_UI):
         if config.get_key('app', 'fullscreen') == 'True':
             self.showMaximized()
         self.setWindowTitle('kMap')
-        self.setWindowIcon(
-            QIcon(__directory__ + '/resources/images/icon.png'))
+        self.setWindowIcon(QIcon(__directory__ +
+                                 QDir.toNativeSeparators(
+                                     '/resources/images/icon.png')))
         self.show()
 
     def _initialize_shortcuts(self):
 
-        actions = [self.load_hdf5_action, self.show_matplotlib,
+        actions = [self.load_hdf5_action,
+                   self.load_sliced_online_action,
+                   self.load_sliced_online_action2,
+                   self.show_matplotlib,
                    self.log_file_action, self.load_cube_online_action,
                    self.load_cube_file_action]
 
-        alias = ['load_hdf5', 'show_matplotlib', 'open_log',
+        alias = ['load_hdf5', 'load_sliced_online_action',
+                 'load_sliced_online_action2',
+                 'show_matplotlib', 'open_log',
                  'load_cube_online', 'load_cube_file']
 
         for action, alias in zip(actions, alias):
@@ -231,16 +267,22 @@ class MainWindow(QMainWindow, MainWindow_UI):
 
         # File menu
         self.load_hdf5_action.triggered.connect(self.load_hdf5_files)
+        self.load_sliced_online_action.triggered.connect(
+            self.open_sliceddatabase_browser)
+        self.load_sliced_online_action2.triggered.connect(
+            self.open_sliceddatabase_browser)
         self.load_cube_file_action.triggered.connect(
             self.load_cube_files_locally)
         self.load_cube_online_action.triggered.connect(
-            self.open_database_browser)
+            self.open_orbitaldatabase_browser)
         self.log_file_action.triggered.connect(self.open_log_file)
         self.mod_log_file_action.triggered.connect(self.open_mod_log_file)
         self.show_matplotlib.triggered.connect(self.open_in_matplotlib)
 
-        # Edit menu
+        # Tabs menu
         self.open_sim_tab_action.triggered.connect(self.open_orbital_data_tab)
+        self.open_profile_tab_action.triggered.connect(self.open_profile_tab)
+        self.open_lmfit_tab_action.triggered.connect(self.open_lmfit_tab)
 
         # Preferences menu
         self.general_action.triggered.connect(self.open_general_settings)

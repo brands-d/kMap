@@ -8,6 +8,7 @@ import numpy as np
 import scipy.interpolate as interp
 from scipy.ndimage import rotate
 from kmap.library.plotdata import PlotData
+from kmap.library.misc import energy_to_k, compute_Euler_matrix
 
 np.seterr(invalid='ignore')
 
@@ -23,6 +24,8 @@ class Orbital():
         file_format (string): Currently only cube files are supported.
         dk3D (float): Desired resolution for 3D-Fourier-Transform.
             Single number.
+        E_kin_max (float): maximum kinetic energy in eV is used to
+            reduce the size of the 3D-numpy-array in momentum space
         value (string): choose between 'real', 'imag', 'abs' or 'abs2'
             for Re(), Im(), |..| or |..|^2
 
@@ -30,15 +33,15 @@ class Orbital():
 
     """
 
-    def __init__(self, file, file_format='cube', dk3D=0.15, value='abs2'):
-
+    def __init__(self, file, file_format='cube', dk3D=0.15, E_kin_max=150,value='abs2'):
+        
         # Read orbital data from file
         if file_format == 'cube': 
             self._read_cube(file)
         else:
             NotImplementedError('Other formats than cube not implemented')
 
-        self.compute_3DFT(dk3D, value)
+        self.compute_3DFT(dk3D, E_kin_max, value)
         self.kmap = {}
         self.Ak   = {}
 
@@ -54,7 +57,7 @@ class Orbital():
             theta (float): Euler orientation angle theta in degree.
             psi (float): Euler orientation angle psi in degree.
             Ak_type (string): Treatment of |A.k|^2: either 'no',
-                'toroid' or 'NanoESCA'.
+                'toroid', 'NanoESCA', 'only-toroid' or 'only-NanoESCA'.
             polarization (string): Either 'p', 's', 'C+', 'C-' or
                 'CDAD'.   
             alpha (float): Angle of incidence plane in degree.
@@ -84,7 +87,11 @@ class Orbital():
         if new_cut or new_Ak: self.set_polarization(Ak_type, polarization, 
                                          alpha, beta,gamma)
 
-        return PlotData(self.Ak['data']*self.kmap['data'], 
+        if Ak_type == 'only-toroid' or Ak_type == 'only-NanoESCA':
+            return PlotData(self.Ak['data'], self.kmap['krange'])
+        
+        else:
+            return PlotData(self.Ak['data']*self.kmap['data'], 
                         self.kmap['krange'])
 
 
@@ -97,7 +104,7 @@ class Orbital():
                         self.kmap['krange'])
 
 
-    def compute_3DFT(self, dk3D, value):
+    def compute_3DFT(self, dk3D, E_kin_max, value):
         """Compute 3D-FT."""
 
         # Determine required size (nkx,nky,nkz) of 3D-FT array to reach
@@ -108,6 +115,11 @@ class Orbital():
             int(2 * np.pi / (dk3D * self.psi['dy'])) - self.psi['ny'], 0)
         pad_z = max(
             int(2 * np.pi / (dk3D * self.psi['dz'])) - self.psi['nz'], 0)
+
+        if pad_x%2 == 1: pad_x += 1  # make sure it's an even number
+        if pad_y%2 == 1: pad_y += 1  # make sure it's an even number
+        if pad_z%2 == 1: pad_z += 1  # make sure it's an even number
+
         nkx = self.psi['nx'] + pad_x
         nky = self.psi['ny'] + pad_y
         nkz = self.psi['nz'] + pad_z
@@ -118,20 +130,43 @@ class Orbital():
         kz = self.set_3Dkgrid(nkz, self.psi['dz'])
 
         # Compute 3D FFT
-        psik = np.fft.fftshift(np.fft.fftn(self.psi['data'],
-                                           s=[nkx, nky, nkz]))
+        # !! TESTING !!! This is supposed to yield also proper Real- and Imaginary parts!!
+#        print(nkx, nky, nkz)
+#        print(pad_x, pad_y, pad_z)
+        psi_padded = np.pad(self.psi['data'], 
+                      pad_width=((pad_x//2,pad_x//2), (pad_y//2,pad_y//2), (pad_z//2,pad_z//2)),
+                      mode='constant',
+                      constant_values=(0,0))
+        psi_padded = np.fft.ifftshift(psi_padded)                                
+        psik = np.fft.fftshift(np.fft.fftn(psi_padded))
+
+       # THIS IS THE OLD AND WELL TESTED WAY TO Compute 3D FFT
+#        psik = np.fft.fftshift(np.fft.fftn(self.psi['data'],
+#                                           s=[nkx, nky, nkz]))
 
         # properly normalize wave function in momentum space
         dkx, dky, dkz = kx[1]-kx[0], ky[1]-ky[0], kz[1]-kz[0]
         factor        = dkx*dky*dkz*np.sum(np.abs(psik)**2)
         psik         /= np.sqrt(factor)
 
+        # Reduce size of array to value given by E_kin_max to save memory
+        k_max      = energy_to_k(E_kin_max)
+        kx_indices = np.where((kx <= k_max) & (kx >= -k_max))[0]
+        ky_indices = np.where((ky <= k_max) & (ky >= -k_max))[0]
+        kz_indices = np.where((kz <= k_max) & (kz >= -k_max))[0]    
+        kx         = kx[kx_indices]
+        ky         = ky[ky_indices]
+        kz         = kz[kz_indices]
+        psik       = np.take(psik, kx_indices, axis=0)
+        psik       = np.take(psik, ky_indices, axis=1)
+        psik       = np.take(psik, kz_indices, axis=2)
+
         # decide whether real, imaginry part, absolute value, or squared absolute value is used
         if value == 'real':
-            psik = np.real(psik)
+            psik = np.asarray(np.real(psik), order='C')
 
         elif value == 'imag':
-            psik = np.imag(psik)
+            psik = np.asarray(np.imag(psik), order='C')
 
         elif value == 'abs':
             psik = np.abs(psik)
@@ -148,6 +183,7 @@ class Orbital():
 
         # Set attributes
         self.psik = {'kx': kx, 'ky': ky, 'kz': kz,
+                     'E_kin_max':E_kin_max,
                      'value': value,
                      'data': psik,
                      'data_interp': psik_interp}
@@ -160,7 +196,7 @@ class Orbital():
     # Make hemi-spherical cut through 3D Fourier transform
     def set_kinetic_energy(self, E_kin, dk):
 
-        kmax = self.E_to_k(E_kin)
+        kmax = energy_to_k(E_kin)
         num_k = int(2 * kmax / dk)
         kxi = np.linspace(-kmax, +kmax, num_k)
         kyi = np.linspace(-kmax, +kmax, num_k)
@@ -204,7 +240,7 @@ class Orbital():
         KX, KY, KZ = self.kmap['KX'], self.kmap['KY'], self.kmap['KZ']
         nkx = KX.shape[0]
         nky = KX.shape[1]
-        r = self.compute_Euler_matrix(phi, theta, psi)
+        r = compute_Euler_matrix(phi, theta, psi)
         r = r.T
 
         # KXr, KYr, KZr are the k-coordinates of the rotated hemisphere
@@ -277,7 +313,7 @@ class Orbital():
 
         # At the toroid, the emitted electron is always in the plane of
         # incidence and the sample is rotated
-        if Ak_type == 'toroid':
+        if Ak_type == 'toroid' or Ak_type == 'only-toroid':
             # Magnitude of k-vector
             k = kx**2 + ky**2 + kz**2
             # Parallel component of k-vector
@@ -287,7 +323,7 @@ class Orbital():
 
         # At the NanoESCA, either p-polarization ,s-polarization, or
         # circularly polarized light can be simulated
-        elif Ak_type == 'NanoESCA':
+        elif Ak_type == 'NanoESCA' or Ak_type == 'only-NanoESCA':
             # In-plane = p-polarization
             if polarization == 'p':
                 Ak = kx * cos_a * cos_b + ky * cos_a * sin_b + kz * sin_a
@@ -473,6 +509,8 @@ class Orbital():
         # Conversion factor from Bohr to Angstroem
         b2a = 0.529177105787531
 
+        name = lines[1].strip()
+
         x0, y0, z0 = b2a * float(lines[2].split()[1]), b2a * float(
             lines[2].split()[2]), b2a * float(lines[2].split()[3])
         nx, ny, nz = int(lines[3].split()[0]), int(
@@ -507,7 +545,8 @@ class Orbital():
         data = np.reshape(np.array(data), (nx, ny, nz))
 
         # set attributes
-        self.psi = {'nx': nx, 'ny': ny, 'nz': nz,
+        self.psi = {'name': name,
+                    'nx': nx, 'ny': ny, 'nz': nz,
                     'dx': dx, 'dy': dy, 'dz': dz,
                     'x': x, 'y': y, 'z': z,
                     'data': data}
@@ -515,25 +554,39 @@ class Orbital():
                          'chemical_numbers': chemical_numbers,
                          'atomic_coordinates': atomic_coordinates}
 
-    def get_bonds(self,min_bond_length=0.8,max_bond_length=1.8):
+    def get_bonds(self,lower_factor=0.8,upper_factor=1.2):
         """ returns a list of bond used for plotting the molecular structure.
 
         Args:
-            min_bond_length (float): minimum distance between atoms 
-                                     for drawing bonds
-            max_bond_length (float): maximum distance between atoms 
-                                     for drawing bonds
+            lower_factor (float): lower bound for drawing bonds w.r.t sum of covalent radii
+            upper_factor (float): upper bound for drawing bonds w.r.t sum of covalent radii
         """
-        
+        covalent_R = {1:0.32, 2:0.32,  # H, He
+                      3:1.34, 4:0.90, 5:0.82, 6:0.77, 7:0.71, 8:0.73, 9:0.71,10:0.69, # Li - Ne
+                     11:1.54,12:1.30,13:1.18,14:1.11,15:1.06,16:1.02,17:0.99,18:0.97, # Na- Ar
+                     19:1.96,20:1.74,21:1.44,22:1.36,23:1.25,24:1.27,25:1.39,26:1.25, # K - Fe
+                     27:1.26,28:1.21,29:1.38,30:1.31,31:1.26,32:1.22,33:1.21,34:1.16, # Co- Se
+                     35:1.14,36:1.10,                                                 # Br, Kr
+                     37:2.11,38:1.92,39:1.62,40:1.48,41:1.37,41:1.45,43:1.31,44:1.26, # Rb -Ru
+                     45:1.35,46:1.31,47:1.53,48:1.48,49:1.44,50:1.41,51:1.38,52:1.35, # Rh -Te
+                     53:1.33,54:1.30,                                                 #  I, Xe
+                     55:2.25,56:1.98,57:1.69,72:1.50,73:1.38,74:1.46,75:1.59,76:1.28, # Cs -Os
+                     77:1.37,78:1.38,79:1.38,80:1.49,81:1.48,82:1.46,83:1.46,84:1.40, # Ir -Po
+                     85:1.45,86:1.45}                                                 # At, Rn
+               
         dx,dy,dz    = self.psi['dx'], self.psi['dy'], self.psi['dz'] 
         coordinates = self.molecule['atomic_coordinates']
+        Z_list      = self.molecule['chemical_numbers']                  
         bonds       = []
-        for atom1 in coordinates:
+        for atom1, Z1 in zip(coordinates, Z_list):
             x1,y1,z1 = atom1[0], atom1[1], atom1[2]
-            for atom2 in coordinates:
-                x2,y2,z2 = atom2[0], atom2[1], atom2[2]    
+            R1       = covalent_R[Z1]
+            for atom2, Z2 in zip(coordinates, Z_list):
+                x2,y2,z2 = atom2[0], atom2[1], atom2[2] 
+                R2       = covalent_R[Z2] 
+                R        = R1 + R2    # sum of covalent radii 
                 distance = np.sqrt((x1-x2)**2 + (y1-y2)**2 + (z1-z2)**2)
-                if min_bond_length <= distance <= max_bond_length:
+                if lower_factor*R <= distance <= upper_factor*R:
                     bond = [[x1/dx,y1/dy,z1/dz], [x2/dx,y2/dy,z2/dz]] 
                     bonds.append(np.array(bond))
 
@@ -551,44 +604,4 @@ class Orbital():
 
         return k
 
-    def E_to_k(self, E_kin):
-        """ Convert kinetic energy in eV to k in Anstroem^-1."""
 
-        # Electron mass
-        m = 9.10938356e-31
-        # Reduced Planck constant
-        hbar = 1.0545718e-34
-        # Electron charge
-        e = 1.60217662e-19
-
-        fac = 2 * 1e-20 * e * m / hbar**2
-
-        return np.sqrt(fac * E_kin)
-
-    def compute_Euler_matrix(self, phi, theta, psi):
-        """Compute rotation matrix according to Eq. (M3.10.3) of
-        Lang-Pucker"""
-
-        # Compute sines and cosines of angles
-        sin_phi = np.sin(np.radians(phi))
-        cos_phi = np.cos(np.radians(phi))
-        sin_theta = np.sin(np.radians(theta))
-        cos_theta = np.cos(np.radians(theta))
-        sin_psi = np.sin(np.radians(psi))
-        cos_psi = np.cos(np.radians(psi))
-
-        # Euler matrix r according to eq. (M3.10.3) of Lang-Pucker
-        r = np.zeros((3, 3))
-        r[0, 0] = cos_phi * cos_psi - sin_phi * cos_theta * sin_psi
-        r[1, 0] = -cos_phi * sin_psi - sin_phi * cos_theta * cos_psi
-        r[2, 0] = sin_phi * sin_theta
-
-        r[0, 1] = sin_phi * cos_psi + cos_phi * cos_theta * sin_psi
-        r[1, 1] = -sin_phi * sin_psi + cos_phi * cos_theta * cos_psi
-        r[2, 1] = -cos_phi * sin_theta
-
-        r[0, 2] = sin_theta * sin_psi
-        r[1, 2] = sin_theta * cos_psi
-        r[2, 2] = cos_theta
-
-        return r
