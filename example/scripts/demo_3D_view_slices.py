@@ -47,7 +47,9 @@ parameters =[35.0,  # photon_energy (float): Photon energy in eV.
                     #    '3-fold', '3-fold+mirror','4-fold', '4-fold+mirror'
              
 # initialize SlicedData object
+print('Loading orbitals ... please wait ...')
 kmap_stack = SlicedData.init_from_orbitals(name,orbitals,parameters)  
+print('Loading completed. Now preparing data for volume visualization.')
 
 # Prepare data for viewing
 data       = np.nan_to_num(kmap_stack.data)
@@ -57,6 +59,35 @@ nx, ny, nz = data.shape
 dx         = (kmap_stack.axes[1].range[1] - kmap_stack.axes[1].range[0])/(nx - 1)
 dy         = (kmap_stack.axes[2].range[1] - kmap_stack.axes[2].range[0])/(ny - 1)
 dz         = (kmap_stack.axes[0].range[1] - kmap_stack.axes[0].range[0])/(nz - 1)
+x          = np.linspace(kmap_stack.axes[1].range[0], kmap_stack.axes[1].range[1], nx)
+y          = np.linspace(kmap_stack.axes[2].range[0], kmap_stack.axes[2].range[1], ny)
+z          = np.linspace(kmap_stack.axes[0].range[0], kmap_stack.axes[0].range[1], nz)
+
+# prepare data for volume visualization
+nPoints = 256
+data     = np.abs(data) # take absolute value
+data[:,y>1.0,:] = 0   # for testing: set data zero for all values y>1
+np.clip(data, a_min=0, a_max=0.5*data.max(), out=data) # clip data between 0% and 50% of maximum
+data     = (nPoints*data/data.max()).astype(np.ubyte) # convert data to byte-array with values ranging from 0 to 255
+
+# define color map
+colors = [
+    (0,     0,   0,   0),  # red, green, blue, transparency
+    (45,    5,  61,  20),
+    (84,   42,  55,  40),
+    (150,  87,  60,  60),
+    (208, 171, 141,  80),
+    (255, 255, 255, 100)
+]
+cmap = pg.ColorMap(pos=np.linspace(0, 1, len(colors)), color=colors)
+ctable = cmap.getLookupTable(start=0, stop=1, nPts=nPoints, alpha=True, mode='byte')
+
+# prepare voxel array
+voxel = np.empty(data.shape + (4,), dtype=np.ubyte)
+voxel[..., 0] = ctable[data,0]  # red
+voxel[..., 1] = ctable[data,1]  # green
+voxel[..., 2] = ctable[data,2]  # blue
+voxel[..., 3] = ctable[data,3]  # transparency
 
 # initialize GLViewWidget()
 app = QtGui.QApplication([])
@@ -74,30 +105,10 @@ w.addItem(g)
 ax = gl.GLAxisItem()
 ax.setSize(10,10,10)
 w.addItem(ax)
-
-# compute isosurface for positive and negative isovalues
-isovals = [+0.2*data.max()]
-colors  = [(1,0.2,0.2)]
-
-for isoval, color in zip(isovals, colors):
-    # compute vertices and faces and center around origin
-    verts, faces = pg.isosurface(data, isoval)
-    verts[:,0] = verts[:,0] - nx/2
-    verts[:,1] = verts[:,1] - ny/2
-    verts[:,2] = verts[:,2] - nz/2
-
-    isosurface = gl.MeshData(vertexes=verts, faces=faces)
-    rgbt = np.zeros((isosurface.faceCount(), 4), dtype=float)
-    for c in range(3):
-        rgbt[:,c] = color[c] 
-    rgbt[:,3] = 1  # transparency (I guess)
-    isosurface.setFaceColors(rgbt)
-
-    p = gl.GLMeshItem(meshdata=isosurface, smooth=True, 
-                      shader='edgeHilight')   # shader options: 'balloon', 'shaded', 'normalColor', 'edgeHilight'
-    p.setGLOptions('translucent')  # choose between 'opaque', 'translucent' or 'additive'
-    w.addItem(p)
         
+v = gl.GLVolumeItem(voxel,sliceDensity=1, smooth=True)
+v.translate(-nx/2,-ny/2,-nz/2)
+w.addItem(v)
 
 QtGui.QApplication.instance().exec_()
 
