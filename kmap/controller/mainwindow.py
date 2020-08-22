@@ -224,6 +224,23 @@ class MainWindow(QMainWindow, MainWindow_UI):
     def open_lmfit_tab(self):
 
         self.tab_widget.open_lmfit_tab()
+
+    def rename_current_tab(self):
+
+        from kmap.controller.renametab import RenameTab
+        self.rename_tab = RenameTab() 
+        self.rename_tab.rename_tab_edit.returnPressed.connect(self._set_new_title)
+
+    def _set_new_title(self):
+        self.new_title = self.rename_tab.rename_tab_edit.text()
+        self.rename_tab.close()
+        current_tab = self.tab_widget.get_current_tab()
+        idx = current_tab.indexOf(current_tab)
+        print(idx,' old title:',current_tab.tabBar().tabText(idx))
+        current_tab.tabBar().setTabText(0, self.new_title)
+         
+        #current_tab.setWindowTitle(self.new_title)
+        #print('new title:',self.new_title)
         
     def open_in_matplotlib(self):
 
@@ -296,6 +313,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
         self.open_sim_tab_action.triggered.connect(self.open_orbital_data_tab)
         self.open_profile_tab_action.triggered.connect(self.open_profile_tab)
         self.open_lmfit_tab_action.triggered.connect(self.open_lmfit_tab)
+        self.rename_current_tab_action.triggered.connect(self.rename_current_tab)
 
         # Preferences menu
         self.general_action.triggered.connect(self.open_general_settings)

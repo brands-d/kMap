@@ -3,7 +3,7 @@ from abc import abstractmethod
 
 # PyQt5 Imports
 from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import QLabel, QCheckBox, QDoubleSpinBox, QWidget
+from PyQt5.QtWidgets import QLabel, QCheckBox, QDoubleSpinBox, QWidget, QTabWidget
 
 
 class CenteredLabel(QLabel):
@@ -135,7 +135,7 @@ class AspectWidget(QWidget):
         self.blockSignals(False)
 
 
-class Tab(QWidget):
+class Tab(QTabWidget):
 
     close_requested = pyqtSignal()
 
