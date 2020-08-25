@@ -52,6 +52,10 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         orbital = self.model.load_data_from_online(URL, meta_data)
         self.add_orbital(orbital)
 
+    def get_orbitals(self):
+
+        return self.model.orbitals
+
     def add_orbital(self, orbital):
 
         if 'orientation' in orbital.meta_data:
@@ -106,7 +110,6 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         kinetic_energy, dk, symmetry = self.cube_options.get_parameters()
         parameters = self.table.get_parameters_by_ID(ID)
         weight, *orientation = parameters
-        *polarization, symmetry = self.polarization.get_parameters()
         polarization = self.polarization.get_parameters()
 
         return (weight, kinetic_energy, dk,

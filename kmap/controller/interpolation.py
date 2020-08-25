@@ -97,9 +97,7 @@ class Interpolation(QWidget, Interpolation_UI):
 
         # Set Label
         self.x_label.setText('%s:' % x.label)
-        self.sigma_x_label.setText('Sigma %s:' % x.label)
         self.y_label.setText('%s:' % y.label)
-        self.sigma_y_label.setText('Sigma %s:' % y.label)
 
         # Set Unit
         self.x_resolution_spinbox.setSuffix('  %s' % x.units)

@@ -32,8 +32,7 @@ class CrosshairModel():
 
         x_idx = idx_closest_value(plotdata.x_axis, self.x)
         y_idx = idx_closest_value(plotdata.y_axis, self.y)
-        print('x:', plotdata.x_axis, self.x, x_idx)
-        print('y:', plotdata.y_axis, self.y, y_idx)
+        
         if region == 'center':
             if x_idx is not None and y_idx is not None:
                 mask[y_idx, x_idx] = 1

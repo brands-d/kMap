@@ -210,7 +210,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
 
     def open_lmfit_tab(self):
 
-        self.tab_widget.open_lmfit_tab()
+        self.tab_widget.open_lmfit_tab(1,2)
         
     def open_in_matplotlib(self):
 
