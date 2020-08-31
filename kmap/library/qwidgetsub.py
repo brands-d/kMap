@@ -30,9 +30,9 @@ class AngleSpinBox(QDoubleSpinBox):
         super(AngleSpinBox, self).__init__(*args, **kwargs)
 
         self.setSuffix('°')
-        self.setValue(value)
         self.setMinimum(-90)
         self.setMaximum(90)
+        self.setValue(value)
         self.setDecimals(1)
         self.setSingleStep(1)
         self.setKeyboardTracking(False)
@@ -42,18 +42,34 @@ class AngleSpinBox(QDoubleSpinBox):
 
 class WeightSpinBox(QDoubleSpinBox):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, value=1, **kwargs):
 
         super(WeightSpinBox, self).__init__(*args, **kwargs)
 
-        self.setValue(1)
         self.setMinimum(-99999.9)
         self.setMaximum(99999.9)
+        self.setValue(value)
         self.setDecimals(1)
         self.setSingleStep(0.1)
         self.setKeyboardTracking(False)
         self.setAlignment(Qt.AlignHCenter)
         self.setObjectName('weight')
+
+class EnergySpinBox(QDoubleSpinBox):
+
+    def __init__(self, *args, value=30, **kwargs):
+
+        super(EnergySpinBox, self).__init__(*args, **kwargs)
+        
+        self.setSuffix('  eV')
+        self.setMinimum(5)
+        self.setMaximum(150)
+        self.setValue(value)
+        self.setDecimals(1)
+        self.setSingleStep(0.1)
+        self.setKeyboardTracking(False)
+        self.setAlignment(Qt.AlignHCenter)
+        self.setObjectName('energy')
 
 
 class FixedSizeWidget(QWidget):
@@ -61,7 +77,7 @@ class FixedSizeWidget(QWidget):
     def __init__(self, width, ratio, *args, **kwargs):
 
         super(FixedSizeWidget, self).__init__()
-        
+
         height = width * ratio
         self.resize(width, height)
         self.setMaximumSize(width, height)

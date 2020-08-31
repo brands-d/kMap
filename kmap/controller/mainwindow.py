@@ -210,8 +210,8 @@ class MainWindow(QMainWindow, MainWindow_UI):
 
     def open_lmfit_tab(self):
 
-        self.tab_widget.open_lmfit_tab(1,2)
-        
+        self.tab_widget.open_lmfit_tab(1, 2)
+
     def open_in_matplotlib(self):
 
         current_tab = self.tab_widget.get_current_tab()
@@ -250,12 +250,14 @@ class MainWindow(QMainWindow, MainWindow_UI):
                    self.load_sliced_online_action2,
                    self.show_matplotlib,
                    self.log_file_action, self.load_cube_online_action,
-                   self.load_cube_file_action]
+                   self.load_cube_file_action,
+                   self.open_lmfit_tab_action]
 
         alias = ['load_hdf5', 'load_sliced_online_action',
                  'load_sliced_online_action2',
                  'show_matplotlib', 'open_log',
-                 'load_cube_online', 'load_cube_file']
+                 'load_cube_online', 'load_cube_file',
+                 'open_lmfit']
 
         for action, alias in zip(actions, alias):
             shortcut = config.get_key('shortcut', alias, file='shortcut')

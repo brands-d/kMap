@@ -84,16 +84,6 @@
        </widget>
       </widget>
      </item>
-     <item>
-      <widget class="QWidget" name="tree" native="true">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-      </widget>
-     </item>
     </layout>
    </item>
    <item>
@@ -116,6 +106,11 @@
            <weight>75</weight>
            <bold>true</bold>
           </font>
+         </property>
+         <property name="toolTip">
+          <string>Displays the current slice from the sliced data loaded.
+
+The slice has been interpolated and, if checked, also smoothed.</string>
          </property>
          <property name="text">
           <string>Sliced Data</string>
@@ -164,6 +159,13 @@
            <weight>75</weight>
            <bold>true</bold>
           </font>
+         </property>
+         <property name="toolTip">
+          <string>Displays the currently selected orbital.
+
+The calculation has been performed with the &quot;initial&quot; values.
+
+The kmap displayed has been interpolated and, if checked, smoothed. </string>
          </property>
          <property name="text">
           <string>Selected Orbital</string>
