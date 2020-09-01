@@ -1,3 +1,7 @@
+# Third Party Imports
+import numpy as np
+from pyqtgraph import ColorMap
+
 # PyQt5 Imports
 from PyQt5 import uic
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHeaderView
@@ -62,6 +66,8 @@ class LMFitTab(Tab, LMFitTab_UI):
 
         self.sliced_plot.plot(data)
 
+        self.refresh_residual_plot()
+
     def refresh_selected_plot(self):
 
         ID = self.tree.get_selected_orbital_ID()
@@ -77,11 +83,6 @@ class LMFitTab(Tab, LMFitTab_UI):
 
             self.selected_plot.plot(data)
 
-    def get_parameters(self, ID):
-
-        return (1, 30, 0.03,
-                0, 0, 0, 'no', 'p', 0, 0, 'auto', 'no')
-
     def refresh_sum_plot(self):
 
         data = self.model.get_sum_plot()
@@ -91,13 +92,35 @@ class LMFitTab(Tab, LMFitTab_UI):
 
         self.sum_plot.plot(data)
 
+        self.refresh_residual_plot()
+
+    def refresh_residual_plot(self):
+
+        sliced_data = self.model.displayed_slice_data
+        sum_data = self.model.displayed_sum_data
+
+        if sliced_data is None or sum_data is None:
+            data = None
+            level = 1
+        else:
+            data = sliced_data - sum_data
+            level = np.nanmax(np.absolute(data.data))
+
+        self.residual_plot.plot(data)
+        self.residual_plot.set_levels([-level, level])
+
+    def get_parameters(self, ID):
+
+        return (1, 30, 0.03,
+                0, 0, 0, 'no', 'p', 0, 0, 'auto', 'no')
+
     def get_title(self):
 
         return 'LM-Fit'
 
     def closeEvent(self, event):
 
-        #del self.model
+        del self.model
 
         Tab.closeEvent(self, event)
 
@@ -109,6 +132,11 @@ class LMFitTab(Tab, LMFitTab_UI):
             [self.sliced_plot, self.selected_plot, self.sum_plot])
         self.interpolation = Interpolation(force_interpolation=True)
         self.tree = LMFitTree(self.model.orbitals)
+
+        colormap = ColorMap(
+            [0, 0.5, 1],
+            [[255, 0, 0, 255], [255, 255, 255, 255], [0, 0, 255, 255]])
+        self.residual_plot.setColorMap(colormap)
 
         layout = QVBoxLayout()
         self.scroll_area.widget().setLayout(layout)

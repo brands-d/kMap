@@ -161,6 +161,14 @@ class PlotData():
                     (self.y_axis == other.y_axis).all()):
                 return PlotData(self.data + other.data, self.range)
 
+    def __sub__(self, other):
+
+        if isinstance(other, self.__class__):
+
+            if ((self.x_axis == other.x_axis).all() and
+                    (self.y_axis == other.y_axis).all()):
+                return PlotData(self.data - other.data, self.range)
+
     def __mul__(self, other):
 
         if isinstance(other, float) or isinstance(other, int):

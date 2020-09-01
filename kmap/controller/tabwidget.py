@@ -83,10 +83,7 @@ class TabWidget(QWidget, TabWidget_UI):
 
         self._open_tab(tab, title)
 
-    def open_lmfit_tab(self, sliced_tab_index, orbital_tab_index):
-
-        sliced_tab = self.tab_widget.widget(sliced_tab_index)
-        orbital_tab = self.tab_widget.widget(orbital_tab_index)
+    def open_lmfit_tab(self, sliced_tab, orbital_tab):
 
         tab = LMFitTab(sliced_tab.get_data(),orbital_tab.get_orbitals())
 

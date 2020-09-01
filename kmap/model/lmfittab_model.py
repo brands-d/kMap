@@ -7,7 +7,9 @@ class LMFitTabModel():
         self.controller = controller
         self.sliced = sliced_data
         self.orbitals = orbitals
-
+        self.displayed_slice_data = None
+        self.displayed_sum_data = None
+        
     def get_sliced_plot(self, index, axis):
 
         self.displayed_slice_data = self.sliced.slice_from_index(index, axis)
