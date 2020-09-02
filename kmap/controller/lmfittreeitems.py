@@ -26,7 +26,13 @@ class LMFitTreeItem(QTreeWidgetItem):
             child.set_vary(state)
 
     def get_parameters(self):
-        pass
+
+        parameters = [self.alias_label.text(), self.vary.isChecked(),
+                      self.initial_spinbox.value(),
+                      self.min_spinbox.value(),
+                      self.max_spinbox.value(), self.expression.text()]
+
+        return parameters
 
 
 class OtherTreeItem(LMFitTreeItem):
@@ -37,6 +43,15 @@ class OtherTreeItem(LMFitTreeItem):
 
         self._setup(tree)
         self._connect()
+
+    def get_parameters(self):
+
+        parameters = []
+
+        for i in range(self.childCount()):
+            parameters.append(self.child(i).get_parameters())
+
+        return parameters
 
     def _setup(self, tree):
 
@@ -73,6 +88,15 @@ class OrbitalTreeItem(LMFitTreeItem):
 
         self._setup(tree, orbital)
         self._connect()
+
+    def get_parameters(self):
+
+        parameters = []
+
+        for i in range(self.childCount()):
+            parameters.append(self.child(i).get_parameters())
+
+        return parameters
 
     def _setup(self, tree, orbital):
 

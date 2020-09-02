@@ -29,72 +29,6 @@ class LMFitTree(QWidget, LMFitTree_UI):
         self._setup(orbitals)
         self._connect()
 
-    '''
-    def add_orbital(self, orbital, orientation):
-
-        new_row = OrbitalTableRow(orbital, orientation)
-
-        self._add_row(new_row)
-
-    def remove_orbital_by_ID(self, ID):
-
-        index = self._ID_to_row_index(ID)
-
-        self.table.removeRow(index)
-        del self.rows[index]
-
-        self.orbital_removed.emit(ID)
-
-    def get_parameters_by_ID(self, ID):
-
-        index = self._ID_to_row_index(ID)
-
-        return self.rows[index].get_parameters()
-
-    def get_use_by_ID(self, ID):
-
-        index = self._ID_to_row_index(ID)
-
-        return self.rows[index].get_use()
-
-    def change_parameter(self, ID, parameter, value):
-
-        self._update_selected_rows(parameter, value)
-
-        self.orbital_changed.emit(ID)
-
-    def change_use(self, ID):
-
-        self.orbital_changed.emit(ID)
-
-    def _add_row(self, new_row):
-
-        row_index = len(self.rows)
-
-        self.rows.append(new_row)
-
-        self.table.insertRow(row_index)
-        self._embed_row(new_row, row_index)
-        self._connet_row(new_row)
-        # "Select" newly added row to trigger miniplots
-        self.table.cellClicked.emit(row_index, 2)
-
-    def _ID_to_row_index(self, ID):
-
-        for index, row in enumerate(self.rows):
-            if row.ID == ID:
-                return index
-
-        raise IndexError('No data with this ID')
-
-    def _update_selected_rows(self, parameter, value):
-
-        selected_rows = self.table.selectionModel().selectedIndexes()
-        for selected_row in selected_rows:
-            row = self.rows[selected_row.row()]
-            row.update_parameter_silently(parameter, value)
-    '''
-
     def get_selected_orbital_ID(self):
 
         selected_items = self.tree.selectedItems()
@@ -108,6 +42,14 @@ class LMFitTree(QWidget, LMFitTree_UI):
                 return item.parent().ID
 
         return -1
+
+    def get_parameters(self):
+
+        parameters = [self.tree.topLevelItem(i).get_parameters()
+                      for i in
+                      range(self.tree.topLevelItemCount())]
+
+        return parameters
 
     def _setup(self, orbitals):
 

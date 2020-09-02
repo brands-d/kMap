@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class LMFitTabModel():
 
     def __init__(self, controller, sliced_data, orbitals):
@@ -9,7 +10,7 @@ class LMFitTabModel():
         self.orbitals = orbitals
         self.displayed_slice_data = None
         self.displayed_sum_data = None
-        
+
     def get_sliced_plot(self, index, axis):
 
         self.displayed_slice_data = self.sliced.slice_from_index(index, axis)
@@ -28,7 +29,8 @@ class LMFitTabModel():
         if orbital is None:
             raise IndexError('wrong ID')
 
-        parameters = self.controller.get_parameters(ID)
+        parameters = (1, 30, 0.03,
+                      0, 0, 0, 'no', 'p', 0, 0, 'auto', 'no')
         # Split of first element
         weight, *other = parameters
         # Get scaled kmap

@@ -1,6 +1,7 @@
 # Third Party Imports
 import numpy as np
 from pyqtgraph import ColorMap
+from lmfit import Parameters
 
 # PyQt5 Imports
 from PyQt5 import uic
@@ -16,6 +17,7 @@ from kmap.controller.colormap import Colormap
 from kmap.controller.crosshairannulus import CrosshairAnnulus
 from kmap.controller.interpolation import Interpolation
 from kmap.controller.lmfittree import LMFitTree
+from kmap.controller.lmfit import LMFit
 
 # Load .ui File
 UI_file = __directory__ + QDir.toNativeSeparators('/ui/lmfittab.ui')
@@ -109,14 +111,21 @@ class LMFitTab(Tab, LMFitTab_UI):
         self.residual_plot.plot(data)
         self.residual_plot.set_levels([-level, level])
 
-    def get_parameters(self, ID):
-
-        return (1, 30, 0.03,
-                0, 0, 0, 'no', 'p', 0, 0, 'auto', 'no')
-
     def get_title(self):
 
         return 'LM-Fit'
+
+    def trigger_fit(self):
+
+        parameters = self.tree.get_parameters()
+        axis_index = self.slider.get_axis()
+        slice_index = self.slider.get_index()
+
+        result = self.lmfit.fit(parameters, self.interpolation,
+                                axis_index=axis_index,
+                                slice_index=slice_index)
+
+        print(result)
 
     def closeEvent(self, event):
 
@@ -126,6 +135,7 @@ class LMFitTab(Tab, LMFitTab_UI):
 
     def _setup(self):
 
+        self.lmfit = LMFit(self.model.sliced, self.model.orbitals)
         self.slider = DataSlider(self.model.sliced)
         self.crosshair = CrosshairAnnulus(self.residual_plot)
         self.colormap = Colormap(
@@ -140,10 +150,11 @@ class LMFitTab(Tab, LMFitTab_UI):
 
         layout = QVBoxLayout()
         self.scroll_area.widget().setLayout(layout)
-        layout.insertWidget(0, self.slider)
-        layout.insertWidget(1, self.colormap)
-        layout.insertWidget(2, self.crosshair)
-        layout.insertWidget(3, self.interpolation)
+        layout.insertWidget(0, self.lmfit)
+        layout.insertWidget(1, self.slider)
+        layout.insertWidget(2, self.colormap)
+        layout.insertWidget(3, self.crosshair)
+        layout.insertWidget(4, self.interpolation)
 
         self.layout.insertWidget(1, self.tree)
 
@@ -166,3 +177,5 @@ class LMFitTab(Tab, LMFitTab_UI):
         self.interpolation.interpolation_changed.connect(self.refresh_sum_plot)
 
         self.tree.item_selected.connect(self.refresh_selected_plot)
+
+        self.lmfit.fit_triggered.connect(self.trigger_fit)
