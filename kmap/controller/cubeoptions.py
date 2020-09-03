@@ -28,18 +28,6 @@ class CubeOptions(QWidget, CubeOptions_UI):
         self.setupUi(self)
         self._connect()
 
-    def change_energy(self):
-
-        self.energy_changed.emit()
-
-    def change_symmetrization(self):
-
-        self.symmetrization_changed.emit()
-
-    def change_resolution(self):
-
-        self.resolution_changed.emit()
-
     def get_parameters(self):
 
         energy = self.energy_spinbox.value()
@@ -59,7 +47,8 @@ class CubeOptions(QWidget, CubeOptions_UI):
 
     def _connect(self):
 
-        self.energy_spinbox.valueChanged.connect(self.change_energy)
-        self.resolution_spinbox.valueChanged.connect(self.change_resolution)
+        self.energy_spinbox.valueChanged.connect(self.energy_changed.emit)
+        self.resolution_spinbox.valueChanged.connect(
+            self.resolution_changed.emit)
         self.symmetrize_combobox.currentIndexChanged.connect(
-            self.change_symmetrization)
+            self.symmetrization_changed.emit)

@@ -1,7 +1,7 @@
 # PyQt5 Imports
 from PyQt5.QtWidgets import (
     QTreeWidgetItem, QCheckBox, QWidget, QHBoxLayout, QLineEdit)
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSignal
 
 # Own Imports
 from kmap.library.qwidgetsub import (
@@ -192,7 +192,7 @@ class BackgroundTreeItem(DataTreeItem):
 
         super()._setup(tree)
 
-        self.initial_spinbox = WeightSpinBox()
+        self.initial_spinbox = WeightSpinBox(value=0)
         self.min_spinbox = WeightSpinBox(value=-99999.9)
         self.max_spinbox = WeightSpinBox(value=99999.9)
 

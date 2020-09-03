@@ -20,6 +20,7 @@ LMFitTree_UI, _ = uic.loadUiType(UI_file)
 class LMFitTree(QWidget, LMFitTree_UI):
 
     item_selected = pyqtSignal()
+    value_changed = pyqtSignal()
 
     def __init__(self, orbitals, *args, **kwargs):
 
@@ -43,13 +44,32 @@ class LMFitTree(QWidget, LMFitTree_UI):
 
         return -1
 
-    def get_parameters(self):
+    def get_all_parameters(self):
 
         parameters = [self.tree.topLevelItem(i).get_parameters()
                       for i in
                       range(self.tree.topLevelItemCount())]
 
         return parameters
+
+    def get_orbital_parameters(self, ID):
+
+        parameters = []
+
+        for i in range(self.tree.topLevelItemCount()):
+            item = self.tree.topLevelItem(i)
+
+            if i == 0:
+                alpha, beta, _, E_kin = item.get_parameters()
+
+            if isinstance(item, OrbitalTreeItem) and ID == item.ID:
+                weight, *orientation = item.get_parameters()
+
+        return [weight, E_kin, *orientation, alpha, beta]
+
+    def _get_background(self):
+
+        return self.tree.topLevelItem(0).children[2].initial_spinbox.value()
 
     def _setup(self, orbitals):
 
@@ -66,10 +86,13 @@ class LMFitTree(QWidget, LMFitTree_UI):
         for orbital in orbitals:
             self.tree.addTopLevelItem(OrbitalTreeItem(self.tree, orbital))
 
-    def _item_selected(self):
-
-        self.item_selected.emit()
-
     def _connect(self):
 
-        self.tree.itemSelectionChanged.connect(self._item_selected)
+        self.tree.itemSelectionChanged.connect(self.item_selected.emit)
+
+        for i in range(self.tree.topLevelItemCount()):
+            item = self.tree.topLevelItem(i)
+
+            for child in item.children:
+                child.initial_spinbox.valueChanged.connect(
+                    self.value_changed.emit)

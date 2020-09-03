@@ -17,34 +17,32 @@ class LMFitTabModel():
 
         return self.displayed_slice_data
 
-    def get_selected_orbital_plot(self, ID):
+    def get_selected_orbital_plot(self, ID, parameters):
 
-        kmap = self.get_orbital_kmap_by_ID(ID)
+        kmap = self.get_orbital_kmap_by_ID(ID, parameters)
 
         return kmap
 
-    def get_orbital_kmap_by_ID(self, ID):
+    def get_orbital_kmap_by_ID(self, ID, parameters):
 
         orbital = self.ID_to_orbital(ID)
         if orbital is None:
             raise IndexError('wrong ID')
 
-        parameters = (1, 30, 0.03,
-                      0, 0, 0, 'no', 'p', 0, 0, 'auto', 'no')
-        # Split of first element
-        weight, *other = parameters
+        weight, *parameters = parameters
+
         # Get scaled kmap
-        kmap = weight * orbital.get_kmap(*other)
+        kmap = weight * orbital.get_kmap(*parameters)
 
         return kmap
 
-    def get_sum_plot(self):
+    def get_sum_plot(self, parameters):
 
         kmaps = []
 
-        for orbital in self.orbitals:
+        for i, orbital in enumerate(self.orbitals):
             ID = orbital.ID
-            kmap = self.get_orbital_kmap_by_ID(ID)
+            kmap = self.get_orbital_kmap_by_ID(ID, parameters[i])
             kmaps.append(kmap)
 
         if kmaps:

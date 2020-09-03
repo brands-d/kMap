@@ -18,6 +18,7 @@ from kmap.controller.crosshairannulus import CrosshairAnnulus
 from kmap.controller.interpolation import Interpolation
 from kmap.controller.lmfittree import LMFitTree
 from kmap.controller.lmfit import LMFit
+from kmap.controller.lmfitother import LMFitOther
 
 # Load .ui File
 UI_file = __directory__ + QDir.toNativeSeparators('/ui/lmfittab.ui')
@@ -78,7 +79,9 @@ class LMFitTab(Tab, LMFitTab_UI):
             self.selected_plot.plot(None)
 
         else:
-            data = self.model.get_selected_orbital_plot(ID)
+
+            parameters = self._get_parameters(ID)
+            data = self.model.get_selected_orbital_plot(ID, parameters)
 
             data = self.interpolation.interpolate(data)
             data = self.interpolation.smooth(data)
@@ -87,7 +90,12 @@ class LMFitTab(Tab, LMFitTab_UI):
 
     def refresh_sum_plot(self):
 
-        data = self.model.get_sum_plot()
+        parameters = []
+
+        for orbital in self.model.orbitals:
+            parameters.append(self._get_parameters(orbital.ID))
+
+        data = self.model.get_sum_plot(parameters)
 
         data = self.interpolation.interpolate(data)
         data = self.interpolation.smooth(data)
@@ -105,7 +113,7 @@ class LMFitTab(Tab, LMFitTab_UI):
             data = None
             level = 1
         else:
-            data = sliced_data - sum_data
+            data = sliced_data - sum_data - self.tree._get_background()
             level = np.nanmax(np.absolute(data.data))
 
         self.residual_plot.plot(data)
@@ -117,7 +125,7 @@ class LMFitTab(Tab, LMFitTab_UI):
 
     def trigger_fit(self):
 
-        parameters = self.tree.get_parameters()
+        parameters = self.tree.get_all_parameters()
         axis_index = self.slider.get_axis()
         slice_index = self.slider.get_index()
 
@@ -133,10 +141,23 @@ class LMFitTab(Tab, LMFitTab_UI):
 
         Tab.closeEvent(self, event)
 
+    def _get_parameters(self, ID):
+
+        orbital_param = self.tree.get_orbital_parameters(ID)
+
+        orbital_param = [param[2] for param in orbital_param]
+        weight, E_kin, *orientation, alpha, beta = orbital_param
+        Ak_type, polarization, symmetry, dk = self.lmfitother.get_parameters()
+        parameters = [weight, E_kin, dk, *orientation, Ak_type,
+                      polarization, alpha, beta, 0, symmetry]
+
+        return parameters
+
     def _setup(self):
 
         self.lmfit = LMFit(self.model.sliced, self.model.orbitals)
         self.slider = DataSlider(self.model.sliced)
+        self.lmfitother = LMFitOther()
         self.crosshair = CrosshairAnnulus(self.residual_plot)
         self.colormap = Colormap(
             [self.sliced_plot, self.selected_plot, self.sum_plot])
@@ -152,9 +173,10 @@ class LMFitTab(Tab, LMFitTab_UI):
         self.scroll_area.widget().setLayout(layout)
         layout.insertWidget(0, self.lmfit)
         layout.insertWidget(1, self.slider)
-        layout.insertWidget(2, self.colormap)
-        layout.insertWidget(3, self.crosshair)
-        layout.insertWidget(4, self.interpolation)
+        layout.insertWidget(2, self.lmfitother)
+        layout.insertWidget(3, self.colormap)
+        layout.insertWidget(4, self.crosshair)
+        layout.insertWidget(5, self.interpolation)
 
         self.layout.insertWidget(1, self.tree)
 
@@ -177,5 +199,12 @@ class LMFitTab(Tab, LMFitTab_UI):
         self.interpolation.interpolation_changed.connect(self.refresh_sum_plot)
 
         self.tree.item_selected.connect(self.refresh_selected_plot)
+        self.tree.value_changed.connect(self.refresh_selected_plot)
+        self.tree.value_changed.connect(self.refresh_sum_plot)
+        self.tree.value_changed.connect(self.refresh_residual_plot)
 
         self.lmfit.fit_triggered.connect(self.trigger_fit)
+
+        self.lmfitother.value_changed.connect(self.refresh_selected_plot)
+        self.lmfitother.value_changed.connect(self.refresh_sum_plot)
+        self.lmfitother.value_changed.connect(self.refresh_residual_plot)
