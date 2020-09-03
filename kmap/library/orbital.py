@@ -58,8 +58,8 @@ class Orbital():
             psi (float): Euler orientation angle psi in degree.
             Ak_type (string): Treatment of |A.k|^2: either 'no',
                 'toroid', 'NanoESCA', 'only-toroid' or 'only-NanoESCA'.
-            polarization (string): Either 'p', 's', 'C+', 'C-' or
-                'CDAD'.   
+            polarization (string): Either 'p', 's', 'unpolarized', 
+                'C+', 'C-' or 'CDAD'.   
             alpha (float): Angle of incidence plane in degree.
             beta (float): Azimuth of incidence plane in degree.
             gamma (float/str): Damping factor for final state in
@@ -310,14 +310,15 @@ class Orbital():
 
         # Retrieve k-grid from kmap
         kx, ky, kz = self.kmap['KX'], self.kmap['KY'], self.kmap['KZ']
+        # Magnitude of k-vector
+        k2 = kx**2 + ky**2 + kz**2
+        kmax = energy_to_k(self.kmap['E_kin'])
 
         # At the toroid, the emitted electron is always in the plane of
         # incidence and the sample is rotated
-        if Ak_type == 'toroid' or Ak_type == 'only-toroid':
-            # Magnitude of k-vector
-            k = kx**2 + ky**2 + kz**2
+        if Ak_type == 'toroid' or Ak_type == 'only-toroid':     
             # Parallel component of k-vector
-            kpar = np.sqrt(k - kz**2)
+            kpar = np.sqrt(k2 - kz**2)
             # |A.k|^2 factor
             Ak = (kpar * cos_a + kz * sin_a)**2
 
@@ -333,6 +334,16 @@ class Orbital():
             elif polarization == 's':
                 Ak = -kx * sin_b + ky * cos_b
                 Ak = Ak**2
+                Ak[kx**2 + ky**2 > kmax**2] = np.nan
+
+
+            # unpolarized light, e.g. He-lamp 
+            # Compare Equation (37) in S. Moser, J. Electr. Spectr.
+            # Rel. Phen. 214, 29-52 (2017).            
+            elif polarization == 'unpolarized':
+                Ak = (k2 + gamma_calc**2 + 2*kx*kz*cos_b + 2*ky*kz*sin_b)*np.sin(2*a)  
+                Ak+= (kx**2*sin_b + ky**2*cos_b - kz**2 - gamma_calc**2)*np.cos(2*a)  
+                Ak*= (2/3)       
 
             # Circularly polarized light (right-handed)
             elif polarization == 'C+':
@@ -354,7 +365,7 @@ class Orbital():
                 # Compare Equation (31) in S. Moser, J. Electr. Spectr.
                 # Rel. Phen. 214, 29-52 (2017).
                 Ak = +2 * (sin_b * kx - cos_b * ky) * gamma_calc * sin_a
-
+                Ak[kx**2 + ky**2 > kmax**2] = np.nan
 
         # Set attributes
         self.Ak = {'Ak_type': Ak_type,

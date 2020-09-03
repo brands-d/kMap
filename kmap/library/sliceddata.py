@@ -124,7 +124,7 @@ class SlicedData(AbstractData):
                 psi (float): Euler orientation angle psi in degree.
                 Ak_type (string): Treatment of |A.k|^2: either 'no',
                         'toroid' or 'NanoESCA'.
-                polarization (string): Either 'p', 's', 'C+', 'C-' or
+                polarization (string): Either 'p', 's', 'unpolarized', C+', 'C-' or
                         'CDAD'.   
                 alpha (float): Angle of incidence plane in degree.
                 beta (float): Azimuth of incidence plane in degree.
@@ -309,7 +309,7 @@ class SlicedData(AbstractData):
                 psi (float): Euler orientation angle psi in degree.
                 Ak_type (string): Treatment of |A.k|^2: either 'no',
                         'toroid' or 'NanoESCA'.
-                polarization (string): Either 'p', 's', 'C+', 'C-' or
+                polarization (string): Either 'p', 's', 'unpolarized', C+', 'C-' or
                         'CDAD'.   
                 alpha (float): Angle of incidence plane in degree.
                 beta (float): Azimuth of incidence plane in degree.

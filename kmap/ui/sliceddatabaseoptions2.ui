@@ -487,22 +487,22 @@
         </item>
         <item>
          <property name="text">
-          <string>NANO-ESCA: p-pol</string>
+          <string>Nano-ESCA: p-pol</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>NANO-ESCA: s-pol</string>
+          <string>Nano-ESCA: s-pol</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>NANO-ESCA: circ+</string>
+          <string>Nano-ESCA: He-lamp</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>NANO-ESCA: circ-</string>
+          <string>Nano-ESCA: circ+</string>
          </property>
         </item>
         <item>

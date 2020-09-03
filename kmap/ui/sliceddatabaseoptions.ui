@@ -105,9 +105,6 @@
         <property name="maximum">
          <double>90.000000000000000</double>
         </property>
-        <property name="stepType">
-         <enum>QAbstractSpinBox::AdaptiveDecimalStepType</enum>
-        </property>
        </widget>
       </item>
       <item row="1" column="0">
@@ -152,9 +149,6 @@
         <property name="maximum">
          <double>90.000000000000000</double>
         </property>
-        <property name="stepType">
-         <enum>QAbstractSpinBox::AdaptiveDecimalStepType</enum>
-        </property>
        </widget>
       </item>
       <item row="2" column="0">
@@ -198,9 +192,6 @@
         </property>
         <property name="maximum">
          <double>90.000000000000000</double>
-        </property>
-        <property name="stepType">
-         <enum>QAbstractSpinBox::AdaptiveDecimalStepType</enum>
         </property>
        </widget>
       </item>
@@ -264,22 +255,22 @@
         </item>
         <item>
          <property name="text">
-          <string>NANO-ESCA: p-pol</string>
+          <string>Nano-ESCA: p-pol</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>NANO-ESCA: s-pol</string>
+          <string>Nano-ESCA: s-pol</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>NANO-ESCA: circ+</string>
+          <string>Nano-ESCA: He-lamp</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>NANO-ESCA: circ-</string>
+          <string>Nano-ESCA: circ+</string>
          </property>
         </item>
         <item>
@@ -368,9 +359,6 @@
         </property>
         <property name="maximum">
          <double>360.000000000000000</double>
-        </property>
-        <property name="stepType">
-         <enum>QAbstractSpinBox::AdaptiveDecimalStepType</enum>
         </property>
        </widget>
       </item>

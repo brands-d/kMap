@@ -67,12 +67,15 @@ class SlicedDataBaseOptions2(QWidget, SlicedDataBaseOptions_UI):
                 polarization = 's'
 
             elif Ak_index == 4:
-                polarization = 'C+'
+                polarization = 'unpolarized'
 
             elif Ak_index == 5:
-                polarization = 'C-'
+                polarization = 'C+'
 
             elif Ak_index == 6:
+                polarization = 'C-'
+
+            elif Ak_index == 7:
                 polarization = 'CDAD'
 
         alpha = self.alpha_spinbox.value()

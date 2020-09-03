@@ -216,6 +216,13 @@ class MiniRealSpacePlot(GLViewWidget):
             pol_2 = [np.cos(alpha) * np.cos(beta), np.cos(alpha) *
                      np.sin(beta), -np.sin(alpha)]
 
+        # ... to be updated ...
+        elif polarization == 'unpolarized':
+            pol_1 = [0, 0, 0]
+            pol_2 = [np.sin(beta) + np.cos(alpha) * np.cos(beta), 
+                    -np.cos(beta) + np.cos(alpha) * np.sin(beta), 
+                    -np.sin(alpha)]                     
+
         elif polarization == 'C+':
             pol_1 = [np.sin(beta), -np.cos(beta), 0]
             pol_2 = [np.cos(alpha) * np.cos(beta), np.cos(alpha) *

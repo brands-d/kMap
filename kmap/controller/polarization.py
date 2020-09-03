@@ -71,12 +71,15 @@ class Polarization(QWidget, Polarization_UI):
                 polarization = 's'
 
             elif Ak_index == 3:
-                polarization = 'C+'
+                polarization = 'unpolarized'                
 
             elif Ak_index == 4:
-                polarization = 'C-'
+                polarization = 'C+'
 
             elif Ak_index == 5:
+                polarization = 'C-'
+
+            elif Ak_index == 6:
                 polarization = 'CDAD'
 
         return Ak_type, polarization
