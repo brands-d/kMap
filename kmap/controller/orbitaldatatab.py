@@ -34,6 +34,8 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
 
     def __init__(self):
 
+        self.title = None
+
         # Setup GUI
         super(OrbitalDataTab, self).__init__()
         self.setupUi(self)
@@ -108,7 +110,6 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         weight, *orientation = parameters
         polarization = self.polarization.get_parameters()
 
-
         return (weight, kinetic_energy, dk,
                 *orientation, *polarization, symmetry)
 
@@ -142,7 +143,11 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
 
     def get_title(self):
 
-        return 'Orbitals'
+        return self.title
+
+    def set_title(self, title):
+
+        self.title = title
 
     def remove_orbital_by_ID(self, ID):
 
@@ -192,6 +197,8 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         y = Axis('ky', '1/A', [-3, 3], 200)
         self.interpolation.set_label(x, y)
         self.plot_item.set_labels(x, y)
+
+        self.title = 'Orbitals'
 
     def _connect(self):
 

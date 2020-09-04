@@ -16,7 +16,6 @@ from kmap.controller.tabwidget import TabWidget
 from kmap.model.mainwindow_model import MainWindowModel
 from kmap.config.config import config
 
-
 # Load .ui File
 UI_file = __directory__ + QDir.toNativeSeparators('/ui/mainwindow.ui')
 MainWindow_UI, _ = uic.loadUiType(UI_file)
@@ -69,7 +68,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
     def open_sliceddatabase_browser2(self):
 
         self.database = SlicedDatabaseWindow(mode='photon-energy')
-        self.database.files_chosen.connect(self.load_sliced_file_online)        
+        self.database.files_chosen.connect(self.load_sliced_file_online)
 
     def load_sliced_files_online(self, URLs):
         # Load one or more cube files as sliced data[BE, kx, ky]
@@ -85,7 +84,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
         log = logging.getLogger('kmap')
         log.info('Loading .cube file as sliced data[photon_energy, kx, ky]...')
 
-        self.tab_widget.open_sliced_data_tab_by_URL(URL)        
+        self.tab_widget.open_sliced_data_tab_by_URL(URL)
 
     def load_cube_files_online(self, URLs):
 
@@ -225,26 +224,6 @@ class MainWindow(QMainWindow, MainWindow_UI):
 
         self.tab_widget.open_lmfit_tab()
 
-    def rename_current_tab(self):
-
-        from kmap.controller.renametab import RenameTab
-        self.rename_tab = RenameTab() 
-        self.rename_tab.rename_tab_edit.returnPressed.connect(self._set_new_title)
-
-    def _set_new_title(self):
-        self.new_title = self.rename_tab.rename_tab_edit.text()
-        self.rename_tab.close()
-        current_tab = self.tab_widget.get_current_tab()
-        print(dir(current_tab))
-        idx = current_tab.currentIndex()
-        print(' objectName()  :',current_tab.objectName())
-        print('       title.text()   :',current_tab.title.text())
-        print(idx,' old title:',current_tab.tabBar().tabText(idx))
-        current_tab.setTabText(0, self.new_title)
-         
-        #current_tab.setWindowTitle(self.new_title)
-        #print('new title:',self.new_title)
-        
     def open_in_matplotlib(self):
 
         current_tab = self.tab_widget.get_current_tab()
@@ -316,7 +295,6 @@ class MainWindow(QMainWindow, MainWindow_UI):
         self.open_sim_tab_action.triggered.connect(self.open_orbital_data_tab)
         self.open_profile_tab_action.triggered.connect(self.open_profile_tab)
         self.open_lmfit_tab_action.triggered.connect(self.open_lmfit_tab)
-        self.rename_current_tab_action.triggered.connect(self.rename_current_tab)
 
         # Preferences menu
         self.general_action.triggered.connect(self.open_general_settings)

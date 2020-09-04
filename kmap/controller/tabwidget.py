@@ -12,6 +12,7 @@ from kmap import __directory__
 from kmap.controller.sliceddatatab import SlicedDataTab
 from kmap.controller.orbitaldatatab import OrbitalDataTab
 from kmap.controller.profileplottab import ProfilePlotTab
+from kmap.controller.renametabwindow import RenameTabWindow
 from kmap.controller.lmfittab import LMFitTab
 from kmap.controller.filetab import FileViewerTab, FileEditorTab
 from kmap.library.qwidgetsub import Tab
@@ -91,14 +92,14 @@ class TabWidget(QWidget, TabWidget_UI):
     def open_file_tab(self, path, title, editable=False, richText=False):
 
         if editable:
-            tab = FileEditorTab(path)
+            tab = FileEditorTab(path, title)
         else:
-            tab = FileViewerTab(path, richText=richText)
+            tab = FileViewerTab(path, title, richText=richText)
 
         self._open_tab(tab, title)
 
     def open_lmfit_tab(self):
-        
+
         tab = LMFitTab()
 
         self._open_tab(tab, 'LM-Fit Tab')
@@ -145,6 +146,19 @@ class TabWidget(QWidget, TabWidget_UI):
 
         return tabs
 
+    def rename_current_tab(self):
+
+        self.rename_tab = RenameTabWindow()
+        self.rename_tab.title_chosen.connect(self.set_tab_title)
+
+    def set_tab_title(self, title):
+
+        current_tab = self.get_current_tab()
+        current_tab_index = self.tab_widget.indexOf(current_tab)
+
+        current_tab.set_title(title)
+        self.tab_widget.setTabText(current_tab_index, title)
+
     def close_tab(self, index):
         # Close tab specified with index
 
@@ -166,3 +180,4 @@ class TabWidget(QWidget, TabWidget_UI):
     def _connect(self):
 
         self.tab_widget.tabCloseRequested.connect(self.close_tab)
+        self.tab_widget.tabBarDoubleClicked.connect(self.rename_current_tab)

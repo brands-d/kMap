@@ -28,6 +28,7 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
     def __init__(self, model):
 
         self.model = model
+        self.title = None
 
         # Setup GUI
         super(SlicedDataTab, self).__init__()
@@ -64,22 +65,11 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
 
     def get_title(self):
 
-        data = self.model.data
+        return self.title
 
-        if data:
-            id_ = data.ID
+    def set_title(self, title):
 
-            if 'alias' in data.meta_data:
-                text = data.meta_data['alias']
-            else:
-                text = data.name
-
-            title = '%s (%i)' % (text, id_)
-
-        else:
-            title = 'NO DATA'
-
-        return title
+        self.title = title
 
     def change_slice(self, index=-1):
 
@@ -141,7 +131,7 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
         bottom = self.plot_item.get_label('bottom')
         left = self.plot_item.get_label('left')
         return bottom, left
-        
+
     def _setup(self):
 
         self.slider = DataSlider(self.model.data)
@@ -154,6 +144,22 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
         layout.insertWidget(1, self.colormap)
         layout.insertWidget(2, self.crosshair)
         layout.insertWidget(3, self.interpolation)
+
+        # Set Title
+        data = self.model.data
+
+        if data:
+            id_ = data.ID
+
+            if 'alias' in data.meta_data:
+                text = data.meta_data['alias']
+            else:
+                text = data.name
+
+            self.title = '%s (%i)' % (text, id_)
+
+        else:
+            self.title = 'NO DATA'
 
     def _connect(self):
 

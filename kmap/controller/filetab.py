@@ -14,10 +14,11 @@ from kmap.config.config import config
 
 class FileTab(Tab):
 
-    def __init__(self, path, richText=False):
+    def __init__(self, path, title, richText=False):
 
         super(FileTab, self).__init__()
 
+        self.title = title
         self.path = path
         self.richText = richText
 
@@ -43,10 +44,18 @@ class FileTab(Tab):
 
         self.display.find(self.line_edit.text(), QTextDocument.FindBackward)
 
+    def get_title(self):
+
+        return self.title
+
+    def set_title(self, title):
+
+        self.title = title
+
     def _setup(self):
 
-        label = self.title.text()
-        self.title.setText(label + self.path)
+        label = self.title_line_edit.text()
+        self.title_line_edit.setText(label + self.path)
 
     def _connect(self):
 
@@ -62,10 +71,10 @@ FileViewerTab_UI, _ = uic.loadUiType(UI_file)
 
 class FileViewerTab(FileTab, FileViewerTab_UI):
 
-    def __init__(self, path, richText=False):
+    def __init__(self, path, title, richText=False):
 
         # Setup GUI
-        super(FileViewerTab, self).__init__(path, richText=richText)
+        super(FileViewerTab, self).__init__(path, title, richText=richText)
         self.setupUi(self)
         self._connect()
 
@@ -80,10 +89,10 @@ FileEditorTab_UI, _ = uic.loadUiType(UI_file)
 
 class FileEditorTab(FileTab, FileEditorTab_UI):
 
-    def __init__(self, path):
+    def __init__(self, path, title):
 
         # Setup GUI
-        super(FileEditorTab, self).__init__(path, richText=False)
+        super(FileEditorTab, self).__init__(path, title, richText=False)
         self.setupUi(self)
         self._connect()
 
