@@ -32,7 +32,7 @@ class LMFit(QWidget, LMFit_UI):
         self.setupUi(self)
         self._connect()
 
-    def fit(self, parameters, interpolator, axis_index=0, slice_index=0):
+    def fit(self, variables, parameters, interpolator, axis_index=0, slice_index=0):
 
         if slice_index == -1:
             print('NOT IMPLEMENTED YET')
@@ -45,7 +45,7 @@ class LMFit(QWidget, LMFit_UI):
 
         lmfit_param = Parameters()
 
-        for parameter in chain(*parameters):
+        for parameter in chain(*variables):
             name, vary, value, min_, max_, expr = parameter
 
             if expr == '':
@@ -55,12 +55,12 @@ class LMFit(QWidget, LMFit_UI):
                             max=max_, vary=vary, expr=expr)
 
         result = minimize(self.chi2, lmfit_param,
-                          args=(sliced_data, interpolator),
+                          args=(sliced_data, parameters, interpolator),
                           nan_policy='omit')
 
         return fit_report(result)
 
-    def chi2(self, param, sliced_data, interpolator):
+    def chi2(self, param, sliced_data, other_params, interpolator):
 
         orbital_kmaps = []
 
@@ -68,11 +68,15 @@ class LMFit(QWidget, LMFit_UI):
             ID = orbital.ID
 
             kmap = orbital.get_kmap(E_kin=param['E_kin'].value,
+                                    dk=other_params[3],
                                     phi=param['phi_' + str(ID)].value,
                                     theta=param['theta_' + str(ID)].value,
                                     psi=param['psi_' + str(ID)].value,
                                     alpha=param['alpha_'].value,
-                                    beta=param['beta_'].value)
+                                    beta=param['beta_'].value,
+                                    Ak_type=other_params[0],
+                                    polarization=other_params[1],
+                                    symmetrization=other_params[2])
 
             orbital_kmaps.append(param['w_' + str(ID)].value * kmap)
 

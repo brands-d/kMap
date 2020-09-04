@@ -28,7 +28,7 @@ class LMFitOther(QWidget, LMFitOther_UI):
         Ak_type, polarization = self._get_polarization()
         factor = self._get_factor()
         Ak_type = factor if factor == 'no' else factor + Ak_type
-        symmetry = self._get_symmetry
+        symmetry = self._get_symmetry()
         dk = self.resolution_spinbox.value()
 
         return Ak_type, polarization, symmetry, dk

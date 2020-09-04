@@ -125,11 +125,13 @@ class LMFitTab(Tab, LMFitTab_UI):
 
     def trigger_fit(self):
 
-        parameters = self.tree.get_all_parameters()
+        variables = self.tree.get_all_parameters()
+        parameters = self.lmfitother.get_parameters()
         axis_index = self.slider.get_axis()
         slice_index = self.slider.get_index()
 
-        result = self.lmfit.fit(parameters, self.interpolation,
+        result = self.lmfit.fit(variables, parameters,
+                                self.interpolation,
                                 axis_index=axis_index,
                                 slice_index=slice_index)
 
