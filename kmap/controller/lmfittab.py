@@ -133,7 +133,8 @@ class LMFitTab(Tab, LMFitTab_UI):
         result = self.lmfit.fit(variables, parameters,
                                 self.interpolation,
                                 axis_index=axis_index,
-                                slice_index=slice_index)
+                                slice_index=slice_index,
+                                crosshair=self.crosshair.model)
 
         print(result)
 

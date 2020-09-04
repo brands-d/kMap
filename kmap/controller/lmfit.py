@@ -32,7 +32,7 @@ class LMFit(QWidget, LMFit_UI):
         self.setupUi(self)
         self._connect()
 
-    def fit(self, variables, parameters, interpolator, axis_index=0, slice_index=0):
+    def fit(self, variables, parameters, interpolator, axis_index=0, slice_index=0, region='all', crosshair=None):
 
         if slice_index == -1:
             print('NOT IMPLEMENTED YET')
@@ -54,13 +54,17 @@ class LMFit(QWidget, LMFit_UI):
             lmfit_param.add(name, value=value, min=min_,
                             max=max_, vary=vary, expr=expr)
 
+        method = self._get_method()
+
         result = minimize(self.chi2, lmfit_param,
-                          args=(sliced_data, parameters, interpolator),
-                          nan_policy='omit')
+                          args=(sliced_data, parameters,
+                                interpolator, crosshair),
+                          nan_policy='omit',
+                          method=method)
 
         return fit_report(result)
 
-    def chi2(self, param, sliced_data, other_params, interpolator):
+    def chi2(self, param, sliced_data, other_params, interpolator, crosshair):
 
         orbital_kmaps = []
 
@@ -87,7 +91,54 @@ class LMFit(QWidget, LMFit_UI):
 
         difference = sliced_data - param['c'].value - orbital_kmap
 
+        difference = self._cut_region(difference, crosshair)
+
         return difference.data
+
+    def _cut_region(self, data, crosshair):
+
+        region, inverted = self._get_region()
+
+        if region == 'all':
+            return data
+
+        else:
+            cut_data = crosshair.cut_from_data(
+                data, region=region, inverted=inverted)
+
+            return cut_data
+
+    def _get_region(self):
+
+        text = self.region_comboBox.currentText()
+
+        if text == 'Entire kMap':
+            region = 'all'
+            inverted = False
+
+        elif text == 'Only ROI':
+            region = 'roi'
+            inverted = False
+
+        elif text == 'Only Annulus':
+            region = 'ring'
+            inverted = False
+
+        elif text == 'Except ROI':
+            region = 'roi'
+            inverted = True
+
+        elif text == 'Except Annulus':
+            region = 'ring'
+            inverted = True
+
+        return region, inverted
+
+    def _get_method(self):
+
+        text = self.method_combobox.currentText()
+
+        return text[text.find("(") + 1:text.find(")")]
 
     def _connect(self):
 
