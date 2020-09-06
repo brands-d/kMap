@@ -3,9 +3,8 @@ import numpy as np
 
 class LMFitTabModel():
 
-    def __init__(self, controller, sliced_data, orbitals):
+    def __init__(self, sliced_data, orbitals):
 
-        self.controller = controller
         self.sliced = sliced_data
         self.orbitals = orbitals
         self.displayed_slice_data = None

@@ -10,25 +10,17 @@ from PyQt5.QtWidgets import QWidget, QHeaderView, QHBoxLayout
 from kmap import __directory__
 from kmap.controller.orbitaltablerow import OrbitalTableRow
 from kmap.controller.lmfittreeitems import (
-    OrbitalTreeItem, OtherTreeItem, DataTreeItem)
+    OrbitalTreeItem, OtherTreeItem,
+    DataTreeItem, OtherResultTreeItem, OrbitalResultTreeItem)
 
 # Load .ui File
 UI_file = __directory__ + QDir.toNativeSeparators('/ui/lmfittree.ui')
 LMFitTree_UI, _ = uic.loadUiType(UI_file)
 
 
-class LMFitTree(QWidget, LMFitTree_UI):
+class LMFitBaseTree(QWidget):
 
     item_selected = pyqtSignal()
-    value_changed = pyqtSignal()
-
-    def __init__(self, orbitals, *args, **kwargs):
-
-        # Setup GUI
-        super(LMFitTree, self).__init__(*args, **kwargs)
-        self.setupUi(self)
-        self._setup(orbitals)
-        self._connect()
 
     def get_selected_orbital_ID(self):
 
@@ -62,10 +54,29 @@ class LMFitTree(QWidget, LMFitTree_UI):
             if i == 0:
                 alpha, beta, _, E_kin = item.get_parameters()
 
-            if isinstance(item, OrbitalTreeItem) and ID == item.ID:
+            if ((isinstance(item, OrbitalTreeItem) or
+                 isinstance(item, OrbitalResultTreeItem)) and
+                    ID == item.ID):
                 weight, *orientation = item.get_parameters()
 
         return [weight, E_kin, *orientation, alpha, beta]
+
+    def _connect(self):
+
+        self.tree.itemSelectionChanged.connect(self.item_selected.emit)
+
+
+class LMFitTree(LMFitBaseTree, LMFitTree_UI):
+
+    value_changed = pyqtSignal()
+
+    def __init__(self, orbitals, *args, **kwargs):
+
+        # Setup GUI
+        super(LMFitTree, self).__init__(*args, **kwargs)
+        self.setupUi(self)
+        self._setup(orbitals)
+        self._connect()
 
     def _get_background(self):
 
@@ -88,7 +99,7 @@ class LMFitTree(QWidget, LMFitTree_UI):
 
     def _connect(self):
 
-        self.tree.itemSelectionChanged.connect(self.item_selected.emit)
+        LMFitBaseTree._connect(self)
 
         for i in range(self.tree.topLevelItemCount()):
             item = self.tree.topLevelItem(i)
@@ -96,3 +107,45 @@ class LMFitTree(QWidget, LMFitTree_UI):
             for child in item.children:
                 child.initial_spinbox.valueChanged.connect(
                     self.value_changed.emit)
+
+
+# Load .ui File
+UI_file = __directory__ + QDir.toNativeSeparators('/ui/lmfitresulttree.ui')
+LMFitResultTree_UI, _ = uic.loadUiType(UI_file)
+
+
+class LMFitResultTree(LMFitBaseTree, LMFitResultTree_UI):
+
+    def __init__(self, orbitals, result, *args, **kwargs):
+
+        self.result = result
+
+        # Setup GUI
+        super(LMFitResultTree, self).__init__(*args, **kwargs)
+        self.setupUi(self)
+        self._setup(orbitals)
+        self._connect()
+
+    def _get_background(self):
+
+        return self.tree.topLevelItem(0).children[2].get_parameters()
+
+    def _setup(self, orbitals):
+
+        widths = [60, 0, 100, 130, 130]
+
+        for col, width in enumerate(widths):
+            self.tree.setColumnWidth(col, width)
+
+        self.tree.header().setResizeMode(1, QHeaderView.Stretch)
+        self.tree.header().setDefaultAlignment(Qt.AlignCenter)
+
+        # Add TreeItems
+        self.tree.addTopLevelItem(OtherResultTreeItem(self.tree, self.result))
+        for orbital in orbitals:
+            self.tree.addTopLevelItem(
+                OrbitalResultTreeItem(self.tree, orbital, self.result))
+
+    def _connect(self):
+
+        LMFitBaseTree._connect(self)

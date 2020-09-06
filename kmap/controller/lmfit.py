@@ -2,7 +2,7 @@
 from itertools import chain
 
 # Third Party Imports
-from lmfit import minimize, Parameters, fit_report
+from lmfit import minimize, Parameters
 import numpy as np
 
 # PyQt5 Imports
@@ -62,7 +62,7 @@ class LMFit(QWidget, LMFit_UI):
                           nan_policy='omit',
                           method=method)
 
-        return fit_report(result)
+        return result
 
     def chi2(self, param, sliced_data, other_params, interpolator, crosshair):
 

@@ -2,11 +2,12 @@
 import numpy as np
 from pyqtgraph import ColorMap
 from lmfit import Parameters
+from lmfit.minimizer import MinimizerResult
 
 # PyQt5 Imports
 from PyQt5 import uic
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHeaderView
-from PyQt5.QtCore import QDir, Qt
+from PyQt5.QtWidgets import QVBoxLayout
+from PyQt5.QtCore import QDir, pyqtSignal, Qt
 
 # Own Imports
 from kmap import __directory__
@@ -25,28 +26,15 @@ UI_file = __directory__ + QDir.toNativeSeparators('/ui/lmfittab.ui')
 LMFitTab_UI, _ = uic.loadUiType(UI_file)
 
 
-class LMFitTab(Tab, LMFitTab_UI):
+class LMFitBaseTab(Tab):
 
-    def __init__(self, sliced_data, orbitals):
+    def get_title(self):
 
-        self.model = LMFitTabModel(self, sliced_data, orbitals)
+        return self.title
 
-        # Setup GUI
-        super(LMFitTab, self).__init__()
-        self.setupUi(self)
+    def set_title(self, title):
 
-        self._setup()
-        self._connect()
-
-        self.refresh_sliced_plot()
-        self.refresh_selected_plot()
-        self.refresh_sum_plot()
-
-    def change_slice(self, index=-1):
-
-        slice_index = index if index != -1 else self.slider.get_index()
-
-        self.refresh_sliced_plot()
+        self.title = title
 
     def change_axis(self, axis):
 
@@ -112,12 +100,59 @@ class LMFitTab(Tab, LMFitTab_UI):
         if sliced_data is None or sum_data is None:
             data = None
             level = 1
+
         else:
             data = sliced_data - sum_data - self.tree._get_background()
             level = np.nanmax(np.absolute(data.data))
 
         self.residual_plot.plot(data)
         self.residual_plot.set_levels([-level, level])
+
+    def closeEvent(self, event):
+
+        del self.model
+
+        Tab.closeEvent(self, event)
+
+    def _setup(self):
+
+        self.slider = DataSlider(self.model.sliced)
+        self.crosshair = CrosshairAnnulus(self.residual_plot)
+        self.colormap = Colormap(
+            [self.sliced_plot, self.selected_plot, self.sum_plot])
+        self.interpolation = Interpolation(force_interpolation=True)
+
+        colormap = ColorMap(
+            [0, 0.5, 1],
+            [[255, 0, 0, 255], [255, 255, 255, 255], [0, 0, 255, 255]])
+        self.residual_plot.setColorMap(colormap)
+
+    def _connect(self):
+
+        self.slider.slice_changed.connect(self.refresh_sliced_plot)
+        self.slider.axis_changed.connect(self.change_axis)
+
+        self.tree.item_selected.connect(self.refresh_selected_plot)
+
+
+class LMFitTab(LMFitBaseTab, LMFitTab_UI):
+
+    fit_finished = pyqtSignal(MinimizerResult, tuple)
+
+    def __init__(self, sliced_data, orbitals):
+
+        self.model = LMFitTabModel(sliced_data, orbitals)
+
+        # Setup GUI
+        super(LMFitTab, self).__init__()
+        self.setupUi(self)
+
+        self._setup()
+        self._connect()
+
+        self.refresh_sliced_plot()
+        self.refresh_selected_plot()
+        self.refresh_sum_plot()
 
     def get_title(self):
 
@@ -129,6 +164,7 @@ class LMFitTab(Tab, LMFitTab_UI):
         parameters = self.lmfitother.get_parameters()
         axis_index = self.slider.get_axis()
         slice_index = self.slider.get_index()
+        other_parameter = self.lmfitother.get_parameters()
 
         result = self.lmfit.fit(variables, parameters,
                                 self.interpolation,
@@ -136,13 +172,7 @@ class LMFitTab(Tab, LMFitTab_UI):
                                 slice_index=slice_index,
                                 crosshair=self.crosshair.model)
 
-        print(result)
-
-    def closeEvent(self, event):
-
-        del self.model
-
-        Tab.closeEvent(self, event)
+        self.fit_finished.emit(result, other_parameter)
 
     def _get_parameters(self, ID):
 
@@ -158,19 +188,11 @@ class LMFitTab(Tab, LMFitTab_UI):
 
     def _setup(self):
 
-        self.lmfit = LMFit(self.model.sliced, self.model.orbitals)
-        self.slider = DataSlider(self.model.sliced)
-        self.lmfitother = LMFitOther()
-        self.crosshair = CrosshairAnnulus(self.residual_plot)
-        self.colormap = Colormap(
-            [self.sliced_plot, self.selected_plot, self.sum_plot])
-        self.interpolation = Interpolation(force_interpolation=True)
-        self.tree = LMFitTree(self.model.orbitals)
+        LMFitBaseTab._setup(self)
 
-        colormap = ColorMap(
-            [0, 0.5, 1],
-            [[255, 0, 0, 255], [255, 255, 255, 255], [0, 0, 255, 255]])
-        self.residual_plot.setColorMap(colormap)
+        self.lmfit = LMFit(self.model.sliced, self.model.orbitals)
+        self.lmfitother = LMFitOther()
+        self.tree = LMFitTree(self.model.orbitals)
 
         layout = QVBoxLayout()
         self.scroll_area.widget().setLayout(layout)
@@ -185,9 +207,7 @@ class LMFitTab(Tab, LMFitTab_UI):
 
     def _connect(self):
 
-        # self.crosshair.crosshair_changed.connect(self.crosshair_changed)
-        self.slider.slice_changed.connect(self.change_slice)
-        self.slider.axis_changed.connect(self.change_axis)
+        LMFitBaseTab._connect(self)
 
         self.interpolation.smoothing_changed.connect(self.refresh_sliced_plot)
         self.interpolation.interpolation_changed.connect(
@@ -201,7 +221,6 @@ class LMFitTab(Tab, LMFitTab_UI):
         self.interpolation.smoothing_changed.connect(self.refresh_sum_plot)
         self.interpolation.interpolation_changed.connect(self.refresh_sum_plot)
 
-        self.tree.item_selected.connect(self.refresh_selected_plot)
         self.tree.value_changed.connect(self.refresh_selected_plot)
         self.tree.value_changed.connect(self.refresh_sum_plot)
         self.tree.value_changed.connect(self.refresh_residual_plot)
