@@ -6,7 +6,7 @@ from lmfit.minimizer import MinimizerResult
 
 # PyQt5 Imports
 from PyQt5 import uic
-from PyQt5.QtWidgets import QVBoxLayout
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
 from PyQt5.QtCore import QDir, pyqtSignal, Qt
 
 # Own Imports
@@ -20,6 +20,7 @@ from kmap.controller.interpolation import Interpolation
 from kmap.controller.lmfittree import LMFitTree
 from kmap.controller.lmfit import LMFit
 from kmap.controller.lmfitother import LMFitOther
+from kmap.library.qwidgetsub import CenteredLabel
 
 # Load .ui File
 UI_file = __directory__ + QDir.toNativeSeparators('/ui/lmfittab.ui')
@@ -108,6 +109,22 @@ class LMFitBaseTab(Tab):
         self.residual_plot.plot(data)
         self.residual_plot.set_levels([-level, level])
 
+        self.update_chi2_label()
+
+    def update_chi2_label(self):
+
+        residual = self.residual_plot.get_plot_data()
+
+        if residual is None:
+            self.chi2_value.setText('')
+
+        else:
+            n = self.tree.get_number_variables()
+            N = np.count_nonzero(~np.isnan(residual.data))
+
+            reduced_chi2 = np.nansum(residual.data**2) / (N - n)
+            self.chi2_value.setText('%.3f' % reduced_chi2)
+
     def crosshair_changed(self):
 
         self.crosshair.update_label()
@@ -125,6 +142,13 @@ class LMFitBaseTab(Tab):
         self.colormap = Colormap(
             [self.sliced_plot, self.selected_plot, self.sum_plot])
         self.interpolation = Interpolation(force_interpolation=True)
+        self.chi2_value = CenteredLabel('')
+        self.chi2_label = CenteredLabel('Reduced Chi^2:')
+        self.chi2_widget = QWidget()
+        layout = QHBoxLayout()
+        self.chi2_widget.setLayout(layout)
+        layout.addWidget(self.chi2_label)
+        layout.addWidget(self.chi2_value)
 
         colormap = ColorMap(
             [0, 0.5, 1],
@@ -204,10 +228,11 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
         self.scroll_area.widget().setLayout(layout)
         layout.insertWidget(0, self.lmfit)
         layout.insertWidget(1, self.slider)
-        layout.insertWidget(2, self.lmfitother)
-        layout.insertWidget(3, self.colormap)
-        layout.insertWidget(4, self.crosshair)
-        layout.insertWidget(5, self.interpolation)
+        layout.insertWidget(2, self.chi2_widget)
+        layout.insertWidget(3, self.lmfitother)
+        layout.insertWidget(4, self.colormap)
+        layout.insertWidget(5, self.crosshair)
+        layout.insertWidget(6, self.interpolation)
 
         self.layout.insertWidget(1, self.tree)
 
@@ -230,7 +255,8 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
         self.tree.value_changed.connect(self.refresh_selected_plot)
         self.tree.value_changed.connect(self.refresh_sum_plot)
         self.tree.value_changed.connect(self.refresh_residual_plot)
-
+        self.tree.vary_changed.connect(self.update_chi2_label)
+        
         self.lmfit.fit_triggered.connect(self.trigger_fit)
 
         self.lmfitother.value_changed.connect(self.refresh_selected_plot)

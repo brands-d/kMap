@@ -47,6 +47,19 @@ class LMFitBaseTree(QWidget):
 
         return parameters
 
+    def get_number_variables(self):
+
+        n = 0
+
+        for i in range(self.tree.topLevelItemCount()):
+            top_level_item = self.tree.topLevelItem(i)
+
+            for j in range(top_level_item.childCount()):
+                child = top_level_item.child(j)
+                n += child.is_vary()
+
+        return n
+
     def get_orbital_parameters(self, ID):
 
         parameters = []
@@ -72,6 +85,7 @@ class LMFitBaseTree(QWidget):
 class LMFitTree(LMFitBaseTree, LMFitTree_UI):
 
     value_changed = pyqtSignal()
+    vary_changed = pyqtSignal()
 
     def __init__(self, orbitals, *args, **kwargs):
 
@@ -110,6 +124,8 @@ class LMFitTree(LMFitBaseTree, LMFitTree_UI):
             for child in item.children:
                 child.initial_spinbox.valueChanged.connect(
                     self.value_changed.emit)
+                child.vary.stateChanged.connect(
+                    self.vary_changed.emit)
 
 
 # Load .ui File
@@ -128,6 +144,10 @@ class LMFitResultTree(LMFitBaseTree, LMFitResultTree_UI):
         self.setupUi(self)
         self._setup(orbitals)
         self._connect()
+
+    def get_number_variables(self):
+
+        return self.result.nvarys
 
     def _get_background(self):
 
@@ -148,7 +168,3 @@ class LMFitResultTree(LMFitBaseTree, LMFitResultTree_UI):
         for orbital in orbitals:
             self.tree.addTopLevelItem(
                 OrbitalResultTreeItem(self.tree, orbital, self.result))
-
-    def _connect(self):
-
-        LMFitBaseTree._connect(self)

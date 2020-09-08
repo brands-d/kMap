@@ -25,6 +25,10 @@ class LMFitTreeItem(QTreeWidgetItem):
         for child in self.children:
             child.set_vary(state)
 
+    def is_vary(self):
+
+        return self.vary.isChecked()
+
     def get_parameters(self):
 
         parameters = [self.alias_label.text(), self.vary.isChecked(),
@@ -447,7 +451,7 @@ class WeightResultTreeItem(DataResultTreeItem):
 
         self.result = QLabel('%.2f' % value)
         self.result.setAlignment(Qt.AlignHCenter)
-        
+
         self.name_label.setText('Weight')
         self.alias_label.setText('w_%i' % ID)
 
