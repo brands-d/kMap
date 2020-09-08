@@ -108,6 +108,10 @@ class LMFitBaseTab(Tab):
         self.residual_plot.plot(data)
         self.residual_plot.set_levels([-level, level])
 
+    def crosshair_changed(self):
+
+        self.crosshair.update_label()
+
     def closeEvent(self, event):
 
         del self.model
@@ -128,6 +132,8 @@ class LMFitBaseTab(Tab):
         self.residual_plot.setColorMap(colormap)
 
     def _connect(self):
+
+        self.crosshair.crosshair_changed.connect(self.crosshair_changed)
 
         self.slider.slice_changed.connect(self.refresh_sliced_plot)
         self.slider.axis_changed.connect(self.change_axis)

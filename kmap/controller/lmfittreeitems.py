@@ -371,6 +371,7 @@ class AngleResultTreeItem(DataResultTreeItem):
         super()._setup(tree)
 
         self.result = QLabel('%.3f°' % value)
+        self.result.setAlignment(Qt.AlignHCenter)
 
         self.name_label.setText(angle)
         self.alias_label.setText('%s_%s' % (angle.lower(), ID))
@@ -395,6 +396,7 @@ class BackgroundResultTreeItem(DataResultTreeItem):
         super()._setup(tree)
 
         self.result = QLabel('%.1f' % value)
+        self.result.setAlignment(Qt.AlignHCenter)
 
         self.name_label.setText('Background')
         self.alias_label.setText('c')
@@ -419,6 +421,7 @@ class EnergyResultTreeItem(DataResultTreeItem):
         super()._setup(tree)
 
         self.result = QLabel('%.2f eV' % value)
+        self.result.setAlignment(Qt.AlignHCenter)
 
         self.name_label.setText('Kinetic Energy')
         self.alias_label.setText('E_kin')
@@ -443,7 +446,8 @@ class WeightResultTreeItem(DataResultTreeItem):
         super()._setup(tree)
 
         self.result = QLabel('%.2f' % value)
-
+        self.result.setAlignment(Qt.AlignHCenter)
+        
         self.name_label.setText('Weight')
         self.alias_label.setText('w_%i' % ID)
 

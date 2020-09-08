@@ -4,7 +4,7 @@ import logging
 # PyQt5 Imports
 from PyQt5 import uic
 from PyQt5.QtCore import Qt, pyqtSignal, QDir
-from PyQt5.QtWidgets import QWidget, QHeaderView, QHBoxLayout
+from PyQt5.QtWidgets import QWidget, QHeaderView, QHBoxLayout, QSizePolicy
 
 # Own Imports
 from kmap import __directory__
@@ -27,11 +27,14 @@ class LMFitBaseTree(QWidget):
         selected_items = self.tree.selectedItems()
 
         for item in selected_items:
-            if isinstance(item, OrbitalTreeItem):
+            if (isinstance(item, OrbitalTreeItem) or
+                    isinstance(item, OrbitalResultTreeItem)):
                 return item.ID
 
-            elif (isinstance(item, DataTreeItem) and
-                  isinstance(item.parent(), OrbitalTreeItem)):
+            elif ((isinstance(item, DataTreeItem) or
+                   isinstance(item, DataResultTreeItem)) and
+                  (isinstance(item.parent(), OrbitalTreeItem) or
+                   isinstance(item.parent(), OrbitalResultTreeItem))):
                 return item.parent().ID
 
         return -1
@@ -132,7 +135,7 @@ class LMFitResultTree(LMFitBaseTree, LMFitResultTree_UI):
 
     def _setup(self, orbitals):
 
-        widths = [60, 0, 100, 130, 130]
+        widths = [60, 0, 100, 150, 150]
 
         for col, width in enumerate(widths):
             self.tree.setColumnWidth(col, width)
