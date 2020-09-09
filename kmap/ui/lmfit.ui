@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>lmfit</class>
+ <widget class="QWidget" name="lmfit">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>656</width>
+    <height>140</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QGroupBox" name="group_box">
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="title">
+      <string>LM-Fit</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <property name="spacing">
+       <number>3</number>
+      </property>
+      <property name="leftMargin">
+       <number>5</number>
+      </property>
+      <property name="topMargin">
+       <number>5</number>
+      </property>
+      <property name="rightMargin">
+       <number>5</number>
+      </property>
+      <property name="bottomMargin">
+       <number>5</number>
+      </property>
+      <item>
+       <layout class="QHBoxLayout" name="layout_3">
+        <item>
+         <widget class="QPushButton" name="fit_button">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>150</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Fit</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="slice_combobox">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <item>
+           <property name="text">
+            <string>Only this Slice</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>All Slices Individually</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>All Slices Combined</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="layout_2">
+        <item>
+         <widget class="QLabel" name="method_label">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>120</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Method:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="method_combobox">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <item>
+           <property name="text">
+            <string>Levenberg-Marquardt (leastsq)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Least-Square (least_squares)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Differential Evolution (differential_evolution)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Brute Force (brute)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Basinhopping (basinhopping)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Adaptive Memory Programming for Global Optimization (ampgo)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Nelder-Method (nelder)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>L-BFGS-B (lbfgsb)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Powell (powell)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Conjugate-Gradient (cg)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Cobyla (cobyla)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>BFGS (bfgs)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Truncated Newton (tnc)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Dual Annealing optimization (dual_annealing)</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="layout">
+        <item>
+         <widget class="QLabel" name="region_label">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>120</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Fit Region:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="region_comboBox">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <item>
+           <property name="text">
+            <string>Entire kMap</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Only ROI</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Only Annulus</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Except ROI</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Except Annulus</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

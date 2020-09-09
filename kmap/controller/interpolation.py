@@ -21,11 +21,12 @@ class Interpolation(QWidget, Interpolation_UI):
     smoothing_changed = pyqtSignal()
     interpolation_changed = pyqtSignal()
 
-    def __init__(self):
+    def __init__(self, force_interpolation=False):
 
         # Setup GUI
         super(Interpolation, self).__init__()
         self.setupUi(self)
+        self._setup(force_interpolation)
         self._connect()
 
     def interpolate(self, data):
@@ -97,9 +98,7 @@ class Interpolation(QWidget, Interpolation_UI):
 
         # Set Label
         self.x_label.setText('%s:' % x.label)
-        self.sigma_x_label.setText('Sigma %s:' % x.label)
         self.y_label.setText('%s:' % y.label)
-        self.sigma_y_label.setText('Sigma %s:' % y.label)
 
         # Set Unit
         self.x_resolution_spinbox.setSuffix('  %s' % x.units)
@@ -147,6 +146,11 @@ class Interpolation(QWidget, Interpolation_UI):
     def _change_interpolation(self):
 
         self.interpolation_changed.emit()
+
+    def _setup(self, force):
+
+        self.interpolation_checkbox.setChecked(force)
+        self.interpolation_checkbox.setEnabled(not force)
 
     def _connect(self):
 

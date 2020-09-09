@@ -71,6 +71,10 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
 
         self.title = title
 
+    def get_data(self):
+
+        return self.model.data
+        
     def change_slice(self, index=-1):
 
         axis = self.slider.get_axis()

@@ -13,7 +13,10 @@ from kmap import __directory__, __version__
 from kmap.controller.databasewindows import (
     OrbitalDatabase, SlicedDatabaseWindow)
 from kmap.controller.tabwidget import TabWidget
+from kmap.controller.tabchoosewindow import TabChooseWindow
 from kmap.model.mainwindow_model import MainWindowModel
+from kmap.controller.sliceddatatab import SlicedDataTab
+from kmap.controller.orbitaldatatab import OrbitalDataTab
 from kmap.config.config import config
 
 # Load .ui File
@@ -220,9 +223,30 @@ class MainWindow(QMainWindow, MainWindow_UI):
         title, text = self.model.get_about_text(path)
         QMessageBox.about(self, title, text)
 
-    def open_lmfit_tab(self):
+    def open_lmfit_tab(self, tabs):
 
-        self.tab_widget.open_lmfit_tab()
+        if len(tabs) != 2 or tabs[0] is None or tabs[1] is None:
+            return
+
+        self.tab_widget.open_lmfit_tab(*tabs)
+
+    def open_tab_choose_window(self):
+
+        sliced_tabs = self.tab_widget.get_tabs_of_type(SlicedDataTab)
+        orbital_tabs = self.tab_widget.get_tabs_of_type(OrbitalDataTab)
+
+        if len(sliced_tabs) == 0 or len(orbital_tabs) == 0:
+            return
+
+        elif len(sliced_tabs) == 1 and len(orbital_tabs) == 1:
+            tabs = [*sliced_tabs, *orbital_tabs]
+            self.open_lmfit_tab(tabs)
+
+        else:
+            self.tab_choose_window = TabChooseWindow(sliced_tabs,
+                                                     orbital_tabs)
+            self.tab_choose_window.tabs_chosen.connect(self.open_lmfit_tab)
+
 
     def open_in_matplotlib(self):
 
@@ -262,12 +286,14 @@ class MainWindow(QMainWindow, MainWindow_UI):
                    self.load_sliced_online_action2,
                    self.show_matplotlib,
                    self.log_file_action, self.load_cube_online_action,
-                   self.load_cube_file_action]
+                   self.load_cube_file_action,
+                   self.open_lmfit_tab_action]
 
         alias = ['load_hdf5', 'load_sliced_online_action',
                  'load_sliced_online_action2',
                  'show_matplotlib', 'open_log',
-                 'load_cube_online', 'load_cube_file']
+                 'load_cube_online', 'load_cube_file',
+                 'open_lmfit']
 
         for action, alias in zip(actions, alias):
             shortcut = config.get_key('shortcut', alias, file='shortcut')
@@ -294,7 +320,8 @@ class MainWindow(QMainWindow, MainWindow_UI):
         # Tabs menu
         self.open_sim_tab_action.triggered.connect(self.open_orbital_data_tab)
         self.open_profile_tab_action.triggered.connect(self.open_profile_tab)
-        self.open_lmfit_tab_action.triggered.connect(self.open_lmfit_tab)
+        self.open_lmfit_tab_action.triggered.connect(
+            self.open_tab_choose_window)
 
         # Preferences menu
         self.general_action.triggered.connect(self.open_general_settings)

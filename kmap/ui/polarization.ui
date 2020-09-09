@@ -248,8 +248,14 @@
           <bold>false</bold>
          </font>
         </property>
+        <property name="toolTip">
+         <string>|Psi|^2 used to be 'no |A.k|^2'
+|A.k|^2 displays only the polarisation factor
+|A.k|^2 x |Psi|^2 displays for all other cases.
+</string>
+        </property>
         <property name="currentText">
-         <string>|psi|²</string>
+         <string>|Psi|²</string>
         </property>
         <property name="currentIndex">
          <number>0</number>
@@ -262,7 +268,7 @@
         </property>
         <item>
          <property name="text">
-          <string>|psi|²</string>
+          <string>|Psi|²</string>
          </property>
         </item>
         <item>
@@ -272,7 +278,7 @@
         </item>
         <item>
          <property name="text">
-          <string>|A.k|² x |psi|² </string>
+          <string>|A.k|² x |Psi|² </string>
          </property>
         </item>
        </widget>

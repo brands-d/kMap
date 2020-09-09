@@ -58,6 +58,10 @@ class PyQtGraphPlot(ImageView):
         self.view.setRange(xRange=range_[0], yRange=range_[1],
                            update=True, padding=padding)
 
+    def set_levels(self, levels):
+
+        self.getHistogramWidget().setLevels(levels[0], levels[1])
+
     def set_aspect_ratio(self, ratio):
 
         self.plot_view.setAspectLocked(True, ratio=ratio)

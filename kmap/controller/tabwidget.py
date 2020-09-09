@@ -1,6 +1,7 @@
 # Python Imports
 import logging
 import traceback
+import datetime
 
 # PyQt5 Imports
 from PyQt5 import uic
@@ -14,6 +15,7 @@ from kmap.controller.orbitaldatatab import OrbitalDataTab
 from kmap.controller.profileplottab import ProfilePlotTab
 from kmap.controller.renametabwindow import RenameTabWindow
 from kmap.controller.lmfittab import LMFitTab
+from kmap.controller.lmfitresulttab import LMFitResultTab
 from kmap.controller.filetab import FileViewerTab, FileEditorTab
 from kmap.library.qwidgetsub import Tab
 from kmap.config.config import config
@@ -98,11 +100,25 @@ class TabWidget(QWidget, TabWidget_UI):
 
         self._open_tab(tab, title)
 
-    def open_lmfit_tab(self):
 
-        tab = LMFitTab()
+    def open_lmfit_tab(self, sliced_tab, orbital_tab):
+
+        tab = LMFitTab(sliced_tab.get_data(), orbital_tab.get_orbitals())
+        tab.fit_finished.connect(self.open_result_tab)
 
         self._open_tab(tab, 'LM-Fit Tab')
+
+    def open_result_tab(self, result, other_parameter):
+
+        lmfit_tab = self.sender()
+
+        tab = LMFitResultTab(result, other_parameter, lmfit_tab.model.sliced,
+                             lmfit_tab.model.orbitals)
+
+        current_time = datetime.datetime.now()
+        title = 'Results (%i:%i)' % (current_time.hour, current_time.minute)
+        tab.set_title(title)
+        self._open_tab(tab, title)
 
     def open_profile_tab(self):
 

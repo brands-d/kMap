@@ -78,9 +78,9 @@ def mozi_to_kmap(mozi_h5_file,kmap_h5_file,
 
 
 
-mozi_to_kmap('kmaps_6584_BEstep0.01_kStep0.02.hdf5','example5_6584.hdf5',
+mozi_to_kmap('H2TPP_BE002.hdf5','H2TPP.hdf5',
              axis1type='E_kin',
-             alias='M3 PTCDA/Ag(110)')
+             alias='H2TPP')
 
 
 

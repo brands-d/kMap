@@ -54,6 +54,10 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         orbital = self.model.load_data_from_online(URL, meta_data)
         self.add_orbital(orbital)
 
+    def get_orbitals(self):
+
+        return self.model.orbitals
+
     def add_orbital(self, orbital):
 
         if 'orientation' in orbital.meta_data:

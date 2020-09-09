@@ -7410,3 +7410,231 @@ CubeName=pre1-BN-HBC_MO_139, OrbitalName=LUMO, OrbitalEnergy=-1.266, Occupation=
 CubeName=pre1-BN-HBC_MO_140, OrbitalName=LUMO+1, OrbitalEnergy=-1.264, Occupation=0, Symmetry=a
 CubeName=pre1-BN-HBC_MO_141, OrbitalName=LUMO+2, OrbitalEnergy=-0.781, Occupation=0, Symmetry=a
 CubeName=pre1-BN-HBC_MO_142, OrbitalName=LUMO+3, OrbitalEnergy=-0.781, Occupation=0, Symmetry=a
+moleculeID=379
+ShortName=kek_super, FullName=kekulene_superaromatic, Formula=C48H24, Orientation=yx, Charge=0, MagneticMoment=0, IP=5.08, EA=1.90, BasisSet=6-31G*, XC-functional=B3LYP
+NumberOfOrbitals=16, PathToCubefiles=B3LYP/kek_super/charge0mult1/
+CubeName=kek_super_MO_145, OrbitalName=HOMO-11, OrbitalEnergy=-7.870, Occupation=2, Symmetry=e2u
+CubeName=kek_super_MO_146, OrbitalName=HOMO-10, OrbitalEnergy=-7.870, Occupation=2, Symmetry=e2u
+CubeName=kek_super_MO_147, OrbitalName=HOMO-9, OrbitalEnergy=-7.505, Occupation=2, Symmetry=e1g
+CubeName=kek_super_MO_148, OrbitalName=HOMO-8, OrbitalEnergy=-7.505, Occupation=2, Symmetry=e1g
+CubeName=kek_super_MO_149, OrbitalName=HOMO-7, OrbitalEnergy=-6.911, Occupation=2, Symmetry=b2g
+CubeName=kek_super_MO_150, OrbitalName=HOMO-6, OrbitalEnergy=-6.544, Occupation=2, Symmetry=a1u
+CubeName=kek_super_MO_151, OrbitalName=HOMO-5, OrbitalEnergy=-6.446, Occupation=2, Symmetry=b1g
+CubeName=kek_super_MO_152, OrbitalName=HOMO-4, OrbitalEnergy=-5.911, Occupation=2, Symmetry=a2u
+CubeName=kek_super_MO_153, OrbitalName=HOMO-3, OrbitalEnergy=-5.287, Occupation=2, Symmetry=e2u
+CubeName=kek_super_MO_154, OrbitalName=HOMO-2, OrbitalEnergy=-5.287, Occupation=2, Symmetry=e2u
+CubeName=kek_super_MO_155, OrbitalName=HOMO-1, OrbitalEnergy=-5.079, Occupation=2, Symmetry=e1g
+CubeName=kek_super_MO_156, OrbitalName=HOMO, OrbitalEnergy=-5.079, Occupation=2, Symmetry=e1g
+CubeName=kek_super_MO_157, OrbitalName=LUMO, OrbitalEnergy=-1.904, Occupation=0, Symmetry=e2u
+CubeName=kek_super_MO_158, OrbitalName=LUMO+1, OrbitalEnergy=-1.904, Occupation=0, Symmetry=e2u
+CubeName=kek_super_MO_159, OrbitalName=LUMO+2, OrbitalEnergy=-1.774, Occupation=0, Symmetry=e1g
+CubeName=kek_super_MO_160, OrbitalName=LUMO+3, OrbitalEnergy=-1.774, Occupation=0, Symmetry=e1g
+moleculeID=380
+ShortName=kek_clar, FullName=kekulene_clar, Formula=C48H24, Orientation=yx, Charge=0, MagneticMoment=0, IP=5.35, EA=1.60, BasisSet=6-31G*, XC-functional=B3LYP
+NumberOfOrbitals=16, PathToCubefiles=B3LYP/kek_clar/charge0mult1/
+CubeName=kek_clar_MO_145, OrbitalName=HOMO-11, OrbitalEnergy=-7.691, Occupation=2, Symmetry=e2u
+CubeName=kek_clar_MO_146, OrbitalName=HOMO-10, OrbitalEnergy=-7.691, Occupation=2, Symmetry=e2u
+CubeName=kek_clar_MO_147, OrbitalName=HOMO-9, OrbitalEnergy=-7.512, Occupation=2, Symmetry=e1g
+CubeName=kek_clar_MO_148, OrbitalName=HOMO-8, OrbitalEnergy=-7.512, Occupation=2, Symmetry=e1g
+CubeName=kek_clar_MO_149, OrbitalName=HOMO-7, OrbitalEnergy=-6.868, Occupation=2, Symmetry=b2g
+CubeName=kek_clar_MO_150, OrbitalName=HOMO-6, OrbitalEnergy=-6.546, Occupation=2, Symmetry=a1u
+CubeName=kek_clar_MO_151, OrbitalName=HOMO-5, OrbitalEnergy=-6.410, Occupation=2, Symmetry=b1g
+CubeName=kek_clar_MO_152, OrbitalName=HOMO-4, OrbitalEnergy=-6.107, Occupation=2, Symmetry=a2u
+CubeName=kek_clar_MO_153, OrbitalName=HOMO-3, OrbitalEnergy=-5.497, Occupation=2, Symmetry=e2u
+CubeName=kek_clar_MO_154, OrbitalName=HOMO-2, OrbitalEnergy=-5.497, Occupation=2, Symmetry=e2u
+CubeName=kek_clar_MO_155, OrbitalName=HOMO-1, OrbitalEnergy=-5.351, Occupation=2, Symmetry=e1g
+CubeName=kek_clar_MO_156, OrbitalName=HOMO, OrbitalEnergy=-5.351, Occupation=2, Symmetry=e1g
+CubeName=kek_clar_MO_157, OrbitalName=LUMO, OrbitalEnergy=-1.603, Occupation=0, Symmetry=e2u
+CubeName=kek_clar_MO_158, OrbitalName=LUMO+1, OrbitalEnergy=-1.603, Occupation=0, Symmetry=e2u
+CubeName=kek_clar_MO_159, OrbitalName=LUMO+2, OrbitalEnergy=-1.561, Occupation=0, Symmetry=e1g
+CubeName=kek_clar_MO_160, OrbitalName=LUMO+3, OrbitalEnergy=-1.561, Occupation=0, Symmetry=e1g
+moleculeID=381
+ShortName=kek_super, FullName=kekulene_superaromatic, Formula=C48H24, Orientation=yx, Charge=0, MagneticMoment=0, IP=6.17, EA=1.32, BasisSet=6-31G*, XC-functional=M06-2X
+NumberOfOrbitals=16, PathToCubefiles=M06-2X/kek_super/charge0mult1/
+CubeName=kek_super_MO_145, OrbitalName=HOMO-11, OrbitalEnergy=-9.481, Occupation=2, Symmetry=e2u
+CubeName=kek_super_MO_146, OrbitalName=HOMO-10, OrbitalEnergy=-9.481, Occupation=2, Symmetry=e2u
+CubeName=kek_super_MO_147, OrbitalName=HOMO-9, OrbitalEnergy=-9.002, Occupation=2, Symmetry=e1g
+CubeName=kek_super_MO_148, OrbitalName=HOMO-8, OrbitalEnergy=-9.002, Occupation=2, Symmetry=e1g
+CubeName=kek_super_MO_149, OrbitalName=HOMO-7, OrbitalEnergy=-8.330, Occupation=2, Symmetry=b2g
+CubeName=kek_super_MO_150, OrbitalName=HOMO-6, OrbitalEnergy=-7.868, Occupation=2, Symmetry=b1g
+CubeName=kek_super_MO_151, OrbitalName=HOMO-5, OrbitalEnergy=-7.814, Occupation=2, Symmetry=a1u
+CubeName=kek_super_MO_152, OrbitalName=HOMO-4, OrbitalEnergy=-7.195, Occupation=2, Symmetry=a2u
+CubeName=kek_super_MO_153, OrbitalName=HOMO-3, OrbitalEnergy=-6.459, Occupation=2, Symmetry=e2u
+CubeName=kek_super_MO_154, OrbitalName=HOMO-2, OrbitalEnergy=-6.459, Occupation=2, Symmetry=e2u
+CubeName=kek_super_MO_155, OrbitalName=HOMO-1, OrbitalEnergy=-6.171, Occupation=2, Symmetry=e1g
+CubeName=kek_super_MO_156, OrbitalName=HOMO, OrbitalEnergy=-6.171, Occupation=2, Symmetry=e1g
+CubeName=kek_super_MO_157, OrbitalName=LUMO, OrbitalEnergy=-1.324, Occupation=0, Symmetry=e2u
+CubeName=kek_super_MO_158, OrbitalName=LUMO+1, OrbitalEnergy=-1.324, Occupation=0, Symmetry=e2u
+CubeName=kek_super_MO_159, OrbitalName=LUMO+2, OrbitalEnergy=-1.125, Occupation=0, Symmetry=e1g
+CubeName=kek_super_MO_160, OrbitalName=LUMO+3, OrbitalEnergy=-1.125, Occupation=0, Symmetry=e1g
+moleculeID=382
+ShortName=kek_clar, FullName=kekulene_clar, Formula=C48H24, Orientation=yx, Charge=0, MagneticMoment=0, IP=6.54, EA=0.94, BasisSet=6-31G*, XC-functional=M06-2X
+NumberOfOrbitals=16, PathToCubefiles=M06-2X/kek_clar/charge0mult1/
+CubeName=kek_clar_MO_145, OrbitalName=HOMO-11, OrbitalEnergy=-9.273, Occupation=2, Symmetry=e2u
+CubeName=kek_clar_MO_146, OrbitalName=HOMO-10, OrbitalEnergy=-9.273, Occupation=2, Symmetry=e2u
+CubeName=kek_clar_MO_147, OrbitalName=HOMO-9, OrbitalEnergy=-9.019, Occupation=2, Symmetry=e1g
+CubeName=kek_clar_MO_148, OrbitalName=HOMO-8, OrbitalEnergy=-9.019, Occupation=2, Symmetry=e1g
+CubeName=kek_clar_MO_149, OrbitalName=HOMO-7, OrbitalEnergy=-8.301, Occupation=2, Symmetry=b2g
+CubeName=kek_clar_MO_150, OrbitalName=HOMO-6, OrbitalEnergy=-7.839, Occupation=2, Symmetry=a1u
+CubeName=kek_clar_MO_151, OrbitalName=HOMO-5, OrbitalEnergy=-7.827, Occupation=2, Symmetry=b1g
+CubeName=kek_clar_MO_152, OrbitalName=HOMO-4, OrbitalEnergy=-7.452, Occupation=2, Symmetry=a2u
+CubeName=kek_clar_MO_153, OrbitalName=HOMO-3, OrbitalEnergy=-6.737, Occupation=2, Symmetry=e2u
+CubeName=kek_clar_MO_154, OrbitalName=HOMO-2, OrbitalEnergy=-6.737, Occupation=2, Symmetry=e2u
+CubeName=kek_clar_MO_155, OrbitalName=HOMO-1, OrbitalEnergy=-6.536, Occupation=2, Symmetry=e1g
+CubeName=kek_clar_MO_156, OrbitalName=HOMO, OrbitalEnergy=-6.536, Occupation=2, Symmetry=e1g
+CubeName=kek_clar_MO_157, OrbitalName=LUMO, OrbitalEnergy=-0.936, Occupation=0, Symmetry=e2u
+CubeName=kek_clar_MO_158, OrbitalName=LUMO+1, OrbitalEnergy=-0.936, Occupation=0, Symmetry=e2u
+CubeName=kek_clar_MO_159, OrbitalName=LUMO+2, OrbitalEnergy=-0.854, Occupation=0, Symmetry=e1g
+CubeName=kek_clar_MO_160, OrbitalName=LUMO+3, OrbitalEnergy=-0.854, Occupation=0, Symmetry=e1g
+moleculeID=383
+ShortName=kek_super, FullName=kekulene_superaromatic, Formula=C48H24, Orientation=yx, Charge=0, MagneticMoment=0, IP=6.37, EA=-1.12, BasisSet=6-31G*, XC-functional=HFexch
+NumberOfOrbitals=16, PathToCubefiles=HFexch/kek_super/charge0mult1/
+CubeName=kek_super_MO_145, OrbitalName=HOMO-11, OrbitalEnergy=-10.555, Occupation=2, Symmetry=e2u
+CubeName=kek_super_MO_146, OrbitalName=HOMO-10, OrbitalEnergy=-10.555, Occupation=2, Symmetry=e2u
+CubeName=kek_super_MO_147, OrbitalName=HOMO-9, OrbitalEnergy=-9.886, Occupation=2, Symmetry=e1g
+CubeName=kek_super_MO_148, OrbitalName=HOMO-8, OrbitalEnergy=-9.886, Occupation=2, Symmetry=e1g
+CubeName=kek_super_MO_149, OrbitalName=HOMO-7, OrbitalEnergy=-9.053, Occupation=2, Symmetry=b2g
+CubeName=kek_super_MO_150, OrbitalName=HOMO-6, OrbitalEnergy=-8.596, Occupation=2, Symmetry=b1g
+CubeName=kek_super_MO_151, OrbitalName=HOMO-5, OrbitalEnergy=-8.243, Occupation=2, Symmetry=a1u
+CubeName=kek_super_MO_152, OrbitalName=HOMO-4, OrbitalEnergy=-7.777, Occupation=2, Symmetry=a2u
+CubeName=kek_super_MO_153, OrbitalName=HOMO-3, OrbitalEnergy=-6.762, Occupation=2, Symmetry=e2u
+CubeName=kek_super_MO_154, OrbitalName=HOMO-2, OrbitalEnergy=-6.762, Occupation=2, Symmetry=e2u
+CubeName=kek_super_MO_155, OrbitalName=HOMO-1, OrbitalEnergy=-6.374, Occupation=2, Symmetry=e1g
+CubeName=kek_super_MO_156, OrbitalName=HOMO, OrbitalEnergy=-6.374, Occupation=2, Symmetry=e1g
+CubeName=kek_super_MO_157, OrbitalName=LUMO, OrbitalEnergy=1.115, Occupation=0, Symmetry=e2u
+CubeName=kek_super_MO_158, OrbitalName=LUMO+1, OrbitalEnergy=1.115, Occupation=0, Symmetry=e2u
+CubeName=kek_super_MO_159, OrbitalName=LUMO+2, OrbitalEnergy=1.404, Occupation=0, Symmetry=e1g
+CubeName=kek_super_MO_160, OrbitalName=LUMO+3, OrbitalEnergy=1.404, Occupation=0, Symmetry=e1g
+moleculeID=384
+ShortName=kek_clar, FullName=kekulene_clar, Formula=C48H24, Orientation=yx, Charge=0, MagneticMoment=0, IP=6.90, EA=-1.66, BasisSet=6-31G*, XC-functional=HFexch
+NumberOfOrbitals=16, PathToCubefiles=HFexch/kek_clar/charge0mult1/
+CubeName=kek_clar_MO_145, OrbitalName=HOMO-11, OrbitalEnergy=-10.293, Occupation=2, Symmetry=e2u
+CubeName=kek_clar_MO_146, OrbitalName=HOMO-10, OrbitalEnergy=-10.293, Occupation=2, Symmetry=e2u
+CubeName=kek_clar_MO_147, OrbitalName=HOMO-9, OrbitalEnergy=-9.921, Occupation=2, Symmetry=e1g
+CubeName=kek_clar_MO_148, OrbitalName=HOMO-8, OrbitalEnergy=-9.921, Occupation=2, Symmetry=e1g
+CubeName=kek_clar_MO_149, OrbitalName=HOMO-7, OrbitalEnergy=-9.068, Occupation=2, Symmetry=b2g
+CubeName=kek_clar_MO_150, OrbitalName=HOMO-6, OrbitalEnergy=-8.539, Occupation=2, Symmetry=b1g
+CubeName=kek_clar_MO_151, OrbitalName=HOMO-5, OrbitalEnergy=-8.318, Occupation=2, Symmetry=a1u
+CubeName=kek_clar_MO_152, OrbitalName=HOMO-4, OrbitalEnergy=-8.138, Occupation=2, Symmetry=a2u
+CubeName=kek_clar_MO_153, OrbitalName=HOMO-3, OrbitalEnergy=-7.169, Occupation=2, Symmetry=e2u
+CubeName=kek_clar_MO_154, OrbitalName=HOMO-2, OrbitalEnergy=-7.169, Occupation=2, Symmetry=e2u
+CubeName=kek_clar_MO_155, OrbitalName=HOMO-1, OrbitalEnergy=-6.897, Occupation=2, Symmetry=e1g
+CubeName=kek_clar_MO_156, OrbitalName=HOMO, OrbitalEnergy=-6.897, Occupation=2, Symmetry=e1g
+CubeName=kek_clar_MO_157, OrbitalName=LUMO, OrbitalEnergy=1.658, Occupation=0, Symmetry=e2u
+CubeName=kek_clar_MO_158, OrbitalName=LUMO+1, OrbitalEnergy=1.658, Occupation=0, Symmetry=e2u
+CubeName=kek_clar_MO_159, OrbitalName=LUMO+2, OrbitalEnergy=1.781, Occupation=0, Symmetry=e1g
+CubeName=kek_clar_MO_160, OrbitalName=LUMO+3, OrbitalEnergy=1.781, Occupation=0, Symmetry=e1g
+moleculeID=385
+ShortName=kek_super, FullName=kekulene_superaromatic, Formula=C48H24, Orientation=yx, Charge=0, MagneticMoment=0, IP=4.62, EA=2.46, BasisSet=6-31G*, XC-functional=PBE
+NumberOfOrbitals=16, PathToCubefiles=PBE/kek_super/charge0mult1/
+CubeName=kek_super_MO_145, OrbitalName=HOMO-11, OrbitalEnergy=-7.030, Occupation=2, Symmetry=e2u
+CubeName=kek_super_MO_146, OrbitalName=HOMO-10, OrbitalEnergy=-7.030, Occupation=2, Symmetry=e2u
+CubeName=kek_super_MO_147, OrbitalName=HOMO-9, OrbitalEnergy=-6.752, Occupation=2, Symmetry=e1g
+CubeName=kek_super_MO_148, OrbitalName=HOMO-8, OrbitalEnergy=-6.752, Occupation=2, Symmetry=e1g
+CubeName=kek_super_MO_149, OrbitalName=HOMO-7, OrbitalEnergy=-6.212, Occupation=2, Symmetry=b2g
+CubeName=kek_super_MO_150, OrbitalName=HOMO-6, OrbitalEnergy=-5.956, Occupation=2, Symmetry=a1u
+CubeName=kek_super_MO_151, OrbitalName=HOMO-5, OrbitalEnergy=-5.745, Occupation=2, Symmetry=b1g
+CubeName=kek_super_MO_152, OrbitalName=HOMO-4, OrbitalEnergy=-5.304, Occupation=2, Symmetry=a2u
+CubeName=kek_super_MO_153, OrbitalName=HOMO-3, OrbitalEnergy=-4.776, Occupation=2, Symmetry=e2u
+CubeName=kek_super_MO_154, OrbitalName=HOMO-2, OrbitalEnergy=-4.776, Occupation=2, Symmetry=e2u
+CubeName=kek_super_MO_155, OrbitalName=HOMO-1, OrbitalEnergy=-4.623, Occupation=2, Symmetry=e1g
+CubeName=kek_super_MO_156, OrbitalName=HOMO, OrbitalEnergy=-4.623, Occupation=2, Symmetry=e1g
+CubeName=kek_super_MO_157, OrbitalName=LUMO, OrbitalEnergy=-2.460, Occupation=0, Symmetry=e2u
+CubeName=kek_super_MO_158, OrbitalName=LUMO+1, OrbitalEnergy=-2.460, Occupation=0, Symmetry=e2u
+CubeName=kek_super_MO_159, OrbitalName=LUMO+2, OrbitalEnergy=-2.382, Occupation=0, Symmetry=e1g
+CubeName=kek_super_MO_160, OrbitalName=LUMO+3, OrbitalEnergy=-2.382, Occupation=0, Symmetry=e1g
+moleculeID=386
+ShortName=kek_clar, FullName=kekulene_clar, Formula=C48H24, Orientation=yx, Charge=0, MagneticMoment=0, IP=4.83, EA=2.22, BasisSet=6-31G*, XC-functional=PBE
+NumberOfOrbitals=16, PathToCubefiles=PBE/kek_clar/charge0mult1/
+CubeName=kek_clar_MO_145, OrbitalName=HOMO-11, OrbitalEnergy=-6.871, Occupation=2, Symmetry=e2u
+CubeName=kek_clar_MO_146, OrbitalName=HOMO-10, OrbitalEnergy=-6.871, Occupation=2, Symmetry=e2u
+CubeName=kek_clar_MO_147, OrbitalName=HOMO-9, OrbitalEnergy=-6.756, Occupation=2, Symmetry=e1g
+CubeName=kek_clar_MO_148, OrbitalName=HOMO-8, OrbitalEnergy=-6.756, Occupation=2, Symmetry=e1g
+CubeName=kek_clar_MO_149, OrbitalName=HOMO-7, OrbitalEnergy=-6.159, Occupation=2, Symmetry=b2g
+CubeName=kek_clar_MO_150, OrbitalName=HOMO-6, OrbitalEnergy=-5.949, Occupation=2, Symmetry=a1u
+CubeName=kek_clar_MO_151, OrbitalName=HOMO-5, OrbitalEnergy=-5.716, Occupation=2, Symmetry=b1g
+CubeName=kek_clar_MO_152, OrbitalName=HOMO-4, OrbitalEnergy=-5.458, Occupation=2, Symmetry=a2u
+CubeName=kek_clar_MO_153, OrbitalName=HOMO-3, OrbitalEnergy=-4.937, Occupation=2, Symmetry=e2u
+CubeName=kek_clar_MO_154, OrbitalName=HOMO-2, OrbitalEnergy=-4.937, Occupation=2, Symmetry=e2u
+CubeName=kek_clar_MO_155, OrbitalName=HOMO-1, OrbitalEnergy=-4.830, Occupation=2, Symmetry=e1g
+CubeName=kek_clar_MO_156, OrbitalName=HOMO, OrbitalEnergy=-4.830, Occupation=2, Symmetry=e1g
+CubeName=kek_clar_MO_157, OrbitalName=LUMO, OrbitalEnergy=-2.223, Occupation=0, Symmetry=e2u
+CubeName=kek_clar_MO_158, OrbitalName=LUMO+1, OrbitalEnergy=-2.223, Occupation=0, Symmetry=e2u
+CubeName=kek_clar_MO_159, OrbitalName=LUMO+2, OrbitalEnergy=-2.213, Occupation=0, Symmetry=e1g
+CubeName=kek_clar_MO_160, OrbitalName=LUMO+3, OrbitalEnergy=-2.213, Occupation=0, Symmetry=e1g
+moleculeID=387
+ShortName=kekulene_PBE, FullName=kekulene_PBE, Formula=C48H24, Orientation=yx, Charge=0, MagneticMoment=0, IP=4.81, EA=2.41, BasisSet=6-31G*, XC-functional=PBE
+NumberOfOrbitals=16, PathToCubefiles=PBE/kekulene_PBE/charge0mult1/
+CubeName=kekulene_PBE_MO_145, OrbitalName=HOMO-11, OrbitalEnergy=-6.910, Occupation=2, Symmetry=e2u
+CubeName=kekulene_PBE_MO_146, OrbitalName=HOMO-10, OrbitalEnergy=-6.910, Occupation=2, Symmetry=e2u
+CubeName=kekulene_PBE_MO_147, OrbitalName=HOMO-9, OrbitalEnergy=-6.757, Occupation=2, Symmetry=e1g
+CubeName=kekulene_PBE_MO_148, OrbitalName=HOMO-8, OrbitalEnergy=-6.757, Occupation=2, Symmetry=e1g
+CubeName=kekulene_PBE_MO_149, OrbitalName=HOMO-7, OrbitalEnergy=-6.174, Occupation=2, Symmetry=b1g
+CubeName=kekulene_PBE_MO_150, OrbitalName=HOMO-6, OrbitalEnergy=-5.977, Occupation=2, Symmetry=a1u
+CubeName=kekulene_PBE_MO_151, OrbitalName=HOMO-5, OrbitalEnergy=-5.784, Occupation=2, Symmetry=b2g
+CubeName=kekulene_PBE_MO_152, OrbitalName=HOMO-4, OrbitalEnergy=-5.444, Occupation=2, Symmetry=a2u
+CubeName=kekulene_PBE_MO_153, OrbitalName=HOMO-3, OrbitalEnergy=-4.934, Occupation=2, Symmetry=e2u
+CubeName=kekulene_PBE_MO_154, OrbitalName=HOMO-2, OrbitalEnergy=-4.934, Occupation=2, Symmetry=e2u
+CubeName=kekulene_PBE_MO_155, OrbitalName=HOMO-1, OrbitalEnergy=-4.806, Occupation=2, Symmetry=e1g
+CubeName=kekulene_PBE_MO_156, OrbitalName=HOMO, OrbitalEnergy=-4.806, Occupation=2, Symmetry=e1g
+CubeName=kekulene_PBE_MO_157, OrbitalName=LUMO, OrbitalEnergy=-2.413, Occupation=0, Symmetry=e2u
+CubeName=kekulene_PBE_MO_158, OrbitalName=LUMO+1, OrbitalEnergy=-2.413, Occupation=0, Symmetry=e2u
+CubeName=kekulene_PBE_MO_159, OrbitalName=LUMO+2, OrbitalEnergy=-2.325, Occupation=0, Symmetry=e1g
+CubeName=kekulene_PBE_MO_160, OrbitalName=LUMO+3, OrbitalEnergy=-2.325, Occupation=0, Symmetry=e1g
+moleculeID=388
+ShortName=kekulene_B3LYP, FullName=kekulene_B3LYP, Formula=C48H24, Orientation=yx, Charge=0, MagneticMoment=0, IP=5.32, EA=1.77, BasisSet=6-31G*, XC-functional=B3LYP
+NumberOfOrbitals=16, PathToCubefiles=B3LYP/kekulene_B3LYP/charge0mult1/
+CubeName=kekulene_B3LYP_MO_145, OrbitalName=HOMO-11, OrbitalEnergy=-7.742, Occupation=2, Symmetry=e2u
+CubeName=kekulene_B3LYP_MO_146, OrbitalName=HOMO-10, OrbitalEnergy=-7.742, Occupation=2, Symmetry=e2u
+CubeName=kekulene_B3LYP_MO_147, OrbitalName=HOMO-9, OrbitalEnergy=-7.521, Occupation=2, Symmetry=e1g
+CubeName=kekulene_B3LYP_MO_148, OrbitalName=HOMO-8, OrbitalEnergy=-7.521, Occupation=2, Symmetry=e1g
+CubeName=kekulene_B3LYP_MO_149, OrbitalName=HOMO-7, OrbitalEnergy=-6.883, Occupation=2, Symmetry=b1g
+CubeName=kekulene_B3LYP_MO_150, OrbitalName=HOMO-6, OrbitalEnergy=-6.563, Occupation=2, Symmetry=a1u
+CubeName=kekulene_B3LYP_MO_151, OrbitalName=HOMO-5, OrbitalEnergy=-6.491, Occupation=2, Symmetry=b2g
+CubeName=kekulene_B3LYP_MO_152, OrbitalName=HOMO-4, OrbitalEnergy=-6.107, Occupation=2, Symmetry=a2u
+CubeName=kekulene_B3LYP_MO_153, OrbitalName=HOMO-3, OrbitalEnergy=-5.491, Occupation=2, Symmetry=e2u
+CubeName=kekulene_B3LYP_MO_154, OrbitalName=HOMO-2, OrbitalEnergy=-5.491, Occupation=2, Symmetry=e2u
+CubeName=kekulene_B3LYP_MO_155, OrbitalName=HOMO-1, OrbitalEnergy=-5.323, Occupation=2, Symmetry=e1g
+CubeName=kekulene_B3LYP_MO_156, OrbitalName=HOMO, OrbitalEnergy=-5.323, Occupation=2, Symmetry=e1g
+CubeName=kekulene_B3LYP_MO_157, OrbitalName=LUMO, OrbitalEnergy=-1.766, Occupation=0, Symmetry=e2u
+CubeName=kekulene_B3LYP_MO_158, OrbitalName=LUMO+1, OrbitalEnergy=-1.766, Occupation=0, Symmetry=e2u
+CubeName=kekulene_B3LYP_MO_159, OrbitalName=LUMO+2, OrbitalEnergy=-1.644, Occupation=0, Symmetry=e1g
+CubeName=kekulene_B3LYP_MO_160, OrbitalName=LUMO+3, OrbitalEnergy=-1.644, Occupation=0, Symmetry=e1g
+moleculeID=389
+ShortName=kekulene_M06-2X, FullName=kekulene_M06-2X, Formula=C48H24, Orientation=yx, Charge=0, MagneticMoment=0, IP=6.52, EA=1.06, BasisSet=6-31G*, XC-functional=M06-2X
+NumberOfOrbitals=16, PathToCubefiles=M06-2X/kekulene_M06-2X/charge0mult1/
+CubeName=kekulene_M06-2X_MO_145, OrbitalName=HOMO-11, OrbitalEnergy=-9.333, Occupation=2, Symmetry=e2u
+CubeName=kekulene_M06-2X_MO_146, OrbitalName=HOMO-10, OrbitalEnergy=-9.333, Occupation=2, Symmetry=e2u
+CubeName=kekulene_M06-2X_MO_147, OrbitalName=HOMO-9, OrbitalEnergy=-9.035, Occupation=2, Symmetry=e1g
+CubeName=kekulene_M06-2X_MO_148, OrbitalName=HOMO-8, OrbitalEnergy=-9.035, Occupation=2, Symmetry=e1g
+CubeName=kekulene_M06-2X_MO_149, OrbitalName=HOMO-7, OrbitalEnergy=-8.319, Occupation=2, Symmetry=b1g
+CubeName=kekulene_M06-2X_MO_150, OrbitalName=HOMO-6, OrbitalEnergy=-7.919, Occupation=2, Symmetry=b2g
+CubeName=kekulene_M06-2X_MO_151, OrbitalName=HOMO-5, OrbitalEnergy=-7.843, Occupation=2, Symmetry=a1u
+CubeName=kekulene_M06-2X_MO_152, OrbitalName=HOMO-4, OrbitalEnergy=-7.475, Occupation=2, Symmetry=a2u
+CubeName=kekulene_M06-2X_MO_153, OrbitalName=HOMO-3, OrbitalEnergy=-6.741, Occupation=2, Symmetry=e2u
+CubeName=kekulene_M06-2X_MO_154, OrbitalName=HOMO-2, OrbitalEnergy=-6.741, Occupation=2, Symmetry=e2u
+CubeName=kekulene_M06-2X_MO_155, OrbitalName=HOMO-1, OrbitalEnergy=-6.517, Occupation=2, Symmetry=e1g
+CubeName=kekulene_M06-2X_MO_156, OrbitalName=HOMO, OrbitalEnergy=-6.517, Occupation=2, Symmetry=e1g
+CubeName=kekulene_M06-2X_MO_157, OrbitalName=LUMO, OrbitalEnergy=-1.063, Occupation=0, Symmetry=e2u
+CubeName=kekulene_M06-2X_MO_158, OrbitalName=LUMO+1, OrbitalEnergy=-1.063, Occupation=0, Symmetry=e2u
+CubeName=kekulene_M06-2X_MO_159, OrbitalName=LUMO+2, OrbitalEnergy=-0.906, Occupation=0, Symmetry=e1g
+CubeName=kekulene_M06-2X_MO_160, OrbitalName=LUMO+3, OrbitalEnergy=-0.906, Occupation=0, Symmetry=e1g
+moleculeID=390
+ShortName=kekulene_HFexch, FullName=kekulene_HFexch, Formula=C48H24, Orientation=yx, Charge=0, MagneticMoment=0, IP=6.94, EA=-1.62, BasisSet=6-31G*, XC-functional=HFexch
+NumberOfOrbitals=16, PathToCubefiles=HFexch/kekulene_HFexch/charge0mult1/
+CubeName=kekulene_HFexch_MO_145, OrbitalName=HOMO-11, OrbitalEnergy=-10.353, Occupation=2, Symmetry=e2u
+CubeName=kekulene_HFexch_MO_146, OrbitalName=HOMO-10, OrbitalEnergy=-10.353, Occupation=2, Symmetry=e2u
+CubeName=kekulene_HFexch_MO_147, OrbitalName=HOMO-9, OrbitalEnergy=-9.958, Occupation=2, Symmetry=e1g
+CubeName=kekulene_HFexch_MO_148, OrbitalName=HOMO-8, OrbitalEnergy=-9.958, Occupation=2, Symmetry=e1g
+CubeName=kekulene_HFexch_MO_149, OrbitalName=HOMO-7, OrbitalEnergy=-9.105, Occupation=2, Symmetry=b1g
+CubeName=kekulene_HFexch_MO_150, OrbitalName=HOMO-6, OrbitalEnergy=-8.661, Occupation=2, Symmetry=b2g
+CubeName=kekulene_HFexch_MO_151, OrbitalName=HOMO-5, OrbitalEnergy=-8.309, Occupation=2, Symmetry=a1u
+CubeName=kekulene_HFexch_MO_152, OrbitalName=HOMO-4, OrbitalEnergy=-8.248, Occupation=2, Symmetry=a2u
+CubeName=kekulene_HFexch_MO_153, OrbitalName=HOMO-3, OrbitalEnergy=-7.230, Occupation=2, Symmetry=e2u
+CubeName=kekulene_HFexch_MO_154, OrbitalName=HOMO-2, OrbitalEnergy=-7.230, Occupation=2, Symmetry=e2u
+CubeName=kekulene_HFexch_MO_155, OrbitalName=HOMO-1, OrbitalEnergy=-6.941, Occupation=2, Symmetry=e1g
+CubeName=kekulene_HFexch_MO_156, OrbitalName=HOMO, OrbitalEnergy=-6.941, Occupation=2, Symmetry=e1g
+CubeName=kekulene_HFexch_MO_157, OrbitalName=LUMO, OrbitalEnergy=1.618, Occupation=0, Symmetry=e2u
+CubeName=kekulene_HFexch_MO_158, OrbitalName=LUMO+1, OrbitalEnergy=1.618, Occupation=0, Symmetry=e2u
+CubeName=kekulene_HFexch_MO_159, OrbitalName=LUMO+2, OrbitalEnergy=1.815, Occupation=0, Symmetry=e1g
+CubeName=kekulene_HFexch_MO_160, OrbitalName=LUMO+3, OrbitalEnergy=1.815, Occupation=0, Symmetry=e1g
