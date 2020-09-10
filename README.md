@@ -64,6 +64,8 @@ the commands manually
     rm -rf venv build dist *.egg-info
     python -m venv venv
 
+If your Shell does not recognize the "rm" command, try "del" instead.
+
 ### 4. Activate Enviroment
 Next, we need to activate the environment. ATTENTION: You will need to
 reactivate the environment for every new shell again. Please follow this
@@ -115,6 +117,10 @@ requirements.txt file. Afterwards, run
     python setup.py install
     
 ### 5. Testing
+
+ATTENTION: 
+Multiple Tests are outdated and excepted to fail! Please skip this section for now,
+until the tests are fixed.
 
 Afterwards please run tests to check if they come back passing.
 
