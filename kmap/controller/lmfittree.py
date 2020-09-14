@@ -149,6 +149,12 @@ class LMFitResultTree(LMFitBaseTree, LMFitResultTree_UI):
 
         return self.result.nvarys
 
+    def update_result(self, result):
+
+        for i in range(self.tree.topLevelItemCount()):
+            item = self.tree.topLevelItem(i)
+            item.update_result(result)
+
     def _get_background(self):
 
         return self.tree.topLevelItem(0).children[2].get_parameters()

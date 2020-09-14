@@ -282,6 +282,14 @@ class OtherResultTreeItem(LMFitResultTreeItem):
 
         return parameters
 
+    def update_result(self, result):
+
+        params = ['alpha_', 'beta_', 'c', 'E_kin']
+
+        for child, param in zip(self.children, params):
+            value = result.params[param].value
+            child.update_value(value)
+
     def _setup(self, tree, result):
 
         self.name_label = CenteredLabel('Other Options')
@@ -310,6 +318,14 @@ class OrbitalResultTreeItem(LMFitResultTreeItem):
         super().__init__(tree)
 
         self._setup(tree, orbital, result)
+
+    def update_result(self, result):
+
+        params = ['w_', 'phi_', 'theta_', 'psi_']
+
+        for child, param in zip(self.children, params):
+            value = result.params[param + str(self.ID)].value
+            child.update_value(value)
 
     def get_parameters(self):
 
@@ -370,6 +386,14 @@ class AngleResultTreeItem(DataResultTreeItem):
 
         self._setup(tree, ID, angle, value)
 
+    def get_parameters(self):
+
+        return float(self.result.text()[:-1])
+
+    def update_value(self, value):
+
+        self.result.setText('%.3f°' % value)
+
     def _setup(self, tree, ID, angle, value):
 
         super()._setup(tree)
@@ -382,10 +406,6 @@ class AngleResultTreeItem(DataResultTreeItem):
 
         tree.setItemWidget(self, 3, self.result)
 
-    def get_parameters(self):
-
-        return float(self.result.text()[:-1])
-
 
 class BackgroundResultTreeItem(DataResultTreeItem):
 
@@ -394,6 +414,10 @@ class BackgroundResultTreeItem(DataResultTreeItem):
         super().__init__(parent)
 
         self._setup(tree, value)
+
+    def update_value(self, value):
+
+        self.result.setText('%.1f' % value)
 
     def _setup(self, tree, value):
 
@@ -420,6 +444,10 @@ class EnergyResultTreeItem(DataResultTreeItem):
 
         self._setup(tree, value)
 
+    def update_value(self, value):
+
+        self.result.setText('%.2f eV' % value)
+
     def _setup(self, tree, value):
 
         super()._setup(tree)
@@ -444,6 +472,10 @@ class WeightResultTreeItem(DataResultTreeItem):
         super().__init__(parent)
 
         self._setup(tree, ID, value)
+
+    def update_value(self, value):
+
+        self.result.setText('%.2f' % value)
 
     def _setup(self, tree, ID, value):
 

@@ -8,6 +8,7 @@ from kmap import __directory__
 from kmap.controller.lmfittab import LMFitBaseTab
 from kmap.model.lmfittab_model import LMFitTabModel
 from kmap.controller.lmfittree import LMFitResultTree
+from kmap.controller.lmfitresult import LMFitResult
 
 # Load .ui File
 UI_file = __directory__ + QDir.toNativeSeparators('/ui/lmfittab.ui')
@@ -16,11 +17,10 @@ LMFitResultTab_UI, _ = uic.loadUiType(UI_file)
 
 class LMFitResultTab(LMFitBaseTab, LMFitResultTab_UI):
 
-    def __init__(self, result, other_parameter, sliced_data,
+    def __init__(self, results, other_parameter, sliced_data,
                  orbitals, region='all', inverted=False):
 
         self.model = LMFitTabModel(sliced_data, orbitals)
-        self.result = result
         self.other_parameter = other_parameter
         self.title = 'Results'
 
@@ -28,12 +28,18 @@ class LMFitResultTab(LMFitBaseTab, LMFitResultTab_UI):
         super(LMFitResultTab, self).__init__()
         self.setupUi(self)
 
-        self._setup(region, inverted)
+        self._setup(results, region, inverted)
         self._connect()
 
         self.refresh_sliced_plot()
         self.refresh_selected_plot()
         self.refresh_sum_plot()
+
+    def update_result_tree(self):
+
+        index = self.slider.get_index()
+
+        self.tree.update_result(self.result.get_index(index))
 
     def _get_parameters(self, ID):
 
@@ -46,11 +52,13 @@ class LMFitResultTab(LMFitBaseTab, LMFitResultTab_UI):
 
         return parameters
 
-    def _setup(self, region, inverted):
+    def _setup(self, results, region, inverted):
 
         LMFitBaseTab._setup(self)
 
-        self.tree = LMFitResultTree(self.model.orbitals, self.result)
+        self.result = LMFitResult(results)
+        self.tree = LMFitResultTree(
+            self.model.orbitals, self.result.get_index(0))
 
         layout = QVBoxLayout()
         self.scroll_area.widget().setLayout(layout)
@@ -61,3 +69,9 @@ class LMFitResultTab(LMFitBaseTab, LMFitResultTab_UI):
         self.layout.insertWidget(1, self.tree)
 
         self.lmfit.set_region(region, inverted)
+
+    def _connect(self):
+
+        self.slider.slice_changed.connect(self.update_result_tree)
+        
+        LMFitBaseTab._connect(self)

@@ -2,7 +2,6 @@
 import numpy as np
 from pyqtgraph import ColorMap
 from lmfit import Parameters
-from lmfit.minimizer import MinimizerResult
 
 # PyQt5 Imports
 from PyQt5 import uic
@@ -164,7 +163,7 @@ class LMFitBaseTab(Tab):
 
 class LMFitTab(LMFitBaseTab, LMFitTab_UI):
 
-    fit_finished = pyqtSignal(MinimizerResult, tuple, tuple)
+    fit_finished = pyqtSignal(list, tuple, tuple)
 
     def __init__(self, sliced_data, orbitals):
 

@@ -12,6 +12,7 @@ from PyQt5.QtCore import QDir, pyqtSignal
 
 # Own Imports
 from kmap import __directory__
+from kmap.library.plotdata import PlotData
 
 # Load .ui File
 UI_file = __directory__ + QDir.toNativeSeparators('/ui/lmfit.ui')
@@ -33,31 +34,62 @@ class LMFit(QWidget, LMFit_UI):
         self.setupUi(self)
         self._connect()
 
-    def fit(self, variables, parameters, interpolator, axis_index=0, slice_index=0, region='all', crosshair=None):
+    def fit(self, variables, parameters, interpolator,
+            axis_index=0, slice_index=0, region='all', crosshair=None):
 
-        if slice_index == -1:
-            print('NOT IMPLEMENTED YET')
-        else:
+        type_ = self.slice_combobox.currentIndex()
+        results = []
+
+        if type_ == 0:
             sliced_data = self.sliced.slice_from_index(slice_index,
                                                        axis_index)
+            results.append(self.fit_single_slice(variables, parameters,
+                                                 interpolator,
+                                                 sliced_data,
+                                                 region, crosshair))
 
-        sliced_data = interpolator.interpolate(sliced_data)
-        sliced_data = interpolator.smooth(sliced_data)
+        elif type_ == 1:
+            for index in range(self.sliced.axes[axis_index].num):
+                sliced_data = self.sliced.slice_from_index(index,
+                                                           axis_index)
+                results.append(self.fit_single_slice(variables,
+                                                     parameters,
+                                                     interpolator,
+                                                     sliced_data,
+                                                     region, crosshair))
 
-        lmfit_param = Parameters()
+        else:
+            data = np.nansum(self.sliced.data, axis=axis_index)
+            range_ = [axis.range for i, axis in enumerate(self.sliced.axes) if i != axis_index]
+            sliced_data=PlotData(data, range_)
+            results.append(self.fit_single_slice(variables, parameters,
+                                                 interpolator,
+                                                 sliced_data,
+                                                 region, crosshair))
+
+        return results
+
+    def fit_single_slice(self, variables, parameters, interpolator,
+                         sliced_data, region = 'all',
+                         crosshair = None):
+
+        sliced_data=interpolator.interpolate(sliced_data)
+        sliced_data=interpolator.smooth(sliced_data)
+
+        lmfit_param=Parameters()
 
         for parameter in chain(*variables):
-            name, vary, value, min_, max_, expr = parameter
+            name, vary, value, min_, max_, expr=parameter
 
             if expr == '':
-                expr = None
+                expr=None
 
-            lmfit_param.add(name, value=value, min=min_,
-                            max=max_, vary=vary, expr=expr)
+            lmfit_param.add(name, value = value, min = min_,
+                            max = max_, vary = vary, expr = expr)
 
-        method = self._get_method()
+        method=self._get_method()
 
-        result = minimize(self.chi2, lmfit_param,
+        result=minimize(self.chi2, lmfit_param,
                           args=(sliced_data, parameters,
                                 interpolator, crosshair),
                           nan_policy='omit',
