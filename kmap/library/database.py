@@ -35,6 +35,9 @@ class Database():
 
                 lines.append(line)
 
+            # Append last molecule
+            new_molecule = Molecule(lines, URL=self.URL)
+            self.molecules.append(new_molecule)
 
 class Molecule():
 
