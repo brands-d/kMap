@@ -175,6 +175,9 @@ class TabWidget(QWidget, TabWidget_UI):
         current_tab.set_title(title)
         self.tab_widget.setTabText(current_tab_index, title)
 
+        for tab in self.get_tabs_of_type(ProfilePlotTab):
+            tab.rename_loaded_tab(current_tab, title)
+
     def close_tab(self, index):
         # Close tab specified with index
 

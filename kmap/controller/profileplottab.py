@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import QWidget
 
 # Own Imports
 from kmap import __directory__
+from kmap.library.qwidgetsub import Tab
 from kmap.controller.sliceddatatab import SlicedDataTab
 from kmap.controller.orbitaldatatab import OrbitalDataTab
 
@@ -15,7 +16,7 @@ UI_file = __directory__ + '/ui/profileplottab.ui'
 ProfilePlotTab_UI, _ = uic.loadUiType(UI_file)
 
 
-class ProfilePlotTab(QWidget, ProfilePlotTab_UI):
+class ProfilePlotTab(Tab, ProfilePlotTab_UI):
 
     def __init__(self, tab_widget, *args, **kwargs):
 
@@ -113,6 +114,14 @@ class ProfilePlotTab(QWidget, ProfilePlotTab_UI):
             del self.show_options[index]
 
             self.refresh_plot()
+
+    def rename_loaded_tab(self, tab, new_name):
+        try:
+            index = self.tabs.index(tab)
+            self.tab_combobox.setItemText(index, new_name)
+
+        except ValueError:
+            pass
 
     def switch_type(self):
 

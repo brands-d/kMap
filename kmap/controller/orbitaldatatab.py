@@ -34,8 +34,6 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
 
     def __init__(self):
 
-        self.title = None
-
         # Setup GUI
         super(OrbitalDataTab, self).__init__()
         self.setupUi(self)
@@ -144,14 +142,6 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         current_ID = self.mini_3Dkspace_plot.ID
         if current_ID is None or current_ID == ID:
             self.refresh_mini_plots(ID, orbital_changed=False)
-
-    def get_title(self):
-
-        return self.title
-
-    def set_title(self, title):
-
-        self.title = title
 
     def remove_orbital_by_ID(self, ID):
 

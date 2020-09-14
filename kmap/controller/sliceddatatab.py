@@ -28,7 +28,6 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
     def __init__(self, model):
 
         self.model = model
-        self.title = None
 
         # Setup GUI
         super(SlicedDataTab, self).__init__()
@@ -63,18 +62,10 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
 
         return cls(model)
 
-    def get_title(self):
-
-        return self.title
-
-    def set_title(self, title):
-
-        self.title = title
-
     def get_data(self):
 
         return self.model.data
-        
+
     def change_slice(self, index=-1):
 
         axis = self.slider.get_axis()

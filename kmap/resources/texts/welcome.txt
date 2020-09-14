@@ -11,7 +11,7 @@ orbitals from ARPES experiments and DFT calculations.</p>
 </li>
 <li><p>There are now settings files in the .ini format. Under Preferences, you will find the option to display and edit them right there in a simplified text editor. There is also the option to reload the settings during runtime! Already done actions won&#39;t be reversed but new actions should use the updated settings.</p>
 </li>
-<li><p>The code gets completely rewritten. Many of the features previously deemed too hard to implement retrospectively are now in mind during the new implementation. Additionally, this will make kMap much more robust, modular and future-proof. On the flip side, through heavy use of object orientation and class structure some people may find it more difficult to get into the code. The structure tries to stay as close as possible to common open source project standards and extensive documentation will be provided to ease this process.</p>
+<li><p>The code was completely rewritten. Many of the features previously deemed too hard to implement retrospectively are now in mind during the new implementation. Additionally, this will make kMap much more robust, modular and future-proof. On the flip side, through heavy use of object orientation and class structure some people may find it more difficult to get into the code. The structure tries to stay as close as possible to common open source project standards and extensive documentation will be provided to ease this process.</p>
 </li>
 <li><p>Last but not least, kMap comes with an ever-increasing number of unit tests. This will assist in making kMap more reliable and consistent.</p>
 </li>

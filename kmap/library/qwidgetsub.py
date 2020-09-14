@@ -55,12 +55,13 @@ class WeightSpinBox(QDoubleSpinBox):
         self.setAlignment(Qt.AlignHCenter)
         self.setObjectName('weight')
 
+
 class EnergySpinBox(QDoubleSpinBox):
 
     def __init__(self, *args, value=30, **kwargs):
 
         super(EnergySpinBox, self).__init__(*args, **kwargs)
-        
+
         self.setSuffix('  eV')
         self.setMinimum(5)
         self.setMaximum(150)
@@ -157,11 +158,17 @@ class Tab(QTabWidget):
 
     def __init__(self, *args, **kwargs):
 
+        self.title = None
+
         super(Tab, self).__init__(*args, **kwargs)
 
-    @abstractmethod
     def get_title(self):
-        pass
+
+        return self.title
+
+    def set_title(self, title):
+
+        self.title = title
 
     def closeEvent(self, event):
 
