@@ -21,6 +21,7 @@ LMFit_UI, _ = uic.loadUiType(UI_file)
 class LMFit(QWidget, LMFit_UI):
 
     fit_triggered = pyqtSignal()
+    region_changed = pyqtSignal()
 
     def __init__(self, sliced, orbitals):
 
@@ -164,3 +165,5 @@ class LMFit(QWidget, LMFit_UI):
     def _connect(self):
 
         self.fit_button.clicked.connect(self.fit_triggered.emit)
+        self.region_comboBox.currentIndexChanged.connect(
+            self.region_changed.emit)
