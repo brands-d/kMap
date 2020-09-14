@@ -91,24 +91,45 @@ class LMFit(QWidget, LMFit_UI):
 
         difference = sliced_data - param['c'].value - orbital_kmap
 
-        difference = self._cut_region(difference, crosshair)
+        difference = self.cut_region(difference, crosshair)
 
         return difference.data
 
-    def _cut_region(self, data, crosshair):
+    def cut_region(self, data, crosshair):
 
-        region, inverted = self._get_region()
+        region, inverted = self.get_region()
 
         if region == 'all':
             return data
 
         else:
-            cut_data = crosshair.cut_from_data(
+            cut_data = crosshair.model.cut_from_data(
                 data, region=region, inverted=inverted)
 
             return cut_data
 
-    def _get_region(self):
+    def set_region(self, region, inverted):
+
+        if inverted:
+            if region == 'roi':
+                index = 3
+
+            elif region == 'ring':
+                index = 4
+
+        else:
+            if region == 'roi':
+                index = 1
+
+            elif region == 'ring':
+                index = 2
+
+            else:
+                index = 0
+
+        self.region_comboBox.setCurrentIndex(index)
+
+    def get_region(self):
 
         text = self.region_comboBox.currentText()
 

@@ -3,7 +3,6 @@ import numpy as np
 from math import isclose
 
 
-
 def round_to(x, base):
 
     return base * round(x / base)
@@ -208,3 +207,9 @@ def compute_Euler_matrix(phi, theta, psi):
     return r
 
 
+def get_reduced_chi2(data, n):
+
+    N = np.count_nonzero(~np.isnan(data))
+    reduced_chi2 = np.nansum(data**2) / (N - n)
+
+    return reduced_chi2

@@ -12,6 +12,7 @@ from PyQt5.QtCore import QDir, pyqtSignal, Qt
 # Own Imports
 from kmap import __directory__
 from kmap.library.qwidgetsub import Tab
+from kmap.library.misc import get_reduced_chi2
 from kmap.controller.dataslider import DataSlider
 from kmap.model.lmfittab_model import LMFitTabModel
 from kmap.controller.colormap import Colormap
@@ -104,6 +105,7 @@ class LMFitBaseTab(Tab):
 
         else:
             data = sliced_data - sum_data - self.tree._get_background()
+            data = self.lmfit.cut_region(data, self.crosshair)
             level = np.nanmax(np.absolute(data.data))
 
         self.residual_plot.plot(data)
@@ -120,9 +122,8 @@ class LMFitBaseTab(Tab):
 
         else:
             n = self.tree.get_number_variables()
-            N = np.count_nonzero(~np.isnan(residual.data))
+            reduced_chi2 = get_reduced_chi2(residual.data, n)
 
-            reduced_chi2 = np.nansum(residual.data**2) / (N - n)
             self.chi2_value.setText('%.3f' % reduced_chi2)
 
     def crosshair_changed(self):
@@ -142,6 +143,7 @@ class LMFitBaseTab(Tab):
         self.colormap = Colormap(
             [self.sliced_plot, self.selected_plot, self.sum_plot])
         self.interpolation = Interpolation(force_interpolation=True)
+        self.lmfit = LMFit(self.model.sliced, self.model.orbitals)
         self.chi2_value = CenteredLabel('')
         self.chi2_label = CenteredLabel('Reduced Chi^2:')
         self.chi2_widget = QWidget()
@@ -167,7 +169,7 @@ class LMFitBaseTab(Tab):
 
 class LMFitTab(LMFitBaseTab, LMFitTab_UI):
 
-    fit_finished = pyqtSignal(MinimizerResult, tuple)
+    fit_finished = pyqtSignal(MinimizerResult, tuple, tuple)
 
     def __init__(self, sliced_data, orbitals):
 
@@ -195,14 +197,15 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
         axis_index = self.slider.get_axis()
         slice_index = self.slider.get_index()
         other_parameter = self.lmfitother.get_parameters()
+        region = self.lmfit.get_region()
 
         result = self.lmfit.fit(variables, parameters,
                                 self.interpolation,
                                 axis_index=axis_index,
                                 slice_index=slice_index,
-                                crosshair=self.crosshair.model)
+                                crosshair=self.crosshair)
 
-        self.fit_finished.emit(result, other_parameter)
+        self.fit_finished.emit(result, other_parameter, region)
 
     def _get_parameters(self, ID):
 
@@ -220,7 +223,6 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
 
         LMFitBaseTab._setup(self)
 
-        self.lmfit = LMFit(self.model.sliced, self.model.orbitals)
         self.lmfitother = LMFitOther()
         self.tree = LMFitTree(self.model.orbitals)
 
@@ -256,7 +258,7 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
         self.tree.value_changed.connect(self.refresh_sum_plot)
         self.tree.value_changed.connect(self.refresh_residual_plot)
         self.tree.vary_changed.connect(self.update_chi2_label)
-        
+
         self.lmfit.fit_triggered.connect(self.trigger_fit)
 
         self.lmfitother.value_changed.connect(self.refresh_selected_plot)

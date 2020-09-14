@@ -100,7 +100,6 @@ class TabWidget(QWidget, TabWidget_UI):
 
         self._open_tab(tab, title)
 
-
     def open_lmfit_tab(self, sliced_tab, orbital_tab):
 
         tab = LMFitTab(sliced_tab.get_data(), orbital_tab.get_orbitals())
@@ -108,12 +107,13 @@ class TabWidget(QWidget, TabWidget_UI):
 
         self._open_tab(tab, 'LM-Fit Tab')
 
-    def open_result_tab(self, result, other_parameter):
+    def open_result_tab(self, result, other_parameter, region):
 
         lmfit_tab = self.sender()
 
         tab = LMFitResultTab(result, other_parameter, lmfit_tab.model.sliced,
-                             lmfit_tab.model.orbitals)
+                             lmfit_tab.model.orbitals,
+                             region=region[0], inverted=region[1])
 
         current_time = datetime.datetime.now()
         title = 'Results (%i:%i)' % (current_time.hour, current_time.minute)

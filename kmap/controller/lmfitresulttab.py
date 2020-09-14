@@ -16,7 +16,8 @@ LMFitResultTab_UI, _ = uic.loadUiType(UI_file)
 
 class LMFitResultTab(LMFitBaseTab, LMFitResultTab_UI):
 
-    def __init__(self, result, other_parameter, sliced_data, orbitals):
+    def __init__(self, result, other_parameter, sliced_data,
+                 orbitals, region='all', inverted=False):
 
         self.model = LMFitTabModel(sliced_data, orbitals)
         self.result = result
@@ -27,7 +28,7 @@ class LMFitResultTab(LMFitBaseTab, LMFitResultTab_UI):
         super(LMFitResultTab, self).__init__()
         self.setupUi(self)
 
-        self._setup()
+        self._setup(region, inverted)
         self._connect()
 
         self.refresh_sliced_plot()
@@ -45,7 +46,7 @@ class LMFitResultTab(LMFitBaseTab, LMFitResultTab_UI):
 
         return parameters
 
-    def _setup(self):
+    def _setup(self, region, inverted):
 
         LMFitBaseTab._setup(self)
 
@@ -59,3 +60,5 @@ class LMFitResultTab(LMFitBaseTab, LMFitResultTab_UI):
         layout.insertWidget(3, self.crosshair)
 
         self.layout.insertWidget(1, self.tree)
+
+        self.lmfit.set_region(region, inverted)
