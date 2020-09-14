@@ -118,13 +118,13 @@ class LMFitBaseTab(Tab):
         residual = self.residual_plot.get_plot_data()
 
         if residual is None:
-            self.chi2_value.setText('')
+            self.residual_label.setText('Residual')
 
         else:
             n = self.tree.get_number_variables()
             reduced_chi2 = get_reduced_chi2(residual.data, n)
-
-            self.chi2_value.setText('%.3f' % reduced_chi2)
+            self.residual_label.setText('Residual (red. Chi^2: %.3E)'
+                                        % reduced_chi2)
 
     def crosshair_changed(self):
 
@@ -144,13 +144,6 @@ class LMFitBaseTab(Tab):
             [self.sliced_plot, self.selected_plot, self.sum_plot])
         self.interpolation = Interpolation(force_interpolation=True)
         self.lmfit = LMFit(self.model.sliced, self.model.orbitals)
-        self.chi2_value = CenteredLabel('')
-        self.chi2_label = CenteredLabel('Reduced Chi^2:')
-        self.chi2_widget = QWidget()
-        layout = QHBoxLayout()
-        self.chi2_widget.setLayout(layout)
-        layout.addWidget(self.chi2_label)
-        layout.addWidget(self.chi2_value)
 
         colormap = ColorMap(
             [0, 0.5, 1],
@@ -162,7 +155,7 @@ class LMFitBaseTab(Tab):
         self.crosshair.crosshair_changed.connect(self.crosshair_changed)
 
         self.lmfit.region_changed.connect(self.refresh_residual_plot)
-        
+
         self.slider.slice_changed.connect(self.refresh_sliced_plot)
         self.slider.axis_changed.connect(self.change_axis)
 
@@ -232,7 +225,6 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
         self.scroll_area.widget().setLayout(layout)
         layout.insertWidget(0, self.lmfit)
         layout.insertWidget(1, self.slider)
-        layout.insertWidget(2, self.chi2_widget)
         layout.insertWidget(3, self.lmfitother)
         layout.insertWidget(4, self.colormap)
         layout.insertWidget(5, self.crosshair)

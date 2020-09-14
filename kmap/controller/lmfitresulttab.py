@@ -55,7 +55,6 @@ class LMFitResultTab(LMFitBaseTab, LMFitResultTab_UI):
         layout = QVBoxLayout()
         self.scroll_area.widget().setLayout(layout)
         layout.insertWidget(0, self.slider)
-        layout.insertWidget(1, self.chi2_widget)
         layout.insertWidget(2, self.colormap)
         layout.insertWidget(3, self.crosshair)
 
