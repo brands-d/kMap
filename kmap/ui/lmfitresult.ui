@@ -44,7 +44,7 @@
       <item>
        <widget class="QPushButton" name="result_button">
         <property name="enabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="font">
          <font>
@@ -60,7 +60,7 @@
       <item>
        <widget class="QPushButton" name="plot_button">
         <property name="enabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="font">
          <font>
@@ -85,7 +85,7 @@
          </font>
         </property>
         <property name="text">
-         <string>Show Correlation</string>
+         <string>Print Correlation</string>
         </property>
        </widget>
       </item>

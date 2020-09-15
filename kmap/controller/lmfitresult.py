@@ -16,6 +16,10 @@ LMFitResult_UI, _ = uic.loadUiType(UI_file)
 
 class LMFitResult(QWidget, LMFitResult_UI):
 
+    print_triggered = pyqtSignal()
+    cov_matrix_requested = pyqtSignal()
+    plot_requested = pyqtSignal()
+    
     def __init__(self, results):
 
         self.results = results
@@ -23,6 +27,7 @@ class LMFitResult(QWidget, LMFitResult_UI):
         # Setup GUI
         super(LMFitResult, self).__init__()
         self.setupUi(self)
+        self._connect()
 
     def get_index(self, index):
 
@@ -31,3 +36,22 @@ class LMFitResult(QWidget, LMFitResult_UI):
 
         except IndexError:
             return self.results[0]
+
+    def get_fit_report(self, index):
+
+        result = self.get_index(index)
+
+        return fit_report(result)
+
+    def get_covariance_matrix(self, index):
+
+        result = self.get_index(index)
+        # MinimizerResult has no covar?
+        pass
+        return result.covar
+
+    def _connect(self):
+
+        self.result_button.clicked.connect(self.print_triggered.emit)
+        self.correlation_button.clicked.connect(self.cov_matrix_requested.emit)
+        self.plot_button.clicked.connect(self.plot_requested.emit)

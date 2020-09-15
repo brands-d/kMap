@@ -14,6 +14,7 @@ from kmap.controller.sliceddatatab import SlicedDataTab
 from kmap.controller.orbitaldatatab import OrbitalDataTab
 from kmap.controller.profileplottab import ProfilePlotTab
 from kmap.controller.renametabwindow import RenameTabWindow
+from kmap.controller.lmfitplottab import LMFitPlotTab
 from kmap.controller.lmfittab import LMFitTab
 from kmap.controller.lmfitresulttab import LMFitResultTab
 from kmap.controller.filetab import FileViewerTab, FileEditorTab
@@ -114,9 +115,17 @@ class TabWidget(QWidget, TabWidget_UI):
         tab = LMFitResultTab(results, other_parameter, lmfit_tab.model.sliced,
                              lmfit_tab.model.orbitals,
                              region=region[0], inverted=region[1])
+        tab.open_plot_tab.connect(self.open_lmfit_plot_tab)
 
         current_time = datetime.datetime.now()
         title = 'Results (%i:%i)' % (current_time.hour, current_time.minute)
+        tab.set_title(title)
+        self._open_tab(tab, title)
+
+    def open_lmfit_plot_tab(self, results, orbitals):
+
+        tab = LMFitPlotTab(results, orbitals)
+        title = 'Plot'
         tab.set_title(title)
         self._open_tab(tab, title)
 
