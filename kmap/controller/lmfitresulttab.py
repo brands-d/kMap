@@ -17,6 +17,8 @@ LMFitResultTab_UI, _ = uic.loadUiType(UI_file)
 
 class LMFitResultTab(LMFitBaseTab, LMFitResultTab_UI):
 
+    open_plot_tab = pyqtSignal(list, list)
+
     def __init__(self, results, other_parameter, sliced_data,
                  orbitals, region='all', inverted=False):
 
@@ -41,6 +43,24 @@ class LMFitResultTab(LMFitBaseTab, LMFitResultTab_UI):
 
         self.tree.update_result(self.result.get_index(index))
 
+    def print_result(self):
+
+        index = self.slider.get_index()
+        report = self.result.get_fit_report(index)
+
+        print(report)
+
+    def print_covariance_matrix(self):
+
+        index = self.slider.get_index()
+        cov_matrix = self.result.get_covariance_matrix(index)
+
+        print(cov_matrix)
+
+    def plot(self):
+
+        self.open_plot_tab.emit(self.result.results, self.model.orbitals)
+
     def _get_parameters(self, ID):
 
         orbital_param = self.tree.get_orbital_parameters(ID)
@@ -63,8 +83,9 @@ class LMFitResultTab(LMFitBaseTab, LMFitResultTab_UI):
         layout = QVBoxLayout()
         self.scroll_area.widget().setLayout(layout)
         layout.insertWidget(0, self.slider)
-        layout.insertWidget(2, self.colormap)
-        layout.insertWidget(3, self.crosshair)
+        layout.insertWidget(1, self.result)
+        layout.insertWidget(3, self.colormap)
+        layout.insertWidget(4, self.crosshair)
 
         self.layout.insertWidget(1, self.tree)
 
@@ -73,5 +94,8 @@ class LMFitResultTab(LMFitBaseTab, LMFitResultTab_UI):
     def _connect(self):
 
         self.slider.slice_changed.connect(self.update_result_tree)
-        
+        self.result.print_triggered.connect(self.print_result)
+        self.result.cov_matrix_requested.connect(self.print_covariance_matrix)
+        self.result.plot_requested.connect(self.plot)
+
         LMFitBaseTab._connect(self)
