@@ -9,6 +9,7 @@ from kmap.controller.lmfittab import LMFitBaseTab
 from kmap.model.lmfittab_model import LMFitTabModel
 from kmap.controller.lmfittree import LMFitResultTree
 from kmap.controller.lmfitresult import LMFitResult
+from kmap.library.axis import Axis
 
 # Load .ui File
 UI_file = __directory__ + QDir.toNativeSeparators('/ui/lmfittab.ui')
@@ -17,13 +18,14 @@ LMFitResultTab_UI, _ = uic.loadUiType(UI_file)
 
 class LMFitResultTab(LMFitBaseTab, LMFitResultTab_UI):
 
-    open_plot_tab = pyqtSignal(list, list)
+    open_plot_tab = pyqtSignal(list, list, Axis)
 
-    def __init__(self, results, other_parameter, sliced_data,
+    def __init__(self, results, other_parameter, meta_parameter, sliced_data,
                  orbitals, region='all', inverted=False):
 
         self.model = LMFitTabModel(sliced_data, orbitals)
         self.other_parameter = other_parameter
+        self.meta_parameter = meta_parameter
         self.title = 'Results'
 
         # Setup GUI
@@ -59,7 +61,8 @@ class LMFitResultTab(LMFitBaseTab, LMFitResultTab_UI):
 
     def plot(self):
 
-        self.open_plot_tab.emit(self.result.results, self.model.orbitals)
+        self.open_plot_tab.emit(self.result.results, self.model.orbitals,
+                                self.model.sliced.axes[self.meta_parameter[2]])
 
     def _get_parameters(self, ID):
 
@@ -76,7 +79,7 @@ class LMFitResultTab(LMFitBaseTab, LMFitResultTab_UI):
 
         LMFitBaseTab._setup(self)
 
-        self.result = LMFitResult(results)
+        self.result = LMFitResult(results, *self.meta_parameter[:2])
         self.tree = LMFitResultTree(
             self.model.orbitals, self.result.get_index(0))
 

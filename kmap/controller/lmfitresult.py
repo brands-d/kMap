@@ -19,14 +19,15 @@ class LMFitResult(QWidget, LMFitResult_UI):
     print_triggered = pyqtSignal()
     cov_matrix_requested = pyqtSignal()
     plot_requested = pyqtSignal()
-    
-    def __init__(self, results):
+
+    def __init__(self, results, type_, slice_index):
 
         self.results = results
 
         # Setup GUI
         super(LMFitResult, self).__init__()
         self.setupUi(self)
+        self._setup(type_, slice_index)
         self._connect()
 
     def get_index(self, index):
@@ -49,6 +50,16 @@ class LMFitResult(QWidget, LMFitResult_UI):
         # MinimizerResult has no covar?
         pass
         return result.covar
+
+    def _setup(self, type_, slice_index):
+
+        if type_ == 'Only One Slice':
+            type_ = '%s (%i)' % (type_, slice_index)
+
+        if type_ != 'All Slices Individually':
+            self.plot_button.setEnabled(False)
+
+        self.type_label.setText(type_)
 
     def _connect(self):
 

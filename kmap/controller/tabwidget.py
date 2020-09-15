@@ -108,11 +108,13 @@ class TabWidget(QWidget, TabWidget_UI):
 
         self._open_tab(tab, 'LM-Fit Tab')
 
-    def open_result_tab(self, results, other_parameter, region):
+    def open_result_tab(self, results, other_parameter,
+                        meta_parameter, region):
 
         lmfit_tab = self.sender()
 
-        tab = LMFitResultTab(results, other_parameter, lmfit_tab.model.sliced,
+        tab = LMFitResultTab(results, other_parameter, meta_parameter,
+                             lmfit_tab.model.sliced,
                              lmfit_tab.model.orbitals,
                              region=region[0], inverted=region[1])
         tab.open_plot_tab.connect(self.open_lmfit_plot_tab)
@@ -122,9 +124,9 @@ class TabWidget(QWidget, TabWidget_UI):
         tab.set_title(title)
         self._open_tab(tab, title)
 
-    def open_lmfit_plot_tab(self, results, orbitals):
+    def open_lmfit_plot_tab(self, results, orbitals, axis):
 
-        tab = LMFitPlotTab(results, orbitals)
+        tab = LMFitPlotTab(results, orbitals, axis)
         title = 'Plot'
         tab.set_title(title)
         self._open_tab(tab, title)
