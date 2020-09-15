@@ -197,7 +197,7 @@ class BackgroundTreeItem(DataTreeItem):
         super()._setup(tree)
 
         self.initial_spinbox = WeightSpinBox(value=0)
-        self.min_spinbox = WeightSpinBox(value=-99999.9)
+        self.min_spinbox = WeightSpinBox(value=0)
         self.max_spinbox = WeightSpinBox(value=99999.9)
 
         self.name_label.setText('Background')

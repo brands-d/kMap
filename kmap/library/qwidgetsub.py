@@ -46,7 +46,7 @@ class WeightSpinBox(QDoubleSpinBox):
 
         super(WeightSpinBox, self).__init__(*args, **kwargs)
 
-        self.setMinimum(-99999.9)
+        self.setMinimum(0)
         self.setMaximum(99999.9)
         self.setValue(value)
         self.setDecimals(1)

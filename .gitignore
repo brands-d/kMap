@@ -145,6 +145,4 @@ report.tar.gz
 
 # Other
 /src
-example/demo_pyqtgraph.py
-example/test_pyqtgraph.py
-example/view_content_of_old_hdf5.py
+example/testing
