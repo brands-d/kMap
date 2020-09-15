@@ -163,7 +163,7 @@ class LMFitBaseTab(Tab):
 
 class LMFitTab(LMFitBaseTab, LMFitTab_UI):
 
-    fit_finished = pyqtSignal(list, tuple, tuple)
+    fit_finished = pyqtSignal(list, tuple, tuple, tuple)
 
     def __init__(self, sliced_data, orbitals):
 
@@ -193,13 +193,16 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
         other_parameter = self.lmfitother.get_parameters()
         region = self.lmfit.get_region()
 
-        result = self.lmfit.fit(variables, parameters,
-                                self.interpolation,
-                                axis_index=axis_index,
-                                slice_index=slice_index,
-                                crosshair=self.crosshair)
+        result, type_ = self.lmfit.fit(variables, parameters,
+                                       self.interpolation,
+                                       axis_index=axis_index,
+                                       slice_index=slice_index,
+                                       crosshair=self.crosshair)
 
-        self.fit_finished.emit(result, other_parameter, region)
+        meta_parameter = (type_, slice_index, axis_index)
+
+        self.fit_finished.emit(result, other_parameter,
+                               meta_parameter, region)
 
     def _get_parameters(self, ID):
 

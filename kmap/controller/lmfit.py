@@ -48,6 +48,7 @@ class LMFit(QWidget, LMFit_UI):
                                                  interpolator,
                                                  sliced_data,
                                                  region, crosshair))
+            type_ = 'Only One Slice'
 
         elif type_ == 1:
             for index in range(self.sliced.axes[axis_index].num):
@@ -58,6 +59,7 @@ class LMFit(QWidget, LMFit_UI):
                                                      interpolator,
                                                      sliced_data,
                                                      region, crosshair))
+            type_ = 'All Slices Individually'
 
         else:
             data = np.nansum(self.sliced.data, axis=axis_index)
@@ -67,8 +69,9 @@ class LMFit(QWidget, LMFit_UI):
                                                  interpolator,
                                                  sliced_data,
                                                  region, crosshair))
+            type_ = 'All Slices Combined'
 
-        return results
+        return results, type_
 
     def fit_single_slice(self, variables, parameters, interpolator,
                          sliced_data, region = 'all',
