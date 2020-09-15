@@ -6,66 +6,71 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>784</width>
-    <height>382</height>
+    <width>1353</width>
+    <height>706</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QTreeWidget" name="tree">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>889</width>
-     <height>422</height>
-    </rect>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <property name="topMargin">
+    <number>0</number>
    </property>
-   <property name="horizontalScrollBarPolicy">
-    <enum>Qt::ScrollBarAlwaysOff</enum>
+   <property name="rightMargin">
+    <number>0</number>
    </property>
-   <property name="alternatingRowColors">
-    <bool>true</bool>
+   <property name="bottomMargin">
+    <number>0</number>
    </property>
-   <property name="verticalScrollMode">
-    <enum>QAbstractItemView::ScrollPerPixel</enum>
-   </property>
-   <property name="columnCount">
-    <number>5</number>
-   </property>
-   <attribute name="headerMinimumSectionSize">
-    <number>10</number>
-   </attribute>
-   <attribute name="headerStretchLastSection">
-    <bool>false</bool>
-   </attribute>
-   <column>
-    <property name="text">
-     <string>ID</string>
-    </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>Parameter</string>
-    </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>Alias</string>
-    </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>Result</string>
-    </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>Uncertainty</string>
-    </property>
-   </column>
-  </widget>
+   <item>
+    <widget class="QTreeWidget" name="tree">
+     <property name="horizontalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOff</enum>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
+     <property name="verticalScrollMode">
+      <enum>QAbstractItemView::ScrollPerPixel</enum>
+     </property>
+     <property name="columnCount">
+      <number>5</number>
+     </property>
+     <attribute name="headerMinimumSectionSize">
+      <number>10</number>
+     </attribute>
+     <attribute name="headerStretchLastSection">
+      <bool>false</bool>
+     </attribute>
+     <column>
+      <property name="text">
+       <string>ID</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Parameter</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Alias</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Result</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Uncertainty</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>
