@@ -77,8 +77,14 @@ class LMFit(QWidget, LMFit_UI):
                          sliced_data, region = 'all',
                          crosshair = None):
 
-        sliced_data=interpolator.interpolate(sliced_data)
-        sliced_data=interpolator.smooth(sliced_data)
+        kx_min, kx_max = sliced_data.x_axis[0], sliced_data.x_axis[-1]
+        ky_min, ky_max = sliced_data.y_axis[0], sliced_data.y_axis[-1]
+        dk = parameters[3]
+        kx = np.arange(kx_min, kx_max, dk)
+        ky = np.arange(ky_min, ky_max, dk)
+        sliced_data.interpolate(kx,ky,update=True)
+#        sliced_data=interpolator.interpolate(sliced_data)
+#        sliced_data=interpolator.smooth(sliced_data)
 
         lmfit_param=Parameters()
 
@@ -94,10 +100,12 @@ class LMFit(QWidget, LMFit_UI):
         method=self._get_method()
 
         start_time = timeit.default_timer()
+ #       print(parameters)
+ #       print(sliced_data.step_size)
 
         result=minimize(self.chi2, lmfit_param,
                           args=(sliced_data, parameters,
-                                interpolator, crosshair),
+                                kx, ky, crosshair),
                           nan_policy='omit',
                           method=method,
                           xtol=1e-11)
@@ -107,16 +115,17 @@ class LMFit(QWidget, LMFit_UI):
 
         return result
 
-    def chi2(self, param, sliced_data, other_params, interpolator, crosshair):
+    def chi2(self, param, sliced_data, other_params, kx, ky, crosshair):
 
         orbital_kmaps = []
 
-        start_time = timeit.default_timer()
+#        start_time = timeit.default_timer()
+
         for orbital in self.orbitals:
             ID = orbital.ID
 
             kmap = orbital.get_kmap(E_kin=param['E_kin'].value,
-                                    dk=other_params[3],
+                                    dk=(kx, ky),
                                     phi=param['phi_' + str(ID)].value,
                                     theta=param['theta_' + str(ID)].value,
                                     psi=param['psi_' + str(ID)].value,
@@ -130,26 +139,12 @@ class LMFit(QWidget, LMFit_UI):
 
         orbital_kmap = np.sum(orbital_kmaps)
 
-        end_time = timeit.default_timer()
-        print('get_kmap = ',end_time - start_time)
-
-        orbital_kmap = interpolator.interpolate(orbital_kmap)
-
-        start_time = timeit.default_timer()
-        print('interpolate = ',start_time - end_time)
-
-        orbital_kmap = interpolator.smooth(orbital_kmap)
-
-        end_time = timeit.default_timer()
-        print('smooth = ',end_time - start_time)
-
+#        end_time = timeit.default_timer()
+#        print('get_kmap = ',end_time - start_time)
 
         difference = sliced_data - param['c'].value - orbital_kmap
 
         difference = self.cut_region(difference, crosshair)
-
-        start_time = timeit.default_timer()
-        print('difference = ',start_time - end_time)
 
         return difference.data
 

@@ -197,15 +197,23 @@ class Orbital():
     def set_kinetic_energy(self, E_kin, dk):
 
         kmax = energy_to_k(E_kin)
-        num_k = int(2 * kmax / dk)
-        kxi = np.linspace(-kmax, +kmax, num_k)
-        kyi = np.linspace(-kmax, +kmax, num_k)
+        if type(dk) == tuple:
+            kxi = dk[0]
+            kyi = dk[1]
+            num_kx = len(kxi)
+            num_ky = len(kyi)
+        else:
+            num_kx = int(2 * kmax / dk)
+            num_ky = int(2 * kmax / dk)
+            kxi = np.linspace(-kmax, +kmax, num_kx)
+            kyi = np.linspace(-kmax, +kmax, num_ky)
+
         krange = ((kxi[0], kxi[-1]), (kyi[0], kyi[-1]))
         KX, KY = np.meshgrid(kxi, kyi, indexing='xy')
         KZ = np.sqrt(kmax**2 - KX**2 - KY**2)
         kxkykz = list(map(lambda a, b, c: (a, b, c),
                           KX.flatten(), KY.flatten(), KZ.flatten()))
-        data = np.reshape(self.psik['data_interp'](kxkykz), (num_k, num_k))
+        data = np.reshape(self.psik['data_interp'](kxkykz), (num_kx, num_ky))
 
         # Set kmap attributes
         self.kmap = {'E_kin': E_kin, 'dk': dk, 'krange': krange,
@@ -216,13 +224,24 @@ class Orbital():
     def check_new_cut(self, E_kin, dk):
 
         eps = 1e-10
-        if 'E_kin' in self.kmap:
-            if (np.abs(self.kmap['E_kin'] - E_kin) > eps or 
-                np.abs(self.kmap['dk']    - dk)    > eps):
-                  new_cut = True
 
+        if 'E_kin' in self.kmap:
+        
+            if type(dk) != tuple and type(self.kmap['dk']) != tuple:
+
+                if (np.abs(self.kmap['E_kin'] - E_kin) > eps or 
+                    np.abs(self.kmap['dk']    - dk)    > eps):
+                    new_cut = True
+
+                else:
+                    new_cut = False
+
+            elif type(self.kmap['dk']) != type(dk):
+                new_cut = True
+            
             else:
-                  new_cut = False
+                new_cut = False
+
         else:
             new_cut = True
 
