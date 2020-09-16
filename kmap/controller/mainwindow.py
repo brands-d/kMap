@@ -247,12 +247,25 @@ class MainWindow(QMainWindow, MainWindow_UI):
                                                      orbital_tabs)
             self.tab_choose_window.tabs_chosen.connect(self.open_lmfit_tab)
 
-
     def open_in_matplotlib(self):
 
         current_tab = self.tab_widget.get_current_tab()
+
         if hasattr(current_tab, 'display_in_matplotlib'):
             current_tab.display_in_matplotlib()
+
+    def export_to_txt(self):
+
+        current_tab = self.tab_widget.get_current_tab()
+
+        if hasattr(current_tab, 'export_to_txt'):
+            text = current_tab.export_to_txt()
+
+            file_name, _ = QFileDialog.getSaveFileName(self, 'Save .txt File')
+            print(file_name)
+            with open(file_name, 'w') as file:
+                file.write(text)
+
 
     def reload_settings(self):
         # Reload the settings
@@ -316,6 +329,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
         self.log_file_action.triggered.connect(self.open_log_file)
         self.mod_log_file_action.triggered.connect(self.open_mod_log_file)
         self.show_matplotlib.triggered.connect(self.open_in_matplotlib)
+        self.export_txt.triggered.connect(self.export_to_txt)
 
         # Tabs menu
         self.open_sim_tab_action.triggered.connect(self.open_orbital_data_tab)
