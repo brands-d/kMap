@@ -97,6 +97,7 @@ class LMFitResultTab(LMFitBaseTab, LMFitResultTab_UI):
     def _connect(self):
 
         self.slider.slice_changed.connect(self.update_result_tree)
+
         self.result.print_triggered.connect(self.print_result)
         self.result.cov_matrix_requested.connect(self.print_covariance_matrix)
         self.result.plot_requested.connect(self.plot)
