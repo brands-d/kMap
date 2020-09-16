@@ -65,7 +65,7 @@
      </column>
      <column>
       <property name="text">
-       <string>Uncertainty</string>
+       <string>Std. Dev.</string>
       </property>
      </column>
     </widget>
