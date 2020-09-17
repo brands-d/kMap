@@ -27,6 +27,17 @@ class LMFitPlotTab(Tab, LMFitPlotTab_UI):
 
         self.refresh_plot()
 
+    def export_to_txt(self):
+
+        data = self.plot_item.get_data()
+
+        text = 'name,x,y\n'
+
+        for data_set in data:
+            text += '{name},{x},{y}\n'.format(**data_set)              
+
+        return text
+        
     def refresh_plot(self):
 
         possible_params = ['w_', 'phi_', 'theta_', 'psi_']

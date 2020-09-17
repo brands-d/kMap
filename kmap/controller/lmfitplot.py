@@ -16,6 +16,18 @@ class LMFitPlot(PlotWidget):
 
         self.plot_item.clear()
 
+
+    def get_data(self):
+
+        data_sets = []
+
+        for item in self.plot_item.listDataItems():
+            name = item.name()
+            x, y = item.getData()
+            data_sets.append({'name': name, 'x': x, 'y': y})
+
+        return data_sets
+        
     def plot(self, x, y, title):
 
         index = len(self.plot_item.listDataItems())

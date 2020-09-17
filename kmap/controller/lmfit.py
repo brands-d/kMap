@@ -4,6 +4,7 @@ from itertools import chain
 # Third Party Imports
 from lmfit import minimize, Parameters
 import numpy as np
+import timeit
 
 # PyQt5 Imports
 from PyQt5 import uic
@@ -92,11 +93,17 @@ class LMFit(QWidget, LMFit_UI):
 
         method=self._get_method()
 
+        start_time = timeit.default_timer()
+
         result=minimize(self.chi2, lmfit_param,
                           args=(sliced_data, parameters,
                                 interpolator, crosshair),
                           nan_policy='omit',
-                          method=method)
+                          method=method,
+                          xtol=1e-11)
+
+        end_time = timeit.default_timer()
+        print('minimize = ',end_time - start_time)
 
         return result
 
@@ -104,6 +111,7 @@ class LMFit(QWidget, LMFit_UI):
 
         orbital_kmaps = []
 
+        start_time = timeit.default_timer()
         for orbital in self.orbitals:
             ID = orbital.ID
 
@@ -122,12 +130,26 @@ class LMFit(QWidget, LMFit_UI):
 
         orbital_kmap = np.sum(orbital_kmaps)
 
+        end_time = timeit.default_timer()
+        print('get_kmap = ',end_time - start_time)
+
         orbital_kmap = interpolator.interpolate(orbital_kmap)
+
+        start_time = timeit.default_timer()
+        print('interpolate = ',start_time - end_time)
+
         orbital_kmap = interpolator.smooth(orbital_kmap)
+
+        end_time = timeit.default_timer()
+        print('smooth = ',end_time - start_time)
+
 
         difference = sliced_data - param['c'].value - orbital_kmap
 
         difference = self.cut_region(difference, crosshair)
+
+        start_time = timeit.default_timer()
+        print('difference = ',start_time - end_time)
 
         return difference.data
 

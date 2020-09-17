@@ -50,6 +50,7 @@ class ProfilePlotTab(Tab, ProfilePlotTab_UI):
             bottom_label, left_label = tab.get_plot_labels()
             crosshair = tab.get_crosshair().model
             title = tab.get_title()
+            x_label = ''
 
             if is_line_plot and show_options[0]:
                 self.plot_item.plot(data, title, crosshair, region='x',
@@ -102,6 +103,17 @@ class ProfilePlotTab(Tab, ProfilePlotTab_UI):
             self.tab_combobox.blockSignals(False)
             self.tabs.append(tab)
             self.show_options.append(5 * [False])
+
+    def export_to_txt(self):
+
+        data = self.plot_item.get_data()
+
+        text = 'name,x,y\n'
+
+        for data_set in data:
+            text += '{name},{x},{y}\n'.format(**data_set)              
+
+        return text
 
     def _remove_tab(self):
 

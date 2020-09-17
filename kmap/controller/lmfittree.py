@@ -10,8 +10,8 @@ from PyQt5.QtWidgets import QWidget, QHeaderView, QHBoxLayout, QSizePolicy
 from kmap import __directory__
 from kmap.controller.orbitaltablerow import OrbitalTableRow
 from kmap.controller.lmfittreeitems import (
-    OrbitalTreeItem, OtherTreeItem,
-    DataTreeItem, OtherResultTreeItem, OrbitalResultTreeItem)
+    OrbitalTreeItem, OtherTreeItem, DataTreeItem,
+    OtherResultTreeItem, OrbitalResultTreeItem, DataResultTreeItem)
 
 # Load .ui File
 UI_file = __directory__ + QDir.toNativeSeparators('/ui/lmfittree.ui')
