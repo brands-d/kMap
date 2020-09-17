@@ -63,8 +63,9 @@ class LMFit(QWidget, LMFit_UI):
 
         else:
             data = np.nansum(self.sliced.data, axis=axis_index)
-            range_ = [axis.range for i, axis in enumerate(self.sliced.axes) if i != axis_index]
-            sliced_data=PlotData(data, range_)
+            range_ = [axis.range for i, axis in enumerate(
+                self.sliced.axes) if i != axis_index]
+            sliced_data = PlotData(data, range_)
             results.append(self.fit_single_slice(variables, parameters,
                                                  interpolator,
                                                  sliced_data,
@@ -74,44 +75,35 @@ class LMFit(QWidget, LMFit_UI):
         return results, type_
 
     def fit_single_slice(self, variables, parameters, interpolator,
-                         sliced_data, region = 'all',
-                         crosshair = None):
+                         sliced_data, region='all',
+                         crosshair=None):
 
         kx_min, kx_max = sliced_data.x_axis[0], sliced_data.x_axis[-1]
         ky_min, ky_max = sliced_data.y_axis[0], sliced_data.y_axis[-1]
         dk = parameters[3]
         kx = np.arange(kx_min, kx_max, dk)
         ky = np.arange(ky_min, ky_max, dk)
-        sliced_data.interpolate(kx,ky,update=True)
-#        sliced_data=interpolator.interpolate(sliced_data)
-#        sliced_data=interpolator.smooth(sliced_data)
+        sliced_data.interpolate(kx, ky, update=True)
 
-        lmfit_param=Parameters()
+        lmfit_param = Parameters()
 
         for parameter in chain(*variables):
-            name, vary, value, min_, max_, expr=parameter
+            name, vary, value, min_, max_, expr = parameter
 
             if expr == '':
-                expr=None
+                expr = None
 
-            lmfit_param.add(name, value = value, min = min_,
-                            max = max_, vary = vary, expr = expr)
+            lmfit_param.add(name, value=value, min=min_,
+                            max=max_, vary=vary, expr=expr)
 
-        method=self._get_method()
+        method = self._get_method()
 
-        start_time = timeit.default_timer()
- #       print(parameters)
- #       print(sliced_data.step_size)
-
-        result=minimize(self.chi2, lmfit_param,
+        result = minimize(self.chi2, lmfit_param,
                           args=(sliced_data, parameters,
                                 kx, ky, crosshair),
                           nan_policy='omit',
                           method=method,
                           xtol=1e-11)
-
-        end_time = timeit.default_timer()
-        print('minimize = ',end_time - start_time)
 
         return result
 
