@@ -57,6 +57,7 @@
       <string>Export</string>
      </property>
      <addaction name="show_matplotlib"/>
+     <addaction name="export_txt"/>
     </widget>
     <widget class="QMenu" name="log_menu">
      <property name="title">
@@ -227,6 +228,16 @@
   <action name="rename_current_tab_action">
    <property name="text">
     <string>Rename current Tab</string>
+   </property>
+  </action>
+  <action name="export_txt">
+   <property name="text">
+    <string>Textfile</string>
+   </property>
+   <property name="toolTip">
+    <string>Exports the contents of the current tab, if possible, as .txt file.
+
+Currently the profile plot and the lmfit plot tab support this feature.</string>
    </property>
   </action>
  </widget>

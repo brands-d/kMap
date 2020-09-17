@@ -288,7 +288,8 @@ class OtherResultTreeItem(LMFitResultTreeItem):
 
         for child, param in zip(self.children, params):
             value = result.params[param].value
-            child.update_value(value)
+            error = result.params[param].stderr
+            child.update_value(value, error)
 
     def _setup(self, tree, result):
 
@@ -297,16 +298,20 @@ class OtherResultTreeItem(LMFitResultTreeItem):
         tree.setItemWidget(self, 1, self.name_label)
 
         value = result.params['alpha_'].value
-        self.alpha = AngleResultTreeItem(self, tree, '', 'Alpha', value)
+        error = result.params['alpha_'].stderr
+        self.alpha = AngleResultTreeItem(self, tree, '', 'Alpha', value, error)
 
         value = result.params['beta_'].value
-        self.beta = AngleResultTreeItem(self, tree, '', 'Beta', value)
+        error = result.params['beta_'].stderr
+        self.beta = AngleResultTreeItem(self, tree, '', 'Beta', value, error)
 
         value = result.params['c'].value
-        self.background = BackgroundResultTreeItem(self, tree, value)
+        error = result.params['c'].stderr
+        self.background = BackgroundResultTreeItem(self, tree, value, error)
 
         value = result.params['E_kin'].value
-        self.energy = EnergyResultTreeItem(self, tree, value)
+        error = result.params['E_kin'].stderr
+        self.energy = EnergyResultTreeItem(self, tree, value, error)
 
         self.children = [self.alpha, self.beta, self.background, self.energy]
 
@@ -325,7 +330,8 @@ class OrbitalResultTreeItem(LMFitResultTreeItem):
 
         for child, param in zip(self.children, params):
             value = result.params[param + str(self.ID)].value
-            child.update_value(value)
+            error = result.params[param + str(self.ID)].stderr
+            child.update_value(value, error)
 
     def get_parameters(self):
 
@@ -348,17 +354,24 @@ class OrbitalResultTreeItem(LMFitResultTreeItem):
         tree.setItemWidget(self, 1, self.name_label)
 
         value = result.params['w_%i' % self.ID].value
-        self.weight = WeightResultTreeItem(self, tree, orbital.ID, value)
+        error = result.params['w_%i' % self.ID].stderr
+        self.weight = WeightResultTreeItem(
+            self, tree, orbital.ID, value, error)
 
         value = result.params['phi_%i' % self.ID].value
-        self.phi = AngleResultTreeItem(self, tree, orbital.ID, 'Phi', value)
+        error = result.params['phi_%i' % self.ID].stderr
+        self.phi = AngleResultTreeItem(
+            self, tree, orbital.ID, 'Phi', value, error)
 
         value = result.params['theta_%i' % self.ID].value
+        error = result.params['theta_%i' % self.ID].stderr
         self.theta = AngleResultTreeItem(
-            self, tree, orbital.ID, 'Theta', value)
+            self, tree, orbital.ID, 'Theta', value, error)
 
         value = result.params['psi_%i' % self.ID].value
-        self.psi = AngleResultTreeItem(self, tree, orbital.ID, 'Psi', value)
+        error = result.params['psi_%i' % self.ID].stderr
+        self.psi = AngleResultTreeItem(
+            self, tree, orbital.ID, 'Psi', value, error)
 
         self.children = [self.weight, self.phi, self.theta, self.psi]
 
@@ -373,63 +386,70 @@ class DataResultTreeItem(LMFitResultTreeItem):
 
         self.name_label = CenteredLabel('')
         self.alias_label = CenteredLabel('')
+        self.result = CenteredLabel('')
+        self.error = CenteredLabel('')
 
         tree.setItemWidget(self, 1, self.name_label)
         tree.setItemWidget(self, 2, self.alias_label)
+        tree.setItemWidget(self, 3, self.result)
+        tree.setItemWidget(self, 4, self.error)
+
+    def update_value(self, value, error):
+
+        value = '%.{0}f%s'.format(self.decimals) % (value, self.units)
+
+        if error is None:
+            error = '-'
+
+        else:
+            error = '%.{0}f%s'.format(self.decimals) % (error, self.units)
+
+        self.result.setText(value)
+        self.error.setText(error)
 
 
 class AngleResultTreeItem(DataResultTreeItem):
 
-    def __init__(self, parent, tree, ID, angle, value):
+    def __init__(self, parent, tree, ID, angle, value, error):
+
+        self.units = '°'
+        self.decimals = 3
 
         super().__init__(parent)
 
-        self._setup(tree, ID, angle, value)
+        self._setup(tree, ID, angle, value, error)
 
     def get_parameters(self):
 
         return float(self.result.text()[:-1])
 
-    def update_value(self, value):
-
-        self.result.setText('%.3f°' % value)
-
-    def _setup(self, tree, ID, angle, value):
+    def _setup(self, tree, ID, angle, value, error):
 
         super()._setup(tree)
 
-        self.result = QLabel('%.3f°' % value)
-        self.result.setAlignment(Qt.AlignHCenter)
-
+        self.update_value(value, error)
         self.name_label.setText(angle)
         self.alias_label.setText('%s_%s' % (angle.lower(), ID))
-
-        tree.setItemWidget(self, 3, self.result)
 
 
 class BackgroundResultTreeItem(DataResultTreeItem):
 
-    def __init__(self, parent, tree, value):
+    def __init__(self, parent, tree, value, error):
+
+        self.units = ''
+        self.decimals = 1
 
         super().__init__(parent)
 
-        self._setup(tree, value)
+        self._setup(tree, value, error)
 
-    def update_value(self, value):
-
-        self.result.setText('%.1f' % value)
-
-    def _setup(self, tree, value):
+    def _setup(self, tree, value, error):
 
         super()._setup(tree)
 
-        self.result = QLabel('%.1f' % value)
-        self.result.setAlignment(Qt.AlignHCenter)
-
+        self.update_value(value, error)
         self.name_label.setText('Background')
         self.alias_label.setText('c')
-
-        tree.setItemWidget(self, 3, self.result)
 
     def get_parameters(self):
 
@@ -438,27 +458,22 @@ class BackgroundResultTreeItem(DataResultTreeItem):
 
 class EnergyResultTreeItem(DataResultTreeItem):
 
-    def __init__(self, parent, tree, value):
+    def __init__(self, parent, tree, value, error):
+
+        self.units = ' eV'
+        self.decimals = 2
 
         super().__init__(parent)
 
-        self._setup(tree, value)
+        self._setup(tree, value, error)
 
-    def update_value(self, value):
-
-        self.result.setText('%.2f eV' % value)
-
-    def _setup(self, tree, value):
+    def _setup(self, tree, value, error):
 
         super()._setup(tree)
 
-        self.result = QLabel('%.2f eV' % value)
-        self.result.setAlignment(Qt.AlignHCenter)
-
+        self.update_value(value, error)
         self.name_label.setText('Kinetic Energy')
         self.alias_label.setText('E_kin')
-
-        tree.setItemWidget(self, 3, self.result)
 
     def get_parameters(self):
 
@@ -467,27 +482,22 @@ class EnergyResultTreeItem(DataResultTreeItem):
 
 class WeightResultTreeItem(DataResultTreeItem):
 
-    def __init__(self, parent, tree, ID, value):
+    def __init__(self, parent, tree, ID, value, error):
+
+        self.units = ''
+        self.decimals = 2
 
         super().__init__(parent)
 
-        self._setup(tree, ID, value)
+        self._setup(tree, ID, value, error)
 
-    def update_value(self, value):
-
-        self.result.setText('%.2f' % value)
-
-    def _setup(self, tree, ID, value):
+    def _setup(self, tree, ID, value, error):
 
         super()._setup(tree)
 
-        self.result = QLabel('%.2f' % value)
-        self.result.setAlignment(Qt.AlignHCenter)
-
+        self.update_value(value, error)
         self.name_label.setText('Weight')
         self.alias_label.setText('w_%i' % ID)
-
-        tree.setItemWidget(self, 3, self.result)
 
     def get_parameters(self):
 

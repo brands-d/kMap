@@ -155,7 +155,8 @@ class LMFitBaseTab(Tab):
 
         self.lmfit.region_changed.connect(self.refresh_residual_plot)
 
-        self.slider.slice_changed.connect(self.refresh_sliced_plot)
+        self.slider.slice_changed.connect(self.refresh_selected_plot)
+        self.slider.slice_changed.connect(self.refresh_sum_plot)
         self.slider.axis_changed.connect(self.change_axis)
 
         self.tree.item_selected.connect(self.refresh_selected_plot)
