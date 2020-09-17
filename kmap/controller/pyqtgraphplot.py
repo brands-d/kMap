@@ -109,9 +109,9 @@ class PyQtGraphPlot(ImageView):
     def get_LUT(self):
 
         colormap = self.getHistogramWidget().gradient.colorMap()
-        LUT = colormap.getLookupTable(mode='float', alpha=False, nPts=20)
+        LUT = colormap.getLookupTable(mode='float', alpha=False, nPts=100)
 
-        return LUT
+        return LUT[1:]
 
     def get_label(self, side):
 
