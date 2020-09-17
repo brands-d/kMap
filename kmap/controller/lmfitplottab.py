@@ -31,10 +31,16 @@ class LMFitPlotTab(Tab, LMFitPlotTab_UI):
 
         data = self.plot_item.get_data()
 
-        text = 'name,x,y\n'
+        text = ''
 
         for data_set in data:
-            text += '{name},{x},{y}\n'.format(**data_set)              
+            name = data_set['name']
+            x = data_set['x'] 
+            y = data_set['y']
+            text += '# '+name+'\n'
+            for xi, yi in zip(x,y):
+                text += '%g  %g \n'%(xi, yi)
+            text += '\n'              
 
         return text
         
