@@ -4,7 +4,6 @@ from itertools import chain
 # Third Party Imports
 from lmfit import minimize, Parameters
 import numpy as np
-import timeit
 
 # PyQt5 Imports
 from PyQt5 import uic
@@ -78,12 +77,8 @@ class LMFit(QWidget, LMFit_UI):
                          sliced_data, region='all',
                          crosshair=None):
 
-        kx_min, kx_max = sliced_data.x_axis[0], sliced_data.x_axis[-1]
-        ky_min, ky_max = sliced_data.y_axis[0], sliced_data.y_axis[-1]
-        dk = parameters[3]
-        kx = np.arange(kx_min, kx_max, dk)
-        ky = np.arange(ky_min, ky_max, dk)
-        sliced_data.interpolate(kx, ky, update=True)
+        sliced_data = interpolator.interpolate(sliced_data)
+        sliced_data = interpolator.smooth(sliced_data)
 
         lmfit_param = Parameters()
 
@@ -100,24 +95,23 @@ class LMFit(QWidget, LMFit_UI):
 
         result = minimize(self.chi2, lmfit_param,
                           args=(sliced_data, parameters,
-                                kx, ky, crosshair),
+                                interpolator, crosshair),
                           nan_policy='omit',
                           method=method,
                           xtol=1e-11)
 
         return result
 
-    def chi2(self, param, sliced_data, other_params, kx, ky, crosshair):
+    def chi2(self, param, sliced_data, other_params, interpolator, crosshair):
 
         orbital_kmaps = []
-
-#        start_time = timeit.default_timer()
+        axes = interpolator.get_axes()
 
         for orbital in self.orbitals:
             ID = orbital.ID
 
             kmap = orbital.get_kmap(E_kin=param['E_kin'].value,
-                                    dk=(kx, ky),
+                                    dk=tuple(axes),
                                     phi=param['phi_' + str(ID)].value,
                                     theta=param['theta_' + str(ID)].value,
                                     psi=param['psi_' + str(ID)].value,
@@ -130,9 +124,7 @@ class LMFit(QWidget, LMFit_UI):
             orbital_kmaps.append(param['w_' + str(ID)].value * kmap)
 
         orbital_kmap = np.sum(orbital_kmaps)
-
-#        end_time = timeit.default_timer()
-#        print('get_kmap = ',end_time - start_time)
+        orbital_kmap = interpolator.smooth(orbital_kmap)
 
         difference = sliced_data - param['c'].value - orbital_kmap
 

@@ -58,8 +58,6 @@ class LMFitBaseTab(Tab):
 
         self.sliced_plot.plot(data)
 
-        self.refresh_residual_plot()
-
     def refresh_selected_plot(self):
 
         ID = self.tree.get_selected_orbital_ID()
@@ -90,8 +88,6 @@ class LMFitBaseTab(Tab):
         data = self.interpolation.smooth(data)
 
         self.sum_plot.plot(data)
-
-        self.refresh_residual_plot()
 
     def refresh_residual_plot(self):
 
@@ -141,7 +137,6 @@ class LMFitBaseTab(Tab):
         self.crosshair = CrosshairAnnulus(self.residual_plot)
         self.colormap = Colormap(
             [self.sliced_plot, self.selected_plot, self.sum_plot])
-        self.interpolation = Interpolation(force_interpolation=True)
         self.lmfit = LMFit(self.model.sliced, self.model.orbitals)
 
         colormap = ColorMap(
@@ -158,6 +153,8 @@ class LMFitBaseTab(Tab):
         self.slider.slice_changed.connect(self.refresh_sliced_plot)
         self.slider.slice_changed.connect(self.refresh_selected_plot)
         self.slider.slice_changed.connect(self.refresh_sum_plot)
+        self.slider.slice_changed.connect(self.refresh_residual_plot)
+
         self.slider.axis_changed.connect(self.change_axis)
 
         self.tree.item_selected.connect(self.refresh_selected_plot)
@@ -165,7 +162,7 @@ class LMFitBaseTab(Tab):
 
 class LMFitTab(LMFitBaseTab, LMFitTab_UI):
 
-    fit_finished = pyqtSignal(list, tuple, tuple, tuple)
+    fit_finished = pyqtSignal(list, tuple, tuple, Interpolation, tuple)
 
     def __init__(self, sliced_data, orbitals):
 
@@ -181,6 +178,7 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
         self.refresh_sliced_plot()
         self.refresh_selected_plot()
         self.refresh_sum_plot()
+        self.refresh_residual_plot()
 
     def get_title(self):
 
@@ -204,7 +202,8 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
         meta_parameter = (type_, slice_index, axis_index)
 
         self.fit_finished.emit(result, other_parameter,
-                               meta_parameter, region)
+                               meta_parameter, self.interpolation,
+                               region)
 
     def _get_parameters(self, ID):
 
@@ -224,6 +223,7 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
 
         self.lmfitother = LMFitOther()
         self.tree = LMFitTree(self.model.orbitals)
+        self.interpolation = Interpolation(force_interpolation=True)
 
         layout = QVBoxLayout()
         self.scroll_area.widget().setLayout(layout)
@@ -240,21 +240,17 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
 
         LMFitBaseTab._connect(self)
 
-        self.interpolation.smoothing_changed.connect(self.refresh_sliced_plot)
-        self.interpolation.interpolation_changed.connect(
-            self.refresh_sliced_plot)
+        plots = [self.refresh_sliced_plot, self.refresh_selected_plot,
+                 self.refresh_sum_plot, self.refresh_residual_plot]
 
-        self.interpolation.smoothing_changed.connect(
-            self.refresh_selected_plot)
-        self.interpolation.interpolation_changed.connect(
-            self.refresh_selected_plot)
-
-        self.interpolation.smoothing_changed.connect(self.refresh_sum_plot)
-        self.interpolation.interpolation_changed.connect(self.refresh_sum_plot)
+        for plot in plots:
+            self.interpolation.smoothing_changed.connect(plot)
+            self.interpolation.interpolation_changed.connect(plot)
 
         self.tree.value_changed.connect(self.refresh_selected_plot)
         self.tree.value_changed.connect(self.refresh_sum_plot)
         self.tree.value_changed.connect(self.refresh_residual_plot)
+
         self.tree.vary_changed.connect(self.update_chi2_label)
 
         self.lmfit.fit_triggered.connect(self.trigger_fit)

@@ -21,7 +21,7 @@ class LMFitResultTab(LMFitBaseTab, LMFitResultTab_UI):
     open_plot_tab = pyqtSignal(list, list, Axis)
 
     def __init__(self, results, other_parameter, meta_parameter, sliced_data,
-                 orbitals, region='all', inverted=False):
+                 orbitals, interpolator, region='all', inverted=False):
 
         self.model = LMFitTabModel(sliced_data, orbitals)
         self.other_parameter = other_parameter
@@ -32,12 +32,13 @@ class LMFitResultTab(LMFitBaseTab, LMFitResultTab_UI):
         super(LMFitResultTab, self).__init__()
         self.setupUi(self)
 
-        self._setup(results, region, inverted)
+        self._setup(results, interpolator, region, inverted)
         self._connect()
 
         self.refresh_sliced_plot()
         self.refresh_selected_plot()
         self.refresh_sum_plot()
+        self.refresh_residual_plot()
 
     def update_result_tree(self):
 
@@ -75,13 +76,14 @@ class LMFitResultTab(LMFitBaseTab, LMFitResultTab_UI):
 
         return parameters
 
-    def _setup(self, results, region, inverted):
+    def _setup(self, results, interpolator, region, inverted):
 
         LMFitBaseTab._setup(self)
 
         self.result = LMFitResult(results, *self.meta_parameter[:2])
         self.tree = LMFitResultTree(
             self.model.orbitals, self.result.get_index(0))
+        self.interpolation = interpolator
 
         layout = QVBoxLayout()
         self.scroll_area.widget().setLayout(layout)

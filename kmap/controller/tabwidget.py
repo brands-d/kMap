@@ -62,6 +62,9 @@ class TabWidget(QWidget, TabWidget_UI):
             tooltip = tab.to_string()
             self._open_tab(tab, title, tooltip)
 
+        except ValueError as e:
+            pass
+
         except Exception as e:
 
             log = logging.getLogger('kmap')
@@ -109,13 +112,14 @@ class TabWidget(QWidget, TabWidget_UI):
         self._open_tab(tab, 'LM-Fit Tab')
 
     def open_result_tab(self, results, other_parameter,
-                        meta_parameter, region):
+                        meta_parameter, interpolator, region):
 
         lmfit_tab = self.sender()
 
         tab = LMFitResultTab(results, other_parameter, meta_parameter,
                              lmfit_tab.model.sliced,
                              lmfit_tab.model.orbitals,
+                             interpolator,
                              region=region[0], inverted=region[1])
         tab.open_plot_tab.connect(self.open_lmfit_plot_tab)
 
