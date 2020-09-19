@@ -29,7 +29,7 @@ class LMFitOther(QWidget, LMFitOther_UI):
         factor = self._get_factor()
         Ak_type = factor if factor == 'no' else factor + Ak_type
         symmetry = self._get_symmetry()
-        dk = self.resolution_spinbox.value()
+        dk = float(config.get_key('orbital', 'dk'))
 
         return Ak_type, polarization, symmetry, dk
 
@@ -90,6 +90,5 @@ class LMFitOther(QWidget, LMFitOther_UI):
         self.polarization_combobox.currentIndexChanged.connect(
             self.value_changed.emit)
         self.ak_combobox.currentIndexChanged.connect(self.value_changed.emit)
-        self.resolution_spinbox.valueChanged.connect(self.value_changed.emit)
         self.symmetrize_combobox.currentIndexChanged.connect(
             self.value_changed.emit)

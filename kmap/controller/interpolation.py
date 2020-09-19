@@ -11,23 +11,15 @@ from kmap import __directory__
 from kmap.library.misc import (
     resolution_to_num, num_to_resolution, axis_from_range)
 
-# Load .ui File
-UI_file = __directory__ + QDir.toNativeSeparators('/ui/interpolation.ui')
-Interpolation_UI, _ = uic.loadUiType(UI_file)
 
+class InterpolationBase(QWidget):
 
-class Interpolation(QWidget, Interpolation_UI):
-
-    smoothing_changed = pyqtSignal()
     interpolation_changed = pyqtSignal()
 
-    def __init__(self, force_interpolation=False):
+    def __init__(self):
 
         # Setup GUI
-        super(Interpolation, self).__init__()
-        self.setupUi(self)
-        self._setup(force_interpolation)
-        self._connect()
+        super(InterpolationBase, self).__init__()
 
     def interpolate(self, data):
 
@@ -36,6 +28,43 @@ class Interpolation(QWidget, Interpolation_UI):
             data.interpolate(*axes, update=True)
 
         return data
+
+    def get_order(self):
+
+        return self.order_spinbox.value()
+
+    def get_axes(self):
+
+        range_ = self.get_range()
+        resolution = self.get_resolution()
+        num = [resolution_to_num(range_[0], resolution[0]),
+               resolution_to_num(range_[1], resolution[1])]
+
+        axes = [axis_from_range(range_[0], num[0]),
+                axis_from_range(range_[1], num[1])]
+
+        return axes
+
+    def _change_interpolation(self):
+
+        self.interpolation_changed.emit()
+
+
+# Load .ui File
+UI_file = __directory__ + QDir.toNativeSeparators('/ui/interpolation.ui')
+Interpolation_UI, _ = uic.loadUiType(UI_file)
+
+
+class Interpolation(InterpolationBase, Interpolation_UI):
+
+    smoothing_changed = pyqtSignal()
+
+    def __init__(self):
+
+        # Setup GUI
+        super(Interpolation, self).__init__()
+        self.setupUi(self)
+        self._connect()
 
     def smooth(self, data):
 
@@ -77,22 +106,6 @@ class Interpolation(QWidget, Interpolation_UI):
         y_resolution = self.y_resolution_spinbox.value()
 
         return [x_resolution, y_resolution]
-
-    def get_order(self):
-
-        return self.order_spinbox.value()
-
-    def get_axes(self):
-
-        range_ = self.get_range()
-        resolution = self.get_resolution()
-        num = [resolution_to_num(range_[0], resolution[0]),
-               resolution_to_num(range_[1], resolution[1])]
-
-        axes = [axis_from_range(range_[0], num[0]),
-                axis_from_range(range_[1], num[1])]
-
-        return axes
 
     def set_label(self, x, y):
 
@@ -143,15 +156,6 @@ class Interpolation(QWidget, Interpolation_UI):
 
         self.smoothing_changed.emit()
 
-    def _change_interpolation(self):
-
-        self.interpolation_changed.emit()
-
-    def _setup(self, force):
-
-        self.interpolation_checkbox.setChecked(force)
-        self.interpolation_checkbox.setEnabled(not force)
-
     def _connect(self):
 
         self.sigma_x_spinbox.valueChanged.connect(self._change_smoothing)
@@ -178,4 +182,71 @@ class Interpolation(QWidget, Interpolation_UI):
         self.x_resolution_spinbox.valueChanged.connect(
             self._change_interpolation)
         self.y_resolution_spinbox.valueChanged.connect(
+            self._change_interpolation)
+
+
+# Load .ui File
+UI_file = __directory__ + QDir.toNativeSeparators('/ui/lmfitinterpolation.ui')
+LMFitInterpolation_UI, _ = uic.loadUiType(UI_file)
+
+
+class LMFitInterpolation(InterpolationBase, LMFitInterpolation_UI):
+
+    def __init__(self):
+
+        # Setup GUI
+        super(LMFitInterpolation, self).__init__()
+        self.setupUi(self)
+        self._connect()
+
+    def get_range(self):
+
+        min_ = self.min_spinbox.value()
+        max_ = self.max_spinbox.value()
+
+        return [[min_, max_], [min_, max_]]
+
+    def get_resolution(self):
+
+        resolution = self.resolution_spinbox.value()
+
+        return [resolution, resolution]
+
+    def set_label(self, x, y):
+
+        # Set Label
+        self.label.setText('%s:' % x.label)
+
+        # Set Unit
+        self.resolution_spinbox.setSuffix('  %s' % x.units)
+        self.min_spinbox.setSuffix('  %s' % x.units)
+        self.max_spinbox.setSuffix('  %s' % x.units)
+
+        # Set min/max of min/max spinbox to twice the range
+        self.min_spinbox.setMinimum(x.range[0] - abs(x.range[0]))
+        self.max_spinbox.setMaximum(x.range[1] + abs(x.range[1]))
+
+        # Set Value
+        self.min_spinbox.setValue(x.range[0])
+        self.max_spinbox.setValue(x.range[-1])
+
+        self._update_dynamic_range_spinboxes()
+
+    def _update_dynamic_range_spinboxes(self):
+
+        # Set max/min of min/max spinbox to value of other spinbox
+        self.min_spinbox.setMaximum(self.max_spinbox.value() - 1)
+        self.max_spinbox.setMinimum(self.min_spinbox.value() + 1)
+
+    def _connect(self):
+
+        self.min_spinbox.valueChanged.connect(
+            self._update_dynamic_range_spinboxes)
+        self.max_spinbox.valueChanged.connect(
+            self._update_dynamic_range_spinboxes)
+
+        self.min_spinbox.valueChanged.connect(self._change_interpolation)
+        self.max_spinbox.valueChanged.connect(self._change_interpolation)
+
+        self.resolution_spinbox.valueChanged.connect(
             self._change_interpolation)

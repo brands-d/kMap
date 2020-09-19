@@ -13,6 +13,7 @@ from PyQt5.QtCore import QDir, pyqtSignal
 # Own Imports
 from kmap import __directory__
 from kmap.library.plotdata import PlotData
+from kmap.config.config import config
 
 # Load .ui File
 UI_file = __directory__ + QDir.toNativeSeparators('/ui/lmfit.ui')
@@ -78,7 +79,6 @@ class LMFit(QWidget, LMFit_UI):
                          crosshair=None):
 
         sliced_data = interpolator.interpolate(sliced_data)
-        sliced_data = interpolator.smooth(sliced_data)
 
         lmfit_param = Parameters()
 
@@ -92,13 +92,14 @@ class LMFit(QWidget, LMFit_UI):
                             max=max_, vary=vary, expr=expr)
 
         method = self._get_method()
+        xtol = float(config.get_key('lmfit', 'xtol'))
 
         result = minimize(self.chi2, lmfit_param,
                           args=(sliced_data, parameters,
                                 interpolator, crosshair),
                           nan_policy='omit',
                           method=method,
-                          xtol=1e-11)
+                          xtol=xtol)
 
         return result
 
@@ -124,7 +125,6 @@ class LMFit(QWidget, LMFit_UI):
             orbital_kmaps.append(param['w_' + str(ID)].value * kmap)
 
         orbital_kmap = np.sum(orbital_kmaps)
-        orbital_kmap = interpolator.smooth(orbital_kmap)
 
         difference = sliced_data - param['c'].value - orbital_kmap
 

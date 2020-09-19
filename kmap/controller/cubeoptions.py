@@ -8,7 +8,6 @@ from PyQt5.QtWidgets import QWidget
 
 # Own Imports
 from kmap import __directory__
-from kmap.config.config import config
 
 # Load .ui File
 UI_file = __directory__ + QDir.toNativeSeparators('/ui/cubeoptions.ui')

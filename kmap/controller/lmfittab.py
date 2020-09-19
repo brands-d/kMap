@@ -16,7 +16,7 @@ from kmap.controller.dataslider import DataSlider
 from kmap.model.lmfittab_model import LMFitTabModel
 from kmap.controller.colormap import Colormap
 from kmap.controller.crosshairannulus import CrosshairAnnulus
-from kmap.controller.interpolation import Interpolation
+from kmap.controller.interpolation import LMFitInterpolation
 from kmap.controller.lmfittree import LMFitTree
 from kmap.controller.lmfit import LMFit
 from kmap.controller.lmfitother import LMFitOther
@@ -54,7 +54,6 @@ class LMFitBaseTab(Tab):
         data = self.model.get_sliced_plot(index, axis)
 
         data = self.interpolation.interpolate(data)
-        data = self.interpolation.smooth(data)
 
         self.sliced_plot.plot(data)
 
@@ -71,7 +70,6 @@ class LMFitBaseTab(Tab):
             data = self.model.get_selected_orbital_plot(ID, parameters)
 
             data = self.interpolation.interpolate(data)
-            data = self.interpolation.smooth(data)
 
             self.selected_plot.plot(data)
 
@@ -85,7 +83,6 @@ class LMFitBaseTab(Tab):
         data = self.model.get_sum_plot(parameters)
 
         data = self.interpolation.interpolate(data)
-        data = self.interpolation.smooth(data)
 
         self.sum_plot.plot(data)
 
@@ -162,7 +159,7 @@ class LMFitBaseTab(Tab):
 
 class LMFitTab(LMFitBaseTab, LMFitTab_UI):
 
-    fit_finished = pyqtSignal(list, tuple, tuple, Interpolation, tuple)
+    fit_finished = pyqtSignal(list, tuple, tuple, LMFitInterpolation, tuple)
 
     def __init__(self, sliced_data, orbitals):
 
@@ -223,16 +220,18 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
 
         self.lmfitother = LMFitOther()
         self.tree = LMFitTree(self.model.orbitals)
-        self.interpolation = Interpolation(force_interpolation=True)
+        self.interpolation = LMFitInterpolation()
 
         layout = QVBoxLayout()
+        layout.setContentsMargins(3, 3, 3, 3)
+        layout.setSpacing(3)
         self.scroll_area.widget().setLayout(layout)
-        layout.insertWidget(0, self.lmfit)
-        layout.insertWidget(1, self.slider)
-        layout.insertWidget(3, self.lmfitother)
+        layout.insertWidget(0, self.slider)
+        layout.insertWidget(1, self.lmfitother)
+        layout.insertWidget(2, self.interpolation)
+        layout.insertWidget(3, self.lmfit)
         layout.insertWidget(4, self.colormap)
         layout.insertWidget(5, self.crosshair)
-        layout.insertWidget(6, self.interpolation)
 
         self.layout.insertWidget(1, self.tree)
 
@@ -244,7 +243,6 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
                  self.refresh_sum_plot, self.refresh_residual_plot]
 
         for plot in plots:
-            self.interpolation.smoothing_changed.connect(plot)
             self.interpolation.interpolation_changed.connect(plot)
 
         self.tree.value_changed.connect(self.refresh_selected_plot)
