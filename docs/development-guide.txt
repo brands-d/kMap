@@ -1,0 +1,9 @@
+This is a small guide on how to develop a generic new feature for
+kMap.py. Obviously, this guide is not and can not be extensive, but it
+is intended to give a rough overview on some underling design and code
+principles used to develop most features currently present.
+
+It is assumed that the reader has a basic understanding of object-
+orientated programming, Qt (PyQt) and python.
+
+TO BE WRITTEN
