@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>373</width>
-    <height>116</height>
+    <height>120</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,7 +35,7 @@
       </font>
      </property>
      <property name="title">
-      <string>Slices</string>
+      <string>Data Slices</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
