@@ -1,63 +1,35 @@
 import unittest
+import os
 import numpy as np
 import numpy.testing as npt
 from kmap import __directory__
-from kmap.model.sliceddata import SlicedData
+from kmap.library.sliceddata import SlicedData
+
+dir_path = os.path.dirname(os.path.realpath(__file__))
 
 
 class TestSlicedData(unittest.TestCase):
 
-    def setUp(self):
-        self.slices = np.arange(27).reshape(3, 3, 3)
-        self.range = [[1, 2], [-1, 1]]
-        self.slice_keys = [1, 2, 3]
-
-    def test_initialization(self):
-
-        name = 'Test Data'
-        meta_data = {'Test Key': 'Test Value'}
-        sliced_data = SlicedData(self.slices, self.range,
-                                 self.slice_keys, 0, name=name,
-                                 meta_data=meta_data)
-
-        npt.assert_equal(sliced_data.slice_from_idx(1).data, self.slices[1])
-        npt.assert_equal(sliced_data.slice_from_key(1).data, self.slices[0])
-        npt.assert_equal(sliced_data.slice_from_idx(1).range, self.range)
-        npt.assert_equal(sliced_data.name, name)
-        npt.assert_equal(sliced_data.meta_data, meta_data)
-
-        range_ = [[[-1, 2], [-1, -1.5]],
-                  [[33, 2], [1, 2]], [[19, 24], [1, 10]]]
-        sliced_data = SlicedData(self.slices, range_, self.slice_keys, 0)
-        npt.assert_equal(sliced_data.slice_from_idx(1).range, range_[1])
-        npt.assert_equal(sliced_data.slice_from_key(1).range, range_[0])
-
     def test_initialization_from_hdf5(self):
 
         sliced_data = SlicedData.init_from_hdf5(
-            __directory__ + '/resources/test_resources/basic.hdf5', 0)
+            dir_path + '/../../example/data/example5_6584.hdf5')
 
-        npt.assert_equal(sliced_data.name, 'basic')
-        npt.assert_equal(sliced_data.slice_from_idx(1).data, self.slices[1])
-        npt.assert_equal(sliced_data.slice_from_idx(2).range, self.range)
-        npt.assert_equal(sliced_data.meta_data, {
-                         'date': '2020/07/12', 'alias': 'alias test'})
+        npt.assert_almost_equal(
+            sliced_data.slice_from_index(2).data[145, 235], 194.848388671875, decimal=14)
 
-    def test_initialization_from_hdf5_with_new_keys(self):
-
-        self.assertRaises(AttributeError, SlicedData.init_from_hdf5,
-                          __directory__ +
-                          '/resources/test_resources/basic_new_keys.hdf5', 0)
-
-        new_keys = {'name': 'new_name', 'slice_keys': 'new_slice_keys'}
-        sliced_data = SlicedData.init_from_hdf5(
-            __directory__ + '/resources/test_resources/basic_new_keys.hdf5',
-            0, new_keys)
-
-        npt.assert_equal(sliced_data.name, 'basic')
-        npt.assert_equal(sliced_data.slice_from_idx(1).data, self.slices[1])
-        npt.assert_equal(sliced_data.slice_from_idx(2).range, self.range)
-        npt.assert_equal(sliced_data.meta_data, {'date': '2020/07/12'})
+        (sliced_data.name, '6584estep0.0170213final.txt')
+        npt.assert_equal(sliced_data.meta_data, {'alias': 'M3 PTCDA/Ag(110)',
+                                                 'arcwidth': '0.7800000000000011',
+                                                 'fermiLevel': '28.2',
+                                                 'filenumber': '6584estep0.0170213final.txt',
+                                                 'kStepSize': '0.02',
+                                                 'negPolar_avgs': 'False',
+                                                 'polarshift': '0.0',
+                                                 'rotation': '-24.0',
+                                                 'sym_anglemax': '180.0',
+                                                 'sym_anglemin': '0.0',
+                                                 'symmode': '2-fold'})
 
 
 if __name__ == '__main__':

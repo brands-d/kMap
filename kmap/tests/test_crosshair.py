@@ -6,12 +6,14 @@ from kmap.library.plotdata import PlotData
 from kmap.model.crosshair_model import *
 
 
+dir_path = os.path.dirname(os.path.realpath(__file__))
+
+
 class TestCrosshair(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
 
-        dir_path = os.path.dirname(os.path.realpath(__file__))
         self.expected = np.load(
             dir_path + '/output/test_crosshair_expected.npy',
             allow_pickle=True).item()
