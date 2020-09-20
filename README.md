@@ -7,7 +7,7 @@ GitHub Page: https://github.com/brands-d
 
 ## Authors
 - Peter Puschnig, Assoz. Prof. Dipl.-Ing. Dr. (peter.puschnig@uni-graz.at)
-- Dominik Brandstetter, BSc (dominik.brandstetter@edu.uni-graz.at)
+- Dominik Brandstetter, BSc. (dominik.brandstetter@edu.uni-graz.at)
 
 ## Installation
 kMap.py was predominantly developed on and for Linux. There are currently (19.09.2020) no issues on Windows, however, MacOS stands untested so far.

@@ -286,7 +286,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
         self.setGeometry(x, y, h, w)
         if config.get_key('app', 'fullscreen') == 'True':
             self.showMaximized()
-        self.setWindowTitle('kMap')
+        self.setWindowTitle('kMap.py')
         self.setWindowIcon(QIcon(__directory__ +
                                  QDir.toNativeSeparators(
                                      '/resources/images/icon.png')))

@@ -21,7 +21,7 @@ class kMap(QApplication):
         self.load_settings(startup=True)
 
         logging.getLogger('kmap').debug(
-            'Initializing kMap v' + __version__ + '.')
+            'Initializing kMap.py v' + __version__ + '.')
 
         # Initialize application
         super().__init__(sysarg)

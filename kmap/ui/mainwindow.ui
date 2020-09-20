@@ -192,7 +192,7 @@
   </action>
   <action name="about_action">
    <property name="text">
-    <string>About kMap</string>
+    <string>About kMap.py</string>
    </property>
   </action>
   <action name="ref_action">
