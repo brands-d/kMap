@@ -627,7 +627,9 @@ class Orbital():
 
         k_min = -np.pi/delta
         k_max = +np.pi/delta
-        k = np.linspace(k_min, k_max, nk)
+        k, dk = np.linspace(k_min, k_max, nk, retstep=True)
+        if nk%2 == 0:
+            k = k - dk/2
 
         return k
 
