@@ -63,12 +63,12 @@ class MainWindow(QMainWindow, MainWindow_UI):
         self.database = OrbitalDatabase()
         self.database.files_chosen.connect(self.load_cube_files_online)
 
-    def open_sliceddatabase_browser(self):
+    def open_binding_energy_sliceddatabase_browser(self):
 
         self.database = SlicedDatabaseWindow(mode='binding-energy')
         self.database.files_chosen.connect(self.load_sliced_files_online)
 
-    def open_sliceddatabase_browser2(self):
+    def open_photon_energy_sliceddatabase_browser(self):
 
         self.database = SlicedDatabaseWindow(mode='photon-energy')
         self.database.files_chosen.connect(self.load_sliced_file_online)
@@ -294,15 +294,15 @@ class MainWindow(QMainWindow, MainWindow_UI):
     def _initialize_shortcuts(self):
 
         actions = [self.load_hdf5_action,
-                   self.load_sliced_online_action,
-                   self.load_sliced_online_action2,
+                   self.load_sliced_from_binding_energy_action,
+                   self.load_sliced_from_photon_energy_action,
                    self.show_matplotlib,
                    self.log_file_action, self.load_cube_online_action,
                    self.load_cube_file_action,
                    self.open_lmfit_tab_action]
 
-        alias = ['load_hdf5', 'load_sliced_online_action',
-                 'load_sliced_online_action2',
+        alias = ['load_hdf5', 'load_sliced_from_binding_energy_action',
+                 'load_sliced_from_photon_energy_action',
                  'show_matplotlib', 'open_log',
                  'load_cube_online', 'load_cube_file',
                  'open_lmfit']
@@ -317,10 +317,10 @@ class MainWindow(QMainWindow, MainWindow_UI):
 
         # File menu
         self.load_hdf5_action.triggered.connect(self.load_hdf5_files)
-        self.load_sliced_online_action.triggered.connect(
-            self.open_sliceddatabase_browser)
-        self.load_sliced_online_action2.triggered.connect(
-            self.open_sliceddatabase_browser2)
+        self.load_sliced_from_binding_energy_action.triggered.connect(
+            self.open_binding_energy_sliceddatabase_browser)
+        self.load_sliced_from_photon_energy_action.triggered.connect(
+            self.open_photon_energy_sliceddatabase_browser)
         self.load_cube_file_action.triggered.connect(
             self.load_cube_files_locally)
         self.load_cube_online_action.triggered.connect(

@@ -71,8 +71,8 @@
       <string>Load Sliced Data...</string>
      </property>
      <addaction name="load_hdf5_action"/>
-     <addaction name="load_sliced_online_action"/>
-     <addaction name="load_sliced_online_action2"/>
+     <addaction name="load_sliced_from_binding_energy_action"/>
+     <addaction name="load_sliced_from_photon_energy_action"/>
     </widget>
     <addaction name="load_hdf5_menu"/>
     <addaction name="cube_menu"/>
@@ -205,12 +205,12 @@
     <string>Locally...</string>
    </property>
   </action>
-  <action name="load_sliced_online_action">
+  <action name="load_sliced_from_binding_energy_action">
    <property name="text">
     <string>From Orbitals ...</string>
    </property>
   </action>
-  <action name="load_sliced_online_action2">
+  <action name="load_sliced_from_photon_energy_action">
    <property name="text">
     <string>From hnu-dependence ...</string>
    </property>
