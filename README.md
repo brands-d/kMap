@@ -3,7 +3,7 @@ kMap.py is a python based program for simulation and data analysis in photoemiss
 
 It provides an easy-to-use graphical user interface powered by PyQt5 to simulate photoemission momentum maps of molecular orbitals and to perform a one-to-one comparison between simulation and experiment. For this kMap.py provides tools like line- or region-restricted intensity scans/plots, interpolation capabilities, adjustable simulation parameters (like orientation, final state kinetic energy and polarization state of the incident light field) as well as an interface to powerful least-square fits between simulation and experiment to quickly determine optimal parameters.
 
-GitHub Page: https://github.com/brands-d
+GitHub Page: https://github.com/brands-d/kMap
 
 ## Authors
 - Peter Puschnig, Assoz. Prof. Dipl.-Ing. Dr. (peter.puschnig@uni-graz.at)
@@ -100,7 +100,7 @@ Last please run the tests to check if they come back passing.
 It should say something like "OK" at the end. If you see "FAILED" one or more tests came back negative. If that's the case please make sure you installed kMap.py correctly and retry. If it still fails, please contact one of the authors.
 
 ## Configuration
-All configuration files can be found in ./kmap/resources/config. Each configuration file (logging, settings and shortcut) exists in two different versions (xxx_user.ini and xxx_default.ini). DO NOT edit the default version. You can lose all your settings when updating. Instead of copy any settings you want to change into the respective user file and change it there. The user file does not have to contain all settings, but only those you want to be changed.
+All configuration files can be found in ./kmap/resources/config. Each configuration file (logging, settings and shortcut) exists in two different versions (xxx_user.ini and xxx_default.ini). DO NOT edit the default version. You can lose all your settings when updating. Instead, copy any settings you want to change into the respective user file and change it there. The user file does not have to contain all settings, but only those you want to be changed.
 
 This can be done inside the GUI under the "Preferences" menu. "Reload Settings" reloads the settings at runtime. Most settings (not all of them) can be changed at run time this way.
 
@@ -118,6 +118,8 @@ To start kMap.py simply run
     
 ### Windows
     python -m kmap
+
+Tutorial videos demonstrating the most important features of kMap.py can be found here: https://www.youtube.com/playlist?list=PLAoZOqtibC5ypO57SU4emdelPzSGQRO8c 
 
 ## Updating
 kMap.py is currently distributed like a regular git project hosted on GitHub (https://github.com/brands-d/kMap). If you cloned the project using git executing
@@ -155,7 +157,7 @@ The root folder of the kMap.py source code should contain after successful insta
 The /docs subdirectory contains documentation regarding the project. This includes a style guide, class- and package-diagrams as well as a description of the .hdf5 file structure.
 
 ### /example
-The /example subdirectory contains example data (/example/data) and example scripts (/example/scripts). The scripts are both a show-off what is possible and a tutorial of how to do various things with kMap.py.
+The /example subdirectory contains example data (/example/data) and example scripts (/example/scripts). The scripts are both a show-off what is possible and a tutorial of how to do various things with kMap.py. Check out the file /example/scripts/README for further information.
 
 ### /kmap
 This is the main folder for the program itself. It contains all the code and tests split into the following subdirectories:
