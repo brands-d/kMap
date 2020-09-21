@@ -1,5 +1,5 @@
 import unittest
-from kmap.model.orbitaldata import OrbitalData
+from kmap.library.orbitaldata import OrbitalData
 from kmap import __directory__
 
 
@@ -11,7 +11,7 @@ class TestOrbitalData(unittest.TestCase):
         ID = 1
         meta_data = {'origin': 'selfmade'}
         with open(__directory__ +
-                  '/resources/test_resources/5A_MO_73.cube', 'r') as f:
+                  '/../example/data/5A_MO_73.cube', 'r') as f:
             file = f.read()
 
         data = OrbitalData(file, ID, name=name,
@@ -25,7 +25,7 @@ class TestOrbitalData(unittest.TestCase):
 
         ID = 1
         data = OrbitalData.init_from_file(__directory__ +
-                                          '/resources/test_resources/' +
+                                          '/../example/data/' +
                                           '5A_MO_73.cube', ID)
 
         self.assertEqual(data.name, '5A_MO_73')

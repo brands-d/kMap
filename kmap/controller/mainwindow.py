@@ -266,7 +266,6 @@ class MainWindow(QMainWindow, MainWindow_UI):
             with open(file_name, 'w') as file:
                 file.write(text)
 
-
     def reload_settings(self):
         # Reload the settings
 
