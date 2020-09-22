@@ -34,6 +34,8 @@ class Config:
         self._logging_settings = ''
         self._shortcut_settings = ''
 
+        self.setup()
+        
     def setup(self):
 
         self._check_for_user_files()

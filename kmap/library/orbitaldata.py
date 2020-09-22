@@ -25,6 +25,20 @@ class OrbitalData(Orbital, AbstractData):
         return cls(file, ID, name=name, meta_data=keys)
 
     @classmethod
+    def init_from_online(cls, url, ID, meta_data={}):
+
+        with urllib.request.urlopen(url) as f:
+            file = f.read().decode('utf-8')
+
+            name, keys = OrbitalData._get_metadata(file, url)
+            name = meta_data['name'] if name in meta_data else name
+            meta_data.update(keys)
+            
+              
+
+        return cls(file, ID, name=name, meta_data=meta_data)
+
+    @classmethod
     def _get_metadata(cls, file, file_path):
 
         first_line, second_line = file.split('\n')[:2]
@@ -34,17 +48,6 @@ class OrbitalData(Orbital, AbstractData):
                 config.get_key('cube', 'line_two'): second_line.strip()}
 
         return name, keys
-
-    @classmethod
-    def init_from_online(cls, url, ID, meta_data={}):
-
-        with urllib.request.urlopen(url) as f:
-            file = f.read().decode('utf-8')
-
-            name, keys = OrbitalData._get_metadata(file, url)
-            meta_data.update(keys)
-
-        return cls(file, ID, name=meta_data['name'], meta_data=meta_data)
 
     def __str__(self):
 

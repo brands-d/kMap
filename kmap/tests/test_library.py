@@ -1,5 +1,5 @@
 import unittest
-from kmap.library.library import *
+from kmap.library.misc import *
 
 
 class TestLibrary(unittest.TestCase):

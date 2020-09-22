@@ -1,14 +1,15 @@
-import os, sys
+from kmap.library.plotdata import PlotData
+from kmap.model.crosshair_model import CrosshairAnnulusModel
+import matplotlib.pyplot as plt
+import numpy as np
+import os
+import sys
 
 path = os.path.dirname(os.path.realpath(__file__))
-sys.path.insert(0,path + os.sep + '..' + os.sep + '..' + os.sep)
+sys.path.insert(0, path + os.sep + '..' + os.sep + '..' + os.sep)
 # Third Party Imports
-import numpy as np
-import matplotlib.pyplot as plt
 
 # Own Imports
-from kmap.model.crosshair_model import CrosshairAnnulusModel
-from kmap.library.plotdata import PlotData
 
 # This script demonstrates the working and functionality for crosshairs
 # in kmap on a simple 7x7 grid.
@@ -26,6 +27,8 @@ data = PlotData(np.reshape(np.array(range(99)), (9, 11)),
 global extent
 extent = data.range.flatten() + [-0.5, 0.5, -0.5, 0.5]
 
+export = {}
+
 def plot(axis, x, y, r, w, region, inverted, title=''):
     # Helper Function plotting crosshair and data
 
@@ -42,6 +45,7 @@ def plot(axis, x, y, r, w, region, inverted, title=''):
                                       region=region,
                                       inverted=inverted)
 
+    export.update({title:cut.data})
     # Labels
     axis.set_title(title)
     axis.set_xlabel('x')
@@ -152,10 +156,10 @@ plot(axes[1][0], x=0, y=0, r=1.5, w=1.5, region='ring',
      inverted=True, title='Inverted Ring Cut')
 # Ring Cut Edge Case: Ring = ROI with 'radius' = r+w - ROI with radius = r
 plot(axes[1][1], x=0, y=0, r=1, w=2.00, region='ring',
-     inverted=False, title='Border Edge Case')
-# Border Cut Edge Case 2
+     inverted=False, title='Ring Edge Case')
+# Ring Cut Edge Case 2
 plot(axes[1][2], x=0, y=0, r=2.01, w=1.5, region='ring',
-     inverted=False, title='Border Edge Case 2')
+     inverted=False, title='Ring Edge Case 2')
 
 ####################    Other Cuts   ####################
 figure, axes = plt.subplots(2, 3)
@@ -174,9 +178,11 @@ plot(axes[1][0], x=0, y=0, r=1.5, w=1.5, region='outer_border',
      inverted=False, title='Outer Border Cut')
 # Outer Border Edge Case: Sqrt(0.5^2 + 0.5^2) > 0.70
 plot(axes[1][1], x=0, y=0, r=0.00, w=0.7, region='outer_border',
-     inverted=False, title='Border Edge Case')
-# Border Cut Edge Case 2: Sqrt(1.5^2 + 1.5^2) < 2.13
+     inverted=False, title='Outer Border Edge Case')
+# Outer Border Cut Edge Case 2: Sqrt(1.5^2 + 1.5^2) < 2.13
 plot(axes[1][2], x=0, y=0, r=0.00, w=2.13, region='outer_border',
-     inverted=False, title='Border Edge Case 2')
+     inverted=False, title='Outer Border Edge Case 2')
 
+
+np.save('data.npy',export)
 plt.show()

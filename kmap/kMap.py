@@ -38,10 +38,10 @@ class kMap(QApplication):
 
         super().exec_()
 
-    def load_settings(self, startup=False):
+    def test(self):
+        pass
 
-        # Load config
-        config.setup()
+    def load_settings(self, startup=False):
 
         # Logging
         # Delete old log files if user set to do so
