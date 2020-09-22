@@ -12,7 +12,7 @@ sys.path.insert(0, path + os.sep + '..' + os.sep + '..' + os.sep)
 # Own Imports
 
 # This script demonstrates the working and functionality for crosshairs
-# in kmap on a simple 7x7 grid.
+# in kmap on a simple 9x11 grid.
 
 
 # New Crosshair

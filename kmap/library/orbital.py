@@ -622,15 +622,14 @@ class Orbital():
 
         return bonds
 
+
     def set_3Dkgrid(self, nk, delta):
 
-        L = (nk - 1) * delta
-        dk = 2 * np.pi / L
-        if (nk % 2 == 0):
-            shiftk = -dk / 2
-        else:
-            shiftk = 0
-        k = shiftk + np.arange(-0.5 * (nk - 1) * dk, 0.5 * nk * dk, dk)
+        k_min = -np.pi/delta
+        k_max = +np.pi/delta
+        k, dk = np.linspace(k_min, k_max, nk, retstep=True)
+        if nk%2 == 0:
+            k = k - dk/2
 
         return k
 
