@@ -50,7 +50,12 @@ class PyQtGraphPlot(ImageView):
 
         self.set_range(range_)
         ratio = (range_[1][1] - range_[1][0]) / (range_[0][1] - range_[0][0])
-        self.set_aspect_ratio(ratio)
+
+        if config.get_key('pyqtgraph', 'fixed_ratio') == 'True':
+            self.set_aspect_ratio(ratio)
+
+        else:
+            self.set_aspect_ratio(None)
 
     def set_range(self, range_):
 
@@ -64,7 +69,11 @@ class PyQtGraphPlot(ImageView):
 
     def set_aspect_ratio(self, ratio):
 
-        self.plot_view.setAspectLocked(True, ratio=ratio)
+        if ratio is not None:
+            self.plot_view.setAspectLocked(True, ratio=ratio)
+
+        else:
+            self.plot_view.setAspectLocked(False)
 
     def set_labels(self, x, y):
 
