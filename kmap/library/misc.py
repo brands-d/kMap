@@ -1,49 +1,124 @@
+"""Provides various useful methods for any part of kMap.py.
+
+This file defines a multitude of methods not part of any specific part
+of kMap.py. Those methods are intended for use throughout kMap.py to
+reduce the amount of copy-paste code.
+"""
+
+# Python Imports
 import re
-import numpy as np
 from math import isclose
+
+# Third Party Imports
+import numpy as np
 
 
 def round_to(x, base):
+    """Rounds 'x' to the nearest multiple of 'base'.
+
+    Args:
+        x (float): Number to be rounded.
+        base (float): Base to be rounded to.
+
+    Returns:
+        (float): Rounded number.
+
+    """
 
     return base * round(x / base)
 
 
-def idx_closest_value(axis, value):
+def idx_closest_value(axis, value, decimals=5, bounds_error=True):
+    """Returns the index of the value in 'axis' closest to the 'value'.
 
+    Args:
+        axis (list): Axis of which the closest value is to be found.
+            Needs to be a regular grid without NaN values.
+        value (float): Value the closes axis point is to be found.
+        decimals (int): Decimals places float values get rounded to
+            to avoid machine error.
+    Returns:
+        (int): Index of the axis element closes to 'value'.
+
+    """
+
+    # Shift the axis to start at 0 -> rounding to step size (=base)
     shift = axis[0]
     base = axis[1] - axis[0]
     mapped_value = round_to(value - shift, base) + shift
 
     try:
         # Round to fifth decimal place because machine error
-        idx = list(np.around(axis, decimals=5)).index(
-            np.around(mapped_value, decimals=5))
+        idx = list(np.around(axis, decimals=decimals)).index(
+            np.around(mapped_value, decimals=decimals))
 
     except ValueError:
-        idx = None
+        # Value not found in list -> larger (smaller) than max (min)
+        # + (-) step_size/2
+
+        if bounds_error:
+            raise ValueError('Out of bounds')
+
+        else:
+            if value > max(axis):
+                idx = list(axis).index(max(axis))
+
+            else:
+                idx = list(axis).index(min(axis))
 
     return idx
 
 
 def centered_meshgrid(x_axis, x_shift, y_axis, y_shift):
+    """Returns a meshgrid made of 'x_axis' and 'y_axis' shifted by
+    (x_shift, y_shift).
 
-    X = np.copy(x_axis).reshape(len(x_axis), 1) - x_shift
-    Y = np.copy(y_axis).reshape(1, len(y_axis)) - y_shift
+    Args:
+        x_axis (list): x-axis for the meshgrid. Needs to be a regular
+            grid without NaN values.
+        x_shift (float): Shift for the x-axis.
+        y_axis (list): y-axis for the meshgrid. Needs to be a regular
+            grid without NaN values.
+        y_shift (float): Shift for the y-axis.
+
+    Returns:
+        (list, list.T): Shifted meshgrides for the x and y axes shifted.
+    """
+
+    X = np.copy(x_axis).reshape(1, len(x_axis)) - x_shift
+    Y = np.copy(y_axis).reshape(len(y_axis), 1) - y_shift
 
     return X, Y
 
 
 def distance_in_meshgrid(X, Y):
+    """Returns the grid entered filled with the distance to its center.
+
+    Args:
+        X (list): x-axis for the meshgrid. Needs to be a regular
+            grid without NaN values.
+        Y (list.T): y-axis for the meshgrid. Needs to be a regular
+            grid without NaN values.
+
+    Returns:
+        (np.array): 2D numpy array with same size as grid. Each element
+            carries the distance of its position in the grid.
+    """
 
     return np.sqrt(X**2 + Y**2)
 
 
-def get_ID_from_tab_text(tab_text):
-
-    return int(re.search(r'\([0-9]+\)', tab_text).group(0)[1:-1])
-
-
 def normalize(data):
+    """Normalizes the data to the number of non NaN values in the data.
+
+    Args:
+        data (list): Arbitrary list of any shape with numbers to be
+            normalized. Can contain NaN values.
+
+    Returns:
+        (np.array): Numpy array of the same size as input but each value
+            normalized.
+    """
 
     data = np.array(data)
     num_elements = len(data[~np.isnan(data)])
@@ -58,6 +133,16 @@ def normalize(data):
 
 
 def orientation_to_euler_angle(orientation):
+    """Returns the Euler angles for the plane specified in 'orientation'.
+
+    Args:
+        orientation (string): Plane for which the Euler angles are to be
+            return. Possible values: 'xy', 'yx', 'xz', 'zx'
+
+    Returns:
+        (list): List of length three containing the Euler angles in the
+            following order: Phi, Theta, Psi
+    """
 
     phi = 0 if orientation in ['xy', 'xz', 'zx'] else 90
     theta = 0 if orientation in ['xy', 'yx'] else 90
@@ -68,7 +153,7 @@ def orientation_to_euler_angle(orientation):
 
 def axis_from_range(range_, num):
     """Calculates a full 1D axis from range values and number of
-    elements. Result can be used for interpolation method.
+        elements. Result can be used for interpolation method.
 
     Args:
         range_ (float): 1D list with min and max value (inclusive).
@@ -83,101 +168,84 @@ def axis_from_range(range_, num):
                        dtype=np.float64)
 
 
-def range_from_axes(x_axis, y_axis):
+def range_from_axes(*args):
+    """Returns a range list for both axis.
 
-    range_ = np.array([[x_axis[0], x_axis[-1]],
-                       [y_axis[0], y_axis[-1]]],
-                      dtype=np.float64)
+    Args:
+        *args (list): Arbitrary many axis. Each axis has to be a 1D list
+            with no NaN values.
 
-    step_size = np.array([abs(x_axis[1] - x_axis[0]),
-                          abs(y_axis[1] - y_axis[0])],
-                         dtype=np.float64)
+    Returns:
+        (list): List of ranges for each axis supplied.
+        (list): List of step sizes for each axis supplied.
+    """
+
+    range_ = []
+    step_size = []
+
+    for axis in args:
+        range_.append([axis[0], axis[-1]])
+        step_size.append(abs(axis[1] - axis[0]))
+
+    range_ = np.array(range_, dtype=np.float64)
+    step_size = np.array(step_size, dtype=np.float64)
 
     return range_, step_size
 
 
-def resolution_to_num(range_, resolution):
+def step_size_to_num(range_, step_size):
+    """Returns the number of points an axis with a range_ and step_size.
 
-    num = int((range_[1] - range_[0]) / resolution)
+    Args:
+        range_ (list): Max and min value of the axis.
+        step_size (float): Step size of the axis.
+
+    Returns:
+        (int): Number of points in the axis.
+    """
+
+    num = int((range_[1] - range_[0]) / step_size) + 1
 
     return num
 
 
-def num_to_resolution(range_, num):
-
-    resolution = (range_[1] - range_[0]) / num
-
-    return resolution
-
-
 def get_rotation_axes(phi, theta):
+    """Returns the rotation axes when rotating with Euler angles.
 
-    deg2rad = np.pi / 180
-    cos_phi = np.cos(phi * deg2rad)
-    sin_phi = np.sin(phi * deg2rad)
-    cos_theta = np.cos(theta * deg2rad)
-    sin_theta = np.sin(theta * deg2rad)
+    Args:
+        phi (float): Phi (first rotation) angle in degrees.
+        theta (float): Theta (second rotation) angle in degrees.
 
-    axis1 = [0, 0, 1]  # first axis is always the z-axis
-    axis2 = [cos_phi, sin_phi, 0]  # x' axis
+    Returns:
+        (list): List of axes (3D list). First is always unchanged
+        z-axis. Second is the new x'-axis and third new z''-axis. 
+    """
+
+    cos_phi = np.cos(np.radians(phi))
+    sin_phi = np.sin(np.radians(phi))
+    cos_theta = np.cos(np.radians(theta))
+    sin_theta = np.sin(np.radians(theta))
+
+    # First axis is always the z-axis
+    axis1 = [0, 0, 1]
+    # x'-axis
+    axis2 = [cos_phi, sin_phi, 0]
+    # z''-axis
     axis3 = [sin_phi * sin_theta, -cos_phi *
-             sin_theta, cos_theta]  # z'' axis
+             sin_theta, cos_theta]
 
     return [axis1, axis2, axis3]
 
 
-def profile_line_phi(plot_data, phi, x_center, y_center):
-
-    if isclose(abs(phi), np.pi / 2):
-        # Catch vertical lines
-        # For vertical lines the endpoint is (x_center, min(y)/max(y))
-        x_end_idx = idx_closest_value(plot_data.x_axis, x_center)
-        y_end_idx = 0 if phi > 0 else len(plot_data.y_axis) - 1
-
-    elif isclose(phi, 0) or isclose(phi, -np.pi):
-        # Catch horizontal lines
-        x_end_idx = len(plot_data.x_axis) - 1 if phi > -np.pi / 2 else 0
-        y_end_idx = idx_closest_value(plot_data.y_axis, y_center)
-
-    else:
-        # Line we are looking for is radius of unit circle at
-        # angle phi
-        x_unit = np.cos(phi) + x_center
-        # y axis in image data is reversed, thus reverse circle
-        y_unit = -(np.sin(phi) + y_center)
-        slope = (y_unit - y_center) / (x_unit - x_center)
-        intercept = y_unit - slope * x_unit
-        # Upper half: y endpoint == y_axis[0]
-        # Lower half: y endpoint == y_axis[-1]
-        if phi < 0 and phi > -np.pi:
-            x_max_end = (plot_data.y_axis[-1] - intercept) / slope
-
-        else:
-            x_max_end = (plot_data.y_axis[0] - intercept) / slope
-
-        # x_end can be at most the first or last element of axis
-        # depending on left or right half
-        if phi < np.pi / 2 and phi > -np.pi / 2:
-            x_end = min(x_max_end, plot_data.x_axis[-1])
-
-        else:
-            x_end = max(x_max_end, plot_data.x_axis[0])
-
-        y_end = x_end * slope + intercept
-        x_end_idx = idx_closest_value(plot_data.x_axis, x_end)
-        y_end_idx = idx_closest_value(plot_data.y_axis, y_end)
-
-    x_start_idx = idx_closest_value(plot_data.x_axis, x_center)
-    y_start_idx = idx_closest_value(plot_data.y_axis, y_center)
-
-    start = [y_start_idx, x_start_idx]
-    end = [y_end_idx, x_end_idx]
-
-    return start, end
-
-
 def energy_to_k(E_kin):
-    """ Convert kinetic energy in eV to k in Anstroem^-1."""
+    """Convert kinetic energy in [eV] to k in [Anstroem^-1].
+
+    Args:
+        E_kin (float): Kinetic energy in [eV].
+
+    Returns:
+        (float): Wave number in [Anstroem^-1].
+    """
 
     # Electron mass
     m = 9.10938356e-31
@@ -192,8 +260,16 @@ def energy_to_k(E_kin):
 
 
 def compute_Euler_matrix(phi, theta, psi):
-    """Compute rotation matrix according to Eq. (M3.10.3) of
-       Lang-Pucker"""
+    """Compute rotation matrix according to Eq. (M3.10.3) of Lang-Pucker.
+
+    Args:
+        phi (float): Phi (first rotation) angle in degrees.
+        theta (float): Theta (second rotation) angle in degrees.
+        psi (float): Psi (third rotation) angle in degrees.
+
+    Returns:
+        (array): 3x3 Rotation matrix.
+    """
 
     # Compute sines and cosines of angles
     sin_phi = np.sin(np.radians(phi))
@@ -221,8 +297,19 @@ def compute_Euler_matrix(phi, theta, psi):
 
 
 def get_reduced_chi2(data, n):
+    """Returns the reduced Chi^2 (sum of squares normalized by number of
+        non NaN values minus the degrees of freedom 'n').
+
+    Args:
+        data (list): List of arbitrary shape. Contains the NOT
+            squared data.
+        n (int): Degrees of freedom.
+       
+    Returns:
+        (float): Reduced Chi^2 value.
+    """
 
     N = np.count_nonzero(~np.isnan(data))
-    reduced_chi2 = np.nansum(data**2) / (N - n)
+    reduced_chi2 = np.nansum(np.array(data)**2) / (N - n)
 
     return reduced_chi2

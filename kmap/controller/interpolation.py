@@ -8,8 +8,7 @@ from PyQt5.QtWidgets import QWidget
 
 # Own Imports
 from kmap import __directory__
-from kmap.library.misc import (
-    resolution_to_num, num_to_resolution, axis_from_range)
+from kmap.library.misc import step_size_to_num, axis_from_range
 
 
 class InterpolationBase(QWidget):
@@ -37,8 +36,8 @@ class InterpolationBase(QWidget):
 
         range_ = self.get_range()
         resolution = self.get_resolution()
-        num = [resolution_to_num(range_[0], resolution[0]),
-               resolution_to_num(range_[1], resolution[1])]
+        num = [step_size_to_num(range_[0], resolution[0]),
+               step_size_to_num(range_[1], resolution[1])]
 
         axes = [axis_from_range(range_[0], num[0]),
                 axis_from_range(range_[1], num[1])]

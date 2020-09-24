@@ -7,7 +7,6 @@ from PyQt5.QtCore import pyqtSignal, QDir
 
 # Own Imports
 from kmap import __directory__
-from kmap.library.misc import get_ID_from_tab_text
 from kmap.library.qwidgetsub import Tab
 from kmap.model.orbitaldatatab_model import OrbitalDataTabModel
 from kmap.controller.matplotlibwindow import MatplotlibWindow

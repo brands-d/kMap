@@ -1,6 +1,14 @@
+"""Unittests for the PlotData class.
+"""
+
+# Python Imports
 import unittest
+
+# Third Party Imports
 import numpy as np
 import numpy.testing as npt
+
+# Own Imports
 from kmap.library.plotdata import PlotData
 
 
