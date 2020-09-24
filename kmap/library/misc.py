@@ -83,6 +83,19 @@ def axis_from_range(range_, num):
                        dtype=np.float64)
 
 
+def range_from_axes(x_axis, y_axis):
+
+    range_ = np.array([[x_axis[0], x_axis[-1]],
+                       [y_axis[0], y_axis[-1]]],
+                      dtype=np.float64)
+
+    step_size = np.array([abs(x_axis[1] - x_axis[0]),
+                          abs(y_axis[1] - y_axis[0])],
+                         dtype=np.float64)
+
+    return range_, step_size
+
+
 def resolution_to_num(range_, resolution):
 
     num = int((range_[1] - range_[0]) / resolution)

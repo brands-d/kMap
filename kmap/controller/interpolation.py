@@ -80,7 +80,7 @@ class Interpolation(InterpolationBase, Interpolation_UI):
             else:
                 fill_value = np.nan
 
-            data.smoothing(*sigma, update=True, fill_value=fill_value)
+            data.smooth(*sigma, update=True, fill_value=fill_value)
 
         return data
 
