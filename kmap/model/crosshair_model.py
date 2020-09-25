@@ -87,8 +87,8 @@ class CrosshairROIModel(CrosshairModel):
 
         else:
             # Mesgrid of axis values shifted by center
-            Y, X = centered_meshgrid(
-                plotdata.y_axis, self.y, plotdata.x_axis, self.x)
+            X, Y = centered_meshgrid(
+                plotdata.x_axis, self.x, plotdata.y_axis, self.y)
 
             if region == 'roi':
                 # Calculate distance from center for all values

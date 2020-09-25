@@ -15,23 +15,24 @@ from kmap.library.sliceddata import SlicedData
 
 
 # define common (kx,ky)-grid for deconvolution
-dk = 0.05
+dk = 0.04
 kx = np.arange(-3.0,3.0,dk)
 ky = kx
 
 # read PTCDA orbitals from file and compute kmaps 
 names  = ['PTCDA_C','PTCDA_D','PTCDA_E','PTCDA_F']
+styles = ['.r-','k-','r--','^g-']
 params = Parameters() # parameters object for minimization
 
 sim_kmaps = []
 for name in names:
     cuberead = open(data_path + name +'.cube').read()       # read cube-file from file
     orbital  = Orbital(cuberead,dk3D=0.15)     # 3D-FT 
-    sim_kmap = orbital.get_kmap(E_kin=28,     
+    sim_kmap = orbital.get_kmap(E_kin=27.2,     
                          phi=0,theta=0,psi=0,  # Euler angles 
                          Ak_type='toroid',     # toroidal analyzer 
                          polarization='p',     # p-polarized light
-                         alpha=60)             # angle of incidence
+                         alpha=40)             # angle of incidence
     sim_kmap.interpolate(kx,ky,update=True)
     sim_kmaps.append(sim_kmap)
     params.add(name,value=1,min=0)   # fit parameter weight of orbital
@@ -65,13 +66,14 @@ for i in range(nslice):
 #    report_fit(result)
 
 # plot results: weights of orbitals (pDOS) vs. kinetic energy
-fig,ax  = plt.subplots()
+fig,ax  = plt.subplots(figsize=(12,5))
 x       = exp_data.axes[0].axis
 x_label = exp_data.axes[0].label + '(' + exp_data.axes[0].units + ')'
 for j,p in enumerate(names):
-    ax.plot(x,pDOS[:,j],label=p)
+    ax.plot(x,pDOS[:,j],styles[j],label=p)
 plt.legend()
 plt.xlabel(x_label)
-plt.xlabel('weights (arb. units)')
+plt.ylabel('weights (arb. units)')
+#plt.savefig('Fig6_deconvolution.png',dpi=300)
 plt.show()
 
