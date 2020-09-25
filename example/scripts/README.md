@@ -74,10 +74,17 @@ tilt angles of theta=0°, 10°, 20° and 30° degree are computed and symmetrize
 the symmetrization='2-fold' option in get_kmap()
 
 ## example4.py
-... to be done ...
+On the example of the tilt-angle of pentacene in a crystalline multi-layer film [2], 
+example4.py demonstrates how the the lmfit module is used to peform a least-square
+minimization to determine an optimal molecular orientation. More details about
+this example can be found in Section 4.1 of Ref. [1].
+
 
 ## example5.py
-... to be done ...
+On the example of the so-called 'M3-feature' of a monoloayer of PTCDA/Ag(110), 
+example5.py demonstrates the deconvolution of experimental ARPES data into
+individual orbital contributions according to Ref. [3]. More deatils about
+this example can be found in Section 4.2 of Ref. [1]
 
 
 # References
