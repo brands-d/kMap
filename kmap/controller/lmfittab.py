@@ -96,7 +96,10 @@ class LMFitBaseTab(Tab):
             level = 1
 
         else:
-            data = sliced_data - sum_data - self.tree._get_background()
+            background = self.lmfit.get_background(
+                sliced_data.x_axis,
+                sliced_data.y_axis) * self.tree._get_background()
+            data = sliced_data - sum_data - background
             data = self.lmfit.cut_region(data, self.crosshair)
             level = np.nanmax(np.absolute(data.data))
 
@@ -188,7 +191,8 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
         axis_index = self.slider.get_axis()
         slice_index = self.slider.get_index()
         other_parameter = self.lmfitother.get_parameters()
-        region = self.lmfit.get_region()
+        lmfit_parameter = (*self.lmfit.get_region(),
+                           self.lmfit.get_background_raw())
 
         result, type_ = self.lmfit.fit(variables, parameters,
                                        self.interpolation,
@@ -200,7 +204,7 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
 
         self.fit_finished.emit(result, other_parameter,
                                meta_parameter, self.interpolation,
-                               region)
+                               lmfit_parameter)
 
     def _get_parameters(self, ID):
 
@@ -252,6 +256,7 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
         self.tree.vary_changed.connect(self.update_chi2_label)
 
         self.lmfit.fit_triggered.connect(self.trigger_fit)
+        self.lmfit.background_changed.connect(self.refresh_residual_plot)
 
         self.lmfitother.value_changed.connect(self.refresh_selected_plot)
         self.lmfitother.value_changed.connect(self.refresh_sum_plot)

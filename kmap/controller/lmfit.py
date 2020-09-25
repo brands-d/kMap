@@ -24,6 +24,7 @@ class LMFit(QWidget, LMFit_UI):
 
     fit_triggered = pyqtSignal()
     region_changed = pyqtSignal()
+    background_changed = pyqtSignal()
 
     def __init__(self, sliced, orbitals):
 
@@ -93,17 +94,19 @@ class LMFit(QWidget, LMFit_UI):
 
         method = self._get_method()
         xtol = float(config.get_key('lmfit', 'xtol'))
+        background = self.get_background(
+            sliced_data.x_axis, sliced_data.y_axis)
 
         result = minimize(self.chi2, lmfit_param,
                           args=(sliced_data, parameters,
-                                interpolator, crosshair),
+                                interpolator, crosshair, background),
                           nan_policy='omit',
                           method=method,
                           xtol=xtol)
 
         return result
 
-    def chi2(self, param, sliced_data, other_params, interpolator, crosshair):
+    def chi2(self, param, sliced_data, other_params, interpolator, crosshair, background=1):
 
         orbital_kmaps = []
         axes = interpolator.get_axes()
@@ -126,7 +129,7 @@ class LMFit(QWidget, LMFit_UI):
 
         orbital_kmap = np.sum(orbital_kmaps)
 
-        difference = sliced_data - param['c'].value - orbital_kmap
+        difference = sliced_data - background * param['c'].value - orbital_kmap
 
         difference = self.cut_region(difference, crosshair)
 
@@ -144,6 +147,34 @@ class LMFit(QWidget, LMFit_UI):
                 data, region=region, inverted=inverted)
 
             return cut_data
+
+    def get_background(self, x, y):
+
+        equation = self.line_edit.text()
+
+        # Set empty equation to constant background
+        if not equation:
+            equation = '1'
+
+        try:
+            # Wrap y-axis to transpose -> meshgrid like multiplicaltion
+            local = {'x': x, 'y': np.array([y]).T}
+            background = eval(equation, None, local)
+
+            return background
+
+        except Exception as e:
+            print(e)
+
+    def get_background_raw(self):
+
+        return self.line_edit.text()
+
+    def set_background(self, equation):
+
+        self.line_edit.blockSignals(True)
+        self.line_edit.setText(equation)
+        self.line_edit.blockSignals(False)
 
     def set_region(self, region, inverted):
 
@@ -203,3 +234,4 @@ class LMFit(QWidget, LMFit_UI):
         self.fit_button.clicked.connect(self.fit_triggered.emit)
         self.region_comboBox.currentIndexChanged.connect(
             self.region_changed.emit)
+        self.line_edit.returnPressed.connect(self.background_changed.emit)

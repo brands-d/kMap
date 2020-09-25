@@ -21,7 +21,7 @@ class LMFitResultTab(LMFitBaseTab, LMFitResultTab_UI):
     open_plot_tab = pyqtSignal(list, list, Axis)
 
     def __init__(self, results, other_parameter, meta_parameter, sliced_data,
-                 orbitals, interpolator, region='all', inverted=False):
+                 orbitals, interpolator, background, region='all', inverted=False):
 
         self.model = LMFitTabModel(sliced_data, orbitals)
         self.other_parameter = other_parameter
@@ -32,7 +32,7 @@ class LMFitResultTab(LMFitBaseTab, LMFitResultTab_UI):
         super(LMFitResultTab, self).__init__()
         self.setupUi(self)
 
-        self._setup(results, interpolator, region, inverted)
+        self._setup(results, interpolator, background, region, inverted)
         self._connect()
 
         self.refresh_sliced_plot()
@@ -76,7 +76,7 @@ class LMFitResultTab(LMFitBaseTab, LMFitResultTab_UI):
 
         return parameters
 
-    def _setup(self, results, interpolator, region, inverted):
+    def _setup(self, results, interpolator, background, region, inverted):
 
         LMFitBaseTab._setup(self)
 
@@ -95,6 +95,7 @@ class LMFitResultTab(LMFitBaseTab, LMFitResultTab_UI):
         self.layout.insertWidget(1, self.tree)
 
         self.lmfit.set_region(region, inverted)
+        self.lmfit.set_background(background)
 
     def _connect(self):
 

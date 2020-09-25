@@ -139,6 +139,9 @@ class TestPlotData(unittest.TestCase):
         subed_plot_data = self.plot_data - second_plot_data
         npt.assert_equal(subed_plot_data.data, [[-6, -6, -6], [-6, -6, -6]])
 
+        subed_plot_data = self.plot_data - np.array(data)
+        npt.assert_equal(subed_plot_data.data, [[-6, -6, -6], [-6, -6, -6]])
+
         subed_plot_data = self.plot_data - 4
         npt.assert_equal(subed_plot_data.data, [[-3, -2, -1], [0, 1, 2]])
 
