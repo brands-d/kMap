@@ -87,7 +87,6 @@ class PlotData():
 
         Returns:
             (PlotData): PlotData object with the interpolated data.
-
         """
 
         points = np.array(list(it.product(y_axis, x_axis)))

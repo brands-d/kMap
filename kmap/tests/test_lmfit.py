@@ -5,7 +5,6 @@ import unittest
 # Third Party Imports
 import numpy as np
 import numpy.testing as npt
-import matplotlib.pyplot as plt
 
 # Own Imports
 from kmap.model.lmfit_model import LMFitModel
@@ -33,6 +32,8 @@ class TestLMFitModel(unittest.TestCase):
             input_path + path, ID) for ID, path in enumerate(orbital_paths)]
 
         cls.expected = np.loadtxt(file_path + '/output/weights_PTCDA')
+        cls.background_expected = np.loadtxt(
+            file_path + '/output/background_expected')
 
     def setUp(self):
 
@@ -54,15 +55,15 @@ class TestLMFitModel(unittest.TestCase):
             *range_, num=step_size_to_num(range_, step_size), endpoint=True)
 
         self.lmfit.set_axis_by_step_size(range_, step_size)
-        npt.assert_almost_equal(self.lmfit.sliced_data_kmaps[0].x_axis, axis)
+        npt.assert_almost_equal(self.lmfit._sliced_data_kmaps[0].x_axis, axis)
 
     def test_set_slices(self):
 
         self.lmfit.set_slices([1, 2, 3])
-        self.assertEqual(len(self.lmfit.sliced_data_kmaps), 3)
+        self.assertEqual(len(self.lmfit._sliced_data_kmaps), 3)
 
         self.lmfit.set_slices([0, 1, 2, 3], combined=True)
-        self.assertEqual(len(self.lmfit.sliced_data_kmaps), 1)
+        self.assertEqual(len(self.lmfit._sliced_data_kmaps), 1)
 
     def test_set_background_equation(self):
 
@@ -84,6 +85,18 @@ class TestLMFitModel(unittest.TestCase):
 
         self.lmfit.edit_parameter('w_1', value=1.5)
         self.assertEqual(self.lmfit.parameters['w_1'].value, 1.5)
+
+    def test_background(self):
+
+        range_, dk = [-3.0, 3.0], 0.025
+        self.lmfit.set_axis_by_step_size(range_, dk)
+
+        self.lmfit.set_background_equation(
+            '(np.exp(-x**2-y**2)-np.exp(-(x-1)**2-(y-1)**2))/2', [])
+
+        background = self.lmfit._get_background(variables={})
+
+        npt.assert_almost_equal(background, TestLMFitModel.background_expected)
 
     def test_PTCDA(self):
 
