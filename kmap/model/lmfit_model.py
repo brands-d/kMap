@@ -104,25 +104,6 @@ class LMFitModel():
 
         self.parameters[parameter].set(*args, **kwargs)
 
-    def _set_sliced_data_map(self):
-
-        axis_index, slice_indices, is_combined = self.slice_policy
-
-        kmaps = []
-        for slice_index in slice_indices:
-            kmaps.append(self.sliced_data.slice_from_index(slice_index,
-                                                           axis_index))
-
-        if is_combined:
-            kmaps = [np.nansum(kmaps, axis=axis_index)]
-
-        if self.axis is not None:
-            self.sliced_data_kmaps = [kmap_.interpolate(
-                self.axis, self.axis) for kmap_ in kmaps]
-
-        else:
-            self.sliced_data_kmaps = kmaps
-
     def fit(self):
 
         results = []
@@ -142,6 +123,7 @@ class LMFitModel():
     def chi2(self, param, sliced_data_kmap_index=0):
 
         orbital_kmaps = []
+
         for orbital in self.orbitals:
             ID = orbital.ID
             kmap = orbital.get_kmap(E_kin=param['E_kin'].value,
@@ -154,7 +136,6 @@ class LMFitModel():
                                     Ak_type=self.Ak_type,
                                     polarization=self.polarization,
                                     symmetrization=self.symmetrization)
-
             orbital_kmaps.append(param['w_' + str(ID)].value * kmap)
 
         orbital_kmap = np.nansum(orbital_kmaps)
@@ -172,6 +153,26 @@ class LMFitModel():
         difference = self._cut_region(difference)
 
         return difference.data
+
+    def _set_sliced_data_map(self):
+
+        axis_index, slice_indices, is_combined = self.slice_policy
+
+        kmaps = []
+        for slice_index in slice_indices:
+            kmaps.append(self.sliced_data.slice_from_index(slice_index,
+                                                           axis_index))
+
+        if is_combined:
+            kmaps = [np.nansum(kmaps, axis=axis_index)]
+
+        if self.axis is not None:
+            self.sliced_data_kmaps = [kmap_.interpolate(
+                self.axis, self.axis) for kmap_ in kmaps]
+
+        else:
+            self.sliced_data_kmaps = kmaps
+            self.axis = kmaps[0].x_axis
 
     def _cut_region(self, data):
 
