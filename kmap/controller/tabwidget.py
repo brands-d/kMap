@@ -15,8 +15,7 @@ from kmap.controller.orbitaldatatab import OrbitalDataTab
 from kmap.controller.profileplottab import ProfilePlotTab
 from kmap.controller.renametabwindow import RenameTabWindow
 from kmap.controller.lmfitplottab import LMFitPlotTab
-from kmap.controller.lmfittab import LMFitTab
-from kmap.controller.lmfitresulttab import LMFitResultTab
+from kmap.controller.lmfittab import LMFitTab, LMFitResultTab
 from kmap.controller.filetab import FileViewerTab, FileEditorTab
 from kmap.library.qwidgetsub import Tab
 from kmap.config.config import config
