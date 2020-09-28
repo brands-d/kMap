@@ -99,6 +99,13 @@ class TestLMFitModel(unittest.TestCase):
 
         npt.assert_almost_equal(background, TestLMFitModel.background_expected)
 
+    def test_settings(self):
+
+        lmfit_new = LMFitModel(
+            TestLMFitModel.sliced_data, TestLMFitModel.orbitals)
+
+        lmfit_new.set_settings(self.lmfit.get_settings())
+
     def test_PTCDA(self):
 
         if float(config.get_key('orbital', 'dk3D')) != 0.12:
@@ -135,4 +142,4 @@ class TestLMFitModel(unittest.TestCase):
                              result.params['w_3'].value]
                             for result in results]).T
 
-        npt.assert_almost_equal(weights, TestLMFitModel.expected)
+        npt.assert_almost_equal(weights, TestLMFitModel.expected, decimal=5)
