@@ -12,11 +12,13 @@ from lmfit import Minimizer, Parameters, report_fit
 # now import classes from kMap
 from kmap.library.orbital import Orbital
 from kmap.library.sliceddata import SlicedData
+from kmap.library.misc import step_size_to_num
 
 
 # define common (kx,ky)-grid for deconvolution
-dk = 0.04
-kx = np.arange(-3.0,3.0,dk)
+k_range, dk = [-3.0, 3.0], 0.04
+num = step_size_to_num(k_range, dk)
+kx = np.linspace(k_range[0],k_range[1],num)
 ky = kx
 
 # read PTCDA orbitals from file and compute kmaps 
@@ -27,13 +29,14 @@ params = Parameters() # parameters object for minimization
 sim_kmaps = []
 for name in names:
     cuberead = open(data_path + name +'.cube').read()       # read cube-file from file
-    orbital  = Orbital(cuberead,dk3D=0.15)     # 3D-FT 
-    sim_kmap = orbital.get_kmap(E_kin=27.2,     
+    orbital  = Orbital(cuberead,dk3D=0.12)     # 3D-FT 
+    sim_kmap = orbital.get_kmap(E_kin=27.2,  
+                         dk=(kx,ky),   
                          phi=0,theta=0,psi=0,  # Euler angles 
                          Ak_type='toroid',     # toroidal analyzer 
                          polarization='p',     # p-polarized light
                          alpha=40)             # angle of incidence
-    sim_kmap.interpolate(kx,ky,update=True)
+    #sim_kmap.interpolate(kx,ky,update=True)
     sim_kmaps.append(sim_kmap)
     params.add(name,value=1,min=0)   # fit parameter weight of orbital
 
@@ -64,6 +67,8 @@ for i in range(nslice):
     for j,p in enumerate(pdir):
         pDOS[i,j] = pdir[p]
 #    report_fit(result)
+
+print(pDOS)
 
 # plot results: weights of orbitals (pDOS) vs. kinetic energy
 fig,ax  = plt.subplots(figsize=(12,5))
