@@ -12,6 +12,7 @@ from kmap.model.crosshair_model import CrosshairAnnulusModel
 from kmap.library.sliceddata import SlicedData
 from kmap.library.orbitaldata import OrbitalData
 from kmap.library.misc import step_size_to_num
+from kmap.config.config import config
 
 
 class TestLMFitModel(unittest.TestCase):
@@ -100,6 +101,14 @@ class TestLMFitModel(unittest.TestCase):
 
     def test_PTCDA(self):
 
+        if float(config.get_key('orbital', 'dk3D')) != 0.12:
+            print(
+                'WARNING: Test \'test_PTCDA\' from the ' +
+                '\'test_lmfit\' module has not been run. It requires ' +
+                '\'dk3D\' setting from the \'cube\' category to be ' +
+                'to 0.12.')
+            return
+
         # Set certain parameters not being fitted but desired to be changed
         range_, dk = [-3.0, 3.0], 0.04
         self.lmfit.set_axis_by_step_size(range_, dk)
@@ -125,5 +134,5 @@ class TestLMFitModel(unittest.TestCase):
                              result.params['w_2'].value,
                              result.params['w_3'].value]
                             for result in results]).T
-        # Is slightly off
-        #npt.assert_almost_equal(weights, TestLMFitModel.expected)
+
+        npt.assert_almost_equal(weights, TestLMFitModel.expected)
