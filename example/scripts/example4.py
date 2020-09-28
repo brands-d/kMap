@@ -7,83 +7,71 @@ data_path = path + os.sep + '..' + os.sep + 'data' + os.sep
 ####
 import matplotlib.pyplot as plt
 import numpy as np
-from lmfit import Minimizer, Parameters, report_fit
 
-# now import classes from kMap
-from kmap.library.orbital import Orbital
+# Own Imports from kmap
+from kmap.library.orbitaldata import OrbitalData
 from kmap.library.sliceddata import SlicedData
+from kmap.model.lmfit_model import LMFitModel
 
-path = os.path.dirname(os.path.realpath(__file__)) + '/../data/'
-
-# Load experimental data-file and choose a constant-binding energy slice
+# load experimental data as SlicedData object
 exp_data = SlicedData.init_from_hdf5(data_path + 'example4_3271.hdf5') 
-exp_kmap = exp_data.slice_from_index(2)   # take slice #2 from exp. data
-kx       = np.arange(0,3.0,0.05)
-ky       = kx
-exp_kmap.interpolate(kx,ky,update=True)
 
-# read pentacene HOMO cube-file from file 
-cubefile = open(data_path + 'pentacene_HOMO.cube').read() # read cube-file from file
-homo     = Orbital(cubefile,dk3D=0.15)        # 3D-FT 
+# load orbital for fitting as OrbitalData objects
+orbital_paths = ['pentacene_HOMO.cube']
+orbitals = [OrbitalData.init_from_file(
+            data_path + path, ID) for ID, path in enumerate(orbital_paths)]
 
 
-# define function which returns the difference between exp. and simulated k-map
-def chi2_function(params):
+# Initialize fit as LMFitModel object
+lmfit = LMFitModel(exp_data, orbitals)
 
-    theta      = params['theta']
-    weight     = params['weight']
-    background = params['background']
+# Set common range and delta-k-grid for exp. and sim. kmaps
+range_, dk = [-3.0, 3.0], 0.04  
+lmfit.set_axis_by_step_size(range_, dk)
+lmfit.set_polarization('toroid', 'p')
+lmfit.set_symmetrization('2-fold')
 
-    # simulate momentum map for given theta
-    sim_kmap = homo.get_kmap(E_kin=28,     
-                   phi=90,theta=theta.value,psi=90,  # Euler angles 
-                   Ak_type='toroid',           # toroidal analyzer 
-                   polarization='p',           # p-polarized light
-                   alpha=40,                   # angle of incidence
-                   symmetrization='2-fold')    # symmetrize kmap
+# Set parameters not intended for fitting to desired value
+lmfit.edit_parameter('E_kin', value=28, vary=False)
+lmfit.edit_parameter('alpha', value=40, vary=False)
 
-    # Interpolate simulated k-maps to the same (kx,ky)-grid as experimental map
-    kx = exp_kmap.x_axis
-    ky = exp_kmap.y_axis
-    sim_kmap.interpolate(kx,ky,update=True)
+# Activate fitting for background ('c') and all orbital weights and theta
+lmfit.edit_parameter('c', value=1, vary=True)  # constant background
+for i in [0]:
+    lmfit.edit_parameter('w_' + str(i), vary=True)
+    lmfit.edit_parameter('theta_' + str(i), value=0,vary=True)
+    lmfit.edit_parameter('phi_' + str(i), value=90, vary=False)
+    lmfit.edit_parameter('psi_' + str(i), value=90, vary=False)
 
-    difference = (exp_kmap.data - background) - weight*(sim_kmap.data)
-    
-    return difference
+# Set slices to be used and perform fit
+lmfit.set_slices([2], combined=False)
+lmfit.set_fit_method(method='leastsq', xtol=1e-12)
+best_fit = lmfit.fit()
 
-# MAIN PROGRAM #####################################################################
+# print results of best fit
+print('reduced chi^2 = ',best_fit[0].redchi)
+print(best_fit[0].params['theta_0'])
+print(best_fit[0].params['w_0'])
+print(best_fit[0].params['c'])
 
-# Compute best fit
-params = Parameters()
-params.add('theta',     value=5,   min=0,max=90)    # tilting angle of molecule
-params.add('weight',    value=5000,min=0,max=5000)  # weight of orbital
-params.add('background',value=200, min=0,max=500)   # constant background
-
-minner  = Minimizer(chi2_function, params, nan_policy='omit')
-result  = minner.minimize(method='leastsq',xtol=1e-12)
-N       = result.ndata   # number of data points
-n       = result.nvarys  # number of model parameters 
-redchi  = result.redchi  # reduced-chi^2 = chi^2/(N-n) 
-bestpar = result.params  # best fit parameters
-report_fit(result)       # print fit report to console
-
-# now make plot how chi^2 varies with the tilt angle theta
+# now make plot of chi^2 vs. theta by looping over a list of theta-values,
+# but setting fixing all variables (vary=False) in the fit
+lmfit.edit_parameter('w_0', value=best_fit[0].params['w_0'].value, vary=False)
+lmfit.edit_parameter('c', value=best_fit[0].params['c'].value, vary=False)
 theta_values = np.linspace(0,60,61)
 redchi2_list = []  
-factor       = 1e-3 # arbitrary scaling factor for chi^2
-for theta in theta_values:
-    params = Parameters()
-    params.add('theta',     value=theta)              # tilting angle of molecule
-    params.add('weight',    value=bestpar['weight'].value)      # take from best fit
-    params.add('background',value=bestpar['background'].value)  # take from best fit
-    diff = chi2_function(params)
-    redchi2_list.append(factor*np.nansum(diff**2)/(N - n)) # compute reduced chi^2
 
+for theta in theta_values:
+    lmfit.edit_parameter('theta_0', value=theta, vary=False)
+    fit = lmfit.fit()
+    redchi2_list.append(fit[0].redchi)
 
 # plot reduced chi^2 versus theta
+factor = 1e-3 # arbitrary scaling factor for reduced chi^2
+redchi2_list = factor*np.array(redchi2_list)
 fig, ax = plt.subplots(figsize=(6.5,5))
 ax.plot(theta_values,redchi2_list,'k-')
-ax.plot([bestpar['theta'].value],[factor*redchi],'ro')
+ax.plot([best_fit[0].params['theta_0'].value], [factor*best_fit[0].redchi],'ro')
 ax.set_xlabel('$\\vartheta (^\circ)$',fontsize=20)
 ax.set_ylabel('$\chi^2_{red}$ (arb. units)',fontsize=20)
 plt.xticks(fontsize=20)
@@ -94,5 +82,4 @@ plt.yticks(fontsize=20)
 plt.tight_layout()
 #plt.savefig('Fig5a_chi2.png',dpi=300)
 plt.show()
-
 
