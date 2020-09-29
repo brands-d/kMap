@@ -58,32 +58,7 @@
       </property>
       <item>
        <layout class="QGridLayout" name="layout_2">
-        <item row="0" column="0">
-         <widget class="QPushButton" name="fit_button">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>150</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>Fit</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
+        <item row="2" column="1">
          <widget class="QComboBox" name="method_combobox">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
@@ -169,8 +144,8 @@
           </item>
          </widget>
         </item>
-        <item row="2" column="1">
-         <widget class="QComboBox" name="region_comboBox">
+        <item row="0" column="1">
+         <widget class="QComboBox" name="slice_combobox">
           <property name="font">
            <font>
             <weight>50</weight>
@@ -179,27 +154,17 @@
           </property>
           <item>
            <property name="text">
-            <string>Entire kMap</string>
+            <string>Only this Slice</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>Only ROI</string>
+            <string>All Slices Individually</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>Only Annulus</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Except ROI</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Except Annulus</string>
+            <string>All Slices Combined</string>
            </property>
           </item>
          </widget>
@@ -229,6 +194,19 @@
           </property>
          </widget>
         </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="background_label">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Background Eq.:</string>
+          </property>
+         </widget>
+        </item>
         <item row="2" column="0">
          <widget class="QLabel" name="method_label">
           <property name="sizePolicy">
@@ -254,33 +232,20 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="1">
-         <widget class="QComboBox" name="slice_combobox">
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
+        <item row="0" column="0">
+         <widget class="QPushButton" name="fit_button">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
           </property>
-          <item>
-           <property name="text">
-            <string>Only this Slice</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>All Slices Individually</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>All Slices Combined</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="background_label">
+          <property name="minimumSize">
+           <size>
+            <width>150</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="font">
            <font>
             <weight>50</weight>
@@ -288,7 +253,7 @@
            </font>
           </property>
           <property name="text">
-           <string>Background Eq.:</string>
+           <string>Fit</string>
           </property>
          </widget>
         </item>
@@ -326,6 +291,41 @@ np.exp( - ( (x + 2)**2 / (2 * 0.4**2) + (y - 4.5)**2) / (2 * 0.5**2) )
           <property name="clearButtonEnabled">
            <bool>true</bool>
           </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QComboBox" name="region_comboBox">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <item>
+           <property name="text">
+            <string>Entire kMap</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Only ROI</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Only Annulus</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Except ROI</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Except Annulus</string>
+           </property>
+          </item>
          </widget>
         </item>
        </layout>

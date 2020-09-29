@@ -18,7 +18,8 @@ from lmfit import minimize, Parameters
 from kmap.model.crosshair_model import CrosshairModel, CrosshairAnnulusModel
 from kmap.library.orbitaldata import OrbitalData
 from kmap.library.sliceddata import SlicedData
-from kmap.library.misc import axis_from_range, step_size_to_num
+from kmap.library.misc import (
+    axis_from_range, step_size_to_num, get_reduced_chi2)
 
 
 class LMFitModel():
@@ -47,12 +48,11 @@ class LMFitModel():
         self.crosshair = None
         self.background_equation = ['1', []]
         self.symmetrization = 'no'
-        self.Ak_type = 'toroid'
+        self.Ak_type = 'no'
         self.polarization = 'p'
         self.slice_policy = [0, [0], False]
         self.method = ['leastsq', 1e-12]
         self.region = ['all', False]
-        self._sliced_data_kmaps = []
 
         self._set_sliced_data(sliced_data)
         self._add_orbitals(orbitals)
@@ -90,8 +90,6 @@ class LMFitModel():
         """
 
         self.axis = axis
-
-        self._set_sliced_data_map()
 
     def set_axis_by_step_size(self, range_, step_size):
         """A convenience setter method to set an axis by defining the
@@ -182,8 +180,6 @@ class LMFitModel():
         else:
             self.slice_policy = [axis_index, [slice_indices], combined]
 
-        self._set_sliced_data_map()
-
     def set_fit_method(self, method, xtol=1e-7):
         """A setter method to set the method and the tolerance for the
         fitting process. Default is 'leastsq' and 1e-7.
@@ -248,16 +244,15 @@ class LMFitModel():
         """
 
         results = []
-
-        for index in range(len(self._sliced_data_kmaps)):
+        for index in self.slice_policy[1]:
             result = minimize(self._chi2,
                               copy.deepcopy(self.parameters),
-                              kws={'sliced_data_kmap_index': index},
+                              kws={'slice_index': index},
                               nan_policy='omit',
                               method=self.method[0],
                               xtol=self.method[1])
 
-            results.append(result)
+            results.append([index, result])
 
         return results
 
@@ -284,25 +279,36 @@ class LMFitModel():
         self.set_fit_method(*settings['method'])
         self.set_axis(settings['axis'])
 
-    def _chi2(self, param, sliced_data_kmap_index=0):
+    def get_sliced_kmap(self, slice_index):
 
-        orbital_kmap = self._get_weighted_sum_kmap(param)
-        sliced_kmap = self._get_sliced_kmap(sliced_data_kmap_index)
+        axis_index, _, is_combined = self.slice_policy
 
-        difference = sliced_kmap - orbital_kmap
-        difference = self._cut_region(difference)
+        if is_combined:
+            kmaps = []
+            for slice_index in slice_indices:
+                kmap.append(self.sliced_data.slice_from_index(slice_index,
+                                                              axis_index))
 
-        return difference.data
+                kmap = [np.nansum(kmaps, axis=axis_index)]
 
-    def _get_sliced_kmap(self, sliced_data_kmap_index):
+        else:
+            kmap = self.sliced_data.slice_from_index(slice_index,
+                                                     axis_index)
 
-        sliced_kmap = self._sliced_data_kmaps[sliced_data_kmap_index]
+        if self.axis is not None:
+            kmap = kmap.interpolate(self.axis, self.axis)
 
-        return sliced_kmap
+        else:
+            self.axis = kmap.x_axis
 
-    def _get_orbital_kmap(self, orbital, param):
+        return kmap
 
-        ID = orbital.ID
+    def get_orbital_kmap(self, ID, param=None):
+
+        if param is None:
+            param = self.parameters
+
+        orbital = self.ID_to_orbital(ID)
         kmap = orbital.get_kmap(E_kin=param['E_kin'].value,
                                 dk=(self.axis, self.axis),
                                 phi=param['phi_' + str(ID)].value,
@@ -316,13 +322,23 @@ class LMFitModel():
 
         return kmap
 
-    def _get_weighted_sum_kmap(self, param, with_background=True):
+    def get_weighted_sum_kmap(self, param=None, with_background=True):
+
+        if param is None:
+            param = self.parameters
 
         orbital_kmaps = []
         for orbital in self.orbitals:
             ID = orbital.ID
+
             weight = param['w_' + str(ID)].value
-            kmap = weight * self._get_orbital_kmap(orbital, param)
+
+            if weight == 0:
+                kmap = 0
+
+            else:
+                kmap = weight * self.get_orbital_kmap(ID, param)
+
             orbital_kmaps.append(kmap)
 
         orbital_kmap = np.nansum(orbital_kmaps)
@@ -339,32 +355,59 @@ class LMFitModel():
         else:
             return orbital_kmap
 
+    def get_residual(self, slice_index, param=None):
+
+        if param is None:
+            param = self.parameters
+
+        orbital_kmap = self.get_weighted_sum_kmap(param)
+        sliced_kmap = self.get_sliced_kmap(slice_index)
+
+        residual = sliced_kmap - orbital_kmap
+        residual = self._cut_region(residual)
+
+        return residual
+
+    def get_reduced_chi2(self, slice_index):
+
+        n = self._get_degrees_of_freedom()
+        residual = self.get_residual(slice_index)
+        reduced_chi2 = get_reduced_chi2(residual.data, n)
+
+        return reduced_chi2
+
+    def ID_to_orbital(self, ID):
+
+        for orbital in self.orbitals:
+            if orbital.ID == ID:
+                return orbital
+
+        return None
+
+    def _chi2(self, param=None, slice_index=0):
+
+        if param is None:
+            param = self.parameters
+
+        residual = self.get_residual(slice_index, param)
+
+        return residual.data
+
+    def _get_degrees_of_freedom(self):
+
+        n = 0
+        for parameter in self.parameters.values():
+            if parameter.vary:
+                n += 1
+
+        return n
+
     def _get_background(self, variables=[]):
 
         variables.update({'x': self.axis, 'y': np.array([self.axis]).T})
         background = eval(self.background_equation[0], None, variables)
 
         return background
-
-    def _set_sliced_data_map(self):
-
-        axis_index, slice_indices, is_combined = self.slice_policy
-
-        kmaps = []
-        for slice_index in slice_indices:
-            kmaps.append(self.sliced_data.slice_from_index(slice_index,
-                                                           axis_index))
-
-        if is_combined:
-            kmaps = [np.nansum(kmaps, axis=axis_index)]
-
-        if self.axis is not None:
-            self._sliced_data_kmaps = [kmap_.interpolate(
-                self.axis, self.axis) for kmap_ in kmaps]
-
-        else:
-            self._sliced_data_kmaps = kmaps
-            self.axis = kmaps[0].x_axis
 
     def _cut_region(self, data):
 
@@ -379,7 +422,6 @@ class LMFitModel():
 
         if isinstance(sliced_data, SlicedData):
             self.sliced_data = sliced_data
-            self._set_sliced_data_map()
 
         else:
             raise TypeError(

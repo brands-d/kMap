@@ -110,18 +110,9 @@ class TabWidget(QWidget, TabWidget_UI):
 
         self._open_tab(tab, 'LM-Fit Tab')
 
-    def open_result_tab(self, results, other_parameter,
-                        meta_parameter, interpolator, lmfit_parameter):
+    def open_result_tab(self, *args):
 
-        lmfit_tab = self.sender()
-
-        tab = LMFitResultTab(results, other_parameter, meta_parameter,
-                             lmfit_tab.model.sliced,
-                             lmfit_tab.model.orbitals,
-                             interpolator,
-                             background=lmfit_parameter[2],
-                             region=lmfit_parameter[0],
-                             inverted=lmfit_parameter[1])
+        tab = LMFitResultTab(*args)
         tab.open_plot_tab.connect(self.open_lmfit_plot_tab)
 
         current_time = datetime.datetime.now()

@@ -203,6 +203,9 @@ class PlotData():
             else:
                 raise ValueError('Axes need to be equal')
 
+        elif isinstance(other, np.ndarray):
+            return PlotData(self.data + other, self.range)
+
         elif isinstance(other, float) or isinstance(other, int):
             return PlotData(self.data + other, self.range)
 

@@ -56,15 +56,12 @@ class TestLMFitModel(unittest.TestCase):
             *range_, num=step_size_to_num(range_, step_size), endpoint=True)
 
         self.lmfit.set_axis_by_step_size(range_, step_size)
-        npt.assert_almost_equal(self.lmfit._sliced_data_kmaps[0].x_axis, axis)
+        npt.assert_almost_equal(self.lmfit.get_sliced_kmap(0).x_axis, axis)
 
     def test_set_slices(self):
 
         self.lmfit.set_slices([1, 2, 3])
-        self.assertEqual(len(self.lmfit._sliced_data_kmaps), 3)
-
         self.lmfit.set_slices([0, 1, 2, 3], combined=True)
-        self.assertEqual(len(self.lmfit._sliced_data_kmaps), 1)
 
     def test_set_background_equation(self):
 
@@ -136,10 +133,10 @@ class TestLMFitModel(unittest.TestCase):
         results = self.lmfit.fit()
 
         # Test results
-        weights = np.array([[result.params['w_0'].value,
-                             result.params['w_1'].value,
-                             result.params['w_2'].value,
-                             result.params['w_3'].value]
+        weights = np.array([[result[1].params['w_0'].value,
+                             result[1].params['w_1'].value,
+                             result[1].params['w_2'].value,
+                             result[1].params['w_3'].value]
                             for result in results]).T
 
         npt.assert_almost_equal(weights, TestLMFitModel.expected, decimal=5)
