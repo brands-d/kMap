@@ -8,32 +8,23 @@ from kmap import __directory__
 from kmap.config.config import config
 
 # Load .ui File
-UI_file = __directory__ + QDir.toNativeSeparators('/ui/lmfitother.ui')
-LMFitOther_UI, _ = uic.loadUiType(UI_file)
+UI_file = __directory__ + QDir.toNativeSeparators('/ui/lmfitorbitaloptions.ui')
+LMFitOrbitalOptions_UI, _ = uic.loadUiType(UI_file)
 
 
-class LMFitOther(QWidget, LMFitOther_UI):
+class LMFitOrbitalOptions(QWidget, LMFitOrbitalOptions_UI):
 
-    value_changed = pyqtSignal()
+    symmetrization_changed = pyqtSignal(str)
+    polarization_changed = pyqtSignal(str, str)
 
     def __init__(self, *args, **kwargs):
 
         # Setup GUI
-        super(LMFitOther, self).__init__(*args, **kwargs)
+        super(LMFitOrbitalOptions, self).__init__(*args, **kwargs)
         self.setupUi(self)
         self._connect()
 
-    def get_parameters(self):
-
-        Ak_type, polarization = self._get_polarization()
-        factor = self._get_factor()
-        Ak_type = factor if factor == 'no' else factor + Ak_type
-        symmetry = self._get_symmetry()
-        dk = float(config.get_key('orbital', 'dk'))
-
-        return Ak_type, polarization, symmetry, dk
-
-    def _get_symmetry(self):
+    def get_symmetrization(self):
 
         index = self.symmetrize_combobox.currentIndex()
         available_symmetries = ['no', '2-fold', '2-fold+mirror',
@@ -42,22 +33,7 @@ class LMFitOther(QWidget, LMFitOther_UI):
 
         return available_symmetries[index]
 
-    def _get_factor(self):
-
-        Ak_index = self.ak_combobox.currentIndex()
-
-        if Ak_index == 0:
-            Ak_type = 'no'
-
-        elif Ak_index == 1:
-            Ak_type = 'only-'
-
-        else:
-            Ak_type = ''
-
-        return Ak_type
-
-    def _get_polarization(self):
+    def get_polarization(self):
 
         Ak_index = self.polarization_combobox.currentIndex()
 
@@ -83,12 +59,41 @@ class LMFitOther(QWidget, LMFitOther_UI):
             elif Ak_index == 5:
                 polarization = 'CDAD'
 
+        factor = self._get_factor()
+        Ak_type = factor if factor == 'no' else factor + Ak_type
+
         return Ak_type, polarization
+
+    def _get_factor(self):
+
+        Ak_index = self.ak_combobox.currentIndex()
+
+        if Ak_index == 0:
+            Ak_type = 'no'
+
+        elif Ak_index == 1:
+            Ak_type = 'only-'
+
+        else:
+            Ak_type = ''
+
+        return Ak_type
+
+    def _change_symmetrization(self):
+
+        symmetrization = self.get_symmetrization()
+
+        self.symmetrization_changed.emit(symmetrization)
+
+    def _change_polarization(self):
+
+        Ak_type, polarization = self.get_polarization()
+        self.polarization_changed.emit(Ak_type, polarization)
 
     def _connect(self):
 
         self.polarization_combobox.currentIndexChanged.connect(
-            self.value_changed.emit)
-        self.ak_combobox.currentIndexChanged.connect(self.value_changed.emit)
+            self._change_polarization)
+        self.ak_combobox.currentIndexChanged.connect(self._change_polarization)
         self.symmetrize_combobox.currentIndexChanged.connect(
-            self.value_changed.emit)
+            self._change_symmetrization)

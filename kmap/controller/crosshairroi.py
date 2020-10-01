@@ -76,7 +76,7 @@ class CrosshairROIBase(CrosshairBase):
     def change_color(self, index):
 
         CrosshairBase.change_color(self, index)
-        
+
         self.roi.setPen(self.colors[index])
 
     def update(self):
@@ -119,9 +119,13 @@ class CrosshairROIBase(CrosshairBase):
         else:
             self.area_value_label.setText('%.2f' % intensity)
 
-    def _set_model(self):
+    def _set_model(self, model=None):
 
-        self.model = CrosshairROIModel(x=0, y=0, radius=0.02)
+        if model is None:
+            self.model = CrosshairROIModel(x=0, y=0, radius=0.02)
+
+        else:
+            self.model = model
 
     def _setup(self):
 

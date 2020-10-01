@@ -231,6 +231,12 @@ class LMFitInterpolation(InterpolationBase, LMFitInterpolation_UI):
 
         self._update_dynamic_range_spinboxes()
 
+    def get_axis(self):
+
+        axes = self.get_axes()
+
+        return axes[0]
+
     def _update_dynamic_range_spinboxes(self):
 
         # Set max/min of min/max spinbox to value of other spinbox
