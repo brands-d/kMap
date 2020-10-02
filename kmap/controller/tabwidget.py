@@ -77,6 +77,9 @@ class TabWidget(QWidget, TabWidget_UI):
             title = tab.get_title()
             tooltip = tab.to_string()
             self._open_tab(tab, title, tooltip)
+            
+        except ValueError as e:
+            pass
 
         except Exception as e:
 
