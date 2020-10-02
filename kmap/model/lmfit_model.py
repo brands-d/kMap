@@ -245,9 +245,10 @@ class LMFitModel():
 
         results = []
         for index in self.slice_policy[1]:
+            slice_ = self.get_sliced_kmap(index)
             result = minimize(self._chi2,
                               copy.deepcopy(self.parameters),
-                              kws={'slice_index': index},
+                              kws={'slice_': slice_},
                               nan_policy='omit',
                               method=self.method[0],
                               xtol=self.method[1])
@@ -355,15 +356,20 @@ class LMFitModel():
         else:
             return orbital_kmap
 
-    def get_residual(self, slice_index, param=None):
+    def get_residual(self, slice_, param=None):
 
         if param is None:
             param = self.parameters
 
         orbital_kmap = self.get_weighted_sum_kmap(param)
-        sliced_kmap = self.get_sliced_kmap(slice_index)
 
-        residual = sliced_kmap - orbital_kmap
+        if isinstance(slice_, int):
+            sliced_kmap = self.get_sliced_kmap(slice_)
+            residual = sliced_kmap - orbital_kmap
+
+        else:
+            residual = slice_ - orbital_kmap
+
         residual = self._cut_region(residual)
 
         return residual
@@ -384,12 +390,12 @@ class LMFitModel():
 
         return None
 
-    def _chi2(self, param=None, slice_index=0):
+    def _chi2(self, param=None, slice_=0):
 
         if param is None:
             param = self.parameters
 
-        residual = self.get_residual(slice_index, param)
+        residual = self.get_residual(slice_, param)
 
         return residual.data
 

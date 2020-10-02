@@ -46,10 +46,10 @@ lmfit.set_fit_method(method='leastsq', xtol=1e-7)
 results = lmfit.fit()
 
 # extract fitting results
-weights = np.array([[result.params['w_0'].value,
-                     result.params['w_1'].value,
-                     result.params['w_2'].value,
-                     result.params['w_3'].value]
+weights = np.array([[result[1].params['w_0'].value,
+                     result[1].params['w_1'].value,
+                     result[1].params['w_2'].value,
+                     result[1].params['w_3'].value]
                         for result in results])
 
 print(weights)
