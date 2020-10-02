@@ -20,13 +20,13 @@ class LMFitOptions(QWidget, LMFitOptions_UI):
     method_changed = pyqtSignal(str)
     slice_policy_changed = pyqtSignal(str)
 
-    def __init__(self):
+    def __init__(self, parent):
 
         # Setup GUI
         super(LMFitOptions, self).__init__()
         self.setupUi(self)
         self._setup()
-        self._connect()
+        self._connect(parent)
 
     def get_region(self):
 
@@ -80,6 +80,18 @@ class LMFitOptions(QWidget, LMFitOptions_UI):
 
         return equation, variables
 
+    def update_fit_button(self):
+
+        self.fit_button.setText('Fit')
+        self.fit_button.repaint()
+
+    def _trigger_fit(self):
+
+        self.fit_button.setText('Running')
+        self.fit_button.repaint()
+
+        self.fit_triggered.emit()
+
     def _change_region(self):
 
         region, inverted = self.get_region()
@@ -107,9 +119,10 @@ class LMFitOptions(QWidget, LMFitOptions_UI):
         pass
         # TO DO: Get equations from config
 
-    def _connect(self):
+    def _connect(self, parent):
 
-        self.fit_button.clicked.connect(self.fit_triggered.emit)
+        parent.fit_finished.connect(self.update_fit_button)
+        self.fit_button.clicked.connect(self._trigger_fit)
         self.region_comboBox.currentIndexChanged.connect(
             self._change_region)
         self.method_combobox.currentIndexChanged.connect(self._change_method)
