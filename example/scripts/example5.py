@@ -49,14 +49,15 @@ results = lmfit.fit()
 weights = np.array([[result[1].params['w_0'].value,
                      result[1].params['w_1'].value,
                      result[1].params['w_2'].value,
-                     result[1].params['w_3'].value]
+                     result[1].params['w_3'].value,
+                     result[1].params['c'].value]
                         for result in results])
 
 print(weights)
 
 # Plot results: weights of orbitals (pDOS) vs. kinetic energy
-names  = ['PTCDA_C','PTCDA_D','PTCDA_E','PTCDA_F']
-styles = ['.r-','k-','r--','^g-']
+names  = ['PTCDA_C','PTCDA_D','PTCDA_E','PTCDA_F','background']
+styles = ['.r-','k-','r--','^g-','k:']
 fig,ax  = plt.subplots(figsize=(12,5))
 x       = exp_data.axes[0].axis
 x_label = exp_data.axes[0].label + '(' + exp_data.axes[0].units + ')'
