@@ -80,7 +80,6 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
 
     def refresh_mini_plots(self, ID, orbital_changed=True):
 
-        data = self.model.get_orbital_kmap_by_ID(ID)
         parameters = self.get_parameters(ID)
         phi, theta, psi = parameters[3:6]
         E_kin = parameters[1]

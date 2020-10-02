@@ -56,22 +56,25 @@ class LMFitBaseTab(Tab):
         kmap = self.model.get_weighted_sum_kmap(param)
         self.sum_plot.plot(kmap)
 
-    def refresh_residual_plot(self, param=None):
+        return kmap
+
+    def refresh_residual_plot(self, param=None, weight_sum_data=None):
 
         index = self.slider.get_index()
-        residual = self.model.get_residual(index, param)
+        residual = self.model.get_residual(index, param, weight_sum_data)
 
         self.residual_plot.plot(residual)
 
         level = np.nanmax(np.absolute(residual.data))
         self.residual_plot.set_levels([-level, level])
 
-        self.update_chi2_label()
+        self.update_chi2_label(weight_sum_data)
 
-    def update_chi2_label(self):
+    def update_chi2_label(self, weight_sum_data=None):
 
         slice_index = self.slider.get_index()
-        reduced_chi2 = self.model.get_reduced_chi2(slice_index)
+        reduced_chi2 = self.model.get_reduced_chi2(
+            slice_index, weight_sum_data)
         self.residual_label.setText('Residual (red. Chi^2: %.3E)'
                                     % reduced_chi2)
 
@@ -84,8 +87,8 @@ class LMFitBaseTab(Tab):
     def _refresh_orbital_plots(self):
 
         self.refresh_selected_plot()
-        self.refresh_sum_plot()
-        self.refresh_residual_plot()
+        kmap = self.refresh_sum_plot()
+        self.refresh_residual_plot(weight_sum_data=kmap)
 
     def _setup(self):
 
@@ -124,8 +127,8 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
 
         self.refresh_sliced_plot()
         self.refresh_selected_plot()
-        self.refresh_sum_plot()
-        self.refresh_residual_plot()
+        kmap = self.refresh_sum_plot()
+        self.refresh_residual_plot(weight_sum_data=kmap)
 
     def get_title(self):
 
@@ -160,8 +163,8 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
 
         self.refresh_sliced_plot()
         self.refresh_selected_plot()
-        self.refresh_sum_plot()
-        self.refresh_residual_plot()
+        kmap = self.refresh_sum_plot()
+        self.refresh_residual_plot(weight_sum_data=kmap)
 
     def _change_slice_policy(self, slice_policy):
 
@@ -257,8 +260,8 @@ class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
 
         self.refresh_sliced_plot()
         self.refresh_selected_plot()
-        self.refresh_sum_plot()
-        self.refresh_residual_plot()
+        kmap = self.refresh_sum_plot()
+        self.refresh_residual_plot(weight_sum_data=kmap)
 
     def get_title(self):
 
@@ -284,12 +287,12 @@ class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
     def refresh_sum_plot(self):
 
         params = self.current_result[1].params
-        super().refresh_sum_plot(params)
+        return super().refresh_sum_plot(params)
 
-    def refresh_residual_plot(self):
+    def refresh_residual_plot(self, weight_sum_data=None):
 
         params = self.current_result[1].params
-        super().refresh_residual_plot(params)
+        super().refresh_residual_plot(params, weight_sum_data)
 
     def update_tree(self):
 
@@ -334,8 +337,7 @@ class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
         self.layout.insertWidget(1, self.tree)
 
     def _connect(self):
-
-        self.slider.slice_changed.connect(self.change_slice)
+        
         self.result.print_triggered.connect(self.print_result)
         self.result.cov_matrix_requested.connect(self.print_covariance_matrix)
         self.result.plot_requested.connect(self.plot)

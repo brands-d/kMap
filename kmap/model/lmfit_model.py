@@ -303,7 +303,7 @@ class LMFitModel():
             kmaps = []
             for slice_index in slice_indices:
                 kmaps.append(self.sliced_data.slice_from_index(slice_index,
-                                                              axis_index))
+                                                               axis_index))
 
             kmap = np.nansum(kmaps, axis=axis_index)
 
@@ -371,12 +371,16 @@ class LMFitModel():
         else:
             return orbital_kmap
 
-    def get_residual(self, slice_, param=None):
+    def get_residual(self, slice_, param=None, weight_sum_data=None):
 
         if param is None:
             param = self.parameters
 
-        orbital_kmap = self.get_weighted_sum_kmap(param)
+        if weight_sum_data is None:
+            orbital_kmap = self.get_weighted_sum_kmap(param)
+
+        else:
+            orbital_kmap = weight_sum_data
 
         if isinstance(slice_, int):
             sliced_kmap = self.get_sliced_kmap(slice_)
@@ -389,10 +393,11 @@ class LMFitModel():
 
         return residual
 
-    def get_reduced_chi2(self, slice_index):
+    def get_reduced_chi2(self, slice_index, weight_sum_data=None):
 
         n = self._get_degrees_of_freedom()
-        residual = self.get_residual(slice_index)
+        residual = self.get_residual(
+            slice_index, weight_sum_data=weight_sum_data)
         reduced_chi2 = get_reduced_chi2(residual.data, n)
 
         return reduced_chi2
