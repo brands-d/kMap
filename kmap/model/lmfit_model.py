@@ -178,6 +178,9 @@ class LMFitModel():
         elif isinstance(slice_indices, list):
             self.slice_policy = [axis_index, slice_indices, combined]
 
+        elif isinstance(slice_indices, range):
+            self.slice_policy = [axis_index, list(slice_indices), combined]
+
         else:
             self.slice_policy = [axis_index, [slice_indices], combined]
 
@@ -285,6 +288,8 @@ class LMFitModel():
         self.set_crosshair(settings['crosshair'])
         self.set_background_equation(*settings['background'])
         self.set_polarization(*settings['polarization'])
+        slice_policy = settings['slice_policy']
+        self.set_slices(slice_policy[1], slice_policy[0], slice_policy[2])
         self.set_region(*settings['region'])
         self.set_symmetrization(settings['symmetrization'])
         self.set_fit_method(*settings['method'])
@@ -292,15 +297,15 @@ class LMFitModel():
 
     def get_sliced_kmap(self, slice_index):
 
-        axis_index, _, is_combined = self.slice_policy
+        axis_index, slice_indices, is_combined = self.slice_policy
 
         if is_combined:
             kmaps = []
             for slice_index in slice_indices:
-                kmap.append(self.sliced_data.slice_from_index(slice_index,
+                kmaps.append(self.sliced_data.slice_from_index(slice_index,
                                                               axis_index))
 
-                kmap = [np.nansum(kmaps, axis=axis_index)]
+            kmap = np.nansum(kmaps, axis=axis_index)
 
         else:
             kmap = self.sliced_data.slice_from_index(slice_index,
