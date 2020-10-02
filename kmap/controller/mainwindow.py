@@ -34,6 +34,8 @@ class MainWindow(QMainWindow, MainWindow_UI):
         self._setup()
         self._connect()
 
+        self.sub_windows = {}
+
         self.model = MainWindowModel(self)
 
         self.open_welcome()
@@ -60,18 +62,24 @@ class MainWindow(QMainWindow, MainWindow_UI):
 
     def open_orbitaldatabase_browser(self):
 
-        self.database = OrbitalDatabase()
-        self.database.files_chosen.connect(self.load_cube_files_online)
+        database = OrbitalDatabase()
+        database.files_chosen.connect(self.load_cube_files_online)
+
+        self.sub_windows.update({str(id(database)): database})
 
     def open_binding_energy_sliceddatabase_browser(self):
 
-        self.database = SlicedDatabaseWindow(mode='binding-energy')
-        self.database.files_chosen.connect(self.load_sliced_files_online)
+        database = SlicedDatabaseWindow(mode='binding-energy')
+        database.files_chosen.connect(self.load_sliced_files_online)
+
+        self.sub_windows.update({str(id(database)): database})
 
     def open_photon_energy_sliceddatabase_browser(self):
 
-        self.database = SlicedDatabaseWindow(mode='photon-energy')
-        self.database.files_chosen.connect(self.load_sliced_file_online)
+        database = SlicedDatabaseWindow(mode='photon-energy')
+        database.files_chosen.connect(self.load_sliced_file_online)
+
+        self.sub_windows.update({str(id(database)): database})
 
     def load_sliced_files_online(self, URLs):
         # Load one or more cube files as sliced data[BE, kx, ky]
@@ -252,7 +260,8 @@ class MainWindow(QMainWindow, MainWindow_UI):
         current_tab = self.tab_widget.get_current_tab()
 
         if hasattr(current_tab, 'display_in_matplotlib'):
-            current_tab.display_in_matplotlib()
+            window = current_tab.display_in_matplotlib()
+            self.sub_windows.update({str(id(window)): window})
 
     def export_to_txt(self):
 
@@ -270,6 +279,17 @@ class MainWindow(QMainWindow, MainWindow_UI):
         # Reload the settings
 
         config.setup()
+
+    def closeEvent(self, event):
+
+        for window in self.sub_windows.values():
+            try:
+                window.close()
+
+            except Exception as e:
+                pass
+
+        event.accept()
 
     def _setup(self):
 

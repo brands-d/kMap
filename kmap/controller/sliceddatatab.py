@@ -98,8 +98,10 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
         data = self.model.displayed_plot_data
         LUT = self.plot_item.get_LUT()
 
-        self.window = MatplotlibWindow(data, LUT=LUT)
+        window = MatplotlibWindow(data, LUT=LUT)
 
+        return window
+        
     def closeEvent(self, event):
 
         del self.model
