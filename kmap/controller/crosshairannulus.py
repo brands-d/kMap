@@ -120,9 +120,13 @@ class CrosshairAnnulusBase(CrosshairROIBase):
         else:
             self.ring_value_label.setText('%.2f' % intensity)
 
-    def _set_model(self):
+    def _set_model(self, model=None):
 
-        self.model = CrosshairAnnulusModel(x=0, y=0, radius=0.2, width=0.1)
+        if model is None:
+            self.model = CrosshairAnnulusModel(x=0, y=0, radius=0.2, width=0.1)
+
+        else:
+            self.model = model
 
     def _setup(self):
 

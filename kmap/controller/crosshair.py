@@ -115,6 +115,14 @@ class CrosshairBase(QWidget):
         # Emit Changed Signal
         self.crosshair_changed.emit()
 
+    def _set_model(self, model=None):
+
+        if model is None:
+            self.model = CrosshairModel(x=0, y=0)
+
+        else:
+            self.model = model
+
     def _setup(self):
 
         self.v_line = pg.InfiniteLine(movable=True, angle=90, pen='k',
@@ -141,10 +149,6 @@ class CrosshairBase(QWidget):
             self.move_crosshair_from_click)
 
         self.color_combobox.currentIndexChanged.connect(self.change_color)
-
-    def _set_model(self):
-
-        self.model = CrosshairModel(x=0, y=0)
 
 
 class Crosshair(CrosshairBase, Crosshair_UI):

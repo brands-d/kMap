@@ -55,6 +55,20 @@ class WeightSpinBox(QDoubleSpinBox):
         self.setAlignment(Qt.AlignHCenter)
         self.setObjectName('weight')
 
+class BackgroundSpinBox(QDoubleSpinBox):
+
+    def __init__(self, *args, value=0, **kwargs):
+
+        super(BackgroundSpinBox, self).__init__(*args, **kwargs)
+
+        self.setMinimum(0)
+        self.setMaximum(99999.9)
+        self.setValue(value)
+        self.setDecimals(1)
+        self.setSingleStep(0.1)
+        self.setKeyboardTracking(False)
+        self.setAlignment(Qt.AlignHCenter)
+        self.setObjectName('background')
 
 class EnergySpinBox(QDoubleSpinBox):
 

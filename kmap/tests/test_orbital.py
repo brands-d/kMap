@@ -188,5 +188,27 @@ class TestOrbital(unittest.TestCase):
         npt.assert_almost_equal(kmap.y_axis[-1], endpoints_expected[-1],decimal=13)    
         npt.assert_almost_equal(np.nansum(kmap.data), sum_expected, decimal=13)
 
+
+    def test_check_new_cut(self):
+
+        sums_expected = [202.12975607342722, 17.171157851335725,
+                            3.8929271845777813,17.9086022363552,
+                            27.839419217261188,1.855922052900676]
+
+        kmaps = []
+        kmaps.append(self.orbital.get_kmap(E_kin=20)) 
+        kmaps.append(self.orbital.get_kmap(E_kin=20,dk=0.1))
+        kmaps.append(self.orbital.get_kmap(E_kin=20,dk=0.2))
+        kx = np.linspace(-2,2,50)
+        ky = np.linspace(-2,2,50)
+        kmaps.append(self.orbital.get_kmap(E_kin=30,dk=(kx,ky)))
+        kmaps.append(self.orbital.get_kmap(E_kin=20,dk=(kx,ky)))
+        kx = np.linspace(-3,3,20)
+        ky = np.linspace(-3,3,20)
+        kmaps.append(self.orbital.get_kmap(E_kin=20,dk=(kx,ky)))
+
+        for kmap, sum_expected in zip(kmaps, sums_expected):
+            npt.assert_almost_equal(np.nansum(kmap.data), sum_expected, decimal=13)
+
 if __name__ == '__main__':
     unittest.main()

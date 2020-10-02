@@ -225,27 +225,42 @@ class Orbital():
 
         eps = 1e-10
 
-        if 'E_kin' in self.kmap:
-        
-            if type(dk) != tuple and type(self.kmap['dk']) != tuple:
+        new_cut = False
 
+        if 'E_kin' in self.kmap:
+
+            if type(dk) != tuple and type(self.kmap['dk']) != tuple: 
                 if (np.abs(self.kmap['E_kin'] - E_kin) > eps or 
                     np.abs(self.kmap['dk']    - dk)    > eps):
+                   new_cut = True
+           
+            elif type(dk) == tuple and type(self.kmap['dk']) != tuple:
+                new_cut = True
+
+            elif type(dk) != tuple and type(self.kmap['dk']) == tuple:
+                new_cut = True
+
+            elif type(dk) == tuple and type(self.kmap['dk']) == tuple:
+                if np.abs(self.kmap['E_kin'] - E_kin) > eps:
                     new_cut = True
 
+                if dk[0].shape != self.kmap['dk'][0].shape:
+                    new_cut = True
                 else:
-                    new_cut = False
+                    if np.any( np.abs(self.kmap['dk'][0] - dk[0]) > eps):
+                        new_cut = True 
 
-            elif type(self.kmap['dk']) != type(dk):
-                new_cut = True
-            
-            else:
-                new_cut = False
+                if dk[1].shape != self.kmap['dk'][1].shape:
+                    new_cut = True
+                else:
+                    if np.any( np.abs(self.kmap['dk'][1] - dk[1]) > eps):
+                        new_cut = True 
 
         else:
             new_cut = True
 
         return new_cut
+
 
     # get the (kx,ky) values of the kmap as a list of tuples 
     def get_kxkygrid(self):
@@ -486,7 +501,7 @@ class Orbital():
         return new_symmetrization
 
 
-    def plot(self, ax, title=None, kxlim=None, kylim=None):
+    def plot(self, ax, title=None, kxlim=None, kylim=None, interpolation='bicubic'):
         """Creates a plot of the kmap in axes-obeject ax.
 
         Args:
@@ -502,7 +517,7 @@ class Orbital():
         # plot kmap       
         im = ax.imshow(data,
                       extent=limits,
-                      interpolation='bicubic',
+                      interpolation=interpolation,
                       origin='lower',
                       cmap='jet')
 

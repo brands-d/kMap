@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>656</width>
-    <height>140</height>
+    <height>180</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,7 +27,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QGroupBox" name="group_box">
+    <widget class="QGroupBox" name="layout">
      <property name="font">
       <font>
        <weight>75</weight>
@@ -57,87 +57,8 @@
        <number>5</number>
       </property>
       <item>
-       <layout class="QHBoxLayout" name="layout_3">
-        <item>
-         <widget class="QPushButton" name="fit_button">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>150</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>Fit</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="slice_combobox">
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <item>
-           <property name="text">
-            <string>Only this Slice</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>All Slices Individually</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>All Slices Combined</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="layout_2">
-        <item>
-         <widget class="QLabel" name="method_label">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>120</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>Method:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
+       <layout class="QGridLayout" name="layout_2">
+        <item row="2" column="1">
          <widget class="QComboBox" name="method_combobox">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
@@ -223,11 +144,32 @@
           </item>
          </widget>
         </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="layout">
-        <item>
+        <item row="0" column="1">
+         <widget class="QComboBox" name="slice_combobox">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <item>
+           <property name="text">
+            <string>Only this Slice</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>All Slices Individually</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>All Slices Combined</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="1" column="0">
          <widget class="QLabel" name="region_label">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
@@ -252,7 +194,106 @@
           </property>
          </widget>
         </item>
-        <item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="background_label">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Background Eq.:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="method_label">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>120</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Method:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QPushButton" name="fit_button">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>150</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Fit</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QLineEdit" name="line_edit">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="toolTip">
+           <string>Enter an equation for a region-dependency you want to
+impose onto the background. Press return key to accept.
+
+The equation entered will be parsed with eval() and can
+contain the variables 'x' and/or 'y' for the x- and y-axis of
+the data, respectively, as well as basic methods provided by
+numpy (prefix np.).
+The evaluation will be done as a meshgrid and scaled by the
+'background' value from the lmfit procedure as well.
+
+Example: 2D Gaussian Curve centered at (-2, 4.5) and
+with a standard deviation of (0.4, 0.5):
+
+np.exp( - ( (x + 2)**2 / (2 * 0.4**2) + (y - 4.5)**2) / (2 * 0.5**2) )
+ </string>
+          </property>
+          <property name="text">
+           <string>1</string>
+          </property>
+          <property name="placeholderText">
+           <string>Enter background equation here...</string>
+          </property>
+          <property name="clearButtonEnabled">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
          <widget class="QComboBox" name="region_comboBox">
           <property name="font">
            <font>

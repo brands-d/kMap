@@ -1,26 +1,30 @@
+"""Defines the LMFit tab and the LMFitResult tab.
+
+This file defines two similar types of tabs: the LMFit and the
+LMFitResult tab as well as a common base class LMFitBaseTab.
+"""
+
 # Third Party Imports
 import numpy as np
-from pyqtgraph import ColorMap
-from lmfit import Parameters
 
 # PyQt5 Imports
 from PyQt5 import uic
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
 from PyQt5.QtCore import QDir, pyqtSignal, Qt
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
 
 # Own Imports
 from kmap import __directory__
+from kmap.library.axis import Axis
 from kmap.library.qwidgetsub import Tab
-from kmap.library.misc import get_reduced_chi2
+from kmap.model.lmfit_model import LMFitModel
 from kmap.controller.dataslider import DataSlider
-from kmap.model.lmfittab_model import LMFitTabModel
 from kmap.controller.colormap import Colormap
 from kmap.controller.crosshairannulus import CrosshairAnnulus
 from kmap.controller.interpolation import LMFitInterpolation
-from kmap.controller.lmfittree import LMFitTree
-from kmap.controller.lmfit import LMFit
-from kmap.controller.lmfitother import LMFitOther
-from kmap.library.qwidgetsub import CenteredLabel
+from kmap.controller.lmfittree import LMFitTree, LMFitResultTree
+from kmap.controller.lmfitresult import LMFitResult
+from kmap.controller.lmfitoptions import LMFitOptions
+from kmap.controller.lmfitorbitaloptions import LMFitOrbitalOptions
 
 # Load .ui File
 UI_file = __directory__ + QDir.toNativeSeparators('/ui/lmfittab.ui')
@@ -29,35 +33,14 @@ LMFitTab_UI, _ = uic.loadUiType(UI_file)
 
 class LMFitBaseTab(Tab):
 
-    def get_title(self):
-
-        return self.title
-
-    def set_title(self, title):
-
-        self.title = title
-
-    def change_axis(self, axis):
-
-        # 'axes' is a copy of all axes except the one with index 'axis'
-        axes = [a for i, a in enumerate(self.model.sliced.axes) if i != axis]
-
-        self.sliced_plot.set_labels(axes[1], axes[0])
-
-        self.refresh_sliced_plot()
-
     def refresh_sliced_plot(self):
 
         index = self.slider.get_index()
-        axis = self.slider.get_axis()
+        kmap = self.model.get_sliced_kmap(index)
 
-        data = self.model.get_sliced_plot(index, axis)
+        self.sliced_plot.plot(kmap)
 
-        data = self.interpolation.interpolate(data)
-
-        self.sliced_plot.plot(data)
-
-    def refresh_selected_plot(self):
+    def refresh_selected_plot(self, param=None):
 
         ID = self.tree.get_selected_orbital_ID()
 
@@ -65,62 +48,32 @@ class LMFitBaseTab(Tab):
             self.selected_plot.plot(None)
 
         else:
+            kmap = self.model.get_orbital_kmap(ID, param)
+            self.selected_plot.plot(kmap)
 
-            parameters = self._get_parameters(ID)
-            data = self.model.get_selected_orbital_plot(ID, parameters)
+    def refresh_sum_plot(self, param=None):
 
-            data = self.interpolation.interpolate(data)
+        kmap = self.model.get_weighted_sum_kmap(param)
+        self.sum_plot.plot(kmap)
 
-            self.selected_plot.plot(data)
+    def refresh_residual_plot(self, param=None):
 
-    def refresh_sum_plot(self):
+        index = self.slider.get_index()
+        residual = self.model.get_residual(index, param)
 
-        parameters = []
+        self.residual_plot.plot(residual)
 
-        for orbital in self.model.orbitals:
-            parameters.append(self._get_parameters(orbital.ID))
-
-        data = self.model.get_sum_plot(parameters)
-
-        data = self.interpolation.interpolate(data)
-
-        self.sum_plot.plot(data)
-
-    def refresh_residual_plot(self):
-
-        sliced_data = self.model.displayed_slice_data
-        sum_data = self.model.displayed_sum_data
-
-        if sliced_data is None or sum_data is None:
-            data = None
-            level = 1
-
-        else:
-            data = sliced_data - sum_data - self.tree._get_background()
-            data = self.lmfit.cut_region(data, self.crosshair)
-            level = np.nanmax(np.absolute(data.data))
-
-        self.residual_plot.plot(data)
+        level = np.nanmax(np.absolute(residual.data))
         self.residual_plot.set_levels([-level, level])
 
         self.update_chi2_label()
 
     def update_chi2_label(self):
 
-        residual = self.residual_plot.get_plot_data()
-
-        if residual is None:
-            self.residual_label.setText('Residual')
-
-        else:
-            n = self.tree.get_number_variables()
-            reduced_chi2 = get_reduced_chi2(residual.data, n)
-            self.residual_label.setText('Residual (red. Chi^2: %.3E)'
-                                        % reduced_chi2)
-
-    def crosshair_changed(self):
-
-        self.crosshair.update_label()
+        slice_index = self.slider.get_index()
+        reduced_chi2 = self.model.get_reduced_chi2(slice_index)
+        self.residual_label.setText('Residual (red. Chi^2: %.3E)'
+                                    % reduced_chi2)
 
     def closeEvent(self, event):
 
@@ -128,42 +81,39 @@ class LMFitBaseTab(Tab):
 
         Tab.closeEvent(self, event)
 
+    def _refresh_orbital_plots(self):
+
+        self.refresh_selected_plot()
+        self.refresh_sum_plot()
+        self.refresh_residual_plot()
+
     def _setup(self):
 
-        self.slider = DataSlider(self.model.sliced)
+        self.slider = DataSlider(self.model.sliced_data)
         self.crosshair = CrosshairAnnulus(self.residual_plot)
         self.colormap = Colormap(
             [self.sliced_plot, self.selected_plot, self.sum_plot])
-        self.lmfit = LMFit(self.model.sliced, self.model.orbitals)
+        residual_colormap = Colormap(self.residual_plot)
 
-        colormap = ColorMap(
-            [0, 0.5, 1],
-            [[255, 0, 0, 255], [255, 255, 255, 255], [0, 0, 255, 255]])
-        self.residual_plot.setColorMap(colormap)
+        residual_colormap.set_colormap('blueAndRed')
 
     def _connect(self):
 
-        self.crosshair.crosshair_changed.connect(self.crosshair_changed)
+        self.crosshair.crosshair_changed.connect(self.crosshair.update_label)
 
-        self.lmfit.region_changed.connect(self.refresh_residual_plot)
-
-        self.slider.slice_changed.connect(self.refresh_sliced_plot)
-        self.slider.slice_changed.connect(self.refresh_selected_plot)
-        self.slider.slice_changed.connect(self.refresh_sum_plot)
-        self.slider.slice_changed.connect(self.refresh_residual_plot)
-
-        self.slider.axis_changed.connect(self.change_axis)
+        self.slider.slice_changed.connect(self.change_slice)
+        self.slider.axis_changed.connect(self.change_slice)
 
         self.tree.item_selected.connect(self.refresh_selected_plot)
 
 
 class LMFitTab(LMFitBaseTab, LMFitTab_UI):
 
-    fit_finished = pyqtSignal(list, tuple, tuple, LMFitInterpolation, tuple)
+    fit_finished = pyqtSignal(list, list, dict)
 
     def __init__(self, sliced_data, orbitals):
 
-        self.model = LMFitTabModel(sliced_data, orbitals)
+        self.model = LMFitModel(sliced_data, orbitals)
 
         # Setup GUI
         super(LMFitTab, self).__init__()
@@ -183,53 +133,79 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
 
     def trigger_fit(self):
 
-        variables = self.tree.get_all_parameters()
-        parameters = self.lmfitother.get_parameters()
+        results = self.model.fit()
+        settings = self.model.get_settings()
+        data = [self.model.sliced_data, self.model.orbitals]
+        self.fit_finished.emit(data, results, settings)
+
+    def change_slice(self):
+
         axis_index = self.slider.get_axis()
-        slice_index = self.slider.get_index()
-        other_parameter = self.lmfitother.get_parameters()
-        region = self.lmfit.get_region()
+        slice_policy = self.lmfit_options.get_slice_policy()
+        combined = True if slice_policy == 'all combined' else False
+        slice_indices = (self.slider.get_index()
+                         if slice_policy == 'only one' else 'all')
 
-        result, type_ = self.lmfit.fit(variables, parameters,
-                                       self.interpolation,
-                                       axis_index=axis_index,
-                                       slice_index=slice_index,
-                                       crosshair=self.crosshair)
+        self.model.set_slices(
+            slice_indices, axis_index=axis_index, combined=combined)
 
-        meta_parameter = (type_, slice_index, axis_index)
+        self.refresh_sliced_plot()
+        self.refresh_residual_plot()
 
-        self.fit_finished.emit(result, other_parameter,
-                               meta_parameter, self.interpolation,
-                               region)
+    def change_axis(self):
 
-    def _get_parameters(self, ID):
+        axis = self.interpolation.get_axis()
+        self.model.set_axis(axis)
 
-        orbital_param = self.tree.get_orbital_parameters(ID)
+        self.refresh_sliced_plot()
+        self.refresh_selected_plot()
+        self.refresh_sum_plot()
+        self.refresh_residual_plot()
 
-        orbital_param = [param[2] for param in orbital_param]
-        weight, E_kin, *orientation, alpha, beta = orbital_param
-        Ak_type, polarization, symmetry, dk = self.lmfitother.get_parameters()
-        parameters = [weight, E_kin, dk, *orientation, Ak_type,
-                      polarization, alpha, beta, 0, symmetry]
+    def _change_slice_policy(self, slice_policy):
 
-        return parameters
+        axis = self.slider.get_axis()
+
+        if slice_policy == 'all':
+            self.model.set_slices('all', axis_index=axis, combined=False)
+
+        elif slice_policy == 'only one':
+            index = self.slider.get_index()
+            self.model.set_slices([index], axis_index=axis, combined=False)
+
+        else:
+            self.model.set_slices('all', axis_index=axis, combined=True)
+
+    def _change_region(self, *args):
+
+        self.model.set_region(*args)
+        self.refresh_residual_plot()
+
+    def _change_background(self, *args):
+
+        self.model.set_background_equation(*args)
+        self.refresh_sum_plot()
+        self.refresh_residual_plot()
 
     def _setup(self):
 
         LMFitBaseTab._setup(self)
 
-        self.lmfitother = LMFitOther()
-        self.tree = LMFitTree(self.model.orbitals)
+        self.orbital_options = LMFitOrbitalOptions()
+        self.tree = LMFitTree(self.model.orbitals, self.model.parameters)
         self.interpolation = LMFitInterpolation()
+        self.lmfit_options = LMFitOptions()
+
+        self.model.set_crosshair(self.crosshair.model)
 
         layout = QVBoxLayout()
         layout.setContentsMargins(3, 3, 3, 3)
         layout.setSpacing(3)
         self.scroll_area.widget().setLayout(layout)
         layout.insertWidget(0, self.slider)
-        layout.insertWidget(1, self.lmfitother)
+        layout.insertWidget(1, self.orbital_options)
         layout.insertWidget(2, self.interpolation)
-        layout.insertWidget(3, self.lmfit)
+        layout.insertWidget(3, self.lmfit_options)
         layout.insertWidget(4, self.colormap)
         layout.insertWidget(5, self.crosshair)
 
@@ -239,20 +215,128 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
 
         LMFitBaseTab._connect(self)
 
-        plots = [self.refresh_sliced_plot, self.refresh_selected_plot,
-                 self.refresh_sum_plot, self.refresh_residual_plot]
+        self.interpolation.interpolation_changed.connect(self.change_axis)
 
-        for plot in plots:
-            self.interpolation.interpolation_changed.connect(plot)
-
-        self.tree.value_changed.connect(self.refresh_selected_plot)
-        self.tree.value_changed.connect(self.refresh_sum_plot)
-        self.tree.value_changed.connect(self.refresh_residual_plot)
-
+        self.tree.value_changed.connect(self._refresh_orbital_plots)
         self.tree.vary_changed.connect(self.update_chi2_label)
+        self.lmfit_options.background_changed.connect(self._change_background)
+        self.lmfit_options.fit_triggered.connect(self.trigger_fit)
+        self.lmfit_options.method_changed.connect(self.model.set_fit_method)
+        self.lmfit_options.slice_policy_changed.connect(
+            self._change_slice_policy)
 
-        self.lmfit.fit_triggered.connect(self.trigger_fit)
+        self.orbital_options.symmetrization_changed.connect(
+            self.model.set_symmetrization)
+        self.orbital_options.symmetrization_changed.connect(
+            self._refresh_orbital_plots)
+        self.orbital_options.polarization_changed.connect(
+            self.model.set_polarization)
+        self.orbital_options.polarization_changed.connect(
+            self._refresh_orbital_plots)
 
-        self.lmfitother.value_changed.connect(self.refresh_selected_plot)
-        self.lmfitother.value_changed.connect(self.refresh_sum_plot)
-        self.lmfitother.value_changed.connect(self.refresh_residual_plot)
+
+class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
+
+    open_plot_tab = pyqtSignal(list, list, Axis)
+
+    def __init__(self, data, results, settings):
+
+        self.results = results
+        self.current_result = self.results[0]
+
+        self.model = LMFitModel(*data)
+        self.model.set_settings(settings)
+
+        # Setup GUI
+        super(LMFitResultTab, self).__init__()
+        self.setupUi(self)
+
+        self._setup()
+        self._connect()
+
+        self.refresh_sliced_plot()
+        self.refresh_selected_plot()
+        self.refresh_sum_plot()
+        self.refresh_residual_plot()
+
+    def get_title(self):
+
+        return 'Results'
+
+    def change_slice(self):
+
+        index = self.slider.get_index()
+
+        self.current_result = self.results[0] if len(
+            self.results) == 1 else self.results[index]
+
+        self.update_tree()
+        self.result.result = self.current_result[1]
+        self.refresh_sliced_plot()
+        self._refresh_orbital_plots()
+
+    def refresh_selected_plot(self):
+
+        params = self.current_result[1].params
+        super().refresh_selected_plot(params)
+
+    def refresh_sum_plot(self):
+
+        params = self.current_result[1].params
+        super().refresh_sum_plot(params)
+
+    def refresh_residual_plot(self):
+
+        params = self.current_result[1].params
+        super().refresh_residual_plot(params)
+
+    def update_tree(self):
+
+        params = self.current_result[1].params
+        self.tree.update_result(params)
+
+    def print_result(self):
+
+        report = self.result.get_fit_report()
+
+        print(report)
+
+    def print_covariance_matrix(self):
+
+        cov_matrix = self.result.get_covariance_matrix()
+
+        print(cov_matrix)
+
+    def plot(self):
+
+        results = [result[1] for result in self.results]
+        orbitals = self.model.orbitals
+        axis = self.model.sliced_data.axes[self.model.slice_policy[0]]
+        self.open_plot_tab.emit(results, orbitals, axis)
+
+    def _setup(self):
+
+        LMFitBaseTab._setup(self)
+
+        self.result = LMFitResult(self.current_result[1], self.model)
+        self.tree = LMFitResultTree(
+            self.model.orbitals, self.current_result[1].params)
+        self.crosshair._set_model(self.model.crosshair)
+
+        layout = QVBoxLayout()
+        self.scroll_area.widget().setLayout(layout)
+        layout.insertWidget(0, self.slider)
+        layout.insertWidget(1, self.result)
+        layout.insertWidget(3, self.colormap)
+        layout.insertWidget(4, self.crosshair)
+
+        self.layout.insertWidget(1, self.tree)
+
+    def _connect(self):
+
+        self.slider.slice_changed.connect(self.change_slice)
+        self.result.print_triggered.connect(self.print_result)
+        self.result.cov_matrix_requested.connect(self.print_covariance_matrix)
+        self.result.plot_requested.connect(self.plot)
+
+        LMFitBaseTab._connect(self)
