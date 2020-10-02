@@ -136,6 +136,7 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
         results = self.model.fit()
         settings = self.model.get_settings()
         data = [self.model.sliced_data, self.model.orbitals]
+
         self.fit_finished.emit(data, results, settings)
 
     def change_slice(self):
@@ -194,7 +195,7 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
         self.orbital_options = LMFitOrbitalOptions()
         self.tree = LMFitTree(self.model.orbitals, self.model.parameters)
         self.interpolation = LMFitInterpolation()
-        self.lmfit_options = LMFitOptions()
+        self.lmfit_options = LMFitOptions(self)
 
         self.model.set_crosshair(self.crosshair.model)
 

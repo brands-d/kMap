@@ -20,6 +20,7 @@ from kmap.library.orbitaldata import OrbitalData
 from kmap.library.sliceddata import SlicedData
 from kmap.library.misc import (
     axis_from_range, step_size_to_num, get_reduced_chi2)
+from kmap.config.config import config
 
 
 class LMFitModel():
@@ -177,6 +178,9 @@ class LMFitModel():
         elif isinstance(slice_indices, list):
             self.slice_policy = [axis_index, slice_indices, combined]
 
+        elif isinstance(slice_indices, range):
+            self.slice_policy = [axis_index, list(slice_indices), combined]
+
         else:
             self.slice_policy = [axis_index, [slice_indices], combined]
 
@@ -227,7 +231,7 @@ class LMFitModel():
 
         Args:
             parameter (str): Name of the parameter to be editted.
-            *args and **kwargs (): Are being passed to the
+            *args & **kwargs (): Are being passed to the
             'parameter.set' method of the lmfit module. See there
             for more documentation.
         """
@@ -242,6 +246,15 @@ class LMFitModel():
             (list): A list of MinimizerResults. One for each slice
             fitted.
         """
+
+        lmfit_padding = float(config.get_key('lmfit', 'padding'))
+
+        for parameter in self.parameters.values():
+            if parameter.vary and parameter.value <= parameter.min:
+                padded_value = parameter.min + lmfit_padding
+                print('WARNING: Initial value for parameter \'%s\' had to be corrected to %f (was %f)' % (
+                    parameter.name, padded_value, parameter.value))
+                parameter.value = padded_value
 
         results = []
         for index in self.slice_policy[1]:
@@ -275,6 +288,8 @@ class LMFitModel():
         self.set_crosshair(settings['crosshair'])
         self.set_background_equation(*settings['background'])
         self.set_polarization(*settings['polarization'])
+        slice_policy = settings['slice_policy']
+        self.set_slices(slice_policy[1], slice_policy[0], slice_policy[2])
         self.set_region(*settings['region'])
         self.set_symmetrization(settings['symmetrization'])
         self.set_fit_method(*settings['method'])
@@ -282,15 +297,15 @@ class LMFitModel():
 
     def get_sliced_kmap(self, slice_index):
 
-        axis_index, _, is_combined = self.slice_policy
+        axis_index, slice_indices, is_combined = self.slice_policy
 
         if is_combined:
             kmaps = []
             for slice_index in slice_indices:
-                kmap.append(self.sliced_data.slice_from_index(slice_index,
+                kmaps.append(self.sliced_data.slice_from_index(slice_index,
                                                               axis_index))
 
-                kmap = [np.nansum(kmaps, axis=axis_index)]
+            kmap = np.nansum(kmaps, axis=axis_index)
 
         else:
             kmap = self.sliced_data.slice_from_index(slice_index,
@@ -462,6 +477,9 @@ class LMFitModel():
                 self.parameters.add(angle + str(ID), value=0,
                                     min=90, max=-90, vary=False, expr=None)
 
+        # LMFit doesn't work when the initial value is exactly the same
+        # as the minimum value. For this reason the initial value will
+        # be set ever so slightly above 0 to circumvent this problem.
         self.parameters.add('c', value=0,
                             min=0, vary=False, expr=None)
         self.parameters.add('E_kin', value=30,
