@@ -20,6 +20,7 @@ from kmap.library.orbitaldata import OrbitalData
 from kmap.library.sliceddata import SlicedData
 from kmap.library.misc import (
     axis_from_range, step_size_to_num, get_reduced_chi2)
+from kmap.config.config import config
 
 
 class LMFitModel():
@@ -227,7 +228,7 @@ class LMFitModel():
 
         Args:
             parameter (str): Name of the parameter to be editted.
-            *args and **kwargs (): Are being passed to the
+            *args & **kwargs (): Are being passed to the
             'parameter.set' method of the lmfit module. See there
             for more documentation.
         """
@@ -242,6 +243,15 @@ class LMFitModel():
             (list): A list of MinimizerResults. One for each slice
             fitted.
         """
+
+        lmfit_padding = float(config.get_key('lmfit', 'padding'))
+
+        for parameter in self.parameters.values():
+            if parameter.vary and parameter.value <= parameter.min:
+                padded_value = parameter.min + lmfit_padding
+                print('WARNING: Initial value for parameter \'%s\' had to be corrected to %f (was %f)' % (
+                    parameter.name, padded_value, parameter.value))
+                parameter.value = padded_value
 
         results = []
         for index in self.slice_policy[1]:
@@ -462,6 +472,9 @@ class LMFitModel():
                 self.parameters.add(angle + str(ID), value=0,
                                     min=90, max=-90, vary=False, expr=None)
 
+        # LMFit doesn't work when the initial value is exactly the same
+        # as the minimum value. For this reason the initial value will
+        # be set ever so slightly above 0 to circumvent this problem.
         self.parameters.add('c', value=0,
                             min=0, vary=False, expr=None)
         self.parameters.add('E_kin', value=30,
