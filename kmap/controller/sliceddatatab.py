@@ -101,7 +101,7 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
         window = MatplotlibWindow(data, LUT=LUT)
 
         return window
-        
+
     def closeEvent(self, event):
 
         del self.model
@@ -127,6 +127,11 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
         bottom = self.plot_item.get_label('bottom')
         left = self.plot_item.get_label('left')
         return bottom, left
+
+    def transpose(self, constant_axis):
+
+        self.model.transpose(constant_axis)
+        self.change_axis(self.slider.get_axis())
 
     def _setup(self):
 
@@ -162,5 +167,6 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
         self.crosshair.crosshair_changed.connect(self.crosshair_changed)
         self.slider.slice_changed.connect(self.change_slice)
         self.slider.axis_changed.connect(self.change_axis)
+        self.slider.tranpose_triggered.connect(self.transpose)
         self.interpolation.smoothing_changed.connect(self.change_slice)
         self.interpolation.interpolation_changed.connect(self.change_slice)

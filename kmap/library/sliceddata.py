@@ -15,6 +15,7 @@ from kmap.library.database import Database
 from kmap.library.orbital import Orbital
 from kmap.library.axis import Axis
 
+
 class SlicedData(AbstractData):
 
     def __init__(self, name, axis_1, axis_2, axis_3, data, meta_data={}):
@@ -322,7 +323,7 @@ class SlicedData(AbstractData):
         """
 
         log = logging.getLogger('kmap')
-        orbital = orbital[0] # only consider first orbital in list!
+        orbital = orbital[0]  # only consider first orbital in list!
 
         # extract parameters
         hnu_min = parameters[0]
@@ -358,7 +359,7 @@ class SlicedData(AbstractData):
         # initialize 3D-numpy array with zeros
         data = np.zeros((n_hnu, nk, nk))
         orbital_names = []
-    
+
         log.info('Adding orbital to SlicedData Object, please wait!')
         # read orbital from cube-file database
         url = orbital[0]
@@ -391,7 +392,10 @@ class SlicedData(AbstractData):
 
         return cls(name, axis_1, axis_2, axis_3, data, meta_data)
 
+    def transpose(self, axes_order):
 
+        self.data = self.data.transpose(axes_order)
+        self.axes = [self.axes[i] for i in axes_order]
 
     def slice_from_index(self, index, axis=0):
 
@@ -421,4 +425,3 @@ class SlicedData(AbstractData):
 
         rep += '\n\n'
         return rep[:-2]
-

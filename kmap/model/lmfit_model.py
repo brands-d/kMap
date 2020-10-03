@@ -19,7 +19,7 @@ from kmap.model.crosshair_model import CrosshairModel, CrosshairAnnulusModel
 from kmap.library.orbitaldata import OrbitalData
 from kmap.library.sliceddata import SlicedData
 from kmap.library.misc import (
-    axis_from_range, step_size_to_num, get_reduced_chi2)
+    axis_from_range, step_size_to_num, get_reduced_chi2, transpose_axis_order)
 from kmap.config.config import config
 
 
@@ -269,6 +269,12 @@ class LMFitModel():
             results.append([index, result])
 
         return results
+
+    def transpose(self, constant_axis):
+
+        axis_order = transpose_axis_order(constant_axis)
+
+        self.sliced_data.transpose(axis_order)
 
     def get_settings(self):
 

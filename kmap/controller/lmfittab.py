@@ -86,6 +86,12 @@ class LMFitBaseTab(Tab):
         self.residual_label.setText('Residual (red. Chi^2: %.3E)'
                                     % reduced_chi2)
 
+    def transpose(self, constant_axis):
+
+        self.model.transpose(constant_axis)
+        self.refresh_sliced_plot()
+        self.refresh_residual_plot()
+        
     def closeEvent(self, event):
 
         del self.model
@@ -114,6 +120,7 @@ class LMFitBaseTab(Tab):
 
         self.slider.slice_changed.connect(self.change_slice)
         self.slider.axis_changed.connect(self.change_slice)
+        self.slider.tranpose_triggered.connect(self.transpose)
 
         self.tree.item_selected.connect(self.refresh_selected_plot)
 

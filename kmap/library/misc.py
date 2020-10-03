@@ -304,7 +304,7 @@ def get_reduced_chi2(data, n):
         data (list): List of arbitrary shape. Contains the NOT
             squared data.
         n (int): Degrees of freedom.
-       
+
     Returns:
         (float): Reduced Chi^2 value.
     """
@@ -313,3 +313,17 @@ def get_reduced_chi2(data, n):
     reduced_chi2 = np.nansum(np.array(data)**2) / (N - n)
 
     return reduced_chi2
+
+
+def transpose_axis_order(constant_axis):
+
+    if constant_axis == 0:
+        axis_order = (0, 2, 1)
+
+    elif constant_axis == 1:
+        axis_order = (2, 1, 0)
+
+    else:
+        axis_order = (1, 0, 2)
+
+    return axis_order

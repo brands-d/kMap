@@ -1,6 +1,6 @@
 from kmap.library.id import ID
 from kmap.library.sliceddata import SlicedData
-
+from kmap.library.misc import transpose_axis_order
 
 class SlicedDataTabModel():
 
@@ -28,10 +28,16 @@ class SlicedDataTabModel():
         # dictionary
         *orbital, options = URL
         name, *parameters = options
-        self.data = SlicedData.init_from_orbital_photonenergy(name, orbital, parameters)
+        self.data = SlicedData.init_from_orbital_photonenergy(
+            name, orbital, parameters)
 
         self.change_slice(0, 0)
 
+    def transpose(self, constant_axis):
+
+        axis_order = transpose_axis_order(constant_axis)
+
+        self.data.transpose(axis_order)
 
     def load_data_from_path(self, path):
 

@@ -16,7 +16,8 @@ class DataSlider(QWidget, DataSlider_UI):
 
     slice_changed = pyqtSignal(int)
     axis_changed = pyqtSignal(int)
-
+    tranpose_triggered = pyqtSignal(int)
+    
     def __init__(self, data, *args, **kwargs):
 
         self.axes = data.axes
@@ -69,6 +70,10 @@ class DataSlider(QWidget, DataSlider_UI):
 
         return axis
 
+    def trigger_transpose(self):
+
+        self.tranpose_triggered.emit(self.get_axis())
+
     def _update_slice_label(self):
 
         index = self.slider.sliderPosition()
@@ -117,3 +122,4 @@ class DataSlider(QWidget, DataSlider_UI):
         self.slider.valueChanged.connect(self.change_slice)
         self.spinbox.valueChanged.connect(self.change_slice)
         self.combobox.currentIndexChanged.connect(self.change_axis)
+        self.transpose_button.clicked.connect(self.trigger_transpose)
