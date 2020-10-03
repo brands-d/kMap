@@ -25,6 +25,7 @@ from kmap.controller.lmfittree import LMFitTree, LMFitResultTree
 from kmap.controller.lmfitresult import LMFitResult
 from kmap.controller.lmfitoptions import LMFitOptions
 from kmap.controller.lmfitorbitaloptions import LMFitOrbitalOptions
+from kmap.config.config import config
 
 # Load .ui File
 UI_file = __directory__ + QDir.toNativeSeparators('/ui/lmfittab.ui')
@@ -63,9 +64,16 @@ class LMFitBaseTab(Tab):
         index = self.slider.get_index()
         residual = self.model.get_residual(index, param, weight_sum_data)
 
+        level = np.nanmax(np.absolute(residual.data))
+
+        if config.get_key('pyqtgraph', 'keep_max_level_residual') == 'True':
+            old_level = np.nanmax(np.absolute(self.residual_plot.get_levels()))
+
+            if old_level != 1 and old_level > level:
+                level = old_level
+
         self.residual_plot.plot(residual)
 
-        level = np.nanmax(np.absolute(residual.data))
         self.residual_plot.set_levels([-level, level])
 
         self.update_chi2_label(weight_sum_data)
@@ -337,7 +345,7 @@ class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
         self.layout.insertWidget(1, self.tree)
 
     def _connect(self):
-        
+
         self.result.print_triggered.connect(self.print_result)
         self.result.cov_matrix_requested.connect(self.print_covariance_matrix)
         self.result.plot_requested.connect(self.plot)

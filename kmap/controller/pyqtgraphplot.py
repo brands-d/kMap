@@ -32,7 +32,7 @@ class PyQtGraphPlot(ImageView):
 
         self.refresh_plot()
 
-    def refresh_plot(self):
+    def refresh_plot(self, keep_max_level=False):
 
         self.clear()
 
@@ -43,6 +43,8 @@ class PyQtGraphPlot(ImageView):
 
         if np.all(np.isnan(image)) == True:
             return
+
+        old_level = self.get_levels()
 
         # Plot
         self.setImage(image, autoRange=True,
@@ -57,6 +59,17 @@ class PyQtGraphPlot(ImageView):
         else:
             self.set_aspect_ratio(None)
 
+        if (keep_max_level or
+                config.get_key('pyqtgraph', 'keep_max_level') == 'True'):
+            levels = [np.nanmin(image.data), np.nanmax(image.data)]
+
+            # Catch empty plots
+            if old_level != (0, 1):
+                levels[0] = old_level[0] if old_level[0] < levels[0] else levels[0]
+                levels[1] = old_level[1] if old_level[1] > levels[1] else levels[1]
+
+            self.set_levels(levels)
+
     def set_range(self, range_):
 
         padding = float(config.get_key('pyqtgraph', 'padding'))
@@ -65,8 +78,12 @@ class PyQtGraphPlot(ImageView):
 
     def set_levels(self, levels):
 
-        self.getHistogramWidget().setLevels(levels[0], levels[1])
+        self.getHistogramWidget().setLevels(*levels)
 
+    def get_levels(self):
+
+        return self.getHistogramWidget().getLevels()
+        
     def set_aspect_ratio(self, ratio):
 
         if ratio is not None:

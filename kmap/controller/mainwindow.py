@@ -319,13 +319,13 @@ class MainWindow(QMainWindow, MainWindow_UI):
                    self.show_matplotlib,
                    self.log_file_action, self.load_cube_online_action,
                    self.load_cube_file_action,
-                   self.open_lmfit_tab_action]
+                   self.open_lmfit_tab_action, self.settings_action]
 
         alias = ['load_hdf5', 'load_sliced_from_binding_energy_action',
                  'load_sliced_from_photon_energy_action',
                  'show_matplotlib', 'open_log',
                  'load_cube_online', 'load_cube_file',
-                 'open_lmfit']
+                 'open_lmfit', 'reload_settings']
 
         for action, alias in zip(actions, alias):
             shortcut = config.get_key('shortcut', alias, file='shortcut')
