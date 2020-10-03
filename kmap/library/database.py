@@ -61,7 +61,7 @@ class Molecule():
 
         self.orbitals = []
         for index, line in enumerate(lines[3:], 1):
-            new_orbital = Orbital(index, line, self.URL, self.orientation, self.short_name)
+            new_orbital = Orbital(index,self.ID, line, self.URL, self.orientation, self.short_name)
             self.orbitals.append(new_orbital)
 
     def to_string(self):
@@ -87,9 +87,10 @@ class Molecule():
 
 class Orbital():
 
-    def __init__(self, ID, line, URL='', orientation='xy', shortname=''):
+    def __init__(self, ID, molecule_ID, line, URL='', orientation='xy', shortname=''):
 
         self.ID = ID
+        self.database_ID = '%i.%i' % (molecule_ID, ID)
         parts = line.split(',')
         self.URL = URL + parts[0].split('=')[1]
         self.name = shortname + ' ' + parts[1].split('=')[1]
@@ -101,7 +102,8 @@ class Orbital():
     def to_string(self):
 
         url = 'URL: %s\n' % self.URL
-        name = 'Name: % s\n' % self.name
+        database_ID = 'Database ID: %s' % self.database_ID
+        name = 'Name: %s\n' % self.name
         energy = 'Energy: %.3f\n' % self.energy
         occupation = 'Occupation: %i\n' % self.occupation
         symmetry = 'Symmetry: %s' % self.symmetry
@@ -111,6 +113,7 @@ class Orbital():
     def get_meta_data(self):
 
         meta_data = {'name': self.name,
+                     'database ID': self.database_ID,
                      'energy': self.energy,
                      'occupation': self.occupation,
                      'symmetry': self.symmetry,
