@@ -187,8 +187,8 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         self.mini_3Dkspace_plot.set_options(self.real_space_options)
 
         # Rough axis values for all orbitals to set labels for interpolation
-        x = Axis('kx', '1/A', [-3, 3], 200)
-        y = Axis('ky', '1/A', [-3, 3], 200)
+        x = Axis('kx', '1/Å', [-3, 3], 200)
+        y = Axis('ky', '1/Å', [-3, 3], 200)
         self.interpolation.set_label(x, y)
         self.plot_item.set_labels(x, y)
 
