@@ -16,7 +16,7 @@ class LMFitOptions(QWidget, LMFitOptions_UI):
 
     fit_triggered = pyqtSignal()
     region_changed = pyqtSignal(str, bool)
-    background_changed = pyqtSignal(str, list)
+    background_changed = pyqtSignal(str)
     method_changed = pyqtSignal(str)
     slice_policy_changed = pyqtSignal(str)
 
@@ -75,10 +75,7 @@ class LMFitOptions(QWidget, LMFitOptions_UI):
 
     def get_background(self):
 
-        equation = self.line_edit.text()
-        variables = []
-
-        return equation, variables
+        return self.line_edit.text()
 
     def update_fit_button(self):
 
@@ -112,11 +109,12 @@ class LMFitOptions(QWidget, LMFitOptions_UI):
 
     def _change_background(self):
 
-        equation, variables = self.get_background()
-        self.background_changed.emit(equation, variables)
+        equation = self.get_background()
+        self.background_changed.emit(equation)
 
     def _setup(self):
-        pass
+
+        self.line_edit.setText('c')
         # TO DO: Get equations from config
 
     def _connect(self, parent):

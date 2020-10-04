@@ -9,6 +9,8 @@ scripts without the GUI part.
 
 # Python Imports
 import copy
+import re
+import builtins
 
 # Third Party Imports
 import numpy as np
@@ -47,8 +49,8 @@ class LMFitModel():
 
         self.axis = None
         self.crosshair = None
-        self.background_equation = ['1', []]
         self.symmetrization = 'no'
+        self.background_equation = ['1', []]
         self.Ak_type = 'no'
         self.polarization = 'p'
         self.slice_policy = [0, [0], False]
@@ -196,34 +198,63 @@ class LMFitModel():
 
         self.method = [method, xtol]
 
-    def set_background_equation(self, equation, variables=[]):
+    def set_background_equation(self, equation):
         """A setter method to set an custom background equation.
-        Default is '1' and [].
+        Default is '1'.
 
         Args:
             equation (str): An equation used to calculate the background
             profile. Can use python function (e.g. abs()) and basics
             methods from the numpy module (prefix by 'np.';
             e.g. np.sqrt()). Can contain variables to be fitted.
-            (Example: 'np.sqrt(a*x**2 + b*y**2)')
-            (Equation will be passed to eval directly. Please don't be
-            malicous and inject any code. Thanks.)
-            variables (list): A list of strings with the names of
-            variables used in your equation (except 'x' and 'y'). They
-            will be added under this name as fittable parameters.
+            Variables have can only contain lower or upper case letters,
+            underscores and numbers. They cannot start with numbers.
+            The variables 'x' and 'y' are special and denote the x and
+            y axis respectively. No variables already used outside the
+            background equation (like phi) can be used.
+            Here are some examples of valid variable names:
+            x_s, x2, x_2, foo, this_is_a_valid_variable.
+            Each variables starts with following default values:
+            value=0, min=-99999.9, max=99999.9, vary=False, expr=None
+
+            The equation will be parsed by eval. Please don't injected
+            any code as it would be really easy to do so. There are no
+            safeguards in place whatsoever so we (have to) trust you.
+            Thanks, D.B.
         """
 
         try:
             compile(equation, '', 'exec')
-            self.background_equation = [equation, variables]
-
-            for variable in variables:
-                self.parameters.add(variable, value=0,
-                                    min=-100, max=100, vary=False, expr=None)
 
         except:
             raise ValueError(
                 'Equation is not parseable. Check for syntax errors.')
+
+        # Pattern matches all numpy, math and builtin methods
+        clean_pattern = 'np\\.[a-z1-9\\_]+|math\\.[a-z1-9\\_]+'
+        for builtin in dir(builtins):
+            clean_pattern += '|' + str(builtin)
+
+        cleaned_equation = re.sub(clean_pattern, '', equation)
+        # Pattern matches all text including optional underscore with
+        # numbers.
+        variable_pattern = '[a-zA-Z\\_]+[0-9]*'
+        variables = list(set(re.findall(variable_pattern, cleaned_equation)))
+
+        # x and y need special treatment
+        if 'x' in variables:
+            variables.remove('x')
+
+        if 'y' in variables:
+            variables.remove('y')
+
+        new_variables = np.setdiff1d(variables, self.background_equation[1])
+        self.background_equation = [equation, variables]
+        for variable in new_variables:
+            self.parameters.add(variable, value=0, min=-99999.9,
+                                max=99999.9, vary=False, expr=None)
+
+        return [self.parameters[variable] for variable in new_variables]
 
     def edit_parameter(self, parameter, *args, **kwargs):
         """A setter method to edit fitting settings for one parameter.
@@ -292,7 +323,7 @@ class LMFitModel():
     def set_settings(self, settings):
 
         self.set_crosshair(settings['crosshair'])
-        self.set_background_equation(*settings['background'])
+        self.set_background_equation(settings['background'][0])
         self.set_polarization(*settings['polarization'])
         slice_policy = settings['slice_policy']
         self.set_slices(slice_policy[1], slice_policy[0], slice_policy[2])
@@ -355,11 +386,7 @@ class LMFitModel():
 
             weight = param['w_' + str(ID)].value
 
-            if weight == 0:
-                kmap = 0
-
-            else:
-                kmap = weight * self.get_orbital_kmap(ID, param)
+            kmap = weight * self.get_orbital_kmap(ID, param)
 
             orbital_kmaps.append(kmap)
 
@@ -370,7 +397,7 @@ class LMFitModel():
             for variable in self.background_equation[1]:
                 variables.update({variable: param[variable].value})
 
-            background = param['c'].value * self._get_background(variables)
+            background = self._get_background(variables)
 
             return orbital_kmap + background
 

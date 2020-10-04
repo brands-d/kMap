@@ -270,20 +270,23 @@
 impose onto the background. Press return key to accept.
 
 The equation entered will be parsed with eval() and can
-contain the variables 'x' and/or 'y' for the x- and y-axis of
-the data, respectively, as well as basic methods provided by
-numpy (prefix np.).
-The evaluation will be done as a meshgrid and scaled by the
-'background' value from the lmfit procedure as well.
+contain any number of variables as well as all numpy,
+math or builtin methods. Prefix the first with 'np.' and
+the second with 'math.'.
 
-Example: 2D Gaussian Curve centered at (-2, 4.5) and
-with a standard deviation of (0.4, 0.5):
+The variables will be added to be tree and can be subject
+to fitting like any other variable. You can use lower and
+upper case letters, underscores and numbers (can't start
+with numbers).
 
-np.exp( - ( (x + 2)**2 / (2 * 0.4**2) + (y - 4.5)**2) / (2 * 0.5**2) )
+Example: 2D Gaussian Curve centered at (x_m, y_m) and
+with a standard deviation of (std_x, std_y):
+
+a*np.exp(-((x+x_m)**2/(2*std_x**2)+(y-y_m)**2)/(2*std_y**2))+c
  </string>
           </property>
           <property name="text">
-           <string>1</string>
+           <string/>
           </property>
           <property name="placeholderText">
            <string>Enter background equation here...</string>
