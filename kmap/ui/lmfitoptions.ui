@@ -58,6 +58,19 @@
       </property>
       <item>
        <layout class="QGridLayout" name="layout_2">
+        <item row="3" column="0">
+         <widget class="QLabel" name="background_label">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Background Eq.:</string>
+          </property>
+         </widget>
+        </item>
         <item row="2" column="1">
          <widget class="QComboBox" name="method_combobox">
           <property name="sizePolicy">
@@ -144,6 +157,48 @@
           </item>
          </widget>
         </item>
+        <item row="3" column="1">
+         <widget class="QComboBox" name="background_combobox">
+          <property name="maximumSize">
+           <size>
+            <width>450</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="toolTip">
+           <string>Enter an equation for a region-dependency you want to
+impose onto the background. Press return key to accept.
+
+The equation entered will be parsed with eval() and can
+contain any number of variables as well as all numpy,
+math or builtin methods. Prefix the first with 'np.' and
+the second with 'math.'.
+
+The variables will be added to be tree and can be subject
+to fitting like any other variable. You can use lower and
+upper case letters, underscores and numbers (can't start
+with numbers).
+
+Example: 2D Gaussian Curve centered at (x_m, y_m) and
+with a standard deviation of (std_x, std_y):
+
+a*np.exp(-((x+x_m)**2/(2*std_x**2)+(y-y_m)**2)/(2*std_y**2))+c
+ </string>
+          </property>
+          <property name="editable">
+           <bool>true</bool>
+          </property>
+          <property name="currentText">
+           <string>Enter background equation here...</string>
+          </property>
+         </widget>
+        </item>
         <item row="0" column="1">
          <widget class="QComboBox" name="slice_combobox">
           <property name="font">
@@ -169,42 +224,39 @@
           </item>
          </widget>
         </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="region_label">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>120</width>
-            <height>0</height>
-           </size>
-          </property>
+        <item row="1" column="1">
+         <widget class="QComboBox" name="region_comboBox">
           <property name="font">
            <font>
             <weight>50</weight>
             <bold>false</bold>
            </font>
           </property>
-          <property name="text">
-           <string>Fit Region:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="background_label">
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>Background Eq.:</string>
-          </property>
+          <item>
+           <property name="text">
+            <string>Entire kMap</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Only ROI</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Only Annulus</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Except ROI</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Except Annulus</string>
+           </property>
+          </item>
          </widget>
         </item>
         <item row="2" column="0">
@@ -257,78 +309,29 @@
           </property>
          </widget>
         </item>
-        <item row="3" column="1">
-         <widget class="QLineEdit" name="line_edit">
+        <item row="1" column="0">
+         <widget class="QLabel" name="region_label">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>120</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="font">
            <font>
             <weight>50</weight>
             <bold>false</bold>
            </font>
-          </property>
-          <property name="toolTip">
-           <string>Enter an equation for a region-dependency you want to
-impose onto the background. Press return key to accept.
-
-The equation entered will be parsed with eval() and can
-contain any number of variables as well as all numpy,
-math or builtin methods. Prefix the first with 'np.' and
-the second with 'math.'.
-
-The variables will be added to be tree and can be subject
-to fitting like any other variable. You can use lower and
-upper case letters, underscores and numbers (can't start
-with numbers).
-
-Example: 2D Gaussian Curve centered at (x_m, y_m) and
-with a standard deviation of (std_x, std_y):
-
-a*np.exp(-((x+x_m)**2/(2*std_x**2)+(y-y_m)**2)/(2*std_y**2))+c
- </string>
           </property>
           <property name="text">
-           <string/>
+           <string>Fit Region:</string>
           </property>
-          <property name="placeholderText">
-           <string>Enter background equation here...</string>
-          </property>
-          <property name="clearButtonEnabled">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QComboBox" name="region_comboBox">
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <item>
-           <property name="text">
-            <string>Entire kMap</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Only ROI</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Only Annulus</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Except ROI</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Except Annulus</string>
-           </property>
-          </item>
          </widget>
         </item>
        </layout>
