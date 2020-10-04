@@ -47,31 +47,31 @@ for i in [0]:
 lmfit.set_slices([2], combined=False)
 lmfit.set_fit_method(method='leastsq', xtol=1e-12)
 best_fit = lmfit.fit()
-
+print(best_fit)
 # print results of best fit
-print('reduced chi^2 = ',best_fit[0].redchi)
-print(best_fit[0].params['theta_0'])
-print(best_fit[0].params['w_0'])
-print(best_fit[0].params['c'])
+print('reduced chi^2 = ',best_fit[0][1].redchi)
+print(best_fit[0][1].params['theta_0'])
+print(best_fit[0][1].params['w_0'])
+print(best_fit[0][1].params['c'])
 
 # now make plot of chi^2 vs. theta by looping over a list of theta-values,
 # but setting fixing all variables (vary=False) in the fit
-lmfit.edit_parameter('w_0', value=best_fit[0].params['w_0'].value, vary=False)
-lmfit.edit_parameter('c', value=best_fit[0].params['c'].value, vary=False)
+lmfit.edit_parameter('w_0', value=best_fit[0][1].params['w_0'].value, vary=False)
+lmfit.edit_parameter('c', value=best_fit[0][1].params['c'].value, vary=False)
 theta_values = np.linspace(0,60,61)
 redchi2_list = []  
 
 for theta in theta_values:
     lmfit.edit_parameter('theta_0', value=theta, vary=False)
     fit = lmfit.fit()
-    redchi2_list.append(fit[0].redchi)
+    redchi2_list.append(fit[0][1].redchi)
 
 # plot reduced chi^2 versus theta
 factor = 1e-3 # arbitrary scaling factor for reduced chi^2
 redchi2_list = factor*np.array(redchi2_list)
 fig, ax = plt.subplots(figsize=(6.5,5))
 ax.plot(theta_values,redchi2_list,'k-')
-ax.plot([best_fit[0].params['theta_0'].value], [factor*best_fit[0].redchi],'ro')
+ax.plot([best_fit[0][1].params['theta_0'].value], [factor*best_fit[0][1].redchi],'ro')
 ax.set_xlabel('$\\vartheta (^\circ)$',fontsize=20)
 ax.set_ylabel('$\chi^2_{red}$ (arb. units)',fontsize=20)
 plt.xticks(fontsize=20)
