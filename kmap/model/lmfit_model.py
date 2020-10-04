@@ -50,7 +50,7 @@ class LMFitModel():
         self.axis = None
         self.crosshair = None
         self.symmetrization = 'no'
-        self.background_equation = ['1', []]
+        self.background_equation = ['0', []]
         self.Ak_type = 'no'
         self.polarization = 'p'
         self.slice_policy = [0, [0], False]
