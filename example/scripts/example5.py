@@ -30,6 +30,7 @@ lmfit = LMFitModel(exp_data, orbitals)
 range_, dk = [-3.0, 3.0], 0.04  
 lmfit.set_axis_by_step_size(range_, dk)
 lmfit.set_polarization('toroid', 'p')
+lmfit.set_background_equation('c')
 
 # Set parameters not intended for fitting to desired value
 lmfit.edit_parameter('E_kin', value=27.2, vary=False)

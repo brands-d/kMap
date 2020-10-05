@@ -91,7 +91,7 @@ class LMFitBaseTab(Tab):
         self.model.transpose(constant_axis)
         self.refresh_sliced_plot()
         self.refresh_residual_plot()
-        
+
     def closeEvent(self, event):
 
         del self.model
@@ -202,7 +202,10 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
 
     def _change_background(self, *args):
 
-        self.model.set_background_equation(*args)
+        new_variables = self.model.set_background_equation(*args)
+        for variable in new_variables:
+            self.tree.add_equation_parameter(variable)
+
         self.refresh_sum_plot()
         self.refresh_residual_plot()
 
@@ -215,7 +218,9 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
         self.interpolation = LMFitInterpolation()
         self.lmfit_options = LMFitOptions(self)
 
+        self.change_axis()
         self.model.set_crosshair(self.crosshair.model)
+        self._change_background(self.lmfit_options.get_background())
 
         layout = QVBoxLayout()
         layout.setContentsMargins(3, 3, 3, 3)
@@ -339,7 +344,8 @@ class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
 
         self.result = LMFitResult(self.current_result[1], self.model)
         self.tree = LMFitResultTree(
-            self.model.orbitals, self.current_result[1].params)
+            self.model.orbitals, self.current_result[1].params,
+            self.model.background_equation[1])
         self.crosshair._set_model(self.model.crosshair)
 
         layout = QVBoxLayout()

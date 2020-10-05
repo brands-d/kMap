@@ -61,7 +61,7 @@ class BackgroundSpinBox(QDoubleSpinBox):
 
         super(BackgroundSpinBox, self).__init__(*args, **kwargs)
 
-        self.setMinimum(0)
+        self.setMinimum(-99999.9)
         self.setMaximum(99999.9)
         self.setValue(value)
         self.setDecimals(1)
