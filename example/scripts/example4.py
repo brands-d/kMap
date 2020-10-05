@@ -39,7 +39,7 @@ lmfit.set_background_equation('c')
 lmfit.edit_parameter('c', value=1, vary=True)  # constant background
 for i in [0]:
     lmfit.edit_parameter('w_' + str(i), vary=True)
-    lmfit.edit_parameter('theta_' + str(i), min=0, value=0, vary=True)
+    lmfit.edit_parameter('theta_' + str(i), min=0, value=5, vary=True)
     lmfit.edit_parameter('phi_' + str(i), value=90, vary=False)
     lmfit.edit_parameter('psi_' + str(i), value=90, vary=False)
 

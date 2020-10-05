@@ -79,6 +79,7 @@ class PyQtGraphPlot(ImageView):
     def set_levels(self, levels):
 
         self.getHistogramWidget().setLevels(*levels)
+        self.setHistogramRange(*levels)
 
     def get_levels(self):
 
