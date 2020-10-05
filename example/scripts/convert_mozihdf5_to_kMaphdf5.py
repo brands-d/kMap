@@ -47,8 +47,8 @@ def mozi_to_kmap(mozi_h5_file,kmap_h5_file,
     new.create_dataset('axis_2_label',data='kx')
     new.create_dataset('axis_3_label',data='ky')
     new.create_dataset('axis_1_units',data='eV')
-    new.create_dataset('axis_2_units',data='1/A')
-    new.create_dataset('axis_3_units',data='1/A')
+    new.create_dataset('axis_2_units',data='1/Å')
+    new.create_dataset('axis_3_units',data='1/Å')
     new.create_dataset('axis_1_range',data=axis_1_range)
     new.create_dataset('axis_2_range',data=[list_kAxis[0,0],list_kAxis[0,-1]])
     new.create_dataset('axis_3_range',data=[list_kAxis[0,0],list_kAxis[0,-1]])
@@ -78,9 +78,9 @@ def mozi_to_kmap(mozi_h5_file,kmap_h5_file,
 
 
 
-mozi_to_kmap('H2TPP_BE002.hdf5','H2TPP.hdf5',
+mozi_to_kmap('kmaps_3271_BEstep0.1.hdf5','example4_3271.hdf5',
              axis1type='E_kin',
-             alias='H2TPP')
+             alias='multilayer 5A HOMO')
 
 
 
