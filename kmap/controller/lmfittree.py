@@ -10,8 +10,10 @@ from PyQt5.QtWidgets import QWidget, QHeaderView, QHBoxLayout, QSizePolicy
 from kmap import __directory__
 from kmap.controller.orbitaltablerow import OrbitalTableRow
 from kmap.controller.lmfittreeitems import (
-    OrbitalTreeItem, OtherTreeItem, LMFitDataTreeItem,
-    OtherResultTreeItem, OrbitalResultTreeItem, DataResultTreeItem)
+    OrbitalTreeItem, OrbitalOptionsTreeItem, LMFitDataTreeItem,
+    OrbitalOptionsResultTreeItem, OrbitalResultTreeItem,
+    DataResultTreeItem, BackgroundOptionsTreeItem,
+    BackgroundOptionsResultTreeItem)
 
 # Load .ui File
 UI_file = __directory__ + QDir.toNativeSeparators('/ui/lmfittree.ui')
@@ -59,7 +61,7 @@ class LMFitTree(LMFitBaseTree, LMFitTree_UI):
 
     def add_equation_parameter(self, parameter):
 
-        self.other_tree_item.add_equation_parameter(self.tree, parameter)
+        self.background_item.add_equation_parameter(self.tree, parameter)
 
     def _setup(self, orbitals, parameters):
 
@@ -72,8 +74,10 @@ class LMFitTree(LMFitBaseTree, LMFitTree_UI):
         self.tree.header().setDefaultAlignment(Qt.AlignCenter)
 
         # Add TreeItems
-        self.other_tree_item = OtherTreeItem(self.tree, parameters)
-        self.tree.addTopLevelItem(self.other_tree_item)
+        self.orbital_options_item = OrbitalOptionsTreeItem(
+            self.tree, parameters)
+        self.background_item = BackgroundOptionsTreeItem(self.tree, parameters)
+        self.tree.addTopLevelItem(self.orbital_options_item)
         for orbital in orbitals:
             self.tree.addTopLevelItem(
                 OrbitalTreeItem(self.tree, orbital, parameters))
@@ -120,7 +124,9 @@ class LMFitResultTree(LMFitBaseTree, LMFitResultTree_UI):
         self.tree.header().setDefaultAlignment(Qt.AlignCenter)
 
         # Add TreeItems
-        self.tree.addTopLevelItem(OtherResultTreeItem(
+        self.tree.addTopLevelItem(OrbitalOptionsResultTreeItem(
+            self.tree, result))
+        self.tree.addTopLevelItem(BackgroundOptionsResultTreeItem(
             self.tree, result, background_variables))
         for orbital in orbitals:
             self.tree.addTopLevelItem(
