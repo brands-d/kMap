@@ -54,7 +54,7 @@
        <number>5</number>
       </property>
       <item>
-       <layout class="QHBoxLayout" name="layout" stretch="5,3">
+       <layout class="QHBoxLayout" name="layout" stretch="5,0,3">
         <item>
          <widget class="QComboBox" name="combobox">
           <property name="font">
@@ -71,6 +71,19 @@
           </property>
           <property name="duplicatesEnabled">
            <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="transpose_button">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Swap Axes</string>
           </property>
          </widget>
         </item>

@@ -25,6 +25,7 @@ from kmap.controller.lmfittree import LMFitTree, LMFitResultTree
 from kmap.controller.lmfitresult import LMFitResult
 from kmap.controller.lmfitoptions import LMFitOptions
 from kmap.controller.lmfitorbitaloptions import LMFitOrbitalOptions
+from kmap.config.config import config
 
 # Load .ui File
 UI_file = __directory__ + QDir.toNativeSeparators('/ui/lmfittab.ui')
@@ -56,24 +57,40 @@ class LMFitBaseTab(Tab):
         kmap = self.model.get_weighted_sum_kmap(param)
         self.sum_plot.plot(kmap)
 
-    def refresh_residual_plot(self, param=None):
+        return kmap
+
+    def refresh_residual_plot(self, param=None, weight_sum_data=None):
 
         index = self.slider.get_index()
-        residual = self.model.get_residual(index, param)
+        residual = self.model.get_residual(index, param, weight_sum_data)
+
+        level = np.nanmax(np.absolute(residual.data))
+
+        if config.get_key('pyqtgraph', 'keep_max_level_residual') == 'True':
+            old_level = np.nanmax(np.absolute(self.residual_plot.get_levels()))
+
+            if old_level != 1 and old_level > level:
+                level = old_level
 
         self.residual_plot.plot(residual)
 
-        level = np.nanmax(np.absolute(residual.data))
         self.residual_plot.set_levels([-level, level])
 
-        self.update_chi2_label()
+        self.update_chi2_label(weight_sum_data)
 
-    def update_chi2_label(self):
+    def update_chi2_label(self, weight_sum_data=None):
 
         slice_index = self.slider.get_index()
-        reduced_chi2 = self.model.get_reduced_chi2(slice_index)
+        reduced_chi2 = self.model.get_reduced_chi2(
+            slice_index, weight_sum_data)
         self.residual_label.setText('Residual (red. Chi^2: %.3E)'
                                     % reduced_chi2)
+
+    def transpose(self, constant_axis):
+
+        self.model.transpose(constant_axis)
+        self.refresh_sliced_plot()
+        self.refresh_residual_plot()
 
     def closeEvent(self, event):
 
@@ -84,8 +101,8 @@ class LMFitBaseTab(Tab):
     def _refresh_orbital_plots(self):
 
         self.refresh_selected_plot()
-        self.refresh_sum_plot()
-        self.refresh_residual_plot()
+        kmap = self.refresh_sum_plot()
+        self.refresh_residual_plot(weight_sum_data=kmap)
 
     def _setup(self):
 
@@ -103,6 +120,7 @@ class LMFitBaseTab(Tab):
 
         self.slider.slice_changed.connect(self.change_slice)
         self.slider.axis_changed.connect(self.change_slice)
+        self.slider.tranpose_triggered.connect(self.transpose)
 
         self.tree.item_selected.connect(self.refresh_selected_plot)
 
@@ -124,8 +142,8 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
 
         self.refresh_sliced_plot()
         self.refresh_selected_plot()
-        self.refresh_sum_plot()
-        self.refresh_residual_plot()
+        kmap = self.refresh_sum_plot()
+        self.refresh_residual_plot(weight_sum_data=kmap)
 
     def get_title(self):
 
@@ -136,6 +154,7 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
         results = self.model.fit()
         settings = self.model.get_settings()
         data = [self.model.sliced_data, self.model.orbitals]
+
         self.fit_finished.emit(data, results, settings)
 
     def change_slice(self):
@@ -159,8 +178,8 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
 
         self.refresh_sliced_plot()
         self.refresh_selected_plot()
-        self.refresh_sum_plot()
-        self.refresh_residual_plot()
+        kmap = self.refresh_sum_plot()
+        self.refresh_residual_plot(weight_sum_data=kmap)
 
     def _change_slice_policy(self, slice_policy):
 
@@ -183,7 +202,10 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
 
     def _change_background(self, *args):
 
-        self.model.set_background_equation(*args)
+        new_variables = self.model.set_background_equation(*args)
+        for variable in new_variables:
+            self.tree.add_equation_parameter(variable)
+
         self.refresh_sum_plot()
         self.refresh_residual_plot()
 
@@ -194,9 +216,11 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
         self.orbital_options = LMFitOrbitalOptions()
         self.tree = LMFitTree(self.model.orbitals, self.model.parameters)
         self.interpolation = LMFitInterpolation()
-        self.lmfit_options = LMFitOptions()
+        self.lmfit_options = LMFitOptions(self)
 
+        self.change_axis()
         self.model.set_crosshair(self.crosshair.model)
+        self._change_background(self.lmfit_options.get_background())
 
         layout = QVBoxLayout()
         layout.setContentsMargins(3, 3, 3, 3)
@@ -256,8 +280,8 @@ class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
 
         self.refresh_sliced_plot()
         self.refresh_selected_plot()
-        self.refresh_sum_plot()
-        self.refresh_residual_plot()
+        kmap = self.refresh_sum_plot()
+        self.refresh_residual_plot(weight_sum_data=kmap)
 
     def get_title(self):
 
@@ -283,12 +307,12 @@ class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
     def refresh_sum_plot(self):
 
         params = self.current_result[1].params
-        super().refresh_sum_plot(params)
+        return super().refresh_sum_plot(params)
 
-    def refresh_residual_plot(self):
+    def refresh_residual_plot(self, weight_sum_data=None):
 
         params = self.current_result[1].params
-        super().refresh_residual_plot(params)
+        super().refresh_residual_plot(params, weight_sum_data)
 
     def update_tree(self):
 
@@ -320,7 +344,8 @@ class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
 
         self.result = LMFitResult(self.current_result[1], self.model)
         self.tree = LMFitResultTree(
-            self.model.orbitals, self.current_result[1].params)
+            self.model.orbitals, self.current_result[1].params,
+            self.model.background_equation[1])
         self.crosshair._set_model(self.model.crosshair)
 
         layout = QVBoxLayout()
@@ -334,7 +359,6 @@ class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
 
     def _connect(self):
 
-        self.slider.slice_changed.connect(self.change_slice)
         self.result.print_triggered.connect(self.print_result)
         self.result.cov_matrix_requested.connect(self.print_covariance_matrix)
         self.result.plot_requested.connect(self.plot)

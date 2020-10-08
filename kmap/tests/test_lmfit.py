@@ -65,15 +65,15 @@ class TestLMFitModel(unittest.TestCase):
 
     def test_set_background_equation(self):
 
-        self.lmfit.set_background_equation('np.exp(a)', ['a'])
+        self.lmfit.set_background_equation('np.exp(a)')
         npt.assert_equal(self.lmfit.background_equation, ['np.exp(a)', ['a']])
 
         self.assertRaises(
-            ValueError, self.lmfit.set_background_equation, 'np.exp(a', ['a'])
+            ValueError, self.lmfit.set_background_equation, 'np.exp(a')
 
     def test_parameters(self):
 
-        self.lmfit.set_background_equation('np.exp(a)', ['a'])
+        self.lmfit.set_background_equation('np.exp(a)')
 
         self.assertEqual(self.lmfit.parameters['w_1'].min, 0)
         self.assertEqual(self.lmfit.parameters['a'].value, 0)
@@ -90,7 +90,7 @@ class TestLMFitModel(unittest.TestCase):
         self.lmfit.set_axis_by_step_size(range_, dk)
 
         self.lmfit.set_background_equation(
-            '(np.exp(-x**2-y**2)-np.exp(-(x-1)**2-(y-1)**2))/2', [])
+            '(np.exp(-x**2-y**2)-np.exp(-(x-1)**2-(y-1)**2))/2')
 
         background = self.lmfit._get_background(variables={})
 
@@ -117,6 +117,7 @@ class TestLMFitModel(unittest.TestCase):
         range_, dk = [-3.0, 3.0], 0.04
         self.lmfit.set_axis_by_step_size(range_, dk)
         self.lmfit.set_polarization('toroid', 'p')
+        self.lmfit.set_background_equation('c')
 
         # Set certain fit parameter to desired value
         self.lmfit.edit_parameter('E_kin', value=27.2)

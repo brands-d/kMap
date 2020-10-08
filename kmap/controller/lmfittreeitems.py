@@ -61,18 +61,51 @@ class LMFitTreeTopLevelItem(LMFitTreeItem):
         for child in self.children:
             child.set_vary(state)
 
+    def _connect_child(self, child):
+        # value_changed == redraw necessary
+        child.signals.value_changed.connect(self.signals.value_changed.emit)
+        child.signals.vary_changed.connect(self.signals.vary_changed.emit)
+
     def _connect(self):
 
         self.vary.stateChanged.connect(self.change_vary)
 
         for child in self.children:
-            # value_changed == redraw necessary
-            child.signals.value_changed.connect(
-                self.signals.value_changed.emit)
-            child.signals.vary_changed.connect(self.signals.vary_changed.emit)
+            self._connect_child(child)
 
 
-class OtherTreeItem(LMFitTreeTopLevelItem):
+class BackgroundOptionsTreeItem(LMFitTreeTopLevelItem):
+
+    def __init__(self, tree, parameters):
+
+        super().__init__(tree)
+
+        self._setup(tree, parameters)
+        self._connect()
+
+    def add_equation_parameter(self, tree, parameter):
+
+        name = parameter.name
+        if name not in self.parameters:
+            item = BackgroundTreeItem(self, tree, parameter, 'Eq. Parameter')
+            self._connect_child(item)
+            self.children.append(item)
+            self.parameters.append(name)
+
+        else:
+            index = self.parameters.index(name)
+            item = self.children[index]
+            item.update_parameter(parameter)
+
+    def _setup(self, tree, parameters):
+
+        super()._setup(tree, 'Background Options')
+
+        self.children = []
+        self.parameters = []
+
+
+class OrbitalOptionsTreeItem(LMFitTreeTopLevelItem):
 
     def __init__(self, tree, parameters):
 
@@ -83,16 +116,15 @@ class OtherTreeItem(LMFitTreeTopLevelItem):
 
     def _setup(self, tree, parameters):
 
-        super()._setup(tree, 'Other Options')
+        super()._setup(tree, 'Orbital Options')
 
         alpha = AngleTreeItem(self, tree, parameters['alpha'], 'Alpha')
         beta = AngleTreeItem(self, tree, parameters['beta'], 'Beta')
-        background = BackgroundTreeItem(
-            self, tree, parameters['c'], 'Background')
         energy = EnergyTreeItem(
             self, tree, parameters['E_kin'], 'Kinetic Energy')
 
-        self.children = [alpha, beta, background, energy]
+        self.children = [alpha, beta, energy]
+        self.parameters = ['alpha', 'beta', 'E_kin']
 
 
 class OrbitalTreeItem(LMFitTreeTopLevelItem):
@@ -214,6 +246,22 @@ class BackgroundTreeItem(LMFitDataTreeItem):
         self._setup(tree, name)
         self._connect()
 
+    def update_parameter(self, parameter):
+
+        initial = self.parameter.value
+        min_ = self.parameter.min
+        max_ = self.parameter.max
+        expr = self.parameter.expr
+        vary = self.parameter.vary
+
+        self.parameter = parameter
+
+        self._change_initial(initial)
+        self._change_min(min_)
+        self._change_max(max_)
+        self._change_expression(expr)
+        self._change_vary(vary)
+
     def _setup(self, tree, name):
 
         initial = self.parameter.value
@@ -292,7 +340,30 @@ class LMFitResultTreeItem(QTreeWidgetItem):
         tree.setItemWidget(self, 1, self.name_label)
 
 
-class OtherResultTreeItem(LMFitResultTreeItem):
+class BackgroundOptionsResultTreeItem(LMFitResultTreeItem):
+
+    def __init__(self, tree, result, background_variables=[]):
+
+        super().__init__(tree)
+
+        self._setup(tree, result, background_variables)
+
+    def _setup(self, tree, result, background_variables):
+
+        super()._setup(tree, 'Background Options')
+
+        self.parameters = []
+        self.children = []
+
+        for key in background_variables:
+            item = DataResultTreeItem(self, tree, result[key],
+                                      'Eq. Parameter', units='',
+                                      decimals=1)
+            self.parameters.append(key)
+            self.children.append(item)
+
+
+class OrbitalOptionsResultTreeItem(LMFitResultTreeItem):
 
     def __init__(self, tree, result):
 
@@ -302,21 +373,18 @@ class OtherResultTreeItem(LMFitResultTreeItem):
 
     def _setup(self, tree, result):
 
-        super()._setup(tree, 'Other Options')
+        super()._setup(tree, 'Orbital Options')
 
         alpha = DataResultTreeItem(self, tree, result['alpha'],
                                    'Alpha', units='°', decimals=3)
         beta = DataResultTreeItem(self, tree, result['beta'],
                                   'Beta', units='°', decimals=3)
-        background = DataResultTreeItem(self, tree, result['c'],
-                                        'Background', units='',
-                                        decimals=1)
         energy = DataResultTreeItem(self, tree, result['E_kin'],
                                     'Kinetic Engery', units='  eV',
                                     decimals=2)
 
-        self.parameters = ['alpha', 'beta', 'c', 'E_kin']
-        self.children = [alpha, beta, background, energy]
+        self.parameters = ['alpha', 'beta', 'E_kin']
+        self.children = [alpha, beta, energy]
 
 
 class OrbitalResultTreeItem(LMFitResultTreeItem):

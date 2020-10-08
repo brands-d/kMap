@@ -109,10 +109,15 @@ class MatplotlibWindow(QMainWindow, MatplotlibWindow_UI):
     def closeEvent(self, event):
 
         # Catch closing to close options window as well
-        self.options.close()
-        del self.options
+        try:
+            self.options.close()
+            del self.options
 
-        event.accept()
+        except:
+            pass
+
+        finally:
+            event.accept()
 
     def add_colorbar(self, enable):
 

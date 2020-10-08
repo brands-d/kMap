@@ -265,7 +265,12 @@ class SlicedDatabaseWindow(DatabaseWindowBase, SlicedDatabaseWindow_UI):
     def closeEvent(self, event):
 
         DatabaseWindowBase.closeEvent(self, event)
-        self.options.deleteLater()
+
+        try:
+            self.options.deleteLater()
+
+        except RuntimeError:
+            pass
 
 
 class TreeWidgetItem(QTreeWidgetItem):

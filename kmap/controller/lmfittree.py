@@ -10,8 +10,10 @@ from PyQt5.QtWidgets import QWidget, QHeaderView, QHBoxLayout, QSizePolicy
 from kmap import __directory__
 from kmap.controller.orbitaltablerow import OrbitalTableRow
 from kmap.controller.lmfittreeitems import (
-    OrbitalTreeItem, OtherTreeItem, LMFitDataTreeItem,
-    OtherResultTreeItem, OrbitalResultTreeItem, DataResultTreeItem)
+    OrbitalTreeItem, OrbitalOptionsTreeItem, LMFitDataTreeItem,
+    OrbitalOptionsResultTreeItem, OrbitalResultTreeItem,
+    DataResultTreeItem, BackgroundOptionsTreeItem,
+    BackgroundOptionsResultTreeItem)
 
 # Load .ui File
 UI_file = __directory__ + QDir.toNativeSeparators('/ui/lmfittree.ui')
@@ -57,6 +59,10 @@ class LMFitTree(LMFitBaseTree, LMFitTree_UI):
         self._setup(orbitals, parameters)
         self._connect()
 
+    def add_equation_parameter(self, parameter):
+
+        self.background_item.add_equation_parameter(self.tree, parameter)
+
     def _setup(self, orbitals, parameters):
 
         widths = [60, 0, 100, 80, 130, 130, 130, 200]
@@ -68,7 +74,10 @@ class LMFitTree(LMFitBaseTree, LMFitTree_UI):
         self.tree.header().setDefaultAlignment(Qt.AlignCenter)
 
         # Add TreeItems
-        self.tree.addTopLevelItem(OtherTreeItem(self.tree, parameters))
+        self.orbital_options_item = OrbitalOptionsTreeItem(
+            self.tree, parameters)
+        self.background_item = BackgroundOptionsTreeItem(self.tree, parameters)
+        self.tree.addTopLevelItem(self.orbital_options_item)
         for orbital in orbitals:
             self.tree.addTopLevelItem(
                 OrbitalTreeItem(self.tree, orbital, parameters))
@@ -90,12 +99,12 @@ LMFitResultTree_UI, _ = uic.loadUiType(UI_file)
 
 class LMFitResultTree(LMFitBaseTree, LMFitResultTree_UI):
 
-    def __init__(self, orbitals, result, *args, **kwargs):
+    def __init__(self, orbitals, result, background_variables=[]):
 
         # Setup GUI
-        super(LMFitResultTree, self).__init__(*args, **kwargs)
+        super(LMFitResultTree, self).__init__()
         self.setupUi(self)
-        self._setup(orbitals, result)
+        self._setup(orbitals, result, background_variables)
         self._connect()
 
     def update_result(self, result):
@@ -104,7 +113,7 @@ class LMFitResultTree(LMFitBaseTree, LMFitResultTree_UI):
             item = self.tree.topLevelItem(i)
             item.update_result(result)
 
-    def _setup(self, orbitals, result):
+    def _setup(self, orbitals, result, background_variables):
 
         widths = [60, 0, 100, 150, 150]
 
@@ -115,7 +124,10 @@ class LMFitResultTree(LMFitBaseTree, LMFitResultTree_UI):
         self.tree.header().setDefaultAlignment(Qt.AlignCenter)
 
         # Add TreeItems
-        self.tree.addTopLevelItem(OtherResultTreeItem(self.tree, result))
+        self.tree.addTopLevelItem(OrbitalOptionsResultTreeItem(
+            self.tree, result))
+        self.tree.addTopLevelItem(BackgroundOptionsResultTreeItem(
+            self.tree, result, background_variables))
         for orbital in orbitals:
             self.tree.addTopLevelItem(
                 OrbitalResultTreeItem(self.tree, orbital, result))

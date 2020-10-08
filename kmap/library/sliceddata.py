@@ -15,6 +15,7 @@ from kmap.library.database import Database
 from kmap.library.orbital import Orbital
 from kmap.library.axis import Axis
 
+
 class SlicedData(AbstractData):
 
     def __init__(self, name, axis_1, axis_2, axis_3, data, meta_data={}):
@@ -171,8 +172,8 @@ class SlicedData(AbstractData):
         nk = int((2 * k_max) / dk) + 1
         k_grid = np.linspace(-k_max, +k_max, nk)
         nk = len(k_grid)
-        axis_2 = ['kx', '1/A', [-k_max, +k_max]]
-        axis_3 = ['ky', '1/A', [-k_max, +k_max]]
+        axis_2 = ['kx', '1/Å', [-k_max, +k_max]]
+        axis_3 = ['ky', '1/Å', [-k_max, +k_max]]
 
         # initialize 3D-numpy array with zeros
         data = np.zeros((nBE, nk, nk))
@@ -275,11 +276,11 @@ class SlicedData(AbstractData):
             data = orbital.psi['data']
 
         else:
-            axis_1 = ['kx', '1/A', [orbital.psik['kx']
+            axis_1 = ['kx', '1/Å', [orbital.psik['kx']
                                     [0], orbital.psik['kx'][-1]]]
-            axis_2 = ['ky', '1/A', [orbital.psik['ky']
+            axis_2 = ['ky', '1/Å', [orbital.psik['ky']
                                     [0], orbital.psik['ky'][-1]]]
-            axis_3 = ['kz', '1/A', [orbital.psik['kz']
+            axis_3 = ['kz', '1/Å', [orbital.psik['kz']
                                     [0], orbital.psik['kz'][-1]]]
             data = orbital.psik['data']
 
@@ -322,7 +323,7 @@ class SlicedData(AbstractData):
         """
 
         log = logging.getLogger('kmap')
-        orbital = orbital[0] # only consider first orbital in list!
+        orbital = orbital[0]  # only consider first orbital in list!
 
         # extract parameters
         hnu_min = parameters[0]
@@ -352,13 +353,13 @@ class SlicedData(AbstractData):
         nk = int((2 * k_max) / dk) + 1
         k_grid = np.linspace(-k_max, +k_max, nk)
         nk = len(k_grid)
-        axis_2 = ['kx', '1/A', [-k_max, +k_max]]
-        axis_3 = ['ky', '1/A', [-k_max, +k_max]]
+        axis_2 = ['kx', '1/Å', [-k_max, +k_max]]
+        axis_3 = ['ky', '1/Å', [-k_max, +k_max]]
 
         # initialize 3D-numpy array with zeros
         data = np.zeros((n_hnu, nk, nk))
         orbital_names = []
-    
+
         log.info('Adding orbital to SlicedData Object, please wait!')
         # read orbital from cube-file database
         url = orbital[0]
@@ -391,7 +392,10 @@ class SlicedData(AbstractData):
 
         return cls(name, axis_1, axis_2, axis_3, data, meta_data)
 
+    def transpose(self, axes_order):
 
+        self.data = self.data.transpose(axes_order)
+        self.axes = [self.axes[i] for i in axes_order]
 
     def slice_from_index(self, index, axis=0):
 
@@ -421,4 +425,3 @@ class SlicedData(AbstractData):
 
         rep += '\n\n'
         return rep[:-2]
-

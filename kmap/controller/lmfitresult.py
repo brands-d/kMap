@@ -41,6 +41,7 @@ class LMFitResult(QWidget, LMFitResult_UI):
     def _setup(self, lmfit_model):
 
         slices = lmfit_model.slice_policy[1]
+
         if len(list(slices)) == 1:
             type_ = 'Only One Slice (%i)' % slices[0]
 

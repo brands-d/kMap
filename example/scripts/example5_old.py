@@ -22,12 +22,12 @@ kx = np.linspace(k_range[0],k_range[1],num)
 ky = kx
 
 # read PTCDA orbitals from file and compute kmaps 
-names  = ['PTCDA_C','PTCDA_D','PTCDA_E','PTCDA_F']
-styles = ['.r-','k-','r--','^g-']
+names  = ['PTCDA_C','PTCDA_D','PTCDA_E','PTCDA_F','background']
+styles = ['.r-','k-','r--','^g-','k:']
 params = Parameters() # parameters object for minimization
 
 sim_kmaps = []
-for name in names:
+for name in names[:-1]:
     cuberead = open(data_path + name +'.cube').read()       # read cube-file from file
     orbital  = Orbital(cuberead,dk3D=0.12)     # 3D-FT 
     sim_kmap = orbital.get_kmap(E_kin=27.2,  
@@ -57,7 +57,7 @@ def chi2_function(params,data):
 
 # main program
 nslice = exp_data.data.shape[0]
-pDOS   = np.zeros((nslice,len(names)+1))
+pDOS   = np.zeros((nslice,len(names)))
 for i in range(nslice):
     exp_kmap = exp_data.slice_from_index(i)  # get kmap slice from exp. data
     exp_kmap.interpolate(kx,ky,update=True)  # interpolate to common (kx,ky)-grid
