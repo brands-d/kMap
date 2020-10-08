@@ -15,7 +15,7 @@ from kmap.library.misc import energy_to_k
 
 # Path to data folder; replace with your own; use '/' instead of '+'
 # when concatenating with strings
-data_path = Path('../data/')
+data_path = Path(__file__).parent / Path('../data/')
 
 # load data
 cubefile = open(data_path / 'bisanthene_HOMO.cube').read()  # read cube-file from file

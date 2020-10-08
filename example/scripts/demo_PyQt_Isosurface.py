@@ -150,7 +150,7 @@ class Plot3DMolecule():
 
 # Path to data folder; replace with your own; use '/' instead of '+'
 # when concatenating with strings
-data_path = Path('../data/')
+data_path = Path(__file__).parent / Path('../data/')
 
 cubefile = open(data_path / 'pentacene_HOMO.cube').read()  # read cube-file from file
 molecule = Orbital(cubefile) # Orbital object contains molecular geometry and psi(x,y,z)

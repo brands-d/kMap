@@ -12,7 +12,7 @@ from kmap.model.lmfit_model import LMFitModel
 
 # Path to data folder; replace with your own; use '/' instead of '+'
 # when concatenating with strings
-data_path = Path('../data/')
+data_path = Path(__file__).parent / Path('../data/')
 
 # Load experimental data as SlicedData object
 exp_data = SlicedData.init_from_hdf5(data_path / 'example4_3271.hdf5')

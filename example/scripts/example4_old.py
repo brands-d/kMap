@@ -13,7 +13,7 @@ from kmap.library.misc import step_size_to_num
 
 # Path to data folder; replace with your own; use '/' instead of '+'
 # when concatenating with strings
-data_path = Path('../data/')
+data_path = Path(__file__).parent / Path('../data/')
 
 # Load experimental data-file and choose a constant-binding energy slice
 exp_data = SlicedData.init_from_hdf5(data_path / 'example4_3271.hdf5') 

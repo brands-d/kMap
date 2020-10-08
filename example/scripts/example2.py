@@ -9,7 +9,7 @@ from kmap.library.orbital import Orbital
 
 # Path to data folder; replace with your own; use '/' instead of '+'
 # when concatenating with strings
-data_path = Path('../data/')
+data_path = Path(__file__).parent / Path('../data/')
 
 cubefile = open(data_path / 'pentacene_HOMO.cube').read()  # read cube-file from file
 homo     = Orbital(cubefile,        # compute 3D Fourier transform (see Eqs. 6-11)  

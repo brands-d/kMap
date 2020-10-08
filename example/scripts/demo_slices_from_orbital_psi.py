@@ -14,7 +14,7 @@ from kmap.library.sliceddata import SlicedData
 
 # Path to data folder; replace with your own; use '/' instead of '+'
 # when concatenating with strings
-data_path = Path('../data/')
+data_path = Path(__file__).parent / Path('../data/')
 
 # choose local path to cube-file (string because init at line 31 expects
 # a string)

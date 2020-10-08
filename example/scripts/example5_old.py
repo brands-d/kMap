@@ -13,7 +13,7 @@ from kmap.library.misc import step_size_to_num
 
 # Path to data folder; replace with your own; use '/' instead of '+'
 # when concatenating with strings
-data_path = Path('../data/')
+data_path = Path(__file__).parent / Path('../data/')
 
 # define common (kx,ky)-grid for deconvolution
 k_range, dk = [-3.0, 3.0], 0.04
