@@ -1,25 +1,26 @@
-import os, sys
+# Python Imports
+from pathlib import Path
 
-path = os.path.dirname(os.path.realpath(__file__))
-sys.path.insert(0,path + os.sep + '..' + os.sep + '..' + os.sep)
-data_path = path + os.sep + '..' + os.sep + 'data' + os.sep
-
-####
+# Third Party Imports
 import matplotlib.pyplot as plt
 import numpy as np
 
-# Own Imports from kmap
+# kMap.py Imports
 from kmap.library.sliceddata import SlicedData
 from kmap.library.orbitaldata import OrbitalData
 from kmap.model.lmfit_model import LMFitModel
 
-# load experimental data as SlicedData object
-exp_data = SlicedData.init_from_hdf5(data_path + 'example4_3271.hdf5')
+# Path to data folder; replace with your own; use '/' instead of '+'
+# when concatenating with strings
+data_path = Path('../data/')
 
-# load orbital for fitting as OrbitalData objects
+# Load experimental data as SlicedData object
+exp_data = SlicedData.init_from_hdf5(data_path / 'example4_3271.hdf5')
+
+# Load orbital for fitting as OrbitalData objects
 orbital_paths = ['pentacene_HOMO.cube']
 orbitals = [OrbitalData.init_from_file(
-            data_path + path, ID) for ID, path in enumerate(orbital_paths)]
+            data_path / path, ID) for ID, path in enumerate(orbital_paths)]
 
 # Initialize fit as LMFitModel object
 lmfit = LMFitModel(exp_data, orbitals)
@@ -49,14 +50,14 @@ lmfit.set_fit_method(method='leastsq', xtol=1e-12)
 
 best_fit = lmfit.fit()[0][1]
 
-# print results of best fit
+# Print results of best fit
 print('reduced chi^2 = ', best_fit.redchi)
 print(best_fit.params['theta_0'])
 print(best_fit.params['w_0'])
 print(best_fit.params['c'])
 
-# now make plot of chi^2 vs. theta by looping over a list of theta-values,
-# but setting fixing all variables (vary=False) in the fit
+# Now make plot of chi^2 vs. theta by looping over a list of
+# theta-values, but setting fixing all variables (vary=False) in the fit
 lmfit.edit_parameter('w_0', value=best_fit.params['w_0'].value, vary=False)
 lmfit.edit_parameter('c', value=best_fit.params['c'].value, vary=False)
 theta_values = np.linspace(0, 60, 61)
@@ -67,7 +68,7 @@ for theta in theta_values:
     fit = lmfit.fit()[0][1]
     redchi2_list.append(fit.redchi)
 
-# plot reduced chi^2 versus theta
+# Plot reduced chi^2 versus theta
 factor = 1e-3  # arbitrary scaling factor for reduced chi^2
 redchi2_list = factor * np.array(redchi2_list)
 fig, ax = plt.subplots(figsize=(6.5, 5))

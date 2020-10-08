@@ -1,28 +1,24 @@
-# -*- coding: utf-8 -*-
-"""
-This example uses the isosurface function to convert a scalar field,
-here the momentum space orbital from a cube file, into an isosurface
-"""
-import os, sys
+# Python Imports
+from pathlib import Path
 
-path = os.path.dirname(os.path.realpath(__file__))
-sys.path.insert(0,path + os.sep + '..' + os.sep + '..' + os.sep)
-data_path = path + os.sep + '..' + os.sep + 'data' + os.sep
-#####
-
+# Third Party Imports
 import numpy as np
 from pyqtgraph.Qt import QtCore, QtGui
 import pyqtgraph as pg
 import pyqtgraph.opengl as gl   # pip install PyOpenGL
 
-# local imports 
+# kMap.py Imports
 from kmap.library.orbital import Orbital
 from kmap.library.misc import energy_to_k
 
 ### MAIN PROGRAM ######################################################
 
+# Path to data folder; replace with your own; use '/' instead of '+'
+# when concatenating with strings
+data_path = Path('../data/')
+
 # load data
-cubefile = open(data_path + 'pentacene_HOMO.cube').read()  # read cube-file from file
+cubefile = open(data_path / 'pentacene_HOMO.cube').read()  # read cube-file from file
 orbital  = Orbital(cubefile, dk3D=0.15, E_kin_max=150,value='real') 
 data     = orbital.psi['data']
 dx,dy,dz = orbital.psi['dx'], orbital.psi['dy'], orbital.psi['dz'] 

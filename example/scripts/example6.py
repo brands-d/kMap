@@ -1,15 +1,11 @@
+# Third Party Imports
+import numpy as np
+import matplotlib.pyplot as plt
+
+# kMap.py Imports
 from kmap.library.plotdata import PlotData
 from kmap.model.crosshair_model import CrosshairAnnulusModel
-import matplotlib.pyplot as plt
-import numpy as np
-import os
-import sys
 
-path = os.path.dirname(os.path.realpath(__file__))
-sys.path.insert(0, path + os.sep + '..' + os.sep + '..' + os.sep)
-# Third Party Imports
-
-# Own Imports
 
 # This script demonstrates the working and functionality for crosshairs
 # in kmap on a simple 9x11 grid.
@@ -29,6 +25,7 @@ extent = data.range.flatten() + [-0.5, 0.5, -0.5, 0.5]
 
 export = {}
 
+
 def plot(axis, x, y, r, w, region, inverted, title=''):
     # Helper Function plotting crosshair and data
 
@@ -45,7 +42,7 @@ def plot(axis, x, y, r, w, region, inverted, title=''):
                                       region=region,
                                       inverted=inverted)
 
-    export.update({title:cut.data})
+    export.update({title: cut.data})
     # Labels
     axis.set_title(title)
     axis.set_xlabel('x')
@@ -184,5 +181,5 @@ plot(axes[1][2], x=0, y=0, r=0.00, w=2.13, region='outer_border',
      inverted=False, title='Outer Border Edge Case 2')
 
 
-np.save('data.npy',export)
+np.save('data.npy', export)
 plt.show()

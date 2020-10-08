@@ -1,23 +1,22 @@
-import os, sys
+# Python Imports
+from pathlib import Path
 
-path = os.path.dirname(os.path.realpath(__file__))
-sys.path.insert(0,path + os.sep + '..' + os.sep + '..' + os.sep)
-data_path = path + os.sep + '..' + os.sep + 'data' + os.sep
-
-####
+# Third Party Imports
 import matplotlib.pyplot as plt
 import numpy as np
 from lmfit import Minimizer, Parameters, report_fit
 
-# now import classes from kMap
+# kMap.py Imports
 from kmap.library.orbital import Orbital
 from kmap.library.sliceddata import SlicedData
 from kmap.library.misc import step_size_to_num
 
-path = os.path.dirname(os.path.realpath(__file__)) + '/../data/'
+# Path to data folder; replace with your own; use '/' instead of '+'
+# when concatenating with strings
+data_path = Path('../data/')
 
 # Load experimental data-file and choose a constant-binding energy slice
-exp_data = SlicedData.init_from_hdf5(data_path + 'example4_3271.hdf5') 
+exp_data = SlicedData.init_from_hdf5(data_path / 'example4_3271.hdf5') 
 exp_kmap = exp_data.slice_from_index(2)   # take slice #2 from exp. data
 
 # define common (kx,ky)-grid for fitting
@@ -28,7 +27,7 @@ ky = kx
 exp_kmap.interpolate(kx,ky,update=True)
 
 # read pentacene HOMO cube-file from file 
-cubefile = open(data_path + 'pentacene_HOMO.cube').read() # read cube-file from file
+cubefile = open(data_path / 'pentacene_HOMO.cube').read() # read cube-file from file
 homo     = Orbital(cubefile,dk3D=0.12)        # 3D-FT 
 
 

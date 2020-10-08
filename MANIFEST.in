@@ -1,0 +1,3 @@
+include kmap/config/*.ini
+include kmap/resources/misc/background_equations
+include kmap/resources/misc/colormaps.json

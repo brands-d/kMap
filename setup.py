@@ -10,4 +10,5 @@ setup(name='kMap',
       url='https://github.com/brands-d/kMap',
       author='Dominik Brandstetter',
       author_email='dominik.brandstetter@edu.uni-graz.at',
-      zip_safe=False)
+      zip_safe=False,
+      include_package_data=True)

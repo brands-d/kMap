@@ -1,22 +1,20 @@
-# This script demonstrates how kmaps for various photonenergies for one 
-# selected orbital can be used to create the datacube 
-# Intensity[photonenergy,kx,ky] as SlicedData object 
+# ATTENTION SCRIPT NOT WORKING
 
-# Python imports
-import os, sys
+# Python Imports
+from pathlib import Path
 
-path = os.path.dirname(os.path.realpath(__file__))
-sys.path.insert(0,path + os.sep + '..' + os.sep + '..' + os.sep)
-data_path = path + os.sep + '..' + os.sep + 'data' + os.sep
-
+# Third Party Imports
 import matplotlib.pyplot as plt
 
-# kmap imports
+# kMap.py Imports
 from kmap.library.database import Database
 from kmap.library.sliceddata import SlicedData
 
-# 
-db = Database(data_path + 'molecules.txt')
+# Path to data folder; replace with your own; use '/' instead of '+'
+# when concatenating with strings
+data_path = Path('../data/')
+
+db = Database(str(data_path / 'molecules.txt'))
 molecule = db.get_molecule_by_ID(11)  # choose pentacene molecule for testing ...
 
 # set name and select list of orbitals 

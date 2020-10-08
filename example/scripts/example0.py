@@ -1,15 +1,17 @@
-import os, sys
+# Python Imports
+from pathlib import Path
 
-path = os.path.dirname(os.path.realpath(__file__))
-sys.path.insert(0,path + os.sep + '..' + os.sep + '..' + os.sep)
-data_path = path + os.sep + '..' + os.sep + 'data' + os.sep
-
-
-# this script computes kmaps of pentacene's HOMO for various kinetic energies
+# Third Party Imports
 import matplotlib.pyplot as plt
+
+# kMap.py Imports
 from kmap.library.orbital import Orbital
 
-cubefile = open(data_path + 'pentacene_HOMO.cube').read()  # read cube-file from file
+# Path to data folder; replace with your own; use '/' instead of '+'
+# when concatenating with strings
+data_path = Path('../data/')
+
+cubefile = open(data_path / 'pentacene_HOMO.cube').read()  # read cube-file from file
 homo     = Orbital(cubefile)    # compute 3D Fourier transform (see Eqs. 6-11)  
                                               
 fig, _ax = plt.subplots(2,3)
