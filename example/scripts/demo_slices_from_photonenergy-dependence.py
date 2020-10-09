@@ -20,8 +20,8 @@ molecule = db.get_molecule_by_ID(11)  # choose pentacene molecule for testing ..
 # set name and select list of orbitals 
 name     = 'pentacene-HOMO-hnu'   # set name for SlicedData Object
 i        = -4                     # choose one orbital. Here: HOMO of pentacene
-orbital  = [molecule.orbitals[i].URL,
-           {'energy':molecule.orbitals[i].energy,'name':molecule.orbitals[i].name}]
+orbital  = [[molecule.orbitals[i].URL,
+           {'energy':molecule.orbitals[i].energy,'name':molecule.orbitals[i].name}]]
 
 # set parameters
 parameters =[20,    # minimal photon_energy (float)
