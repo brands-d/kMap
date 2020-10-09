@@ -87,6 +87,23 @@ class TabWidget(QWidget, TabWidget_UI):
             log.error('Couldn\'t load URL')
             log.error(traceback.format_exc())
 
+    def open_sliced_data_tab_by_cube(self, URL):
+
+        try:
+            tab = SlicedDataTab.init_from_cube(URL)
+            title = tab.get_title()
+            tooltip = tab.to_string()
+            self._open_tab(tab, title, tooltip)
+            
+        except ValueError as e:
+            pass
+
+        except Exception as e:
+
+            log = logging.getLogger('kmap')
+            log.error('Couldn\'t load cube file')
+            log.error(traceback.format_exc())
+
     def open_orbital_data_tab(self):
         # Opens a new orbital data tab
 

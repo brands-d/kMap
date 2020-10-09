@@ -11,6 +11,7 @@ from kmap import __directory__
 from kmap.library.database import Database
 from kmap.controller.sliceddatabaseoptions import SlicedDataBaseOptions
 from kmap.controller.sliceddatabaseoptions2 import SlicedDataBaseOptions2
+from kmap.controller.slicedcubefileoptions import SlicedCubefileOptions
 from kmap.config.config import config
 
 # Load .ui File for SlicedDataDatabase
@@ -239,6 +240,9 @@ class SlicedDatabaseWindow(DatabaseWindowBase, SlicedDatabaseWindow_UI):
 
         elif mode == 'photon-energy':
             self.options = SlicedDataBaseOptions2()
+
+        elif mode == 'cubefile':
+            self.options = SlicedCubefileOptions()
 
         # URLs (with extra information if available) chosen
         self.URLs = []

@@ -54,6 +54,14 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
         return cls(model)
 
     @classmethod
+    def init_from_cube(cls, URL):
+
+        model = SlicedDataTabModel()
+        model.load_data_from_cube(URL)
+
+        return cls(model)
+        
+    @classmethod
     def init_from_path(cls, path):
 
         model = SlicedDataTabModel()
