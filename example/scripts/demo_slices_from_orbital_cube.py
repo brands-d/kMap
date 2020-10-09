@@ -21,19 +21,19 @@ data_path = Path(__file__).parent / Path('../data/')
 cube_file = str(data_path / 'pentacene_HOMO.cube')
 
 # ... or choose URL pointing to cubefile
-# cube_file = 'http://143.50.77.12/OrganicMolecule/B3LYP/5A/charge0mult1/5A_MO_73'
+#cube_file = 'http://143.50.77.12/OrganicMolecule/B3LYP/5A/charge0mult1/5A_MO_73'
 
 
-# uncomment to create real-space SlicedData
-# orbital_slices = SlicedData.init_from_orbital_psi(cube_file,
-#                                                  domain='real-space')
+# Create SlicedData object
+orbital  = [[cube_file,{}]]
+name = '5A HOMO'
+parameters =['k-space', # either 'real-space' or 'k-space'
+             0.15,         # desired resolution for 3D-Fourier-Transform.
+             150,          # maximum kinetic energy in eV
+             'real']       # choose between 'real', 'imag', 'abs' or 'abs2'
+                           #   for Re(), Im(), |..| or |..|^2
 
-# ... or uncomment for k-space SlicedData
-orbital_slices = SlicedData.init_from_orbital_psi(cube_file,
-                                                  domain='k-space',
-                                                  dk3D=0.15,
-                                                  E_kin_max=150,
-                                                  value='real')
+orbital_slices = SlicedData.init_from_orbital_cube(name,orbital,parameters)
 
 # Plot some slices
 fig, _ax = plt.subplots(3, 3)

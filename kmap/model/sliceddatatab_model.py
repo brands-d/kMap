@@ -33,6 +33,20 @@ class SlicedDataTabModel():
 
         self.change_slice(0, 0)
 
+    def load_data_from_cube(self, URL):  # -> create either psi[x,y,z]
+                                         #               or psik[kx,ky,kz]
+
+        # Last element in URL are the parameters. The first element
+        # is the orbital to load as a list of length 2
+        # with first entry being the URL, the second the meta_data
+        # dictionary
+        *orbital, options = URL
+        name, *parameters = options
+        self.data = SlicedData.init_from_orbital_cube(
+            name, orbital, parameters)
+
+        self.change_slice(0, 0)
+        
     def transpose(self, constant_axis):
 
         axis_order = transpose_axis_order(constant_axis)

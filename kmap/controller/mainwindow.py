@@ -81,6 +81,13 @@ class MainWindow(QMainWindow, MainWindow_UI):
 
         self.sub_windows.update({str(id(database)): database})
 
+    def open_cubefile_sliceddatabase_browser(self):
+
+        database = SlicedDatabaseWindow(mode='cubefile')
+        database.files_chosen.connect(self.load_cubefile_as_sliced_online)
+
+        self.sub_windows.update({str(id(database)): database})
+
     def load_sliced_files_online(self, URLs):
         # Load one or more cube files as sliced data[BE, kx, ky]
 
@@ -96,6 +103,14 @@ class MainWindow(QMainWindow, MainWindow_UI):
         log.info('Loading .cube file as sliced data[photon_energy, kx, ky]...')
 
         self.tab_widget.open_sliced_data_tab_by_URL(URL)
+
+    def load_cubefile_as_sliced_online(self, URL):
+        # Load one cube file as sliced psi[x,y,z] or psik[kx,ky,kz] 
+
+        log = logging.getLogger('kmap')
+        log.info('Loading .cube file as sliced psi[x,y,z] or psik[kx,ky,kz] ...')
+
+        self.tab_widget.open_sliced_data_tab_by_cube(URL)
 
     def load_cube_files_online(self, URLs):
 
@@ -341,6 +356,8 @@ class MainWindow(QMainWindow, MainWindow_UI):
             self.open_binding_energy_sliceddatabase_browser)
         self.load_sliced_from_photon_energy_action.triggered.connect(
             self.open_photon_energy_sliceddatabase_browser)
+        self.load_sliced_from_cubefile_action.triggered.connect(
+            self.open_cubefile_sliceddatabase_browser)        
         self.load_cube_file_action.triggered.connect(
             self.load_cube_files_locally)
         self.load_cube_online_action.triggered.connect(

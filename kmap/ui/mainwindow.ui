@@ -38,7 +38,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>26</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="file_menu">
@@ -73,6 +73,7 @@
      <addaction name="load_hdf5_action"/>
      <addaction name="load_sliced_from_binding_energy_action"/>
      <addaction name="load_sliced_from_photon_energy_action"/>
+     <addaction name="load_sliced_from_cubefile_action"/>
     </widget>
     <addaction name="load_hdf5_menu"/>
     <addaction name="cube_menu"/>
@@ -238,6 +239,11 @@
     <string>Exports the contents of the current tab, if possible, as .txt file.
 
 Currently the profile plot and the lmfit plot tab support this feature.</string>
+   </property>
+  </action>
+  <action name="load_sliced_from_cubefile_action">
+   <property name="text">
+    <string>From Cubefile ...</string>
    </property>
   </action>
  </widget>

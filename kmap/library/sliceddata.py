@@ -236,53 +236,68 @@ class SlicedData(AbstractData):
 
         return cls(name, axis_1, axis_2, axis_3, data, meta_data)
 
-    @classmethod
-    def init_from_orbital_psi(cls, cube_file, domain, dk3D=0.15, E_kin_max=150, value='abs2'):
+    @classmethod 
+    def init_from_orbital_cube(cls, name, orbital, parameters):    
         """Returns a SlicedData object with the data[x,y,z] 
            taken from the real space wave function in orbital.
 
         Args:
-            cube_file (str): either full path to local cube-file or URL to cube-file
-            domain (str): either 'real-space' or 'k-space'
-            dk3D (float): Desired resolution for 3D-Fourier-Transform.
-                Single number.
-            E_kin_max (float): maximum kinetic energy in eV is used to
-                reduce the size of the 3D-numpy-array in momentum space
-            value (string): choose between 'real', 'imag', 'abs' or 'abs2'
-                for Re(), Im(), |..| or |..|^2
+            name (str): name for SlicedData object
+            orbital (list): [ 'URL',dict ]
+                dict needs keys: 'energy' and 'name'         
+            parameters (list): list of parameters
+                domain (str): either 'real-space' or 'k-space'
+                dk3D (float): Desired resolution for 3D-Fourier-Transform.
+                    Single number.
+                E_kin_max (float): maximum kinetic energy in eV is used to
+                    reduce the size of the 3D-numpy-array in momentum space
+                value (string): choose between 'real', 'imag', 'abs' or 'abs2'
+                    for Re(), Im(), |..| or |..|^2
 
         Returns:
             (SlicedData): SlicedData containing the real space orbital
         """
+        log = logging.getLogger('kmap')
+
+        orbital = orbital[0]  # only consider first orbital in list!
+
+        # extract parameters
+        domain = parameters[0]
+        dk3D = parameters[1]
+        E_kin_max = parameters[2]
+        value = parameters[3]
+
+        orbital_file = orbital[0]
+        log.info('Loading from database: %s' % orbital_file)
 
         # decision if reading cube-file from URL or local file
-        if cube_file[:4] == 'http':
-            with urllib.request.urlopen(cube_file) as f:
+        if orbital_file[:4] == 'http':
+            with urllib.request.urlopen(orbital_file) as f:
                 file = f.read().decode('utf-8')
 
         else:
-            file = open(cube_file).read()
+            file = open(orbital_file).read()
 
-        orbital = Orbital(file, dk3D=dk3D, E_kin_max=E_kin_max, value=value)
+        orbital_data = Orbital(file, dk3D=dk3D, E_kin_max=E_kin_max, value=value)
 
         # set name for SliceData object
-        name = orbital.psi['name']
+        name = orbital_data.psi['name']
 
         # set axis and data
         if domain == 'real-space':
-            axis_1 = ['x', 'A', [orbital.psi['x'][0], orbital.psi['x'][-1]]]
-            axis_2 = ['y', 'A', [orbital.psi['y'][0], orbital.psi['y'][-1]]]
-            axis_3 = ['z', 'A', [orbital.psi['z'][0], orbital.psi['z'][-1]]]
-            data = orbital.psi['data']
+            axis_1 = ['x', 'Å', [orbital_data.psi['x'][0], orbital_data.psi['x'][-1]]]
+            axis_2 = ['y', 'Å', [orbital_data.psi['y'][0], orbital_data.psi['y'][-1]]]
+            axis_3 = ['z', 'Å', [orbital_data.psi['z'][0], orbital_data.psi['z'][-1]]]
+            data = orbital_data.psi['data']
 
         else:
-            axis_1 = ['kx', '1/Å', [orbital.psik['kx']
-                                    [0], orbital.psik['kx'][-1]]]
-            axis_2 = ['ky', '1/Å', [orbital.psik['ky']
-                                    [0], orbital.psik['ky'][-1]]]
-            axis_3 = ['kz', '1/Å', [orbital.psik['kz']
-                                    [0], orbital.psik['kz'][-1]]]
-            data = orbital.psik['data']
+            axis_1 = ['kx', '1/Å', [orbital_data.psik['kx']
+                                    [0], orbital_data.psik['kx'][-1]]]
+            axis_2 = ['ky', '1/Å', [orbital_data.psik['ky']
+                                    [0], orbital_data.psik['ky'][-1]]]
+            axis_3 = ['kz', '1/Å', [orbital_data.psik['kz']
+                                    [0], orbital_data.psik['kz'][-1]]]
+            data = orbital_data.psik['data']
 
         # no meta data
         meta_data = {}
