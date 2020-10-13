@@ -30,13 +30,13 @@ class TestMisc(unittest.TestCase):
         self.assertEqual(idx_closest_value(axis, value), 0)
 
         value = 1.73
-        self.assertRaises(ValueError, idx_closest_value, axis, value)
+        self.assertEqual(idx_closest_value(axis, value), None)
 
         value = 1.73
         self.assertEqual(idx_closest_value(axis, value, bounds_error=False), 2)
 
         value = -1.94
-        self.assertRaises(ValueError, idx_closest_value, axis, value)
+        self.assertEqual(idx_closest_value(axis, value), None)
 
         value = -1.94
         self.assertEqual(idx_closest_value(axis, value, bounds_error=False), 0)

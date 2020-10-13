@@ -57,7 +57,7 @@ def idx_closest_value(axis, value, decimals=5, bounds_error=True):
         # + (-) step_size/2
 
         if bounds_error:
-            raise ValueError('Out of bounds')
+            return None
 
         else:
             if value > max(axis):

@@ -43,6 +43,9 @@ class CrosshairBase(QWidget):
         if plot_data == None:
             intensity = 0
 
+        elif np.isnan(plot_data.data).all():
+            intensity = np.nan
+
         else:
             cut = self.model.cut_from_data(plot_data, region='center')
 
