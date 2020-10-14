@@ -1,5 +1,5 @@
 # kMap.py
-kMap.py is a python based program for simulation and data analysis in photoemission tomography.
+kMap.py is a python based program for simulation and data analysis in photoemission tomography. The underlying theoretical methodolgy is described here: https://arxiv.org/abs/2009.13099
 
 It provides an easy-to-use graphical user interface powered by PyQt5 to simulate photoemission momentum maps of molecular orbitals and to perform a one-to-one comparison between simulation and experiment. For this kMap.py provides tools like line- or region-restricted intensity scans/plots, interpolation capabilities, adjustable simulation parameters (like orientation, final state kinetic energy and polarization state of the incident light field) as well as an interface to powerful least-square fits between simulation and experiment to quickly determine optimal parameters.
 
