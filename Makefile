@@ -26,10 +26,14 @@ report:
 	rm -f report.tar.gz report.tar
 	tar -cf report.tar *.log 
 	tar -rf report.tar -C ./kmap/config/ logging_user.ini settings_user.ini
+	@echo 'Running tests...'
 	-python -m unittest discover 2> test_results.txt
 	tar -rf report.tar test_results.txt
+	@echo 'Compiling a report archive...'
 	gzip report.tar
 	rm test_results.txt
+	@echo 'Done. Thanks for using this feature.'
+	@echo 'Please send report.tar.gz to dominik.brandstetter@edu.uni-graz.at'
 
 # Pleae don't use unless you know what you are doing
 freeze:
