@@ -236,8 +236,8 @@ class SlicedData(AbstractData):
 
         return cls(name, axis_1, axis_2, axis_3, data, meta_data)
 
-    @classmethod 
-    def init_from_orbital_cube(cls, name, orbital, parameters):    
+    @classmethod
+    def init_from_orbital_cube(cls, name, orbital, parameters):
         """Returns a SlicedData object with the data[x,y,z] 
            taken from the real space wave function in orbital.
 
@@ -278,16 +278,20 @@ class SlicedData(AbstractData):
         else:
             file = open(orbital_file).read()
 
-        orbital_data = Orbital(file, dk3D=dk3D, E_kin_max=E_kin_max, value=value)
+        orbital_data = Orbital(
+            file, dk3D=dk3D, E_kin_max=E_kin_max, value=value)
 
         # set name for SliceData object
         name = orbital_data.psi['name']
 
         # set axis and data
         if domain == 'real-space':
-            axis_1 = ['x', 'Å', [orbital_data.psi['x'][0], orbital_data.psi['x'][-1]]]
-            axis_2 = ['y', 'Å', [orbital_data.psi['y'][0], orbital_data.psi['y'][-1]]]
-            axis_3 = ['z', 'Å', [orbital_data.psi['z'][0], orbital_data.psi['z'][-1]]]
+            axis_1 = ['x', 'Å', [orbital_data.psi['x']
+                                 [0], orbital_data.psi['x'][-1]]]
+            axis_2 = ['y', 'Å', [orbital_data.psi['y']
+                                 [0], orbital_data.psi['y'][-1]]]
+            axis_3 = ['z', 'Å', [orbital_data.psi['z']
+                                 [0], orbital_data.psi['z'][-1]]]
             data = orbital_data.psi['data']
 
         else:

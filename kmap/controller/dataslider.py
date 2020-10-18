@@ -17,10 +17,10 @@ class DataSlider(QWidget, DataSlider_UI):
     slice_changed = pyqtSignal(int)
     axis_changed = pyqtSignal(int)
     tranpose_triggered = pyqtSignal(int)
-    
+
     def __init__(self, data, *args, **kwargs):
 
-        self.axes = data.axes
+        self.data = data
 
         # Setup GUI
         super(DataSlider, self).__init__(*args, **kwargs)
@@ -72,12 +72,21 @@ class DataSlider(QWidget, DataSlider_UI):
 
     def trigger_transpose(self):
 
+        index = self.slider.sliderPosition()
+
         self.tranpose_triggered.emit(self.get_axis())
+
+        for i in range(3):
+            self.combobox.setItemText(i, self.data.axes[i].label)
+
+        self._update_slice_label()
+        self._update_slider_silently(index)
+        self._update_spinbox_silently(index)
 
     def _update_slice_label(self):
 
         index = self.slider.sliderPosition()
-        axis = self.axes[self.combobox.currentIndex()]
+        axis = self.data.axes[self.combobox.currentIndex()]
         value = axis.axis[index]
 
         text = '%.2f  %s' % (value, axis.units)
@@ -87,7 +96,7 @@ class DataSlider(QWidget, DataSlider_UI):
 
         self.slider.blockSignals(True)
 
-        axis = self.axes[self.combobox.currentIndex()]
+        axis = self.data.axes[self.combobox.currentIndex()]
         maximum = len(axis.axis) - 1
         self.slider.setMaximum(maximum)
         self.slider.setSliderPosition(index)
@@ -98,7 +107,7 @@ class DataSlider(QWidget, DataSlider_UI):
 
         self.spinbox.blockSignals(True)
 
-        axis = self.axes[self.combobox.currentIndex()]
+        axis = self.data.axes[self.combobox.currentIndex()]
         maximum = len(axis.axis) - 1
         self.spinbox.setMaximum(maximum)
         self.spinbox.setValue(index)
@@ -108,7 +117,7 @@ class DataSlider(QWidget, DataSlider_UI):
     def _setup_combobox(self):
 
         for index in range(3):
-            axis_label = self.axes[index].label
+            axis_label = self.data.axes[index].label
             self.combobox.addItem(str(axis_label))
 
     def _setup(self):
