@@ -82,6 +82,19 @@
            </widget>
           </item>
           <item>
+           <widget class="QCheckBox" name="center_checkbox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Center Point</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QCheckBox" name="x_checkbox">
             <property name="font">
              <font>
@@ -213,6 +226,19 @@
               </property>
               <property name="text">
                <string>Circle Like Plot</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="slice_radiobutton">
+              <property name="font">
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>Slice Like Plot</string>
               </property>
              </widget>
             </item>

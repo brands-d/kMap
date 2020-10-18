@@ -2,6 +2,8 @@ import numpy as np
 from pyqtgraph import PlotWidget, mkPen, mkBrush
 from kmap.model.profileplot_model import ProfilePlotModel
 from kmap.config.config import config
+from kmap.library.plotdata import PlotData
+from kmap.library.misc import normalize
 
 
 class ProfilePlot(PlotWidget):
@@ -13,7 +15,8 @@ class ProfilePlot(PlotWidget):
 
         self.plot_item = self.getPlotItem()
         self.model = ProfilePlotModel()
-        self.title_suffixes = {'x': ' - Vertical Line',
+        self.title_suffixes = {'center': ' - Center Point',
+                               'x': ' - Vertical Line',
                                'y': ' - Horizontal Line',
                                'roi': ' - Region of Interest',
                                'border': ' - Border of ROI',
@@ -45,8 +48,32 @@ class ProfilePlot(PlotWidget):
         symbol = symbols.split(',')[index % len(symbols)]
         symbol_size = int(config.get_key('profile_plot', 'symbol_size'))
 
-        x, y = self.model.get_plot_data(
-            data, crosshair, region, phi_sample, line_sample)
+        if isinstance(data, PlotData):
+            x, y = self.model.get_plot_data(
+                data, crosshair, region, phi_sample, line_sample)
+        else:
+            data, axis = data
+            x = np.array(data.axes[axis].axis)
+            y = []
+            for i in range(len(x)):
+                slice_ = data.slice_from_index(i, axis=axis)
+                plot_data = crosshair.cut_from_data(slice_, region=region).data
+
+                if np.isnan(plot_data).all():
+                    y.append(np.nan)
+
+                else:
+                    if config.get_key('crosshair',
+                                      'normalized_intensity') == 'True':
+                        y.append(normalize(plot_data))
+
+                    else:
+                        y.append(np.nansum(plot_data))
+
+            y = np.array(y)
+
+        x = x[~np.isnan(y)]
+        y = y[~np.isnan(y)]
 
         if normalized:
             y = y / max(y)
