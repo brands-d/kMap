@@ -149,9 +149,11 @@ class TabWidget(QWidget, TabWidget_UI):
 
     def open_profile_tab(self):
 
-        tab = ProfilePlotTab(self)
+        tab = ProfilePlotTab(self, 'Profile Plot')
 
         self._open_tab(tab, 'Profile Plot')
+
+        return tab
 
     def get_orbital_tab_to_load_to(self):
 
@@ -211,10 +213,15 @@ class TabWidget(QWidget, TabWidget_UI):
 
         if current_tab is None:
             return
-            
+
         save = current_tab.save_state()
 
-        tab = type(current_tab).init_from_save(save)
+        if isinstance(current_tab, ProfilePlotTab):
+            tab = self.open_profile_tab()
+            tab.restore_state(save)
+
+        else:
+            tab = type(current_tab).init_from_save(save)
 
         title = tab.get_title()
         tab.set_title(title)
