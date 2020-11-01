@@ -21,7 +21,7 @@ ProfilePlotTab_UI, _ = uic.loadUiType(UI_file)
 
 class ProfilePlotTab(Tab, ProfilePlotTab_UI):
 
-    def __init__(self, tab_widget, *args, **kwargs):
+    def __init__(self, tab_widget, title, *args, **kwargs):
 
         # Setup GUI
         super(ProfilePlotTab, self).__init__(*args, **kwargs)
@@ -34,6 +34,7 @@ class ProfilePlotTab(Tab, ProfilePlotTab_UI):
         # denoted which plots options (checkboxes) are enabled for the
         # corresponding tab
         self.show_options = []
+        self.title = title
 
         self._setup()
         self._connect(tab_widget)
@@ -47,6 +48,7 @@ class ProfilePlotTab(Tab, ProfilePlotTab_UI):
         phi_sample = self.phi_sample_spinbox.value()
         line_sample = self.line_sample_spinbox.value()
         normalized = self.normalize_checkbox.isChecked()
+        x_label = 'None'
         self.plot_item.clear()
 
         if is_slice_plot:
@@ -123,6 +125,66 @@ class ProfilePlotTab(Tab, ProfilePlotTab_UI):
                     x_label = 'Angle Phi [°]'
 
         self.plot_item.set_label(x_label, 'Intensity [a.u.]')
+
+    def save_state(self):
+
+        if self.circle_radiobutton.isChecked():
+            type_ = 'circle'
+
+        elif self.line_radiobutton.isChecked():
+            type_ = 'line'
+
+        else:
+            type_ = 'slice'
+
+        states = []
+        checkboxes = [self.center_checkbox, self.x_checkbox,
+                      self.y_checkbox, self.roi_checkbox,
+                      self.border_checkbox, self.annulus_checkbox]
+        for checkbox in checkboxes:
+            states.append(checkbox.checkState())
+
+        sample_rate = [self.phi_sample_spinbox.value(),
+                       self.line_sample_spinbox.value()]
+
+        save = {'title': self.get_title(),
+                'type': type_,
+                'tab_index': self.tab_combobox.currentIndex(),
+                'states': states,
+                'sample_rate': sample_rate}
+
+        return save
+
+    def restore_state(self, save):
+
+        type_ = save['type']
+
+        if type_ == 'circle':
+            self.circle_radiobutton.click()
+
+        elif type_ == 'line':
+            self.line_radiobutton.click()
+
+        elif type_ == 'slice':
+            self.slice_radiobutton.click()
+
+        else:
+            raise ValueError
+
+        tab_index = save['tab_index']
+        self.tab_combobox.setCurrentIndex(tab_index)
+
+        sample_rate = save['sample_rate']
+        self.phi_sample_spinbox.setValue(sample_rate[0])
+        self.line_sample_spinbox.setValue(sample_rate[1])
+
+        checkboxes = [self.center_checkbox, self.x_checkbox,
+                      self.y_checkbox, self.roi_checkbox,
+                      self.border_checkbox, self.annulus_checkbox]
+        for state, checkbox in zip(save['states'], checkboxes):
+            checkbox.setCheckState(state)
+
+        self.refresh_button.click()
 
     def load_tabs(self, tab_widget):
 
