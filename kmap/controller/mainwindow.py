@@ -311,6 +311,13 @@ class MainWindow(QMainWindow, MainWindow_UI):
 
         event.accept()
 
+    def close_current_tab(self):
+
+        tab = self.tab_widget.get_current_tab()
+
+        if tab is not None:
+            tab.close()
+
     def _setup(self):
 
         self._set_misc()
@@ -340,14 +347,15 @@ class MainWindow(QMainWindow, MainWindow_UI):
                    self.log_file_action, self.load_cube_online_action,
                    self.load_cube_file_action,
                    self.open_lmfit_tab_action,
-                   self.settings_action, self.duplicate_tab_action]
+                   self.settings_action, self.duplicate_tab_action,
+                   self.close_tab_action]
 
         alias = ['load_hdf5', 'load_sliced_from_binding_energy_action',
                  'load_sliced_from_photon_energy_action',
                  'show_matplotlib', 'open_log',
                  'load_cube_online', 'load_cube_file',
                  'open_lmfit', 'reload_settings',
-                 'duplicate_tab_action']
+                 'duplicate_tab_action','close_tab_action']
 
         for action, alias in zip(actions, alias):
             shortcut = config.get_key('shortcut', alias, file='shortcut')
@@ -374,6 +382,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
         self.show_matplotlib.triggered.connect(self.open_in_matplotlib)
         self.export_txt.triggered.connect(self.export_to_txt)
         self.duplicate_tab_action.triggered.connect(self.duplicate_tab)
+        self.close_tab_action.triggered.connect(self.close_current_tab)
 
         # Tabs menu
         self.open_sim_tab_action.triggered.connect(self.open_orbital_data_tab)

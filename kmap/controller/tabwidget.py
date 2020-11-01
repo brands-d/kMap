@@ -77,7 +77,7 @@ class TabWidget(QWidget, TabWidget_UI):
             title = tab.get_title()
             tooltip = tab.to_string()
             self._open_tab(tab, title, tooltip)
-            
+
         except ValueError as e:
             pass
 
@@ -94,7 +94,7 @@ class TabWidget(QWidget, TabWidget_UI):
             title = tab.get_title()
             tooltip = tab.to_string()
             self._open_tab(tab, title, tooltip)
-            
+
         except ValueError as e:
             pass
 
@@ -208,11 +208,15 @@ class TabWidget(QWidget, TabWidget_UI):
     def duplicate_tab(self):
 
         current_tab = self.get_current_tab()
+
+        if current_tab is None:
+            return
+            
         save = current_tab.save_state()
-        title = save['title']
 
         tab = type(current_tab).init_from_save(save)
 
+        title = tab.get_title()
         tab.set_title(title)
         self._open_tab(tab, title)
 
