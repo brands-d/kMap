@@ -22,6 +22,25 @@ class FileTab(Tab):
         self.path = path
         self.richText = richText
 
+    @classmethod
+    def init_from_save(cls, save):
+
+        path = save['path']
+        title = save['title']
+        richText = save['richText']
+
+        tab = cls(path, title, richText)
+
+        return tab
+
+    def save_state(self):
+
+        save = {'title': self.title,
+                'path': self.path,
+                'richText': self.richText}
+
+        return save
+
     def reload_text(self):
 
         with open(self.path, 'r') as file:
