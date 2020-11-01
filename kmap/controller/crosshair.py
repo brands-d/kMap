@@ -118,6 +118,22 @@ class CrosshairBase(QWidget):
         # Emit Changed Signal
         self.crosshair_changed.emit()
 
+    def save_state(self):
+
+        model_save = self.model.save_state()
+        save = {'model': model_save,
+                'enable_crosshair': self.enable_crosshair_checkbox.checkState()}
+
+        return save
+
+    def restore_state(self, save):
+
+        self.model.restore_state(save['model'])
+        self.update()
+        self.update_label()
+        self.move_crosshair_from_spinbox()
+        self.enable_crosshair_checkbox.setCheckState(save['enable_crosshair'])
+
     def _set_model(self, model=None):
 
         if model is None:

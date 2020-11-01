@@ -120,6 +120,20 @@ class CrosshairAnnulusBase(CrosshairROIBase):
         else:
             self.ring_value_label.setText('%.2f' % intensity)
 
+    def save_state(self):
+
+        save = super().save_state()
+        save.update(
+            {'enable_annulus': self.enable_annulus_checkbox.checkState()})
+
+        return save
+
+    def restore_state(self, save):
+
+        super().restore_state(save)
+
+        self.enable_annulus_checkbox.setCheckState(save['enable_annulus'])
+
     def _set_model(self, model=None):
 
         if model is None:

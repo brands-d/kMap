@@ -2,11 +2,13 @@ from kmap.library.id import ID
 from kmap.library.sliceddata import SlicedData
 from kmap.library.misc import transpose_axis_order
 
+
 class SlicedDataTabModel():
 
     def __init__(self):
 
         self.data = None
+        self.load_data = None
 
     def load_data_from_URLs(self, URLs):  # -> create data[BE,kx,ky]
 
@@ -17,6 +19,7 @@ class SlicedDataTabModel():
         *orbitals, options = URLs
         name, *parameters = options
         self.data = SlicedData.init_from_orbitals(name, orbitals, parameters)
+        self.load_data = ['load_from_URLs', URLs]
 
         self.change_slice(0, 0)
 
@@ -30,6 +33,7 @@ class SlicedDataTabModel():
         name, *parameters = options
         self.data = SlicedData.init_from_orbital_photonenergy(
             name, orbital, parameters)
+        self.load_data = ['load_from_URL', URL]
 
         self.change_slice(0, 0)
 
@@ -44,20 +48,29 @@ class SlicedDataTabModel():
         name, *parameters = options
         self.data = SlicedData.init_from_orbital_cube(
             name, orbital, parameters)
+        self.load_data = ['load_from_cube', URL]
 
         self.change_slice(0, 0)
-        
+
+    def load_data_from_path(self, path):
+
+        self.data = SlicedData.init_from_hdf5(path)
+        self.load_data = ['load_from_path', path]
+
+        self.change_slice(0, 0)
+
+    def save_state(self):
+
+        load_type, load_args = self.load_data
+        save = {'load_type': load_type, 'load_args': load_args}
+
+        return save
+
     def transpose(self, constant_axis):
 
         axis_order = transpose_axis_order(constant_axis)
 
         self.data.transpose(axis_order)
-
-    def load_data_from_path(self, path):
-
-        self.data = SlicedData.init_from_hdf5(path)
-
-        self.change_slice(0, 0)
 
     def change_slice(self, index, axis):
 

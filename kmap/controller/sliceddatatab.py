@@ -60,7 +60,7 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
         model.load_data_from_cube(URL)
 
         return cls(model)
-        
+
     @classmethod
     def init_from_path(cls, path):
 
@@ -68,6 +68,31 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
         model.load_data_from_path(path)
 
         return cls(model)
+
+    @classmethod
+    def init_from_save(cls, save):
+
+        load_type = save['model']['load_type']
+        load_args = save['model']['load_args']
+
+        if load_type == 'load_from_path':
+            tab = SlicedDataTab.init_from_path(load_args)
+
+        tab.slider.restore_state(save['slider'])
+        tab.crosshair.restore_state(save['crosshair'])
+        tab.interpolation.restore_state(save['interpolation'])
+
+        return tab
+
+    def save_state(self):
+
+        save = {'title': self.title,
+                'model': self.model.save_state(),
+                'slider': self.slider.save_state(),
+                'crosshair': self.crosshair.save_state(),
+                'interpolation': self.interpolation.save_state()}
+
+        return save
 
     def get_data(self):
 
@@ -77,10 +102,14 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
 
         return self.slider.get_axis()
 
+    def get_slice(self):
+
+        return self.slider.get_index()
+
     def change_slice(self, index=-1):
 
         axis = self.slider.get_axis()
-        slice_index = index if index != -1 else self.slider.get_index()
+        slice_index = index if index != -1 else self.get_slice()
         data = self.model.change_slice(slice_index, axis)
 
         data = self.interpolation.interpolate(data)
@@ -94,7 +123,7 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
         # 'axes' is a copy of all axes except the one with index 'axis'
         axes = [a for i, a in enumerate(self.model.data.axes) if i != axis]
 
-        index = self.slider.get_index()
+        index = self.get_slice()
         data = self.model.change_slice(index, axis)
 
         self.plot_item.set_labels(axes[1], axes[0])

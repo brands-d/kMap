@@ -176,6 +176,9 @@ class Tab(QTabWidget):
 
         super(Tab, self).__init__(*args, **kwargs)
 
+    def save_state(self):
+        pass
+
     def get_title(self):
 
         return self.title

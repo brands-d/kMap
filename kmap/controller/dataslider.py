@@ -83,6 +83,20 @@ class DataSlider(QWidget, DataSlider_UI):
         self._update_slider_silently(index)
         self._update_spinbox_silently(index)
 
+    def save_state(self):
+
+        slice_ = self.get_index()
+        axis = self.get_axis()
+
+        save = {'slice': slice_, 'axis': axis}
+
+        return save
+
+    def restore_state(self, save):
+
+        self.combobox.setCurrentIndex(save['axis'])
+        self.slider.setValue(save['slice'])
+
     def _update_slice_label(self):
 
         index = self.slider.sliderPosition()
