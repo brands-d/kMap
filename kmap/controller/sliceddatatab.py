@@ -78,6 +78,18 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
         if load_type == 'load_from_path':
             tab = SlicedDataTab.init_from_path(load_args)
 
+        elif load_type == 'load_from_cube':
+            tab = SlicedDataTab.init_from_cube(load_args)
+
+        elif load_type == 'load_from_URL':
+            tab = SlicedDataTab.init_from_URL(load_args)
+
+        elif load_type == 'load_from_URLs':
+            tab = SlicedDataTab.init_from_URLs(load_args)
+
+        else:
+            raise ValueError
+
         tab.slider.restore_state(save['slider'])
         tab.crosshair.restore_state(save['crosshair'])
         tab.interpolation.restore_state(save['interpolation'])
