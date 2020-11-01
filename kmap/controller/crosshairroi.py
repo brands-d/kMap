@@ -119,10 +119,24 @@ class CrosshairROIBase(CrosshairBase):
         else:
             self.area_value_label.setText('%.2f' % intensity)
 
+    def save_state(self):
+
+        save = super().save_state()
+        save.update(
+            {'enable_roi': self.enable_roi_checkbox.checkState()})
+
+        return save
+
+    def restore_state(self, save):
+
+        super().restore_state(save)
+
+        self.enable_roi_checkbox.setCheckState(save['enable_roi'])
+
     def _set_model(self, model=None):
 
         if model is None:
-            self.model = CrosshairROIModel(x=0, y=0, radius=0.02)
+            self.model = CrosshairROIModel(x=0, y=0, radius=0.2)
 
         else:
             self.model = model

@@ -143,6 +143,43 @@ class Interpolation(InterpolationBase, Interpolation_UI):
 
         self._update_dynamic_range_spinboxes()
 
+    def save_state(self):
+
+        save = {'sigma': self.get_sigma(),
+                'range': self.get_range(),
+                'resolution': self.get_resolution(),
+                'enable_smoothing': self.smoothing_checkbox.checkState(),
+                'enable_interpolation': self.interpolation_checkbox.checkState(),
+                'fill_value': self.fill_combobox.currentIndex()}
+
+        return save
+
+    def restore_state(self, save):
+
+        self.set_sigma(save['sigma'])
+        self.set_range(save['range'])
+        self.set_resolution(save['resolution'])
+        self.fill_combobox.setCurrentIndex(save['fill_value'])
+        self.interpolation_checkbox.setCheckState(save['enable_interpolation'])
+        self.smoothing_checkbox.setCheckState(save['enable_smoothing'])
+
+    def set_sigma(self, sigma):
+
+        self.sigma_x_spinbox.setValue(sigma[0])
+        self.sigma_y_spinbox.setValue(sigma[1])
+
+    def set_range(self, range_):
+
+        self.x_min_spinbox.setValue(range_[0][0])
+        self.x_max_spinbox.setValue(range_[0][1])
+        self.y_min_spinbox.setValue(range_[1][0])
+        self.y_max_spinbox.setValue(range_[1][1])
+
+    def set_resolution(self, resolution):
+
+        self.x_resolution_spinbox.setValue(resolution[0])
+        self.y_resolution_spinbox.setValue(resolution[1])
+
     def _update_dynamic_range_spinboxes(self):
 
         # Set max/min of min/max spinbox to value of other spinbox

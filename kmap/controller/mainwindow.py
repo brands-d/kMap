@@ -105,10 +105,11 @@ class MainWindow(QMainWindow, MainWindow_UI):
         self.tab_widget.open_sliced_data_tab_by_URL(URL)
 
     def load_cubefile_as_sliced_online(self, URL):
-        # Load one cube file as sliced psi[x,y,z] or psik[kx,ky,kz] 
+        # Load one cube file as sliced psi[x,y,z] or psik[kx,ky,kz]
 
         log = logging.getLogger('kmap')
-        log.info('Loading .cube file as sliced psi[x,y,z] or psik[kx,ky,kz] ...')
+        log.info(
+            'Loading .cube file as sliced psi[x,y,z] or psik[kx,ky,kz] ...')
 
         self.tab_widget.open_sliced_data_tab_by_cube(URL)
 
@@ -295,6 +296,10 @@ class MainWindow(QMainWindow, MainWindow_UI):
 
         config.setup()
 
+    def duplicate_tab(self):
+
+        self.tab_widget.duplicate_tab()
+
     def closeEvent(self, event):
 
         for window in self.sub_windows.values():
@@ -334,13 +339,15 @@ class MainWindow(QMainWindow, MainWindow_UI):
                    self.show_matplotlib,
                    self.log_file_action, self.load_cube_online_action,
                    self.load_cube_file_action,
-                   self.open_lmfit_tab_action, self.settings_action]
+                   self.open_lmfit_tab_action,
+                   self.settings_action, self.duplicate_tab_action]
 
         alias = ['load_hdf5', 'load_sliced_from_binding_energy_action',
                  'load_sliced_from_photon_energy_action',
                  'show_matplotlib', 'open_log',
                  'load_cube_online', 'load_cube_file',
-                 'open_lmfit', 'reload_settings']
+                 'open_lmfit', 'reload_settings',
+                 'duplicate_tab_action']
 
         for action, alias in zip(actions, alias):
             shortcut = config.get_key('shortcut', alias, file='shortcut')
@@ -357,7 +364,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
         self.load_sliced_from_photon_energy_action.triggered.connect(
             self.open_photon_energy_sliceddatabase_browser)
         self.load_sliced_from_cubefile_action.triggered.connect(
-            self.open_cubefile_sliceddatabase_browser)        
+            self.open_cubefile_sliceddatabase_browser)
         self.load_cube_file_action.triggered.connect(
             self.load_cube_files_locally)
         self.load_cube_online_action.triggered.connect(
@@ -366,6 +373,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
         self.mod_log_file_action.triggered.connect(self.open_mod_log_file)
         self.show_matplotlib.triggered.connect(self.open_in_matplotlib)
         self.export_txt.triggered.connect(self.export_to_txt)
+        self.duplicate_tab_action.triggered.connect(self.duplicate_tab)
 
         # Tabs menu
         self.open_sim_tab_action.triggered.connect(self.open_orbital_data_tab)

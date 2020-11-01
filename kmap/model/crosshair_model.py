@@ -18,6 +18,17 @@ class CrosshairModel():
         self.x = x
         self.y = y
 
+    def save_state(self):
+
+        save = {'x': self.x, 'y': self.y}
+
+        return save
+
+    def restore_state(self, save):
+
+        self.x = save['x']
+        self.y = save['y']
+
     def set_position(self, x=None, y=None):
 
         if x is not None:
@@ -32,7 +43,7 @@ class CrosshairModel():
 
         x_idx = idx_closest_value(plotdata.x_axis, self.x)
         y_idx = idx_closest_value(plotdata.y_axis, self.y)
-        
+
         if region == 'center':
             if x_idx is not None and y_idx is not None:
                 mask[y_idx, x_idx] = 1
@@ -72,6 +83,20 @@ class CrosshairROIModel(CrosshairModel):
             self.radius = radius
 
         super().__init__(x, y)
+
+    def save_state(self):
+
+        save = super().save_state()
+
+        save.update({'radius': self.radius})
+
+        return save
+
+    def restore_state(self, save):
+
+        self.radius = save['radius']
+
+        super().restore_state(save)
 
     def set_radius(self, radius):
 
@@ -133,6 +158,20 @@ class CrosshairAnnulusModel(CrosshairROIModel):
             self.width = width
 
         super().__init__(x, y, radius)
+
+    def save_state(self):
+
+        save = super().save_state()
+
+        save.update({'width': self.width})
+
+        return save
+
+    def restore_state(self, save):
+
+        self.width = save['width']
+
+        super().restore_state(save)
 
     def set_width(self, width):
 

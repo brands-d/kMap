@@ -205,6 +205,17 @@ class TabWidget(QWidget, TabWidget_UI):
         for tab in self.get_tabs_of_type(ProfilePlotTab):
             tab.rename_loaded_tab(current_tab, title)
 
+    def duplicate_tab(self):
+
+        current_tab = self.get_current_tab()
+        save = current_tab.save_state()
+        title = save['title']
+
+        tab = type(current_tab).init_from_save(save)
+
+        tab.set_title(title)
+        self._open_tab(tab, title)
+
     def close_tab(self, index):
         # Close tab specified with index
 

@@ -38,7 +38,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>22</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="file_menu">
@@ -89,6 +89,8 @@
     <addaction name="open_sim_tab_action"/>
     <addaction name="open_profile_tab_action"/>
     <addaction name="open_lmfit_tab_action"/>
+    <addaction name="separator"/>
+    <addaction name="duplicate_tab_action"/>
    </widget>
    <widget class="QMenu" name="settings_menu">
     <property name="title">
@@ -244,6 +246,11 @@ Currently the profile plot and the lmfit plot tab support this feature.</string>
   <action name="load_sliced_from_cubefile_action">
    <property name="text">
     <string>From Cubefile ...</string>
+   </property>
+  </action>
+  <action name="duplicate_tab_action">
+   <property name="text">
+    <string>Duplicate current Tab</string>
    </property>
   </action>
  </widget>
