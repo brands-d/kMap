@@ -16,7 +16,7 @@ class OrbitalDataTabModel():
 
         id_ = ID.new_ID()
         new_orbital = OrbitalData.init_from_file(path, ID=id_)
-        self.orbitals.append(new_orbital)
+        self.orbitals.append([new_orbital, 'path', path, None])
 
         return new_orbital
 
@@ -26,13 +26,15 @@ class OrbitalDataTabModel():
         new_orbital = OrbitalData.init_from_online(
             url, ID=id_, meta_data=meta_data)
 
-        self.orbitals.append(new_orbital)
+        self.orbitals.append([new_orbital, 'url', url, meta_data])
 
         return new_orbital
 
     def remove_data_by_object(self, orbital):
 
-        self.orbitals.remove(orbital)
+        index = [orb[0] for orb in self.orbitals].index(orbital)
+
+        self.remove_data_by_index(index)
 
     def remove_data_by_index(self, index):
 
@@ -57,7 +59,7 @@ class OrbitalDataTabModel():
         kmaps = []
 
         for orbital in self.orbitals:
-            ID = orbital.ID
+            ID = orbital[0].ID
 
             if self.controller.get_use(ID):
                 # Get all parameters for this orbital
@@ -78,12 +80,12 @@ class OrbitalDataTabModel():
         orbital = self.ID_to_orbital(ID)
 
         if orbital is not None:
-            self.orbitals.remove(orbital)
+            self.remove_data_by_object(orbital)
 
     def ID_to_orbital(self, ID):
 
         for orbital in self.orbitals:
-            if orbital.ID == ID:
-                return orbital
+            if orbital[0].ID == ID:
+                return orbital[0]
 
         return None

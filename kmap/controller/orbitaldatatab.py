@@ -46,14 +46,18 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         orbital = self.model.load_data_from_path(path)
         self.add_orbital(orbital)
 
+        return orbital.ID
+
     def add_orbital_from_online(self, URL, meta_data={}):
 
         orbital = self.model.load_data_from_online(URL, meta_data)
         self.add_orbital(orbital)
 
+        return orbital.ID
+
     def get_orbitals(self):
 
-        return self.model.orbitals
+        return self.model.orbitals[0]
 
     def add_orbital(self, orbital):
 
@@ -159,7 +163,7 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         window = MatplotlibWindow(data, LUT=LUT)
 
         return window
-        
+
     def closeEvent(self, event):
 
         del self.model
@@ -171,6 +175,58 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         bottom = self.plot_item.get_label('bottom')
         left = self.plot_item.get_label('left')
         return bottom, left
+
+    def save_state(self):
+
+        crosshair_save = self.crosshair.save_state()
+        interpolation_save = self.interpolation.save_state()
+        polarization_save = self.polarization.save_state()
+        cube_options_save = self.cube_options.save_state()
+        real_space_options_save = self.real_space_options.save_state()
+
+        orbital_save = []
+        for orbital in self.model.orbitals:
+            parameters = self.get_parameters(orbital[0].ID)
+            use = self.get_use(orbital[0].ID)
+            orbital_save.append([*orbital[1:], parameters, use])
+
+        save = {'crosshair': crosshair_save,
+                'interpolation': interpolation_save,
+                'polarization': polarization_save,
+                'cube_options': cube_options_save,
+                'real_space_options': real_space_options_save,
+                'orbital_save': orbital_save}
+
+        return save
+
+    def restore_state(self, save):
+
+        for orbital in save['orbital_save']:
+            if orbital[0] == 'path':
+                ID = self.add_orbital_from_filepath(orbital[1])
+
+            elif orbital[0] == 'url':
+                ID = self.add_orbital_from_online(orbital[1], orbital[2])
+
+            else:
+                raise ValueError
+
+            parameter = [orbital[3][0], *orbital[3][3:6]]
+            use = orbital[4]
+            self.table.update_orbital_parameters(ID, parameter)
+            self.table.update_orbital_use(ID, use)
+
+        crosshair_save = save['crosshair']
+        interpolation_save = save['interpolation']
+        polarization_save = save['polarization']
+        cube_options_save = save['cube_options']
+        real_space_options_save = save['real_space_options']
+
+        self.crosshair.restore_state(crosshair_save)
+        self.interpolation.restore_state(interpolation_save)
+        self.polarization.restore_state(polarization_save)
+        self.cube_options.restore_state(cube_options_save)
+        self.real_space_options.restore_state(real_space_options_save)
 
     def _setup(self):
 

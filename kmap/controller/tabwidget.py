@@ -220,6 +220,10 @@ class TabWidget(QWidget, TabWidget_UI):
             tab = self.open_profile_tab()
             tab.restore_state(save)
 
+        elif isinstance(current_tab, OrbitalDataTab):
+            tab = self.open_orbital_data_tab()
+            tab.restore_state(save)
+
         else:
             tab = type(current_tab).init_from_save(save)
 
