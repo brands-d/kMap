@@ -78,6 +78,8 @@
     <addaction name="load_hdf5_menu"/>
     <addaction name="cube_menu"/>
     <addaction name="separator"/>
+    <addaction name="save_project_action"/>
+    <addaction name="load_project_action"/>
     <addaction name="export_menu"/>
     <addaction name="separator"/>
     <addaction name="log_menu"/>
@@ -257,6 +259,16 @@ Currently the profile plot and the lmfit plot tab support this feature.</string>
   <action name="close_tab_action">
    <property name="text">
     <string>Close current Tab</string>
+   </property>
+  </action>
+  <action name="save_project_action">
+   <property name="text">
+    <string>Save Project...</string>
+   </property>
+  </action>
+  <action name="load_project_action">
+   <property name="text">
+    <string>Load Project...</string>
    </property>
   </action>
  </widget>

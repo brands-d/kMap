@@ -108,7 +108,7 @@ FileEditorTab_UI, _ = uic.loadUiType(UI_file)
 
 class FileEditorTab(FileTab, FileEditorTab_UI):
 
-    def __init__(self, path, title):
+    def __init__(self, path, title, *args, **kwargs):
 
         # Setup GUI
         super(FileEditorTab, self).__init__(path, title, richText=False)

@@ -1,6 +1,7 @@
 # Python Imports
 import logging
 import traceback
+import pickle
 
 # PyQt5 Imports
 from PyQt5 import uic
@@ -287,7 +288,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
             text = current_tab.export_to_txt()
 
             file_name, _ = QFileDialog.getSaveFileName(self, 'Save .txt File')
-            print(file_name)
+
             with open(file_name, 'w') as file:
                 file.write(text)
 
@@ -299,6 +300,33 @@ class MainWindow(QMainWindow, MainWindow_UI):
     def duplicate_tab(self):
 
         self.tab_widget.duplicate_tab()
+
+    def save_project(self):
+
+        tabs = self.tab_widget.get_all_tabs()
+        tab_saves = [[type(tab).__name__, tab.save_state()] for tab in tabs]
+
+        start_path = __directory__ + config.get_key('paths', 'project_start')
+        file_name, _ = QFileDialog.getSaveFileName(
+            None, 'Save Project File (*.kmap)', start_path)
+
+        if not file_name.endswith('.kmap'):
+            file_name += '.kmap'
+
+        pickle.dump(tab_saves, open(file_name, 'wb'))
+
+    def load_project(self):
+
+        start_path = __directory__ + config.get_key('paths', 'project_start')
+        extensions = 'hdf5 files (*.kmap);; All Files (*)'
+        file_names, _ = QFileDialog.getOpenFileNames(
+            None, 'Load Project File (*.kmap)', start_path)
+
+        for file_path in file_names:
+            save = pickle.load(open(file_path, 'rb'))
+            
+            for tab_save in save:
+                self.tab_widget.open_tab_by_save(tab_save)
 
     def closeEvent(self, event):
 
@@ -348,14 +376,16 @@ class MainWindow(QMainWindow, MainWindow_UI):
                    self.load_cube_file_action,
                    self.open_lmfit_tab_action,
                    self.settings_action, self.duplicate_tab_action,
-                   self.close_tab_action]
+                   self.close_tab_action, self.save_project_action,
+                   self.load_project_action]
 
         alias = ['load_hdf5', 'load_sliced_from_binding_energy_action',
                  'load_sliced_from_photon_energy_action',
                  'show_matplotlib', 'open_log',
                  'load_cube_online', 'load_cube_file',
                  'open_lmfit', 'reload_settings',
-                 'duplicate_tab_action','close_tab_action']
+                 'duplicate_tab_action', 'close_tab_action',
+                 'save_project_action', 'load_project_action']
 
         for action, alias in zip(actions, alias):
             shortcut = config.get_key('shortcut', alias, file='shortcut')
@@ -383,6 +413,8 @@ class MainWindow(QMainWindow, MainWindow_UI):
         self.export_txt.triggered.connect(self.export_to_txt)
         self.duplicate_tab_action.triggered.connect(self.duplicate_tab)
         self.close_tab_action.triggered.connect(self.close_current_tab)
+        self.save_project_action.triggered.connect(self.save_project)
+        self.load_project_action.triggered.connect(self.load_project)
 
         # Tabs menu
         self.open_sim_tab_action.triggered.connect(self.open_orbital_data_tab)
