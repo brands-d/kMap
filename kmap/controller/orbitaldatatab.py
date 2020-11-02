@@ -57,7 +57,9 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
 
     def get_orbitals(self):
 
-        return self.model.orbitals[0]
+        orbitals = [orbital[0] for orbital in self.model.orbitals]
+        
+        return orbitals
 
     def add_orbital(self, orbital):
 
