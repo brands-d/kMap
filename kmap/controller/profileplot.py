@@ -48,7 +48,10 @@ class ProfilePlot(PlotWidget):
         symbol = symbols.split(',')[index % len(symbols)]
         symbol_size = int(config.get_key('profile_plot', 'symbol_size'))
 
-        if isinstance(data, PlotData):
+        if data is None:
+            return
+
+        elif isinstance(data, PlotData):
             x, y = self.model.get_plot_data(
                 data, crosshair, region, phi_sample, line_sample)
         else:

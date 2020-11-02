@@ -179,6 +179,13 @@ class TabWidget(QWidget, TabWidget_UI):
 
         return self.tab_widget.currentWidget()
 
+    def get_all_tabs(self):
+
+        count = self.tab_widget.count()
+        tabs = [self.tab_widget.widget(i) for i in range(count)]
+
+        return tabs
+
     def get_tabs_of_type(self, type_):
 
         tabs = []
@@ -226,6 +233,27 @@ class TabWidget(QWidget, TabWidget_UI):
 
         else:
             tab = type(current_tab).init_from_save(save)
+
+        title = tab.get_title()
+        tab.set_title(title)
+        self._open_tab(tab, title)
+
+    def open_tab_by_save(self, save):
+
+        if save[0] == 'ProfilePlotTab':
+            tab = self.open_profile_tab()
+            tab.restore_state(save[1])
+
+        elif save[0] == 'OrbitalDataTab':
+            tab = self.open_orbital_data_tab()
+            tab.restore_state(save[1])
+
+        else:
+            try:
+                tab = eval(save[0]).init_from_save(save[1])
+
+            except:
+                raise ValueError
 
         title = tab.get_title()
         tab.set_title(title)
