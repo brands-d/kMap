@@ -53,6 +53,12 @@ class OrbitalTableRow(QWidget):
 
         self.use_changed.emit(self.ID)
 
+    def update_use(self, state):
+
+        self.use.setChecked(state)
+
+        self.change_use()
+
     def update_parameter_silently(self, parameter, value):
 
         widgets = [self.weight, self.phi, self.theta, self.psi]

@@ -38,6 +38,30 @@ class Polarization(QWidget, Polarization_UI):
 
         return (Ak_type, polarization, *angles)
 
+    def save_state(self):
+
+        Ak = self.ak_combobox.currentIndex()
+        polarization = self.polarization_combobox.currentIndex()
+        angle = self.angle_spinbox.value()
+        azimuth = self.azimuth_spinbox.value()
+
+        save = {'Ak': Ak, 'polarization': polarization,
+                'angle': angle, 'azimuth': azimuth}
+
+        return save
+
+    def restore_state(self, save):
+
+        Ak = save['Ak']
+        polarization = save['polarization']
+        angle = save['angle']
+        azimuth = save['azimuth']
+
+        self.ak_combobox.setCurrentIndex(Ak)
+        self.polarization_combobox.setCurrentIndex(polarization)
+        self.angle_spinbox.setValue(angle)
+        self.azimuth_spinbox.setValue(azimuth)
+
     def _get_factor(self):
 
         Ak_index = self.ak_combobox.currentIndex()
@@ -71,7 +95,7 @@ class Polarization(QWidget, Polarization_UI):
                 polarization = 's'
 
             elif Ak_index == 3:
-                polarization = 'unpolarized'                
+                polarization = 'unpolarized'
 
             elif Ak_index == 4:
                 polarization = 'C+'

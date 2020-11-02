@@ -63,6 +63,24 @@ class OrbitalTable(QWidget, OrbitalTable_UI):
 
         self.orbital_changed.emit(ID)
 
+    def update_orbital_parameters(self, ID, values):
+
+        row_index = self._ID_to_row_index(ID)
+        row = self.rows[row_index]
+
+        for i, parameter in enumerate(['weight', 'phi', 'theta', 'psi']):
+            row.update_parameter_silently(parameter, values[i])
+
+        self.orbital_changed.emit(ID)
+
+    def update_orbital_use(self, ID, state):
+
+        row_index = self._ID_to_row_index(ID)
+        row = self.rows[row_index]
+        row.update_use(state)
+
+        self.change_use(ID)
+
     def change_use(self, ID):
 
         self.orbital_changed.emit(ID)

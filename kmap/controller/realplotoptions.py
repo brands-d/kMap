@@ -28,6 +28,33 @@ class RealPlotOptions(QWidget, RealPlotOptions_UI):
         self.setupUi(self)
         self._connect()
 
+    def save_state(self):
+
+        iso_val = self.get_iso_val()
+        checkboxes = [self.show_grid_checkbox,
+                      self.show_isosurface_checkbox,
+                      self.show_bond_checkbox,
+                      self.show_photon_checkbox,
+                      self.show_hemisphere_checkbox]
+        booleans = [checkbox.checkState() for checkbox in checkboxes]
+
+        save = {'iso_val': iso_val, 'booleans': booleans}
+
+        return save
+
+    def restore_state(self, save):
+
+        iso_val = save['iso_val']
+        self.iso_spinbox.setValue(iso_val)
+
+        checkboxes = [self.show_grid_checkbox,
+                      self.show_isosurface_checkbox,
+                      self.show_bond_checkbox,
+                      self.show_photon_checkbox,
+                      self.show_hemisphere_checkbox]
+        for checkbox, state in zip(checkboxes, save['booleans']):
+            checkbox.setCheckState(state)
+
     def reset_camera(self):
 
         distance = 75
