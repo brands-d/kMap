@@ -132,6 +132,11 @@ class TabWidget(QWidget, TabWidget_UI):
         sliced_tab.lock_while_open(tab)
         orbital_tab.lock_while_open(tab)
 
+        sliced_idx = self.tab_widget.indexOf(sliced_tab)
+        orbital_idx = self.tab_widget.indexOf(orbital_tab)
+        tab.sliced_data_tab_idx = sliced_idx
+        tab.orbital_data_tab_idx = orbital_idx
+
         self._open_tab(tab, 'LM-Fit Tab')
 
     def open_result_tab(self, *args):
@@ -251,7 +256,9 @@ class TabWidget(QWidget, TabWidget_UI):
         tab.set_title(title)
         self._open_tab(tab, title)
 
-    def open_tab_by_save(self, save):
+    def open_tab_by_save(self, tab_save, *args):
+
+        index, save = tab_save
 
         if save[0] == 'ProfilePlotTab':
             tab = self.open_profile_tab()
@@ -263,14 +270,16 @@ class TabWidget(QWidget, TabWidget_UI):
 
         else:
             try:
-                tab = eval(save[0]).init_from_save(save[1])
+                tab = eval(save[0]).init_from_save(save[1], *args)
 
             except:
                 raise ValueError
 
         title = tab.get_title()
         tab.set_title(title)
-        self._open_tab(tab, title)
+        self._open_tab(tab, title, index=index)
+
+        return tab 
 
     def close_tab(self, index):
         # Close tab specified with index
@@ -291,9 +300,14 @@ class TabWidget(QWidget, TabWidget_UI):
             log.warning(
                 'Tab is locked open because different tab still references it.')
 
-    def _open_tab(self, tab, title, tooltip=None):
+    def _open_tab(self, tab, title, tooltip=None, index=None):
 
-        index = self.tab_widget.addTab(tab, title)
+        if index is None:
+            index = self.tab_widget.addTab(tab, title)
+
+        else:
+            self.tab_widget.insertTab(index, tab, title)
+
         self.tab_widget.setCurrentIndex(index)
 
         if tooltip is not None:

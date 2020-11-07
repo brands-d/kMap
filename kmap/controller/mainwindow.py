@@ -324,8 +324,40 @@ class MainWindow(QMainWindow, MainWindow_UI):
 
         for file_path in file_names:
             save = pickle.load(open(file_path, 'rb'))
-            
-            for tab_save in save:
+
+            basic_tabs = [[i, tab_save] for i, tab_save in enumerate(
+                save) if tab_save[0] not in ['LMFitPlotTab', 'LMFitTab', 'LMFitResultTab']]
+            lmfit_tabs = [[i, tab_save] for i, tab_save in enumerate(
+                save) if tab_save[0] == 'LMFitTab']
+            result_tabs = [[i, tab_save] for i, tab_save in enumerate(
+                save) if tab_save[0] == 'LMFitResultTab']
+            plot_tabs = [[i, tab_save] for i, tab_save in enumerate(
+                save) if tab_save[0] == 'LMFitPlotTab']
+
+            # First open all tabs not related to lmfit
+            basic_tabs = [self.tab_widget.open_tab_by_save(
+                tab_save) for tab_save in basic_tabs]
+
+            # First open all tabs not related to lmfit
+            for tab_save in lmfit_tabs:
+                sliced_idx = tab_save[1][1]['sliced_data_tab_idx']
+                sliced_tab = basic_tabs[sliced_idx]
+                orbital_idx = tab_save[1][1]['orbital_data_tab_idx']
+                orbital_tab = basic_tabs[orbital_idx]
+
+                tab = self.tab_widget.open_tab_by_save(tab_save,
+                                                       sliced_tab.get_data(),
+                                                       orbital_tab.get_orbitals())
+
+                tab.sliced_data_tab_idx = sliced_idx
+                tab.orbital_data_tab_idx = orbital_idx
+
+            # First open all tabs not related to lmfit
+            for tab_save in result_tabs:
+                self.tab_widget.open_tab_by_save(tab_save)
+
+            # First open all tabs not related to lmfit
+            for tab_save in plot_tabs:
                 self.tab_widget.open_tab_by_save(tab_save)
 
     def closeEvent(self, event):

@@ -134,6 +134,8 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
     def __init__(self, sliced_data, orbitals):
 
         self.model = LMFitModel(sliced_data, orbitals)
+        self.sliced_data_tab_idx = None
+        self.orbital_data_tab_idx = None
 
         # Setup GUI
         super(LMFitTab, self).__init__()
@@ -146,6 +148,13 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
         self.refresh_selected_plot()
         kmap = self.refresh_sum_plot()
         self.refresh_residual_plot(weight_sum_data=kmap)
+
+    @classmethod
+    def init_from_save(cls, save, sliced_data, orbitals):
+
+        tab = LMFitTab(sliced_data, orbitals)
+
+        return tab
 
     def get_title(self):
 
@@ -190,6 +199,14 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
         self.refresh_selected_plot()
         kmap = self.refresh_sum_plot()
         self.refresh_residual_plot(weight_sum_data=kmap)
+
+    def save_state(self):
+
+        save = {'title': self.title,
+                'sliced_data_tab_idx': self.sliced_data_tab_idx,
+                'orbital_data_tab_idx': self.orbital_data_tab_idx}
+
+        return save
 
     def _change_slice_policy(self, slice_policy):
 
