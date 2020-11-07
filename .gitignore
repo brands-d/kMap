@@ -146,3 +146,4 @@ report.tar.gz
 # Other
 /src
 example/testing
+*.kmap

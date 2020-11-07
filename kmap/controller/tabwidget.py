@@ -127,13 +127,21 @@ class TabWidget(QWidget, TabWidget_UI):
 
         tab = LMFitTab(sliced_tab.get_data(), orbital_tab.get_orbitals())
         tab.fit_finished.connect(self.open_result_tab)
+        tab.locked_tabs = [sliced_tab, orbital_tab]
+
+        sliced_tab.lock_while_open(tab)
+        orbital_tab.lock_while_open(tab)
 
         self._open_tab(tab, 'LM-Fit Tab')
 
     def open_result_tab(self, *args):
 
+        lmfit_tab = self.sender()
         tab = LMFitResultTab(*args)
         tab.open_plot_tab.connect(self.open_lmfit_plot_tab)
+        tab.locked_tabs = [lmfit_tab]
+
+        lmfit_tab.lock_while_open(tab)
 
         current_time = datetime.datetime.now()
         title = 'Results (%i:%i)' % (current_time.hour, current_time.minute)
@@ -142,7 +150,12 @@ class TabWidget(QWidget, TabWidget_UI):
 
     def open_lmfit_plot_tab(self, results, orbitals, axis):
 
+        result_tab = self.sender()
         tab = LMFitPlotTab(results, orbitals, axis)
+        tab.locked_tabs = [result_tab]
+
+        result_tab.lock_while_open(tab)
+
         title = 'Plot'
         tab.set_title(title)
         self._open_tab(tab, title)
@@ -263,9 +276,20 @@ class TabWidget(QWidget, TabWidget_UI):
         # Close tab specified with index
 
         widget = self.tab_widget.widget(index)
-        self.tab_widget.removeTab(index)
-        widget.close()
-        widget.deleteLater()
+
+        if widget.lock_tab is None:
+
+            for tab in widget.locked_tabs:
+                tab.unlock()
+
+            self.tab_widget.removeTab(index)
+            widget.close()
+            widget.deleteLater()
+
+        else:
+            log = logging.getLogger('kmap')
+            log.warning(
+                'Tab is locked open because different tab still references it.')
 
     def _open_tab(self, tab, title, tooltip=None):
 
