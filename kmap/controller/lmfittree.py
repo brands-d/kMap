@@ -59,6 +59,18 @@ class LMFitTree(LMFitBaseTree, LMFitTree_UI):
         self._setup(orbitals, parameters)
         self._connect()
 
+    def save_state(self):
+
+        save = [self.tree.topLevelItem(i).save_state()
+                for i in range(self.tree.topLevelItemCount())]
+
+        return save
+
+    def restore_state(self, save):
+
+        for i in range(self.tree.topLevelItemCount()):
+            self.tree.topLevelItem(i).restore_state(save[i])
+
     def add_equation_parameter(self, parameter):
 
         self.background_item.add_equation_parameter(self.tree, parameter)
