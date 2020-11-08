@@ -382,11 +382,17 @@ class MainWindow(QMainWindow, MainWindow_UI):
             lmfit_tab_idx = dependencies[0]
             lmfit_tab = save[lmfit_tab_idx]
 
-            self.tab_widget.open_tab_by_save(tab_save, lmfit_tab, ID_maps)
+            tab = self.tab_widget.open_tab_by_save(
+                tab_save, lmfit_tab, ID_maps)
 
-        # First open all tabs not related to lmfit
+            save[index] = tab
+
         for tab_save in plot_tabs:
-            self.tab_widget.open_tab_by_save(tab_save[1])
+            index, tab_save, dependencies = tab_save
+            result_tab_idx = dependencies[0]
+            result_tab = save[result_tab_idx]
+
+            self.tab_widget.open_tab_by_save(tab_save, result_tab)
 
     def closeEvent(self, event):
 
