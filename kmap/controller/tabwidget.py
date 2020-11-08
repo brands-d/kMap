@@ -166,7 +166,7 @@ class TabWidget(QWidget, TabWidget_UI):
         self._open_tab(tab, title)
 
         return tab
-        
+
     def open_lmfit_plot_tab(self, results, orbitals, axis):
 
         result_tab = self.sender()
@@ -269,6 +269,10 @@ class TabWidget(QWidget, TabWidget_UI):
 
         elif isinstance(current_tab, SlicedDataTab):
             tab, _ = SlicedDataTab.init_from_save(save)
+
+        elif isinstance(current_tab, LMFitTab):
+            tab = self.open_lmfit_tab(*save[1], save=save[0])
+
         else:
             tab = type(current_tab).init_from_save(save)
 
