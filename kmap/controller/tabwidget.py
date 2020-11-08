@@ -157,9 +157,6 @@ class TabWidget(QWidget, TabWidget_UI):
 
         lmfit_tab.lock_while_open(tab)
 
-        lmfit_tab_idx = self.tab_widget.indexOf(lmfit_tab)
-        tab.lmfit_tab_idx = lmfit_tab_idx
-
         current_time = datetime.datetime.now()
         title = 'Results (%i:%i)' % (current_time.hour, current_time.minute)
         tab.set_title(title)
@@ -167,10 +164,16 @@ class TabWidget(QWidget, TabWidget_UI):
 
         return tab
 
-    def open_lmfit_plot_tab(self, results, orbitals, axis):
+    def open_lmfit_plot_tab(self, *args, sender=None, save=None):
 
-        result_tab = self.sender()
-        tab = LMFitPlotTab(results, orbitals, axis)
+        result_tab = self.sender() if sender is None else sender
+
+        if save is None:
+            tab = LMFitPlotTab(*args, result_tab)
+
+        else:
+            tab = LMFitPlotTab.init_from_save(save, result_tab)
+
         tab.locked_tabs = [result_tab]
 
         result_tab.lock_while_open(tab)
@@ -178,6 +181,8 @@ class TabWidget(QWidget, TabWidget_UI):
         title = 'Plot'
         tab.set_title(title)
         self._open_tab(tab, title)
+
+        return tab
 
     def open_profile_tab(self):
 
@@ -276,6 +281,9 @@ class TabWidget(QWidget, TabWidget_UI):
         elif isinstance(current_tab, LMFitTab):
             tab = self.open_lmfit_tab(*save[1], save=save[0])
 
+        elif isinstance(current_tab, LMFitPlotTab):
+            tab = self.open_lmfit_plot_tab(sender=save[1][0], save=save[0])
+
         else:
             tab = type(current_tab).init_from_save(save)
 
@@ -302,8 +310,12 @@ class TabWidget(QWidget, TabWidget_UI):
             tab = self.open_result_tab(
                 sender=args[0], save=save[1], ID_map=args[1])
 
+        elif save[0] == 'LMFitPlotTab':
+            tab = self.open_lmfit_plot_tab(sender=args[0], save=save[1])
+
         elif save[0] == 'SlicedDataTab':
             tab, ID_map = SlicedDataTab.init_from_save(save[1], *args)
+
         else:
             try:
                 tab = eval(save[0]).init_from_save(save[1], *args)

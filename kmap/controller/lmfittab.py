@@ -367,7 +367,6 @@ class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
     def save_state(self):
 
         save = {'title': self.title,
-                'lmfit_tab_idx': self.lmfit_tab_idx,
                 'results': self.results,
                 'settings': self.settings}
 
@@ -421,8 +420,12 @@ class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
 
         print(cov_matrix)
 
-    def plot(self):
+    def get_orbitals(self):
 
+        return self.model.orbitals
+
+    def plot(self):
+        
         results = [result[1] for result in self.results]
         orbitals = self.model.orbitals
         axis = self.model.sliced_data.axes[self.model.slice_policy[0]]

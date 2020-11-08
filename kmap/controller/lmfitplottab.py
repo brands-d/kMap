@@ -13,9 +13,10 @@ LMFitPlotTab_UI, _ = uic.loadUiType(UI_file)
 
 class LMFitPlotTab(Tab, LMFitPlotTab_UI):
 
-    def __init__(self, results, orbitals, axis, *args, **kwargs):
+    def __init__(self, results, orbitals, axis, result_tab, *args, **kwargs):
 
         self.results = results
+        self.result_tab = result_tab
         self.orbitals = orbitals
         self.x_axis = axis
 
@@ -27,6 +28,26 @@ class LMFitPlotTab(Tab, LMFitPlotTab_UI):
 
         self.refresh_plot()
 
+    @classmethod
+    def init_from_save(cls, save, tab):
+
+        results = save['results']
+        axis = save['axis']
+
+        orbitals = tab.get_orbitals()
+
+        tab = LMFitPlotTab(results, orbitals, axis, tab)
+
+        return tab
+
+    def save_state(self):
+
+        save = {'title': self.title,
+                'results': self.results,
+                'axis': self.x_axis}
+
+        return save, [self.result_tab]
+
     def export_to_txt(self):
 
         data = self.plot_item.get_data()
@@ -35,15 +56,15 @@ class LMFitPlotTab(Tab, LMFitPlotTab_UI):
 
         for data_set in data:
             name = data_set['name']
-            x = data_set['x'] 
+            x = data_set['x']
             y = data_set['y']
-            text += '# '+name+'\n'
-            for xi, yi in zip(x,y):
-                text += '%g  %g \n'%(xi, yi)
-            text += '\n'              
+            text += '# ' + name + '\n'
+            for xi, yi in zip(x, y):
+                text += '%g  %g \n' % (xi, yi)
+            text += '\n'
 
         return text
-        
+
     def refresh_plot(self):
 
         possible_params = ['w_', 'phi_', 'theta_', 'psi_']
