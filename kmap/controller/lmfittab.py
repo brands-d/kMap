@@ -129,13 +129,14 @@ class LMFitBaseTab(Tab):
 
 class LMFitTab(LMFitBaseTab, LMFitTab_UI):
 
-    fit_finished = pyqtSignal(list, list, dict)
+    fit_finished = pyqtSignal(list, dict)
 
-    def __init__(self, sliced_data, orbitals):
+    def __init__(self, sliced_tab, orbital_tab):
 
-        self.model = LMFitModel(sliced_data, orbitals)
-        self.sliced_data_tab_idx = None
-        self.orbital_data_tab_idx = None
+        self.sliced_tab = sliced_tab
+        self.orbital_tab = orbital_tab
+        self.model = LMFitModel(sliced_tab.get_data(),
+                                orbital_tab.get_orbitals())
 
         # Setup GUI
         super(LMFitTab, self).__init__()
@@ -160,6 +161,10 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
 
         return 'LM-Fit'
 
+    def get_data(self):
+
+        return [self.model.sliced_data, self.model.orbitals]
+
     def trigger_fit(self):
 
         try:
@@ -172,9 +177,8 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
             return
 
         settings = self.model.get_settings()
-        data = [self.model.sliced_data, self.model.orbitals]
 
-        self.fit_finished.emit(data, results, settings)
+        self.fit_finished.emit(results, settings)
 
     def change_slice(self):
 
@@ -202,11 +206,9 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
 
     def save_state(self):
 
-        save = {'title': self.title,
-                'sliced_data_tab_idx': self.sliced_data_tab_idx,
-                'orbital_data_tab_idx': self.orbital_data_tab_idx}
+        save = {'title': self.title}
 
-        return save
+        return save, [self.sliced_tab, self.orbital_tab]
 
     def _change_slice_policy(self, slice_policy):
 
@@ -290,12 +292,14 @@ class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
 
     open_plot_tab = pyqtSignal(list, list, Axis)
 
-    def __init__(self, data, results, settings):
+    def __init__(self, lmfit_tab, results, settings):
 
         self.results = results
+        self.lmfit_tab = lmfit_tab
         self.current_result = self.results[0]
+        self.settings = settings
 
-        self.model = LMFitModel(*data)
+        self.model = LMFitModel(*self.lmfit_tab.get_data())
         self.model.set_settings(settings)
 
         # Setup GUI
@@ -309,6 +313,52 @@ class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
         self.refresh_selected_plot()
         kmap = self.refresh_sum_plot()
         self.refresh_residual_plot(weight_sum_data=kmap)
+
+    @classmethod
+    def init_from_save(cls, save, tab, ID_map=None):
+
+        results = save['results']
+
+        if ID_map is not None:
+            for result in results:
+                result = LMFitResultTab._apply_ID_map(result[1], ID_map)
+
+        settings = save['settings']
+
+        tab = LMFitResultTab(tab, results, settings)
+
+        return tab
+
+    @classmethod
+    def _apply_ID_map(cls, result, ID_map):
+
+        params = result.params
+        new_params = params.copy()
+
+        for map_ in ID_map:
+
+            for parameter in params.items():
+                old_name, parameter = parameter
+
+                if old_name.endswith(str(map_[0])):
+                    new_name = '_'.join(old_name.split(
+                        '_')[:-1]) + '_' + str(map_[1])
+                    new_params[new_name] = new_params[old_name]
+
+                    if old_name != new_name:
+                        del new_params[old_name]
+
+        result.params = new_params
+        return result
+
+    def save_state(self):
+
+        save = {'title': self.title,
+                'lmfit_tab_idx': self.lmfit_tab_idx,
+                'results': self.results,
+                'settings': self.settings}
+
+        return save, [self.lmfit_tab]
 
     def get_title(self):
 

@@ -58,7 +58,7 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
     def get_orbitals(self):
 
         orbitals = [orbital[0] for orbital in self.model.orbitals]
-        
+
         return orbitals
 
     def add_orbital(self, orbital):
@@ -199,10 +199,11 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
                 'real_space_options': real_space_options_save,
                 'orbital_save': orbital_save}
 
-        return save
+        return save, []
 
     def restore_state(self, save):
 
+        ID_maps = []
         for orbital in save['orbital_save']:
             if orbital[0] == 'path':
                 ID = self.add_orbital_from_filepath(orbital[1])
@@ -213,8 +214,9 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
             else:
                 raise ValueError
 
-            parameter = [orbital[3][0], *orbital[3][3:6]]
-            use = orbital[4]
+            ID_maps.append([orbital[3], ID])
+            parameter = [orbital[4][0], *orbital[4][3:6]]
+            use = orbital[5]
             self.table.update_orbital_parameters(ID, parameter)
             self.table.update_orbital_use(ID, use)
 
@@ -229,6 +231,8 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         self.polarization.restore_state(polarization_save)
         self.cube_options.restore_state(cube_options_save)
         self.real_space_options.restore_state(real_space_options_save)
+
+        return ID_maps
 
     def _setup(self):
 

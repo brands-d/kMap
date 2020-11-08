@@ -16,7 +16,7 @@ class OrbitalDataTabModel():
 
         id_ = ID.new_ID()
         new_orbital = OrbitalData.init_from_file(path, ID=id_)
-        self.orbitals.append([new_orbital, 'path', path, None])
+        self.orbitals.append([new_orbital, 'path', path, None, id_])
 
         return new_orbital
 

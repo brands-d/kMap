@@ -39,7 +39,7 @@ class FileTab(Tab):
                 'path': self.path,
                 'richText': self.richText}
 
-        return save
+        return save, []
 
     def reload_text(self):
 

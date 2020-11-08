@@ -62,7 +62,8 @@ class SlicedDataTabModel():
     def save_state(self):
 
         load_type, load_args = self.load_data
-        save = {'load_type': load_type, 'load_args': load_args}
+        save = {'load_type': load_type,
+                'load_args': load_args, 'ID': self.data.ID}
 
         return save
 
