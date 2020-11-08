@@ -270,6 +270,9 @@ class TabWidget(QWidget, TabWidget_UI):
         elif isinstance(current_tab, SlicedDataTab):
             tab, _ = SlicedDataTab.init_from_save(save)
 
+        elif isinstance(current_tab, LMFitResultTab):
+            tab = self.open_result_tab(sender=save[1][0], save=save[0])
+
         elif isinstance(current_tab, LMFitTab):
             tab = self.open_lmfit_tab(*save[1], save=save[0])
 
