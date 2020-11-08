@@ -56,6 +56,17 @@ class LMFitTreeTopLevelItem(LMFitTreeItem):
         super().__init__(tree)
         self.signals = SignalObject()
 
+    def save_state(self):
+
+        save = [child.save_state() for child in self.children]
+
+        return save
+
+    def restore_state(self, save):
+
+        for i, child in enumerate(self.children):
+            child.restore_state(save[i])
+
     def change_vary(self, state):
 
         for child in self.children:
@@ -165,6 +176,24 @@ class LMFitDataTreeItem(LMFitTreeItem):
         self.signals = SignalObject()
 
         super().__init__(parent)
+
+    def save_state(self):
+
+        save = {'vary': self.vary.isChecked(),
+                'initial': self.initial_spinbox.value(),
+                'min': self.min_spinbox.value(),
+                'max': self.max_spinbox.value(),
+                'expr': self.expression.text()}
+
+        return save
+
+    def restore_state(self, save):
+
+        self.vary.setChecked(save['vary'])
+        self.initial_spinbox.setValue(save['initial'])
+        self.min_spinbox.setValue(save['min'])
+        self.max_spinbox.setValue(save['max'])
+        self.expression.setText(save['expr'])
 
     def _change_initial(self, value):
 
