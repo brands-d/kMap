@@ -235,12 +235,33 @@ class LMFitInterpolation(InterpolationBase, LMFitInterpolation_UI):
         self.setupUi(self)
         self._connect()
 
+    def save_state(self):
+
+        save = {'range': self.get_range(),
+                'resolution': self.get_resolution()}
+
+        return save
+
+    def restore_state(self, save):
+
+        self.set_range(save['range'])
+        self.set_resolution(save['resolution'])
+
+    def set_range(self, range_):
+
+        self.min_spinbox.setValue(range_[0][0])
+        self.max_spinbox.setValue(range_[0][1])
+
     def get_range(self):
 
         min_ = self.min_spinbox.value()
         max_ = self.max_spinbox.value()
 
         return [[min_, max_], [min_, max_]]
+
+    def set_resolution(self, resolution):
+
+        self.resolution_spinbox.setValue(resolution[0])
 
     def get_resolution(self):
 
