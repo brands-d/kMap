@@ -123,36 +123,50 @@ class TabWidget(QWidget, TabWidget_UI):
 
         self._open_tab(tab, title)
 
-    def open_lmfit_tab(self, sliced_tab, orbital_tab):
+    def open_lmfit_tab(self, sliced_tab, orbital_tab, save=None):
 
-        tab = LMFitTab(sliced_tab.get_data(), orbital_tab.get_orbitals())
+        if save is None:
+            tab = LMFitTab(sliced_tab, orbital_tab)
+
+        else:
+            tab = LMFitTab.init_from_save(save, sliced_tab, orbital_tab)
+
         tab.fit_finished.connect(self.open_result_tab)
         tab.locked_tabs = [sliced_tab, orbital_tab]
 
         sliced_tab.lock_while_open(tab)
         orbital_tab.lock_while_open(tab)
-
-        sliced_idx = self.tab_widget.indexOf(sliced_tab)
-        orbital_idx = self.tab_widget.indexOf(orbital_tab)
-        tab.sliced_data_tab_idx = sliced_idx
-        tab.orbital_data_tab_idx = orbital_idx
+        tab.sliced_data_tab = sliced_tab
+        tab.orbital_data_tab = orbital_tab
 
         self._open_tab(tab, 'LM-Fit Tab')
 
-    def open_result_tab(self, *args):
+        return tab
 
-        lmfit_tab = self.sender()
-        tab = LMFitResultTab(*args)
+    def open_result_tab(self, *args, sender=None, save=None, ID_map=None):
+
+        lmfit_tab = self.sender() if sender is None else sender
+
+        if save is None:
+            tab = LMFitResultTab(lmfit_tab, *args)
+        else:
+            tab = LMFitResultTab.init_from_save(save, lmfit_tab, ID_map)
+
         tab.open_plot_tab.connect(self.open_lmfit_plot_tab)
         tab.locked_tabs = [lmfit_tab]
 
         lmfit_tab.lock_while_open(tab)
+
+        lmfit_tab_idx = self.tab_widget.indexOf(lmfit_tab)
+        tab.lmfit_tab_idx = lmfit_tab_idx
 
         current_time = datetime.datetime.now()
         title = 'Results (%i:%i)' % (current_time.hour, current_time.minute)
         tab.set_title(title)
         self._open_tab(tab, title)
 
+        return tab
+        
     def open_lmfit_plot_tab(self, results, orbitals, axis):
 
         result_tab = self.sender()
@@ -172,6 +186,10 @@ class TabWidget(QWidget, TabWidget_UI):
         self._open_tab(tab, 'Profile Plot')
 
         return tab
+
+    def get_index_of(self, tab):
+
+        return self.tab_widget.indexOf(tab)
 
     def get_orbital_tab_to_load_to(self):
 
@@ -249,6 +267,8 @@ class TabWidget(QWidget, TabWidget_UI):
             tab = self.open_orbital_data_tab()
             tab.restore_state(save)
 
+        elif isinstance(current_tab, SlicedDataTab):
+            tab, _ = SlicedDataTab.init_from_save(save)
         else:
             tab = type(current_tab).init_from_save(save)
 
@@ -258,7 +278,7 @@ class TabWidget(QWidget, TabWidget_UI):
 
     def open_tab_by_save(self, tab_save, *args):
 
-        index, save = tab_save
+        save = tab_save
 
         if save[0] == 'ProfilePlotTab':
             tab = self.open_profile_tab()
@@ -266,8 +286,17 @@ class TabWidget(QWidget, TabWidget_UI):
 
         elif save[0] == 'OrbitalDataTab':
             tab = self.open_orbital_data_tab()
-            tab.restore_state(save[1])
+            ID_map = tab.restore_state(save[1])
 
+        elif save[0] == 'LMFitTab':
+            tab = self.open_lmfit_tab(args[0], args[1], save=save[1])
+
+        elif save[0] == 'LMFitResultTab':
+            tab = self.open_result_tab(
+                sender=args[0], save=save[1], ID_map=args[1])
+
+        elif save[0] == 'SlicedDataTab':
+            tab, ID_map = SlicedDataTab.init_from_save(save[1], *args)
         else:
             try:
                 tab = eval(save[0]).init_from_save(save[1], *args)
@@ -277,9 +306,13 @@ class TabWidget(QWidget, TabWidget_UI):
 
         title = tab.get_title()
         tab.set_title(title)
-        self._open_tab(tab, title, index=index)
+        self._open_tab(tab, title)
 
-        return tab 
+        if isinstance(tab, SlicedDataTab) or isinstance(tab, OrbitalDataTab):
+            return tab, ID_map
+
+        else:
+            return tab
 
     def close_tab(self, index):
         # Close tab specified with index
@@ -302,11 +335,7 @@ class TabWidget(QWidget, TabWidget_UI):
 
     def _open_tab(self, tab, title, tooltip=None, index=None):
 
-        if index is None:
-            index = self.tab_widget.addTab(tab, title)
-
-        else:
-            self.tab_widget.insertTab(index, tab, title)
+        index = self.tab_widget.addTab(tab, title)
 
         self.tab_widget.setCurrentIndex(index)
 

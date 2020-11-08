@@ -94,7 +94,8 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
         tab.crosshair.restore_state(save['crosshair'])
         tab.interpolation.restore_state(save['interpolation'])
 
-        return tab
+        new_ID = tab.model.data.ID
+        return tab, [[save['model']['ID'], new_ID]]
 
     def save_state(self):
 
@@ -104,7 +105,7 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
                 'crosshair': self.crosshair.save_state(),
                 'interpolation': self.interpolation.save_state()}
 
-        return save
+        return save, []
 
     def get_data(self):
 

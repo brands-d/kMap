@@ -304,7 +304,12 @@ class MainWindow(QMainWindow, MainWindow_UI):
     def save_project(self):
 
         tabs = self.tab_widget.get_all_tabs()
-        tab_saves = [[type(tab).__name__, tab.save_state()] for tab in tabs]
+        tab_saves = []
+        for i, tab in enumerate(tabs):
+            save, dependencies = tab.save_state()
+            dependencies = [self.tab_widget.get_index_of(
+                tab) for tab in dependencies]
+            tab_saves.append([i, [type(tab).__name__, save], dependencies])
 
         start_path = __directory__ + config.get_key('paths', 'project_start')
         file_name, _ = QFileDialog.getSaveFileName(
@@ -322,43 +327,66 @@ class MainWindow(QMainWindow, MainWindow_UI):
         file_names, _ = QFileDialog.getOpenFileNames(
             None, 'Load Project File (*.kmap)', start_path)
 
-        for file_path in file_names:
-            save = pickle.load(open(file_path, 'rb'))
+        file_path = file_names[0]
+        save = pickle.load(open(file_path, 'rb'))
 
-            basic_tabs = [[i, tab_save] for i, tab_save in enumerate(
-                save) if tab_save[0] not in ['LMFitPlotTab', 'LMFitTab', 'LMFitResultTab']]
-            lmfit_tabs = [[i, tab_save] for i, tab_save in enumerate(
-                save) if tab_save[0] == 'LMFitTab']
-            result_tabs = [[i, tab_save] for i, tab_save in enumerate(
-                save) if tab_save[0] == 'LMFitResultTab']
-            plot_tabs = [[i, tab_save] for i, tab_save in enumerate(
-                save) if tab_save[0] == 'LMFitPlotTab']
+        data_tabs = [tab_save for tab_save in
+                     save if tab_save[1][0] in ['SlicedDataTab',
+                                                'OrbitalDataTab']]
+        basic_tabs = [tab_save for tab_save in
+                      save if tab_save[1][0] not in ['LMFitPlotTab',
+                                                     'LMFitTab',
+                                                     'LMFitResultTab',
+                                                     'SlicedDataTab',
+                                                     'OrbitalDataTab']]
+        lmfit_tabs = [tab_save for tab_save in
+                      save if tab_save[1][0] == 'LMFitTab']
+        result_tabs = [tab_save for tab_save in
+                       save if tab_save[1][0] == 'LMFitResultTab']
+        plot_tabs = [tab_save for tab_save in
+                     save if tab_save[1][0] == 'LMFitPlotTab']
 
-            # First open all tabs not related to lmfit
-            basic_tabs = [self.tab_widget.open_tab_by_save(
-                tab_save) for tab_save in basic_tabs]
+        # Go through all non lmfit tabs first and replace the save
+        # for a tab with the tab itself to be used for tabs that
+        # depend on it
+        for tab_save in basic_tabs:
+            index, tab_save, _ = tab_save
+            save[index] = self.tab_widget.open_tab_by_save(
+                tab_save)
 
-            # First open all tabs not related to lmfit
-            for tab_save in lmfit_tabs:
-                sliced_idx = tab_save[1][1]['sliced_data_tab_idx']
-                sliced_tab = basic_tabs[sliced_idx]
-                orbital_idx = tab_save[1][1]['orbital_data_tab_idx']
-                orbital_tab = basic_tabs[orbital_idx]
+        ID_maps = []
+        for tab_save in data_tabs:
+            index, tab_save, _ = tab_save
+            tab, ID_map = self.tab_widget.open_tab_by_save(
+                tab_save)
+            save[index] = tab
+            ID_maps.append(*ID_map)
 
-                tab = self.tab_widget.open_tab_by_save(tab_save,
-                                                       sliced_tab.get_data(),
-                                                       orbital_tab.get_orbitals())
+        for tab_save in lmfit_tabs:
+            index, tab_save, dependencies = tab_save
+            sliced_idx, orbital_idx = dependencies
+            sliced_tab = save[sliced_idx]
+            orbital_tab = save[orbital_idx]
 
-                tab.sliced_data_tab_idx = sliced_idx
-                tab.orbital_data_tab_idx = orbital_idx
+            tab = self.tab_widget.open_tab_by_save(tab_save,
+                                                   sliced_tab,
+                                                   orbital_tab)
 
-            # First open all tabs not related to lmfit
-            for tab_save in result_tabs:
-                self.tab_widget.open_tab_by_save(tab_save)
+            tab.sliced_data_tab_idx = sliced_idx
+            tab.orbital_data_tab_idx = orbital_idx
 
-            # First open all tabs not related to lmfit
-            for tab_save in plot_tabs:
-                self.tab_widget.open_tab_by_save(tab_save)
+            save[index] = tab
+
+        for tab_save in result_tabs:
+            index, tab_save, dependencies = tab_save
+            lmfit_tab_idx = dependencies[0]
+            lmfit_tab = save[lmfit_tab_idx]
+
+            self.tab_widget.open_tab_by_save(tab_save, lmfit_tab, ID_maps)
+
+        # First open all tabs not related to lmfit
+        for tab_save in plot_tabs:
+            self.tab_widget.open_tab_by_save(tab_save[1])
 
     def closeEvent(self, event):
 
