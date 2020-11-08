@@ -24,6 +24,20 @@ class LMFitOrbitalOptions(QWidget, LMFitOrbitalOptions_UI):
         self.setupUi(self)
         self._connect()
 
+    def save_state(self):
+
+        save = {'factor': self.ak_combobox.currentIndex(),
+                'polarization': self.polarization_combobox.currentIndex(),
+                'symmetry': self.symmetrize_combobox.currentIndex()}
+
+        return save
+
+    def restore_state(self, save):
+
+        self.ak_combobox.setCurrentIndex(save['factor'])
+        self.polarization_combobox.setCurrentIndex(save['polarization'])
+        self.symmetrize_combobox.setCurrentIndex(save['symmetry'])
+
     def get_symmetrization(self):
 
         index = self.symmetrize_combobox.currentIndex()

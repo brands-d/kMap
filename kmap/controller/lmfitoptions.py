@@ -30,6 +30,22 @@ class LMFitOptions(QWidget, LMFitOptions_UI):
         self._setup()
         self._connect(parent)
 
+    def save_state(self):
+
+        save = {'slices': self.slice_combobox.currentIndex(),
+                'region': self.region_comboBox.currentIndex(),
+                'method': self.method_combobox.currentIndex(),
+                'background': self.background_combobox.currentText()}
+
+        return save
+
+    def restore_state(self, save):
+
+        self.slice_combobox.setCurrentIndex(save['slices'])
+        self.region_comboBox.setCurrentIndex(save['region'])
+        self.method_combobox.setCurrentIndex(save['method'])
+        self.background_combobox.setCurrentText(save['background'])
+
     def get_region(self):
 
         text = self.region_comboBox.currentText()

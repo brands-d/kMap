@@ -153,6 +153,12 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
 
         tab = LMFitTab(sliced_data, orbitals)
 
+        tab.slider.restore_state(save['slider']),
+        tab.crosshair.restore_state(save['crosshair']),
+        tab.orbital_options.restore_state(save['orbital_options']),
+        tab.interpolation.restore_state(save['interpolation']),
+        tab.lmfit_options.restore_state(save['lmfit_options'])
+
         return tab
 
     def get_title(self):
@@ -196,7 +202,12 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
 
     def save_state(self):
 
-        save = {'title': self.title}
+        save = {'title': self.title,
+                'slider': self.slider.save_state(),
+                'crosshair': self.crosshair.save_state(),
+                'orbital_options':self.orbital_options.save_state(),
+                'interpolation': self.interpolation.save_state(),
+                'lmfit_options': self.lmfit_options.save_state()}
 
         return save, [self.sliced_tab, self.orbital_tab]
 
