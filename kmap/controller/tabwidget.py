@@ -285,7 +285,7 @@ class TabWidget(QWidget, TabWidget_UI):
             tab = self.open_lmfit_plot_tab(sender=save[1][0], save=save[0])
 
         else:
-            tab = type(current_tab).init_from_save(save)
+            tab = type(current_tab).init_from_save(save[0])
 
         title = tab.get_title()
         tab.set_title(title)
