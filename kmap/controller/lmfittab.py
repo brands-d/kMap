@@ -3,6 +3,8 @@
 This file defines two similar types of tabs: the LMFit and the
 LMFitResult tab as well as a common base class LMFitBaseTab.
 """
+# Python Imports
+import logging
 
 # Third Party Imports
 import numpy as np
@@ -151,7 +153,15 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
 
     def trigger_fit(self):
 
-        results = self.model.fit()
+        try:
+            results = self.model.fit()
+
+        except ValueError as e:
+            logging.getLogger('kmap').warning(str(e))
+            self.lmfit_options.update_fit_button()
+            
+            return
+
         settings = self.model.get_settings()
         data = [self.model.sliced_data, self.model.orbitals]
 
