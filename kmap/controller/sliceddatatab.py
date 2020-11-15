@@ -93,7 +93,8 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
         tab.slider.restore_state(save['slider'])
         tab.crosshair.restore_state(save['crosshair'])
         tab.interpolation.restore_state(save['interpolation'])
-
+        tab.colormap.restore_state(save['colormap'])
+        
         new_ID = tab.model.data.ID
         return tab, [[save['model']['ID'], new_ID]]
 
@@ -103,7 +104,8 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
                 'model': self.model.save_state(),
                 'slider': self.slider.save_state(),
                 'crosshair': self.crosshair.save_state(),
-                'interpolation': self.interpolation.save_state()}
+                'interpolation': self.interpolation.save_state(),
+                'colormap': self.colormap.save_state()}
 
         return save, []
 

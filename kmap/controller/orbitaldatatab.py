@@ -185,6 +185,7 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         polarization_save = self.polarization.save_state()
         cube_options_save = self.cube_options.save_state()
         real_space_options_save = self.real_space_options.save_state()
+        colormap_save = self.colormap.save_state()
 
         orbital_save = []
         for orbital in self.model.orbitals:
@@ -197,14 +198,15 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
                 'polarization': polarization_save,
                 'cube_options': cube_options_save,
                 'real_space_options': real_space_options_save,
-                'orbital_save': orbital_save}
+                'orbital': orbital_save,
+                'colormap': colormap_save}
 
         return save, []
 
     def restore_state(self, save):
 
         ID_maps = []
-        for orbital in save['orbital_save']:
+        for orbital in save['orbital']:
             if orbital[0] == 'path':
                 ID = self.add_orbital_from_filepath(orbital[1])
 
@@ -225,12 +227,14 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         polarization_save = save['polarization']
         cube_options_save = save['cube_options']
         real_space_options_save = save['real_space_options']
+        colormap_save = save['colormap']
 
         self.crosshair.restore_state(crosshair_save)
         self.interpolation.restore_state(interpolation_save)
         self.polarization.restore_state(polarization_save)
         self.cube_options.restore_state(cube_options_save)
         self.real_space_options.restore_state(real_space_options_save)
+        self.colormap.restore_state(colormap_save)
 
         return ID_maps
 

@@ -1,5 +1,6 @@
 # Python Imports
 import logging
+import traceback
 
 # PyQt5 Imports
 from PyQt5 import uic
@@ -45,6 +46,25 @@ class Colormap(QWidget, Colormap_UI):
 
         self._update_combobox()
         self.set_default_colormap()
+
+    def save_state(self):
+
+        current_colormap = self.combobox.currentText()
+
+        save = {'current_colormap': current_colormap}
+
+        return save
+
+    def restore_state(self, save):
+
+        try:
+            self.set_colormap(save['current_colormap'])
+
+        except ValueError:
+            log = logging.getLogger('kmap')
+
+            log.error('This colormap does not exist. Please save the colormap first.')
+            log.error(traceback.format_exc())
 
     def add_colormap(self):
 
