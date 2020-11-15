@@ -270,10 +270,10 @@ class TabWidget(QWidget, TabWidget_UI):
 
         elif isinstance(current_tab, OrbitalDataTab):
             tab = self.open_orbital_data_tab()
-            tab.restore_state(save)
+            tab.restore_state(save[0])
 
         elif isinstance(current_tab, SlicedDataTab):
-            tab, _ = SlicedDataTab.init_from_save(save)
+            tab, _ = SlicedDataTab.init_from_save(save[0])
 
         elif isinstance(current_tab, LMFitResultTab):
             tab = self.open_result_tab(sender=save[1][0], save=save[0])
