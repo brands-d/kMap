@@ -54,7 +54,7 @@ class LMFitModel():
         self.Ak_type = 'no'
         self.polarization = 'p'
         self.slice_policy = [0, [0], False]
-        self.method = ['leastsq', 1e-12]
+        self.method = {'method': 'leastsq', 'xtol': 1e-12}
         self.region = ['all', False]
 
         self._set_sliced_data(sliced_data)
@@ -192,11 +192,16 @@ class LMFitModel():
 
         Args:
             method (str): See the documentation for the lmfit module.
-            polarization (str): See the documentation for the lmfit
-            module.
+            xtol (str): Only available for one of the following methods:
+                        'leastsq', 'least_squares', 'powell'
         """
 
-        self.method = [method, xtol]
+        xtol_capable_methods = ['leastsq', 'least_squares']
+        if method in xtol_capable_methods:
+            self.method = {'method': method, 'xtol': xtol}
+
+        else:
+            self.method = {'method': method}
 
     def set_background_equation(self, equation):
         """A setter method to set an custom background equation.
@@ -280,6 +285,16 @@ class LMFitModel():
 
         lmfit_padding = float(config.get_key('lmfit', 'padding'))
 
+        any_parameter_vary = False
+        for parameter in self.parameters.values():
+            if parameter.vary:
+                any_parameter_vary = True
+                break
+
+        if not any_parameter_vary and self.method['method'] not in ['leastsq', 'least_squares']:
+            raise ValueError(
+                'Only leastsq and least_squares can fit if no parameter is set to vary.')
+
         for parameter in self.parameters.values():
             if parameter.vary and parameter.value <= parameter.min:
                 padded_value = parameter.min + lmfit_padding
@@ -294,8 +309,7 @@ class LMFitModel():
                               copy.deepcopy(self.parameters),
                               kws={'slice_': slice_},
                               nan_policy='omit',
-                              method=self.method[0],
-                              xtol=self.method[1])
+                              **self.method)
 
             results.append([index, result])
 
