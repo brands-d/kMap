@@ -161,7 +161,7 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
         tab.interpolation.restore_state(save['interpolation']),
         tab.lmfit_options.restore_state(save['lmfit_options'])
         tab.tree.restore_state(save['tree'])
-        
+
         return tab
 
     def get_title(self):
@@ -180,7 +180,7 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
         except ValueError as e:
             logging.getLogger('kmap').warning(str(e))
             self.lmfit_options.update_fit_button()
-            
+
             return
 
         settings = self.model.get_settings()
@@ -216,7 +216,7 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
         save = {'title': self.title,
                 'slider': self.slider.save_state(),
                 'crosshair': self.crosshair.save_state(),
-                'orbital_options':self.orbital_options.save_state(),
+                'orbital_options': self.orbital_options.save_state(),
                 'interpolation': self.interpolation.save_state(),
                 'lmfit_options': self.lmfit_options.save_state(),
                 'tree': self.tree.save_state()}
@@ -425,7 +425,7 @@ class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
         return self.model.orbitals
 
     def plot(self):
-        
+
         results = [result[1] for result in self.results]
         orbitals = self.model.orbitals
         axis = self.model.sliced_data.axes[self.model.slice_policy[0]]

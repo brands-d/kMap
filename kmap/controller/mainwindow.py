@@ -360,7 +360,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
             tab, ID_map = self.tab_widget.open_tab_by_save(
                 tab_save)
             save[index] = tab
-            ID_maps.append(*ID_map)
+            ID_maps.append(ID_map)
 
         for tab_save in lmfit_tabs:
             index, tab_save, dependencies = tab_save
