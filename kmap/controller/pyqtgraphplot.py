@@ -65,8 +65,10 @@ class PyQtGraphPlot(ImageView):
 
             # Catch empty plots
             if old_level != (0, 1):
-                levels[0] = old_level[0] if old_level[0] < levels[0] else levels[0]
-                levels[1] = old_level[1] if old_level[1] > levels[1] else levels[1]
+                levels[0] = old_level[0] if old_level[0] < levels[0] else \
+                levels[0]
+                levels[1] = old_level[1] if old_level[1] > levels[1] else \
+                levels[1]
 
             self.set_levels(levels)
 
@@ -84,7 +86,7 @@ class PyQtGraphPlot(ImageView):
     def get_levels(self):
 
         return self.getHistogramWidget().getLevels()
-        
+
     def set_aspect_ratio(self, ratio):
 
         if ratio is not None:
@@ -136,9 +138,10 @@ class PyQtGraphPlot(ImageView):
     def get_LUT(self):
 
         colormap = self.getHistogramWidget().gradient.colorMap()
-        LUT = colormap.getLookupTable(mode='float', alpha=False, nPts=100)
+        nPts = int(config.get_key('pyqtgraph', 'nPts'))
+        LUT = colormap.getLookupTable(mode='float', alpha=True, nPts=nPts)
 
-        return LUT[1:]
+        return LUT
 
     def get_label(self, side):
 

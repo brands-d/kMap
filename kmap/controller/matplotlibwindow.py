@@ -5,18 +5,17 @@ from math import ceil, floor
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSignal, QDir
 from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QWidget
-
-# Third party Imports
-from matplotlib.ticker import AutoMinorLocator
 from matplotlib.backends.backend_qt5agg import (FigureCanvas,
                                                 NavigationToolbar2QT)
+from matplotlib.colors import ListedColormap
 from matplotlib.figure import Figure
-from matplotlib.colors import LinearSegmentedColormap
+# Third party Imports
+from matplotlib.ticker import AutoMinorLocator
 
 # Own Imports
 from kmap import __directory__
-from kmap.model.matplotlibwindow_model import MatplotlibWindowModel
 from kmap.library.qwidgetsub import AspectWidget
+from kmap.model.matplotlibwindow_model import MatplotlibWindowModel
 
 # Load .ui File
 UI_file = __directory__ + QDir.toNativeSeparators('/ui/matplotlibwindow.ui')
@@ -28,7 +27,7 @@ class MatplotlibWindow(QMainWindow, MatplotlibWindow_UI):
     def __init__(self, plot_data, LUT=None):
 
         self.model = MatplotlibWindowModel(plot_data)
-        self.LUT = LinearSegmentedColormap.from_list('cm_user', LUT, N=100)
+        self.LUT = ListedColormap(LUT, 'cm_user')
 
         # Setup GUI
         super(MatplotlibWindow, self).__init__()
@@ -167,6 +166,7 @@ class MatplotlibWindow(QMainWindow, MatplotlibWindow_UI):
 
         self.options = MatplotlibOptions()
 
+    # noinspection PyUnresolvedReferences
     def _connect(self):
 
         self.options.colorbar_changed.connect(self.add_colorbar)
@@ -186,7 +186,6 @@ MatplotlibOptions_UI, _ = uic.loadUiType(UI_file)
 
 
 class MatplotlibOptions(QWidget, MatplotlibOptions_UI):
-
     colorbar_changed = pyqtSignal(int)
     grid_changed = pyqtSignal(str)
     ticks_changed = pyqtSignal(int)
@@ -198,28 +197,24 @@ class MatplotlibOptions(QWidget, MatplotlibOptions_UI):
     fit_axis_triggered = pyqtSignal()
 
     def __init__(self):
-
         # Setup GUI
         super(MatplotlibOptions, self).__init__()
         self.setupUi(self)
         self._connect()
 
     def get_x_range(self):
-
         min_ = self.x_min_spinbox.value()
         max_ = self.x_max_spinbox.value()
 
         return [min_, max_]
 
     def get_y_range(self):
-
         min_ = self.y_min_spinbox.value()
         max_ = self.y_max_spinbox.value()
 
         return [min_, max_]
 
     def set_x_range(self, range_):
-
         min_, max_ = range_
 
         self.x_min_spinbox.blockSignals(True)
@@ -237,7 +232,6 @@ class MatplotlibOptions(QWidget, MatplotlibOptions_UI):
         self._update_boundaries()
 
     def set_y_range(self, range_):
-
         min_, max_ = range_
 
         self.y_min_spinbox.blockSignals(True)
@@ -255,32 +249,25 @@ class MatplotlibOptions(QWidget, MatplotlibOptions_UI):
         self._update_boundaries()
 
     def add_colorbar(self, state):
-
         enable = True if state != 0 else False
         self.colorbar_changed.emit(enable)
 
     def add_grid(self, which):
-
         self.grid_changed.emit(which)
 
     def add_ticks(self, num):
-
         self.ticks_changed.emit(num)
 
     def add_title(self, text):
-
         self.title_changed.emit(text)
 
     def add_x_label(self, text):
-
         self.x_label_changed.emit(text)
 
     def add_y_label(self, text):
-
         self.y_label_changed.emit(text)
 
     def change_x_range(self):
-
         range_ = self.get_x_range()
 
         self._update_boundaries()
@@ -288,7 +275,6 @@ class MatplotlibOptions(QWidget, MatplotlibOptions_UI):
         self.x_range_changed.emit(range_)
 
     def change_y_range(self):
-
         range_ = self.get_y_range()
 
         self._update_boundaries()
@@ -296,18 +282,15 @@ class MatplotlibOptions(QWidget, MatplotlibOptions_UI):
         self.y_range_changed.emit(range_)
 
     def fit_axis(self):
-
         self.fit_axis_triggered.emit()
 
     def _update_boundaries(self):
-
         self.x_min_spinbox.setMaximum(self.x_max_spinbox.value() - 0.01)
         self.x_max_spinbox.setMinimum(self.x_min_spinbox.value() + 0.01)
         self.y_min_spinbox.setMaximum(self.y_max_spinbox.value() - 0.01)
         self.y_max_spinbox.setMinimum(self.y_min_spinbox.value() + 0.01)
 
     def _connect(self):
-
         self.colorbar_checkbox.stateChanged.connect(self.add_colorbar)
         self.grid_combobox.currentTextChanged.connect(self.add_grid)
         self.ticks_spinbox.valueChanged.connect(self.add_ticks)

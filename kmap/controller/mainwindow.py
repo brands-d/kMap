@@ -1,24 +1,23 @@
 # Python Imports
+import _pickle as pickle
+import bz2
 import logging
-import traceback
-import pickle
 
 # PyQt5 Imports
 from PyQt5 import uic
+from PyQt5.QtCore import QDir
 from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox
-from PyQt5.QtCore import QDir
 
 # Own Imports
-from kmap import __directory__, __version__
+from kmap import __directory__
+from kmap.config.config import config
 from kmap.controller.databasewindows import (
     OrbitalDatabase, SlicedDatabaseWindow)
-from kmap.controller.tabwidget import TabWidget
+from kmap.controller.orbitaldatatab import OrbitalDataTab
+from kmap.controller.sliceddatatab import SlicedDataTab
 from kmap.controller.tabchoosewindow import TabChooseWindow
 from kmap.model.mainwindow_model import MainWindowModel
-from kmap.controller.sliceddatatab import SlicedDataTab
-from kmap.controller.orbitaldatatab import OrbitalDataTab
-from kmap.config.config import config
 
 # Load .ui File
 UI_file = __directory__ + QDir.toNativeSeparators('/ui/mainwindow.ui')
@@ -58,7 +57,6 @@ class MainWindow(QMainWindow, MainWindow_UI):
             return
 
         for path in paths:
-
             self.tab_widget.open_sliced_data_tab(path)
 
     def open_orbitaldatabase_browser(self):
@@ -176,7 +174,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
         # Open general user settings
 
         path = __directory__ + \
-            QDir.toNativeSeparators('/config/settings_user.ini')
+               QDir.toNativeSeparators('/config/settings_user.ini')
         title = 'General Settings'
 
         self.tab_widget.open_file_tab(
@@ -194,7 +192,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
         # Open logging user settings
 
         path = __directory__ + \
-            QDir.toNativeSeparators('/config/logging_user.ini')
+               QDir.toNativeSeparators('/config/logging_user.ini')
         title = 'Logging Settings'
 
         self.tab_widget.open_file_tab(
@@ -204,7 +202,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
         # Open general default settings
 
         path = __directory__ + \
-            QDir.toNativeSeparators('/config/settings_default.ini')
+               QDir.toNativeSeparators('/config/settings_default.ini')
         title = 'General Settings (Default)'
 
         self.tab_widget.open_file_tab(
@@ -214,7 +212,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
         # Open logging default settings
 
         path = __directory__ + \
-            QDir.toNativeSeparators('/config/logging_default.ini')
+               QDir.toNativeSeparators('/config/logging_default.ini')
         title = 'Logging Settings (Default)'
 
         self.tab_widget.open_file_tab(
@@ -224,7 +222,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
         # Open a README page
 
         path = __directory__ + \
-            QDir.toNativeSeparators('/resources/texts/readme.txt')
+               QDir.toNativeSeparators('/resources/texts/readme.txt')
         title = 'README'
 
         self.tab_widget.open_file_tab(
@@ -234,7 +232,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
         # Open a welcome page
 
         path = __directory__ + \
-            QDir.toNativeSeparators('/resources/texts/welcome.txt')
+               QDir.toNativeSeparators('/resources/texts/welcome.txt')
         title = 'Welcome'
 
         self.tab_widget.open_file_tab(
@@ -244,7 +242,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
         # Open an about window
 
         path = __directory__ + \
-            QDir.toNativeSeparators('/resources/texts/about.txt')
+               QDir.toNativeSeparators('/resources/texts/about.txt')
         title, text = self.model.get_about_text(path)
         QMessageBox.about(self, title, text)
 
@@ -318,7 +316,19 @@ class MainWindow(QMainWindow, MainWindow_UI):
         if not file_name.endswith('.kmap'):
             file_name += '.kmap'
 
-        pickle.dump(tab_saves, open(file_name, 'wb'))
+        # pickle.dump(tab_saves, open(file_name, 'wb'))
+        self.compress_pickle_dump(file_name, tab_saves)
+
+    def compress_pickle_dump(self, title, data):
+
+        with bz2.BZ2File(title, 'w') as f:
+            pickle.dump(data, f)
+
+    def decompress_pickle(self, file):
+
+        data = bz2.BZ2File(file, 'rb')
+        data = pickle.load(data)
+        return data
 
     def load_project(self):
 
@@ -328,7 +338,8 @@ class MainWindow(QMainWindow, MainWindow_UI):
             None, 'Load Project File (*.kmap)', start_path)
 
         file_path = file_names[0]
-        save = pickle.load(open(file_path, 'rb'))
+        # save = pickle.load(open(file_path, 'rb'))
+        save = self.decompress_pickle(file_path)
 
         data_tabs = [tab_save for tab_save in
                      save if tab_save[1][0] in ['SlicedDataTab',
@@ -400,7 +411,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
             try:
                 window.close()
 
-            except Exception as e:
+            except Exception:
                 pass
 
         event.accept()
