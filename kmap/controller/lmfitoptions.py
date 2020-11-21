@@ -1,3 +1,6 @@
+# Python Imports
+import os
+
 # PyQt5 Imports
 from PyQt5 import uic
 from PyQt5.QtWidgets import QWidget
@@ -13,14 +16,11 @@ LMFitOptions_UI, _ = uic.loadUiType(UI_file)
 
 
 class LMFitOptions(QWidget, LMFitOptions_UI):
-
     fit_triggered = pyqtSignal()
     region_changed = pyqtSignal(str, bool)
     background_changed = pyqtSignal(str)
     method_changed = pyqtSignal(str)
     slice_policy_changed = pyqtSignal(str)
-
-    equations_path = __directory__+ QDir.toNativeSeparators('/resources/misc/background_equations')
 
     def __init__(self, parent):
 
@@ -132,11 +132,15 @@ class LMFitOptions(QWidget, LMFitOptions_UI):
 
     def _setup(self):
 
-        with open(LMFitOptions.equations_path, 'r') as file:
+        temp = __directory__ + config.get_key('paths', 'equations')
+        default = temp + 'background_equations_default'
+        user = temp + 'background_equations_user'
+        self.path = user if os.path.isfile(user) else default
+
+        with open(self.path, 'r') as file:
             equations = file.read().split('\n')
 
         for equation in equations:
-
             self.background_combobox.addItem(equation)
 
         self.background_combobox.setCurrentIndex(0)

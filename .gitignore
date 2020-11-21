@@ -141,7 +141,7 @@ cython_debug/
 report.tar.gz
 
 # User Settings
-*_user.ini
+*_user*
 
 # Other
 /src

@@ -1,4 +1,5 @@
 # Python Imports
+import os
 import logging
 import traceback
 
@@ -27,7 +28,11 @@ class Colormap(QWidget, Colormap_UI):
         self._connect()
 
         # Path for the .json file containing the colormaps
-        self.path = __directory__ + config.get_key('paths', 'colormap')
+        temp = __directory__ + config.get_key('paths', 'colormap')
+        default = temp + 'colormaps_default.json'
+        user = temp + 'colormaps_user.json'
+        self.path = user if os.path.isfile(user) else default
+
         self.model = ColormapModel(plot_item)
 
         self.load_colormaps()
@@ -63,7 +68,8 @@ class Colormap(QWidget, Colormap_UI):
         except ValueError:
             log = logging.getLogger('kmap')
 
-            log.error('This colormap does not exist. Please save the colormap first.')
+            log.error(
+                'This colormap does not exist. Please save the colormap first.')
             log.error(traceback.format_exc())
 
     def add_colormap(self):
