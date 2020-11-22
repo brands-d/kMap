@@ -1,3 +1,8 @@
-include kmap/config/*.ini
-include kmap/resources/misc/background_equations
-include kmap/resources/misc/colormaps.json
+include kmap/config/settings_default.ini
+include kmap/config/shortcut_default.ini
+include kmap/config/logging_default.ini
+include kmap/resources/images/*
+include kmap/resources/texts/*
+include kmap/resources/misc/background_equations_default
+include kmap/resources/misc/colormaps_default.json
+include kmap/ui/*
