@@ -3,7 +3,6 @@ import logging
 
 # PyQt5 Imports
 from PyQt5 import uic
-from PyQt5.QtCore import QDir
 
 # Own Imports
 from kmap import __directory__
@@ -16,9 +15,8 @@ from kmap.controller.crosshairannulus import CrosshairAnnulus
 from kmap.controller.pyqtgraphplot import PyQtGraphPlot
 from kmap.controller.colormap import Colormap
 
-
 # Load .ui File
-UI_file = __directory__ + QDir.toNativeSeparators('/ui/sliceddatatab.ui')
+UI_file = __directory__ / 'ui/sliceddatatab.ui'
 SlicedDataTab_UI, _ = uic.loadUiType(UI_file)
 
 
@@ -94,7 +92,7 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
         tab.crosshair.restore_state(save['crosshair'])
         tab.interpolation.restore_state(save['interpolation'])
         tab.colormap.restore_state(save['colormap'])
-        
+
         new_ID = tab.model.data.ID
         return tab, [[save['model']['ID'], new_ID]]
 

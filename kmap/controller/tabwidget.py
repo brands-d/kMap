@@ -6,7 +6,7 @@ import datetime
 # PyQt5 Imports
 from PyQt5 import uic
 from PyQt5.QtWidgets import QWidget
-from PyQt5.QtCore import pyqtSignal, QDir
+from PyQt5.QtCore import pyqtSignal
 
 # Own Imports
 from kmap import __directory__
@@ -21,12 +21,11 @@ from kmap.library.qwidgetsub import Tab
 from kmap.config.config import config
 
 # Load .ui File
-UI_file = __directory__ + QDir.toNativeSeparators('/ui/tabwidget.ui')
+UI_file = __directory__ / 'ui/tabwidget.ui'
 TabWidget_UI, _ = uic.loadUiType(UI_file)
 
 
 class TabWidget(QWidget, TabWidget_UI):
-
     tab_added = pyqtSignal(Tab)
 
     def __init__(self, *args, **kwargs):
@@ -40,17 +39,17 @@ class TabWidget(QWidget, TabWidget_UI):
         # Opens a new sliced data tab
 
         log = logging.getLogger('kmap')
-        log.info('Trying to load %s' % path)
+        log.info('Trying to load %s' % str(path))
 
         try:
-            tab = SlicedDataTab.init_from_path(path)
+            tab = SlicedDataTab.init_from_path(str(path))
             title = tab.get_title()
             tooltip = tab.to_string()
             self._open_tab(tab, title, tooltip)
 
         except Exception as e:
 
-            log.error('Couldn\'t load %s' % path)
+            log.error('Couldn\'t load %s' % str(path))
             log.error(traceback.format_exc())
 
     def open_sliced_data_tab_by_URLs(self, URLs):

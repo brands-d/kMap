@@ -1,14 +1,13 @@
 # PyQt5 Imports
 from PyQt5 import uic
 from PyQt5.QtWidgets import QWidget
-from PyQt5.QtCore import Qt, QDir
+from PyQt5.QtCore import Qt
 
 # Own Imports
 from kmap import __directory__
 
 # Load .ui File
-UI_file = __directory__ + \
-    QDir.toNativeSeparators('/ui/slicedcubefileoptions.ui')
+UI_file = __directory__ / 'ui/slicedcubefileoptions.ui'
 SlicedDataBaseOptions_UI, _ = uic.loadUiType(UI_file)
 
 
@@ -31,12 +30,12 @@ class SlicedCubefileOptions(QWidget, SlicedDataBaseOptions_UI):
         value_index = self.value_combobox.currentIndex()
 
         if domain_index == 0:
-            domain = 'real-space' 
+            domain = 'real-space'
 
         else:
             domain = 'k-space'
 
-        if value_index == 0:   
+        if value_index == 0:
             value = 'real'
 
         elif value_index == 1:
@@ -47,7 +46,6 @@ class SlicedCubefileOptions(QWidget, SlicedDataBaseOptions_UI):
 
         elif value_index == 3:
             value = 'abs2'
-
 
         return (name, domain, dk3D, E_kin_max, value)
 

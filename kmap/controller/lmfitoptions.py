@@ -4,14 +4,14 @@ import os
 # PyQt5 Imports
 from PyQt5 import uic
 from PyQt5.QtWidgets import QWidget
-from PyQt5.QtCore import QDir, pyqtSignal
+from PyQt5.QtCore import pyqtSignal
 
 # Own Imports
 from kmap import __directory__
 from kmap.config.config import config
 
 # Load .ui File
-UI_file = __directory__ + QDir.toNativeSeparators('/ui/lmfitoptions.ui')
+UI_file = __directory__ / 'ui/lmfitoptions.ui'
 LMFitOptions_UI, _ = uic.loadUiType(UI_file)
 
 

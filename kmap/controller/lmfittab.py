@@ -11,7 +11,7 @@ import numpy as np
 
 # PyQt5 Imports
 from PyQt5 import uic
-from PyQt5.QtCore import QDir, pyqtSignal, Qt
+from PyQt5.QtCore import pyqtSignal, Qt
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
 
 # Own Imports
@@ -30,7 +30,7 @@ from kmap.controller.lmfitorbitaloptions import LMFitOrbitalOptions
 from kmap.config.config import config
 
 # Load .ui File
-UI_file = __directory__ + QDir.toNativeSeparators('/ui/lmfittab.ui')
+UI_file = __directory__ / 'ui/lmfittab.ui'
 LMFitTab_UI, _ = uic.loadUiType(UI_file)
 
 
@@ -128,7 +128,6 @@ class LMFitBaseTab(Tab):
 
 
 class LMFitTab(LMFitBaseTab, LMFitTab_UI):
-
     fit_finished = pyqtSignal(list, dict)
 
     def __init__(self, sliced_tab, orbital_tab):
@@ -302,7 +301,6 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
 
 
 class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
-
     open_plot_tab = pyqtSignal(list, list, Axis)
 
     def __init__(self, lmfit_tab, results, settings):

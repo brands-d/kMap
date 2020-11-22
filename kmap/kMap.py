@@ -1,10 +1,10 @@
 import os
 import logging
 import logging.config
+from pathlib import Path
 
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QApplication
-from PyQt5.QtCore import QDir
 
 import pyqtgraph as pg
 
@@ -46,8 +46,7 @@ class kMap(QApplication):
         # Logging
         # Delete old log files if user set to do so
         if startup and config.get_key('logging', 'persistent') == 'False':
-            log_file = __directory__ + \
-                QDir.toNativeSeparators('/../default.log')
+            log_file = __directory__ / '../default.log'
             if os.path.exists(log_file):
                 os.remove(log_file)
 

@@ -15,7 +15,7 @@ from kmap.controller.sliceddatatab import SlicedDataTab
 from kmap.controller.orbitaldatatab import OrbitalDataTab
 
 # Load .ui File
-UI_file = __directory__ + '/ui/profileplottab.ui'
+UI_file = __directory__ / 'ui/profileplottab.ui'
 ProfilePlotTab_UI, _ = uic.loadUiType(UI_file)
 
 
@@ -53,7 +53,8 @@ class ProfilePlotTab(Tab, ProfilePlotTab_UI):
 
         if is_slice_plot:
             regions = np.array(['center', 'x', 'y', 'roi', 'border',
-                                'ring'])[self.show_options[self.tab_combobox.currentIndex()]]
+                                'ring'])[
+                self.show_options[self.tab_combobox.currentIndex()]]
 
             if self.center_checkbox.isChecked():
                 np.insert(regions, 0, 'center')

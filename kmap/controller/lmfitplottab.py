@@ -7,7 +7,7 @@ from kmap import __directory__
 from kmap.library.qwidgetsub import Tab
 
 # Load .ui File
-UI_file = __directory__ + '/ui/lmfitplottab.ui'
+UI_file = __directory__ / 'ui/lmfitplottab.ui'
 LMFitPlotTab_UI, _ = uic.loadUiType(UI_file)
 
 
@@ -83,7 +83,8 @@ class LMFitPlotTab(Tab, LMFitPlotTab_UI):
 
         self.plot_item.set_label('%s [%s]' % (self.x_axis.label,
                                               self.x_axis.units),
-                                 possible_labels[self.parameter_combobox.currentIndex()])
+                                 possible_labels[
+                                     self.parameter_combobox.currentIndex()])
 
     def _connect(self):
 

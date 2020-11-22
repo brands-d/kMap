@@ -3,7 +3,7 @@ from math import ceil, floor
 
 # PyQt5 Imports
 from PyQt5 import uic
-from PyQt5.QtCore import pyqtSignal, QDir
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QWidget
 from matplotlib.backends.backend_qt5agg import (FigureCanvas,
                                                 NavigationToolbar2QT)
@@ -18,7 +18,7 @@ from kmap.library.qwidgetsub import AspectWidget
 from kmap.model.matplotlibwindow_model import MatplotlibWindowModel
 
 # Load .ui File
-UI_file = __directory__ + QDir.toNativeSeparators('/ui/matplotlibwindow.ui')
+UI_file = __directory__ / 'ui/matplotlibwindow.ui'
 MatplotlibWindow_UI, _ = uic.loadUiType(UI_file)
 
 
@@ -181,7 +181,7 @@ class MatplotlibWindow(QMainWindow, MatplotlibWindow_UI):
 
 
 # Load .ui File
-UI_file = __directory__ + QDir.toNativeSeparators('/ui/matplotliboptions.ui')
+UI_file = __directory__ / 'ui/matplotliboptions.ui'
 MatplotlibOptions_UI, _ = uic.loadUiType(UI_file)
 
 

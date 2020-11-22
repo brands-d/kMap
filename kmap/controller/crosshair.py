@@ -1,6 +1,6 @@
 # PyQt5 Imports
 from PyQt5 import uic
-from PyQt5.QtCore import pyqtSignal, QDir
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QWidget
 
 # Third Party Imports
@@ -14,12 +14,11 @@ from kmap.library.misc import normalize
 from kmap.model.crosshair_model import CrosshairModel
 
 # Load .ui File
-UI_file = __directory__ + QDir.toNativeSeparators('/ui/crosshair.ui')
+UI_file = __directory__  / 'ui/crosshair.ui'
 Crosshair_UI, _ = uic.loadUiType(UI_file)
 
 
 class CrosshairBase(QWidget):
-
     crosshair_changed = pyqtSignal()
 
     def __init__(self, plot_item):
@@ -65,7 +64,7 @@ class CrosshairBase(QWidget):
         x = self.model.x
         y = self.model.y
 
-        self.distance_value_label.setText('%.2f' % np.sqrt(x**2 + y**2))
+        self.distance_value_label.setText('%.2f' % np.sqrt(x ** 2 + y ** 2))
 
     def move_crosshair_from_drag(self):
 
@@ -175,7 +174,6 @@ class CrosshairBase(QWidget):
 class Crosshair(CrosshairBase, Crosshair_UI):
 
     def __init__(self, plot_item):
-
         # Setup GUI
         super(Crosshair, self).__init__(plot_item)
         self.setupUi(self)

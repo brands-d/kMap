@@ -5,18 +5,16 @@ import numpy.testing as npt
 from kmap import __directory__
 from kmap.library.sliceddata import SlicedData
 
-dir_path = os.path.dirname(os.path.realpath(__file__))
-
 
 class TestSlicedData(unittest.TestCase):
 
     def test_initialization_from_hdf5(self):
-
         sliced_data = SlicedData.init_from_hdf5(
-            dir_path + '/../../example/data/example5_6584.hdf5')
+            __directory__ / 'example/data/example5_6584.hdf5')
 
         npt.assert_almost_equal(
-            sliced_data.slice_from_index(2).data[145, 235], 194.848388671875, decimal=14)
+            sliced_data.slice_from_index(2).data[145, 235], 194.848388671875,
+            decimal=14)
 
         (sliced_data.name, '6584estep0.0170213final.txt')
         npt.assert_equal(sliced_data.meta_data, {'alias': 'M3 PTCDA/Ag(110)',

@@ -6,7 +6,6 @@ import traceback
 # PyQt5 Imports
 from PyQt5 import uic
 from PyQt5.QtWidgets import QWidget
-from PyQt5.QtCore import QDir
 
 # Own Imports
 from kmap import __directory__
@@ -14,7 +13,7 @@ from kmap.model.colormap_model import ColormapModel
 from kmap.config.config import config
 
 # Load .ui File
-UI_file = __directory__ + QDir.toNativeSeparators('/ui/colormap.ui')
+UI_file = __directory__ / 'ui/colormap.ui'
 Colormap_UI, _ = uic.loadUiType(UI_file)
 
 
@@ -28,9 +27,9 @@ class Colormap(QWidget, Colormap_UI):
         self._connect()
 
         # Path for the .json file containing the colormaps
-        temp = __directory__ + config.get_key('paths', 'colormap')
-        default = temp + 'colormaps_default.json'
-        user = temp + 'colormaps_user.json'
+        temp = __directory__ / config.get_key('paths', 'colormap')
+        default = temp / 'colormaps_default.json'
+        user = temp / 'colormaps_user.json'
         self.path = user if os.path.isfile(user) else default
 
         self.model = ColormapModel(plot_item)

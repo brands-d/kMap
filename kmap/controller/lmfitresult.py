@@ -10,12 +10,11 @@ from PyQt5.QtCore import QDir, pyqtSignal
 from kmap import __directory__
 
 # Load .ui File
-UI_file = __directory__ + QDir.toNativeSeparators('/ui/lmfitresult.ui')
+UI_file = __directory__ / 'ui/lmfitresult.ui'
 LMFitResult_UI, _ = uic.loadUiType(UI_file)
 
 
 class LMFitResult(QWidget, LMFitResult_UI):
-
     print_triggered = pyqtSignal()
     cov_matrix_requested = pyqtSignal()
     plot_requested = pyqtSignal()
@@ -45,7 +44,7 @@ class LMFitResult(QWidget, LMFitResult_UI):
         if len(list(slices)) == 1:
             type_ = 'Only One Slice (%i)' % slices[0]
             self.plot_button.setEnabled(False)
-            
+
         else:
             if lmfit_model.slice_policy[2]:
                 type_ = 'All Slices Combined'

@@ -3,7 +3,7 @@ import logging
 
 # PyQt5 Imports
 from PyQt5 import uic
-from PyQt5.QtCore import Qt, pyqtSignal, QDir
+from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import QWidget, QHeaderView, QHBoxLayout, QSizePolicy
 
 # Own Imports
@@ -16,12 +16,11 @@ from kmap.controller.lmfittreeitems import (
     BackgroundOptionsResultTreeItem)
 
 # Load .ui File
-UI_file = __directory__ + QDir.toNativeSeparators('/ui/lmfittree.ui')
+UI_file = __directory__ / 'ui/lmfittree.ui'
 LMFitTree_UI, _ = uic.loadUiType(UI_file)
 
 
 class LMFitBaseTree(QWidget):
-
     item_selected = pyqtSignal()
 
     def get_selected_orbital_ID(self):
@@ -47,7 +46,6 @@ class LMFitBaseTree(QWidget):
 
 
 class LMFitTree(LMFitBaseTree, LMFitTree_UI):
-
     value_changed = pyqtSignal()
     vary_changed = pyqtSignal()
 
@@ -105,7 +103,7 @@ class LMFitTree(LMFitBaseTree, LMFitTree_UI):
 
 
 # Load .ui File
-UI_file = __directory__ + QDir.toNativeSeparators('/ui/lmfitresulttree.ui')
+UI_file = __directory__ / 'ui/lmfitresulttree.ui'
 LMFitResultTree_UI, _ = uic.loadUiType(UI_file)
 
 

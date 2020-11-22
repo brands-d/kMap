@@ -5,7 +5,6 @@ import logging
 
 # PyQt5 Imports
 from PyQt5 import uic
-from PyQt5.QtCore import QDir
 from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox
 
@@ -20,7 +19,7 @@ from kmap.controller.tabchoosewindow import TabChooseWindow
 from kmap.model.mainwindow_model import MainWindowModel
 
 # Load .ui File
-UI_file = __directory__ + QDir.toNativeSeparators('/ui/mainwindow.ui')
+UI_file = __directory__ / 'ui/mainwindow.ui'
 MainWindow_UI, _ = uic.loadUiType(UI_file)
 
 
@@ -46,10 +45,10 @@ class MainWindow(QMainWindow, MainWindow_UI):
         log = logging.getLogger('kmap')
         log.info('Loading .hdf5 file(s)...')
 
-        start_path = __directory__ + config.get_key('paths', 'hdf5_start')
+        start_path = str(__directory__ / config.get_key('paths', 'hdf5_start'))
         extensions = 'hdf5 files (*.hdf5 *.h5);; All Files (*)'
         paths, _ = QFileDialog.getOpenFileNames(
-            None, 'Open file(s)', start_path, extensions)
+            None, 'Open file(s)', str(start_path), extensions)
 
         if not paths:
             # No file chosen
@@ -135,10 +134,10 @@ class MainWindow(QMainWindow, MainWindow_UI):
     def load_cube_files_locally(self):
         # Load one or more new cube files
 
-        start_path = __directory__ + config.get_key('paths', 'cube_start')
+        start_path = __directory__ / config.get_key('paths', 'cube_start')
         extensions = 'cube files (*.cube);; All Files (*)'
         paths, _ = QFileDialog.getOpenFileNames(
-            None, 'Open file(s)', start_path, extensions)
+            None, 'Open file(s)', str(start_path), extensions)
 
         if not paths:
             # No file chosen
@@ -155,7 +154,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
     def open_log_file(self):
         # Open log file
 
-        path = __directory__ + QDir.toNativeSeparators('/../default.log')
+        path = __directory__ / '../default.log'
         title = 'Log File'
 
         self.tab_widget.open_file_tab(
@@ -164,7 +163,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
     def open_mod_log_file(self):
         # Open module log file
 
-        path = __directory__ + QDir.toNativeSeparators('/../modules.log')
+        path = __directory__ / '../modules.log'
         title = 'Modules Log File'
 
         self.tab_widget.open_file_tab(
@@ -173,8 +172,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
     def open_general_settings(self):
         # Open general user settings
 
-        path = __directory__ + \
-               QDir.toNativeSeparators('/config/settings_user.ini')
+        path = __directory__ / 'config/settings_user.ini'
         title = 'General Settings'
 
         self.tab_widget.open_file_tab(
@@ -191,8 +189,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
     def open_logging_settings(self):
         # Open logging user settings
 
-        path = __directory__ + \
-               QDir.toNativeSeparators('/config/logging_user.ini')
+        path = __directory__ / 'config/logging_user.ini'
         title = 'Logging Settings'
 
         self.tab_widget.open_file_tab(
@@ -201,8 +198,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
     def open_general_default_settings(self):
         # Open general default settings
 
-        path = __directory__ + \
-               QDir.toNativeSeparators('/config/settings_default.ini')
+        path = __directory__ / 'config/settings_default.ini'
         title = 'General Settings (Default)'
 
         self.tab_widget.open_file_tab(
@@ -211,8 +207,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
     def open_logging_default_settings(self):
         # Open logging default settings
 
-        path = __directory__ + \
-               QDir.toNativeSeparators('/config/logging_default.ini')
+        path = __directory__ / 'config/logging_default.ini'
         title = 'Logging Settings (Default)'
 
         self.tab_widget.open_file_tab(
@@ -221,8 +216,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
     def open_readme(self):
         # Open a README page
 
-        path = __directory__ + \
-               QDir.toNativeSeparators('/resources/texts/readme.txt')
+        path = __directory__ / 'resources/texts/readme.txt'
         title = 'README'
 
         self.tab_widget.open_file_tab(
@@ -231,8 +225,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
     def open_welcome(self):
         # Open a welcome page
 
-        path = __directory__ + \
-               QDir.toNativeSeparators('/resources/texts/welcome.txt')
+        path = __directory__ / 'resources/texts/welcome.txt'
         title = 'Welcome'
 
         self.tab_widget.open_file_tab(
@@ -241,8 +234,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
     def open_about(self):
         # Open an about window
 
-        path = __directory__ + \
-               QDir.toNativeSeparators('/resources/texts/about.txt')
+        path = __directory__ / 'resources/texts/about.txt'
         title, text = self.model.get_about_text(path)
         QMessageBox.about(self, title, text)
 
@@ -309,9 +301,9 @@ class MainWindow(QMainWindow, MainWindow_UI):
                 tab) for tab in dependencies]
             tab_saves.append([i, [type(tab).__name__, save], dependencies])
 
-        start_path = __directory__ + config.get_key('paths', 'project_start')
+        start_path = __directory__ / config.get_key('paths', 'project_start')
         file_name, _ = QFileDialog.getSaveFileName(
-            None, 'Save Project File (*.kmap)', start_path)
+            None, 'Save Project File (*.kmap)', str(start_path))
 
         if not file_name.endswith('.kmap'):
             file_name += '.kmap'
@@ -332,10 +324,9 @@ class MainWindow(QMainWindow, MainWindow_UI):
 
     def load_project(self):
 
-        start_path = __directory__ + config.get_key('paths', 'project_start')
-        extensions = 'hdf5 files (*.kmap);; All Files (*)'
+        start_path = __directory__ / config.get_key('paths', 'project_start')
         file_names, _ = QFileDialog.getOpenFileNames(
-            None, 'Load Project File (*.kmap)', start_path)
+            None, 'Load Project File (*.kmap)', str(start_path))
 
         file_path = file_names[0]
         # save = pickle.load(open(file_path, 'rb'))
@@ -438,9 +429,8 @@ class MainWindow(QMainWindow, MainWindow_UI):
         if config.get_key('app', 'fullscreen') == 'True':
             self.showMaximized()
         self.setWindowTitle('kMap.py')
-        self.setWindowIcon(QIcon(__directory__ +
-                                 QDir.toNativeSeparators(
-                                     '/resources/images/icon.png')))
+        self.setWindowIcon(QIcon(str(__directory__ /
+                                     'resources/images/icon.png')))
         self.show()
 
     def _initialize_shortcuts(self):

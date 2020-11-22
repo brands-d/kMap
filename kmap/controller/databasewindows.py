@@ -3,7 +3,7 @@ import logging
 
 # PyQt5 Imports
 from PyQt5 import uic
-from PyQt5.QtCore import Qt, pyqtSignal, QDir
+from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import QMainWindow, QTreeWidgetItem, QHeaderView
 
 # Own Imports
@@ -15,16 +15,14 @@ from kmap.controller.slicedcubefileoptions import SlicedCubefileOptions
 from kmap.config.config import config
 
 # Load .ui File for SlicedDataDatabase
-UI_file = __directory__ + QDir.toNativeSeparators('/ui/databasewindow.ui')
+UI_file = __directory__ / 'ui/databasewindow.ui'
 DatabaseWindow_UI, _ = uic.loadUiType(UI_file)
 # Load .ui File for OrbitalDatabase
-UI_file = __directory__ + \
-    QDir.toNativeSeparators('/ui/sliceddatabasewindow.ui')
+UI_file = __directory__ / 'ui/sliceddatabasewindow.ui'
 SlicedDatabaseWindow_UI, _ = uic.loadUiType(UI_file)
 
 
 class DatabaseWindowBase(QMainWindow):
-
     files_chosen = pyqtSignal(list)
 
     def __init__(self):
@@ -141,7 +139,7 @@ class DatabaseWindowBase(QMainWindow):
 
         filter_ = self.combobox.currentText()
 
-        if filter_ == 'No Filter'or molecule.XC_functional == filter_:
+        if filter_ == 'No Filter' or molecule.XC_functional == filter_:
             return True
 
         else:
@@ -186,7 +184,7 @@ class OrbitalDatabase(DatabaseWindowBase, DatabaseWindow_UI):
         self._connect()
 
         # Setup database
-        path = __directory__ + config.get_key('paths', 'database')
+        path = __directory__ / config.get_key('paths', 'database')
         self.database = Database(path)
 
         # URLs (with extra information if available) chosen
@@ -231,8 +229,8 @@ class SlicedDatabaseWindow(DatabaseWindowBase, SlicedDatabaseWindow_UI):
         self._connect()
 
         # Setup database
-        path = __directory__ + config.get_key('paths', 'database')
-        self.database = Database(path)
+        path = __directory__ / config.get_key('paths', 'database')
+        self.database = Database(str(path))
 
         # Open Options Window
         if mode == 'binding-energy':
@@ -296,7 +294,6 @@ class TreeWidgetItem(QTreeWidgetItem):
 class MoleculeTreeWidgetItem(TreeWidgetItem):
 
     def __init__(self, molecule, *args, **kwargs):
-
         self.molecule = molecule
 
         super(MoleculeTreeWidgetItem, self).__init__(*args, **kwargs)
@@ -305,7 +302,6 @@ class MoleculeTreeWidgetItem(TreeWidgetItem):
 class OrbitalTreeWidgetItem(TreeWidgetItem):
 
     def __init__(self, orbital, *args, **kwargs):
-
         self.orbital = orbital
 
         super(OrbitalTreeWidgetItem, self).__init__(*args, **kwargs)

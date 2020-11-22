@@ -1,18 +1,17 @@
 # PyQt5 Imports
 from PyQt5 import uic
-from PyQt5.QtCore import Qt, pyqtSignal, QDir
+from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import QMainWindow
 
 # Own Imports
 from kmap import __directory__
 
 # Load .ui File
-UI_file = __directory__ + QDir.toNativeSeparators('/ui/tabchoosewindow.ui')
+UI_file = __directory__ / 'ui/tabchoosewindow.ui'
 TabChooseWindow_UI, _ = uic.loadUiType(UI_file)
 
 
 class TabChooseWindow(QMainWindow, TabChooseWindow_UI):
-
     tabs_chosen = pyqtSignal(list)
 
     def __init__(self, sliced_tabs, orbital_tabs, *args, **kwargs):

@@ -1,14 +1,13 @@
 # PyQt5 Imports
 from PyQt5 import uic
 from PyQt5.QtWidgets import QWidget
-from PyQt5.QtCore import Qt, QDir
+from PyQt5.QtCore import Qt
 
 # Own Imports
 from kmap import __directory__
 
 # Load .ui File
-UI_file = __directory__ + \
-    QDir.toNativeSeparators('/ui/sliceddatabaseoptions2.ui')
+UI_file = __directory__ / 'ui/sliceddatabaseoptions2.ui'
 SlicedDataBaseOptions_UI, _ = uic.loadUiType(UI_file)
 
 

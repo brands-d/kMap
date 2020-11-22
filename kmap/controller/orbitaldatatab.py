@@ -3,7 +3,7 @@ import logging
 
 # PyQt5 Imports
 from PyQt5 import uic
-from PyQt5.QtCore import pyqtSignal, QDir
+from PyQt5.QtCore import pyqtSignal
 
 # Own Imports
 from kmap import __directory__
@@ -20,14 +20,12 @@ from kmap.controller.polarization import Polarization
 from kmap.library.sliceddata import Axis
 from kmap.config.config import config
 
-
 # Load .ui File
-UI_file = __directory__ + QDir.toNativeSeparators('/ui/orbitaldatatab.ui')
+UI_file = __directory__ / 'ui/orbitaldatatab.ui'
 OrbitalDataTab_UI, _ = uic.loadUiType(UI_file)
 
 
 class OrbitalDataTab(Tab, OrbitalDataTab_UI):
-
     orbital_removed = pyqtSignal(int)
     orbital_added = pyqtSignal(int)
 
