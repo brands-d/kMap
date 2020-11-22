@@ -454,7 +454,14 @@ class MainWindow(QMainWindow, MainWindow_UI):
                    self.open_lmfit_tab_action,
                    self.settings_action, self.duplicate_tab_action,
                    self.close_tab_action, self.save_project_action,
-                   self.load_project_action]
+                   self.load_project_action,
+                   self.general_default_action,
+                   self.general_action,
+                   self.logging_default_action,
+                   self.logging_action, self.open_sim_tab_action,
+                   self.open_profile_tab_action, self.mod_log_file_action,
+                   self.export_txt, self.load_sliced_from_cubefile_action,
+                   self.welcome_action, self.about_action, self.readme_action]
 
         alias = ['load_hdf5', 'load_sliced_from_binding_energy_action',
                  'load_sliced_from_photon_energy_action',
@@ -462,11 +469,18 @@ class MainWindow(QMainWindow, MainWindow_UI):
                  'load_cube_online', 'load_cube_file',
                  'open_lmfit', 'reload_settings',
                  'duplicate_tab_action', 'close_tab_action',
-                 'save_project_action', 'load_project_action']
+                 'save_project_action', 'load_project_action',
+                 'open_general_default', 'open_general_user',
+                 'open_logging_default', 'open_logging_user',
+                 'open_sim_tab_action', 'open_profile_tab_action',
+                 'mod_log_file_action', 'export_txt',
+                 'load_sliced_from_cubefile_action',
+                 'welcome_action', 'about_action', 'readme_action']
 
         for action, alias in zip(actions, alias):
             shortcut = config.get_key('shortcut', alias, file='shortcut')
-            action.setShortcut(QKeySequence(shortcut))
+            if shortcut != 'None':
+                action.setShortcut(QKeySequence(shortcut))
 
         self.ref_action.setShortcut(QKeySequence('Ctrl+r'))
 
