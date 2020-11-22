@@ -10,7 +10,7 @@ class TestSlicedData(unittest.TestCase):
 
     def test_initialization_from_hdf5(self):
         sliced_data = SlicedData.init_from_hdf5(
-            __directory__ / 'example/data/example5_6584.hdf5')
+            __directory__ / '../example/data/example5_6584.hdf5')
 
         npt.assert_almost_equal(
             sliced_data.slice_from_index(2).data[145, 235], 194.848388671875,

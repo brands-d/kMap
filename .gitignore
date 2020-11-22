@@ -147,3 +147,4 @@ report.tar.gz
 /src
 example/testing
 *.kmap
+.idea/
