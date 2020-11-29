@@ -132,9 +132,9 @@ class LMFitOptions(QWidget, LMFitOptions_UI):
 
     def _setup(self):
 
-        temp = __directory__ + config.get_key('paths', 'equations')
-        default = temp + 'background_equations_default'
-        user = temp + 'background_equations_user'
+        temp = __directory__ / config.get_key('paths', 'equations')
+        default = temp / 'background_equations_default'
+        user = temp / 'background_equations_user'
         self.path = user if os.path.isfile(user) else default
 
         with open(self.path, 'r') as file:
