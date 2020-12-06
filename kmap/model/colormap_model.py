@@ -57,7 +57,7 @@ class ColormapModel():
     def save_colormaps(self, path):
         # Save colormaps in json file
 
-        path_temp = path + '.temp'
+        path_temp = path.parent / (path.name + '.temp')
 
         with open(path_temp, 'w') as file:
             data = json.dumps([obj.toList() for obj in self.colormaps])
