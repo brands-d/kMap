@@ -64,25 +64,24 @@ class SlicedData(AbstractData):
             # Read all datasets
             for key, value in file.items():
                 if key == file_keys['name']:
-                    name = str(file[key][()])
+                    name = str(file[key].asstr()[...])
 
                 elif key == file_keys['axis_1_label']:
-                    axis_1_label = file[key][()]
+                    axis_1_label = str(file[key].asstr()[...])
 
                 elif key == file_keys['axis_2_label']:
-                    axis_2_label = file[key][()]
+                    axis_2_label = str(file[key].asstr()[...])
 
                 elif key == file_keys['axis_3_label']:
-                    axis_3_label = file[key][()]
-
+                    axis_3_label = str(file[key].asstr()[...])
                 elif key == file_keys['axis_1_units']:
-                    axis_1_units = file[key][()]
+                    axis_1_units = str(file[key].asstr()[...])
 
                 elif key == file_keys['axis_2_units']:
-                    axis_2_units = file[key][()]
+                    axis_2_units = str(file[key].asstr()[...])
 
                 elif key == file_keys['axis_3_units']:
-                    axis_3_units = file[key][()]
+                    axis_3_units = str(file[key].asstr()[...])
 
                 elif key == file_keys['axis_1_range']:
                     axis_1_range = file[key][()]
@@ -97,7 +96,11 @@ class SlicedData(AbstractData):
                     data = file[key][()]
 
                 else:
-                    meta_data.update({key: str(file[key][()])})
+                    try:
+                        meta_data.update({key: str(file[key].asstr()[...])})
+
+                    except:
+                        meta_data.update({key: str(file[key][()])})
 
         axis_1 = [axis_1_label, axis_1_units, axis_1_range]
         axis_2 = [axis_2_label, axis_2_units, axis_2_range]

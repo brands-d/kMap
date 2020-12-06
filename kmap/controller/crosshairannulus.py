@@ -154,8 +154,7 @@ class CrosshairAnnulusBase(CrosshairROIBase):
                                     rotatable=False,
                                     resizable=True,
                                     removable=False,
-                                    pen='k',
-                                    handlePen='r')
+                                    pen='k')
         self.plot_item.addItem(self.annulus)
 
     def _connect(self):
