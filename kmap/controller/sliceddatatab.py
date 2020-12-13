@@ -8,7 +8,7 @@ from PyQt5 import uic
 from kmap import __directory__
 from kmap.library.qwidgetsub import Tab
 from kmap.model.sliceddatatab_model import SlicedDataTabModel
-from kmap.controller.matplotlibwindow import MatplotlibWindow
+from kmap.controller.matplotlibwindow import MatplotlibImageWindow
 from kmap.controller.interpolation import Interpolation
 from kmap.controller.dataslider import DataSlider
 from kmap.controller.crosshairannulus import CrosshairAnnulus
@@ -152,7 +152,7 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
         data = self.model.displayed_plot_data
         LUT = self.plot_item.get_LUT()
 
-        window = MatplotlibWindow(data, LUT=LUT)
+        window = MatplotlibImageWindow(data, LUT=LUT)
 
         return window
 

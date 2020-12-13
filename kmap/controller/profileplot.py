@@ -9,7 +9,6 @@ from kmap.library.misc import normalize
 class ProfilePlot(PlotWidget):
 
     def __init__(self, *args, **kwargs):
-
         super(ProfilePlot, self).__init__(*args, **kwargs)
         self._setup()
 
@@ -23,23 +22,26 @@ class ProfilePlot(PlotWidget):
                                'ring': ' - Annulus'}
 
     def clear(self):
-
         self.plot_item.clear()
 
     def get_data(self):
-
         data_sets = []
 
         for item in self.plot_item.listDataItems():
             name = item.name()
             x, y = item.getData()
-            data_sets.append({'name': name, 'x': x, 'y': y})
+            color = item.opts['pen'].color().getRgb()
+            marker_size = item.opts['symbolSize']
+            marker = item.opts['symbol']
+            linewidth = item.opts['pen'].width()
+            data_sets.append({'name': name, 'x': x, 'y': y, 'color': color,
+                              'marker': marker, 'line width': linewidth,
+                              'marker size': marker_size})
 
         return data_sets
 
     def plot(self, data, title, crosshair, region, phi_sample=720,
              line_sample=500, normalized=False):
-
         index = len(self.plot_item.listDataItems())
         colors = config.get_key('profile_plot', 'colors')
         color = colors.split(',')[index % len(colors)]
@@ -89,10 +91,8 @@ class ProfilePlot(PlotWidget):
                             symbolBrush=mkBrush(color))
 
     def set_label(self, x, y):
-
         self.setLabel('left', text=y)
         self.setLabel('bottom', text=x)
 
     def _setup(self):
-
         self.addLegend()

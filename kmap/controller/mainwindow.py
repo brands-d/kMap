@@ -26,7 +26,6 @@ MainWindow_UI, _ = uic.loadUiType(UI_file)
 class MainWindow(QMainWindow, MainWindow_UI):
 
     def __init__(self):
-
         # Setup GUI
         super(MainWindow, self).__init__()
         self.setupUi(self)
@@ -59,28 +58,24 @@ class MainWindow(QMainWindow, MainWindow_UI):
             self.tab_widget.open_sliced_data_tab(path)
 
     def open_orbitaldatabase_browser(self):
-
         database = OrbitalDatabase()
         database.files_chosen.connect(self.load_cube_files_online)
 
         self.sub_windows.update({str(id(database)): database})
 
     def open_binding_energy_sliceddatabase_browser(self):
-
         database = SlicedDatabaseWindow(mode='binding-energy')
         database.files_chosen.connect(self.load_sliced_files_online)
 
         self.sub_windows.update({str(id(database)): database})
 
     def open_photon_energy_sliceddatabase_browser(self):
-
         database = SlicedDatabaseWindow(mode='photon-energy')
         database.files_chosen.connect(self.load_sliced_file_online)
 
         self.sub_windows.update({str(id(database)): database})
 
     def open_cubefile_sliceddatabase_browser(self):
-
         database = SlicedDatabaseWindow(mode='cubefile')
         database.files_chosen.connect(self.load_cubefile_as_sliced_online)
 
@@ -112,7 +107,6 @@ class MainWindow(QMainWindow, MainWindow_UI):
         self.tab_widget.open_sliced_data_tab_by_cube(URL)
 
     def load_cube_files_online(self, URLs):
-
         if not URLs:
             # No file chosen
             logging.getLogger('kmap').info('No file chosen')
@@ -123,7 +117,6 @@ class MainWindow(QMainWindow, MainWindow_UI):
 
         # Load URL to Tab
         for URL in URLs:
-
             try:
                 tab.add_orbital_from_online(URL[0], URL[1])
 
@@ -179,11 +172,9 @@ class MainWindow(QMainWindow, MainWindow_UI):
             path, title, editable=True, richText=False)
 
     def open_orbital_data_tab(self):
-
         self.tab_widget.open_orbital_data_tab()
 
     def open_profile_tab(self):
-
         self.tab_widget.open_profile_tab()
 
     def open_logging_settings(self):
@@ -239,14 +230,12 @@ class MainWindow(QMainWindow, MainWindow_UI):
         QMessageBox.about(self, title, text)
 
     def open_lmfit_tab(self, tabs):
-
         if len(tabs) != 2 or tabs[0] is None or tabs[1] is None:
             return
 
         self.tab_widget.open_lmfit_tab(*tabs)
 
     def open_tab_choose_window(self):
-
         sliced_tabs = self.tab_widget.get_tabs_of_type(SlicedDataTab)
         orbital_tabs = self.tab_widget.get_tabs_of_type(OrbitalDataTab)
 
@@ -263,7 +252,6 @@ class MainWindow(QMainWindow, MainWindow_UI):
             self.tab_choose_window.tabs_chosen.connect(self.open_lmfit_tab)
 
     def open_in_matplotlib(self):
-
         current_tab = self.tab_widget.get_current_tab()
 
         if hasattr(current_tab, 'display_in_matplotlib'):
@@ -271,7 +259,6 @@ class MainWindow(QMainWindow, MainWindow_UI):
             self.sub_windows.update({str(id(window)): window})
 
     def export_to_txt(self):
-
         current_tab = self.tab_widget.get_current_tab()
 
         if hasattr(current_tab, 'export_to_txt'):
@@ -284,15 +271,12 @@ class MainWindow(QMainWindow, MainWindow_UI):
 
     def reload_settings(self):
         # Reload the settings
-
         config.setup()
 
     def duplicate_tab(self):
-
         self.tab_widget.duplicate_tab()
 
     def save_project(self):
-
         tabs = self.tab_widget.get_all_tabs()
         tab_saves = []
         for i, tab in enumerate(tabs):
@@ -312,18 +296,15 @@ class MainWindow(QMainWindow, MainWindow_UI):
         self.compress_pickle_dump(file_name, tab_saves)
 
     def compress_pickle_dump(self, title, data):
-
         with bz2.BZ2File(title, 'w') as f:
             pickle.dump(data, f)
 
     def decompress_pickle(self, file):
-
         data = bz2.BZ2File(file, 'rb')
         data = pickle.load(data)
         return data
 
     def load_project(self):
-
         start_path = __directory__ / config.get_key('paths', 'project_start')
         file_names, _ = QFileDialog.getOpenFileNames(
             None, 'Load Project File (*.kmap)', str(start_path))
@@ -397,7 +378,6 @@ class MainWindow(QMainWindow, MainWindow_UI):
             self.tab_widget.open_tab_by_save(tab_save, result_tab)
 
     def closeEvent(self, event):
-
         for window in self.sub_windows.values():
             try:
                 window.close()
@@ -408,19 +388,16 @@ class MainWindow(QMainWindow, MainWindow_UI):
         event.accept()
 
     def close_current_tab(self):
-
         tab = self.tab_widget.get_current_tab()
 
         if tab is not None:
             tab.close()
 
     def _setup(self):
-
         self._set_misc()
         self._initialize_shortcuts()
 
     def _set_misc(self):
-
         x = int(config.get_key('app', 'x'))
         y = int(config.get_key('app', 'y'))
         w = int(config.get_key('app', 'w'))
@@ -434,7 +411,6 @@ class MainWindow(QMainWindow, MainWindow_UI):
         self.show()
 
     def _initialize_shortcuts(self):
-
         actions = [self.load_hdf5_action,
                    self.load_sliced_from_binding_energy_action,
                    self.load_sliced_from_photon_energy_action,
@@ -475,7 +451,6 @@ class MainWindow(QMainWindow, MainWindow_UI):
         self.ref_action.setShortcut(QKeySequence('Ctrl+r'))
 
     def _connect(self):
-
         # File menu
         self.load_hdf5_action.triggered.connect(self.load_hdf5_files)
         self.load_sliced_from_binding_energy_action.triggered.connect(

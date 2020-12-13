@@ -9,7 +9,7 @@ from PyQt5.QtCore import pyqtSignal
 from kmap import __directory__
 from kmap.library.qwidgetsub import Tab
 from kmap.model.orbitaldatatab_model import OrbitalDataTabModel
-from kmap.controller.matplotlibwindow import MatplotlibWindow
+from kmap.controller.matplotlibwindow import MatplotlibImageWindow
 from kmap.controller.crosshairannulus import CrosshairAnnulus
 from kmap.controller.colormap import Colormap
 from kmap.controller.cubeoptions import CubeOptions
@@ -160,7 +160,7 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         data = self.model.displayed_plot_data
         LUT = self.plot_item.get_LUT()
 
-        window = MatplotlibWindow(data, LUT=LUT)
+        window = MatplotlibImageWindow(data, LUT=LUT)
 
         return window
 

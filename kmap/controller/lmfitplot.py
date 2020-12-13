@@ -6,30 +6,31 @@ from kmap.config.config import config
 class LMFitPlot(PlotWidget):
 
     def __init__(self, *args, **kwargs):
-
         super(LMFitPlot, self).__init__(*args, **kwargs)
         self._setup()
 
         self.plot_item = self.getPlotItem()
 
     def clear(self):
-
         self.plot_item.clear()
 
-
     def get_data(self):
-
         data_sets = []
 
         for item in self.plot_item.listDataItems():
             name = item.name()
             x, y = item.getData()
-            data_sets.append({'name': name, 'x': x, 'y': y})
+            color = item.opts['pen'].color().getRgb()
+            marker_size = item.opts['symbolSize']
+            marker = item.opts['symbol']
+            linewidth = item.opts['pen'].width()
+            data_sets.append({'name': name, 'x': x, 'y': y, 'color': color,
+                              'marker': marker, 'line width': linewidth,
+                              'marker size': marker_size})
 
         return data_sets
-        
-    def plot(self, x, y, title):
 
+    def plot(self, x, y, title):
         index = len(self.plot_item.listDataItems())
         colors = config.get_key('profile_plot', 'colors')
         color = colors.split(',')[index % len(colors)]
@@ -46,10 +47,9 @@ class LMFitPlot(PlotWidget):
                             symbolBrush=mkBrush(color))
 
     def set_label(self, x, y):
-
         self.setLabel('left', text=y)
         self.setLabel('bottom', text=x)
-        
+
     def _setup(self):
         pass
         self.addLegend()
