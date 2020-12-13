@@ -160,7 +160,7 @@ class MatplotlibImageWindow(MatplotlibWindow, MatplotlibWindow_UI):
 
         self.setCentralWidget(self.central_widget)
 
-        self.options = MatplotlibOptions()
+        self.options = MatplotlibImageOptions()
 
     def _connect(self):
         self.options.colorbar_changed.connect(self.add_colorbar)
@@ -190,7 +190,7 @@ class MatplotlibLineWindow(MatplotlibWindow, MatplotlibWindow_UI):
         self.update_canvas()
 
         self.show()
-        # self.options.show()
+        self.options.show()
 
     def display(self):
         data = self.model.data
@@ -227,28 +227,19 @@ class MatplotlibLineWindow(MatplotlibWindow, MatplotlibWindow_UI):
 
         self.setCentralWidget(self.central_widget)
 
-        # self.options = MatplotlibOptions()
+        self.options = MatplotlibLineOptions()
 
     def _connect(self):
-        pass
-        # self.options.colorbar_changed.connect(self.add_colorbar)
-        # self.options.grid_changed.connect(self.add_grid)
-        # self.options.ticks_changed.connect(self.add_minor_ticks)
-        # self.options.title_changed.connect(self.add_title)
-        # self.options.x_label_changed.connect(self.add_x_label)
-        # self.options.y_label_changed.connect(self.add_y_label)
-        # self.options.x_range_changed.connect(self.update_x_range)
-        # self.options.y_range_changed.connect(self.update_y_range)
-        # self.options.fit_axis_triggered.connect(self.fit_axis)
+        self.options.grid_changed.connect(self.add_grid)
+        self.options.ticks_changed.connect(self.add_minor_ticks)
+        self.options.title_changed.connect(self.add_title)
+        self.options.x_label_changed.connect(self.add_x_label)
+        self.options.y_label_changed.connect(self.add_y_label)
+        self.options.x_range_changed.connect(self.update_x_range)
+        self.options.y_range_changed.connect(self.update_y_range)
 
 
-# Load .ui File
-UI_file = __directory__ / 'ui/matplotliboptions.ui'
-MatplotlibOptions_UI, _ = uic.loadUiType(UI_file)
-
-
-class MatplotlibOptions(QWidget, MatplotlibOptions_UI):
-    colorbar_changed = pyqtSignal(int)
+class MatplotlibOptions(QWidget):
     grid_changed = pyqtSignal(str)
     ticks_changed = pyqtSignal(int)
     title_changed = pyqtSignal(str)
@@ -256,13 +247,10 @@ class MatplotlibOptions(QWidget, MatplotlibOptions_UI):
     y_label_changed = pyqtSignal(str)
     x_range_changed = pyqtSignal(list)
     y_range_changed = pyqtSignal(list)
-    fit_axis_triggered = pyqtSignal()
 
     def __init__(self):
         # Setup GUI
         super(MatplotlibOptions, self).__init__()
-        self.setupUi(self)
-        self._connect()
 
     def get_x_range(self):
         min_ = self.x_min_spinbox.value()
@@ -310,10 +298,6 @@ class MatplotlibOptions(QWidget, MatplotlibOptions_UI):
 
         self._update_boundaries()
 
-    def add_colorbar(self, state):
-        enable = True if state != 0 else False
-        self.colorbar_changed.emit(enable)
-
     def add_grid(self, which):
         self.grid_changed.emit(which)
 
@@ -343,9 +327,6 @@ class MatplotlibOptions(QWidget, MatplotlibOptions_UI):
 
         self.y_range_changed.emit(range_)
 
-    def fit_axis(self):
-        self.fit_axis_triggered.emit()
-
     def _update_boundaries(self):
         self.x_min_spinbox.setMaximum(self.x_max_spinbox.value() - 0.01)
         self.x_max_spinbox.setMinimum(self.x_min_spinbox.value() + 0.01)
@@ -353,7 +334,6 @@ class MatplotlibOptions(QWidget, MatplotlibOptions_UI):
         self.y_max_spinbox.setMinimum(self.y_min_spinbox.value() + 0.01)
 
     def _connect(self):
-        self.colorbar_checkbox.stateChanged.connect(self.add_colorbar)
         self.grid_combobox.currentTextChanged.connect(self.add_grid)
         self.ticks_spinbox.valueChanged.connect(self.add_ticks)
         self.title_line_edit.textChanged.connect(self.add_title)
@@ -363,4 +343,45 @@ class MatplotlibOptions(QWidget, MatplotlibOptions_UI):
         self.x_max_spinbox.valueChanged.connect(self.change_x_range)
         self.y_min_spinbox.valueChanged.connect(self.change_y_range)
         self.y_max_spinbox.valueChanged.connect(self.change_y_range)
+
+
+# Load .ui File
+UI_file = __directory__ / 'ui/matplotlibimageoptions.ui'
+MatplotlibImageOptions_UI, _ = uic.loadUiType(UI_file)
+
+
+class MatplotlibImageOptions(MatplotlibOptions, MatplotlibImageOptions_UI):
+    colorbar_changed = pyqtSignal(int)
+    fit_axis_triggered = pyqtSignal()
+
+    def __init__(self):
+        # Setup GUI
+        super(MatplotlibImageOptions, self).__init__()
+        self.setupUi(self)
+        self._connect()
+
+    def add_colorbar(self, state):
+        enable = True if state != 0 else False
+        self.colorbar_changed.emit(enable)
+
+    def fit_axis(self):
+        self.fit_axis_triggered.emit()
+
+    def _connect(self):
+        super()._connect()
+        self.colorbar_checkbox.stateChanged.connect(self.add_colorbar)
         self.fit_button.clicked.connect(self.fit_axis)
+
+
+# Load .ui File
+UI_file = __directory__ / 'ui/matplotliblineoptions.ui'
+MatplotlibLineOptions_UI, _ = uic.loadUiType(UI_file)
+
+
+class MatplotlibLineOptions(MatplotlibOptions, MatplotlibLineOptions_UI):
+
+    def __init__(self):
+        # Setup GUI
+        super(MatplotlibLineOptions, self).__init__()
+        self.setupUi(self)
+        self._connect()
