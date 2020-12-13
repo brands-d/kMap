@@ -58,6 +58,7 @@
      </property>
      <addaction name="show_matplotlib"/>
      <addaction name="export_txt"/>
+     <addaction name="export_hdf5"/>
     </widget>
     <widget class="QMenu" name="log_menu">
      <property name="title">
@@ -269,6 +270,11 @@ Currently the profile plot and the lmfit plot tab support this feature.</string>
   <action name="load_project_action">
    <property name="text">
     <string>Load Project...</string>
+   </property>
+  </action>
+  <action name="export_hdf5">
+   <property name="text">
+    <string>Hdf5</string>
    </property>
   </action>
  </widget>

@@ -269,6 +269,12 @@ class MainWindow(QMainWindow, MainWindow_UI):
             with open(file_name, 'w') as file:
                 file.write(text)
 
+    def export_to_hdf5(self):
+        current_tab = self.tab_widget.get_current_tab()
+
+        if hasattr(current_tab, 'export_to_hdf5'):
+            current_tab.export_to_hdf5()
+
     def reload_settings(self):
         # Reload the settings
         config.setup()
@@ -427,7 +433,8 @@ class MainWindow(QMainWindow, MainWindow_UI):
                    self.logging_action, self.open_sim_tab_action,
                    self.open_profile_tab_action, self.mod_log_file_action,
                    self.export_txt, self.load_sliced_from_cubefile_action,
-                   self.welcome_action, self.about_action, self.readme_action]
+                   self.welcome_action, self.about_action, self.readme_action,
+                   self.export_hdf5]
 
         alias = ['load_hdf5', 'load_sliced_from_binding_energy_action',
                  'load_sliced_from_photon_energy_action',
@@ -441,7 +448,8 @@ class MainWindow(QMainWindow, MainWindow_UI):
                  'open_sim_tab_action', 'open_profile_tab_action',
                  'mod_log_file_action', 'export_txt',
                  'load_sliced_from_cubefile_action',
-                 'welcome_action', 'about_action', 'readme_action']
+                 'welcome_action', 'about_action', 'readme_action',
+                 'export_hdf5']
 
         for action, alias in zip(actions, alias):
             shortcut = config.get_key('shortcut', alias, file='shortcut')
@@ -467,6 +475,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
         self.mod_log_file_action.triggered.connect(self.open_mod_log_file)
         self.show_matplotlib.triggered.connect(self.open_in_matplotlib)
         self.export_txt.triggered.connect(self.export_to_txt)
+        self.export_hdf5.triggered.connect(self.export_to_hdf5)
         self.duplicate_tab_action.triggered.connect(self.duplicate_tab)
         self.close_tab_action.triggered.connect(self.close_current_tab)
         self.save_project_action.triggered.connect(self.save_project)
