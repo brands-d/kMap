@@ -33,6 +33,7 @@ OrbitalDataTab_UI, _ = uic.loadUiType(UI_file)
 class OrbitalDataTab(Tab, OrbitalDataTab_UI):
     orbital_removed = pyqtSignal(int)
     orbital_added = pyqtSignal(int)
+    get_energy = pyqtSignal()
 
     def __init__(self):
         # Setup GUI
@@ -196,6 +197,9 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
 
         return window
 
+    def change_kinetic_energy(self, energy):
+        self.cube_options.set_kinetic_energy(energy)
+
     def closeEvent(self, event):
         del self.model
 
@@ -300,6 +304,7 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
             self.change_parameter)
         self.cube_options.resolution_changed.connect(
             self.change_parameter)
+        self.cube_options.get_match_energy.connect(self.get_energy.emit)
 
         self.interpolation.smoothing_changed.connect(self.refresh_plot)
         self.interpolation.interpolation_changed.connect(self.refresh_plot)

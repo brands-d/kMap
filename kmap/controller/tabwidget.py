@@ -3,6 +3,9 @@ import logging
 import traceback
 import datetime
 
+# Third Party Imports
+import numpy as np
+
 # PyQt5 Imports
 from PyQt5 import uic
 from PyQt5.QtWidgets import QWidget
@@ -29,7 +32,6 @@ class TabWidget(QWidget, TabWidget_UI):
     tab_added = pyqtSignal(Tab)
 
     def __init__(self, *args, **kwargs):
-
         # Setup GUI
         super(TabWidget, self).__init__(*args, **kwargs)
         self.setupUi(self)
@@ -48,12 +50,10 @@ class TabWidget(QWidget, TabWidget_UI):
             self._open_tab(tab, title, tooltip)
 
         except Exception as e:
-
             log.error('Couldn\'t load %s' % str(path))
             log.error(traceback.format_exc())
 
     def open_sliced_data_tab_by_URLs(self, URLs):
-
         try:
             tab = SlicedDataTab.init_from_URLs(URLs)
             title = tab.get_title()
@@ -64,13 +64,11 @@ class TabWidget(QWidget, TabWidget_UI):
             pass
 
         except Exception as e:
-
             log = logging.getLogger('kmap')
             log.error('Couldn\'t load URLs')
             log.error(traceback.format_exc())
 
     def open_sliced_data_tab_by_URL(self, URL):
-
         try:
             tab = SlicedDataTab.init_from_URL(URL)
             title = tab.get_title()
@@ -81,13 +79,11 @@ class TabWidget(QWidget, TabWidget_UI):
             pass
 
         except Exception as e:
-
             log = logging.getLogger('kmap')
             log.error('Couldn\'t load URL')
             log.error(traceback.format_exc())
 
     def open_sliced_data_tab_by_cube(self, URL):
-
         try:
             tab = SlicedDataTab.init_from_cube(URL)
             title = tab.get_title()
@@ -98,7 +94,6 @@ class TabWidget(QWidget, TabWidget_UI):
             pass
 
         except Exception as e:
-
             log = logging.getLogger('kmap')
             log.error('Couldn\'t load cube file')
             log.error(traceback.format_exc())
@@ -107,14 +102,32 @@ class TabWidget(QWidget, TabWidget_UI):
         # Opens a new orbital data tab
 
         tab = OrbitalDataTab()
+        tab.get_energy.connect(self.get_sliced_energy)
         title = tab.get_title()
 
         self._open_tab(tab, title)
 
         return tab
 
-    def open_file_tab(self, path, title, editable=False, richText=False):
+    def get_sliced_energy(self):
+        match_type = config.get_key('orbital', 'match_type')
+        tabs = self.get_tabs_of_type(SlicedDataTab)
+        if tabs:
+            axis_idx = tabs[0].get_axis()
+            axis = tabs[0].get_data().axes[axis_idx]
+            if match_type == 'average':
+                energy = np.nanmean(axis.axis)
+            elif match_type == 'max':
+                energy = max(axis.axis)
+            elif match_type == 'min':
+                energy = min(axis.axis)
+            else:
+                slice = tabs[0].get_slice()
+                energy = axis.axis[slice]
 
+            self.sender().change_kinetic_energy(energy)
+
+    def open_file_tab(self, path, title, editable=False, richText=False):
         if editable:
             tab = FileEditorTab(path, title)
         else:
@@ -123,7 +136,6 @@ class TabWidget(QWidget, TabWidget_UI):
         self._open_tab(tab, title)
 
     def open_lmfit_tab(self, sliced_tab, orbital_tab, save=None):
-
         if save is None:
             tab = LMFitTab(sliced_tab, orbital_tab)
 
@@ -143,7 +155,6 @@ class TabWidget(QWidget, TabWidget_UI):
         return tab
 
     def open_result_tab(self, *args, sender=None, save=None, ID_map=None):
-
         lmfit_tab = self.sender() if sender is None else sender
 
         if save is None:
@@ -164,7 +175,6 @@ class TabWidget(QWidget, TabWidget_UI):
         return tab
 
     def open_lmfit_plot_tab(self, *args, sender=None, save=None):
-
         result_tab = self.sender() if sender is None else sender
 
         if save is None:
@@ -184,7 +194,6 @@ class TabWidget(QWidget, TabWidget_UI):
         return tab
 
     def open_profile_tab(self):
-
         tab = ProfilePlotTab(self, 'Profile Plot')
 
         self._open_tab(tab, 'Profile Plot')
@@ -192,11 +201,9 @@ class TabWidget(QWidget, TabWidget_UI):
         return tab
 
     def get_index_of(self, tab):
-
         return self.tab_widget.indexOf(tab)
 
     def get_orbital_tab_to_load_to(self):
-
         tab = None
         aux = self.tab_widget.currentWidget()
         if type(aux) == OrbitalDataTab:
@@ -216,18 +223,15 @@ class TabWidget(QWidget, TabWidget_UI):
         return tab
 
     def get_current_tab(self):
-
         return self.tab_widget.currentWidget()
 
     def get_all_tabs(self):
-
         count = self.tab_widget.count()
         tabs = [self.tab_widget.widget(i) for i in range(count)]
 
         return tabs
 
     def get_tabs_of_type(self, type_):
-
         tabs = []
 
         for index in range(self.tab_widget.count()):
@@ -239,12 +243,10 @@ class TabWidget(QWidget, TabWidget_UI):
         return tabs
 
     def rename_current_tab(self):
-
         self.rename_tab = RenameTabWindow()
         self.rename_tab.title_chosen.connect(self.set_tab_title)
 
     def set_tab_title(self, title):
-
         current_tab = self.get_current_tab()
         current_tab_index = self.tab_widget.indexOf(current_tab)
 
@@ -255,7 +257,6 @@ class TabWidget(QWidget, TabWidget_UI):
             tab.rename_loaded_tab(current_tab, title)
 
     def duplicate_tab(self):
-
         current_tab = self.get_current_tab()
 
         if current_tab is None:
@@ -291,7 +292,6 @@ class TabWidget(QWidget, TabWidget_UI):
         self._open_tab(tab, title)
 
     def open_tab_by_save(self, tab_save, *args):
-
         save = tab_save
 
         if save[0] == 'ProfilePlotTab':
@@ -338,7 +338,6 @@ class TabWidget(QWidget, TabWidget_UI):
         widget = self.tab_widget.widget(index)
 
         if widget.lock_tab is None:
-
             for tab in widget.locked_tabs:
                 tab.unlock()
 
@@ -352,7 +351,6 @@ class TabWidget(QWidget, TabWidget_UI):
                 'Tab is locked open because different tab still references it.')
 
     def _open_tab(self, tab, title, tooltip=None, index=None):
-
         index = self.tab_widget.addTab(tab, title)
 
         self.tab_widget.setCurrentIndex(index)
@@ -363,6 +361,5 @@ class TabWidget(QWidget, TabWidget_UI):
         self.tab_added.emit(tab)
 
     def _connect(self):
-
         self.tab_widget.tabCloseRequested.connect(self.close_tab)
         self.tab_widget.tabBarDoubleClicked.connect(self.rename_current_tab)
