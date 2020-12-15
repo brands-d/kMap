@@ -316,7 +316,6 @@ def get_reduced_chi2(data, n):
 
 
 def transpose_axis_order(constant_axis):
-
     if constant_axis == 0:
         axis_order = (0, 2, 1)
 
@@ -327,3 +326,25 @@ def transpose_axis_order(constant_axis):
         axis_order = (1, 0, 2)
 
     return axis_order
+
+
+def split_view(data_1, data_2, type_, scale=1):
+    data = data_1.copy()
+
+    if type_ == 'Top Bottom':
+        half_idx = int(np.ceil(data.data.shape[0] / 2))
+        data.data[:half_idx] = scale * data_2.data[:half_idx]
+
+    elif type_ == 'Bottom Top':
+        half_idx = int(np.ceil(data.data.shape[0] / 2))
+        data.data[half_idx:] = scale * data_2.data[half_idx:]
+
+    elif type_ == 'Right Left':
+        half_idx = int(np.ceil(data.data.shape[1] / 2))
+        data.data.T[:half_idx] = scale * data_2.data.T[:half_idx]
+
+    elif type_ == 'Left Right':
+        half_idx = int(np.ceil(data.data.shape[1] / 2))
+        data.data.T[half_idx:] = scale * data_2.data.T[half_idx:]
+
+    return data

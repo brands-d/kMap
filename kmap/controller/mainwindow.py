@@ -244,12 +244,25 @@ class MainWindow(QMainWindow, MainWindow_UI):
 
         elif len(sliced_tabs) == 1 and len(orbital_tabs) == 1:
             tabs = [*sliced_tabs, *orbital_tabs]
-            self.open_lmfit_tab(tabs)
+            if self.sender() == self.open_splitview_tab_action:
+                self.open_split_view_tab(tabs)
+            else:
+                self.open_lmfit_tab(tabs)
 
         else:
             self.tab_choose_window = TabChooseWindow(sliced_tabs,
                                                      orbital_tabs)
-            self.tab_choose_window.tabs_chosen.connect(self.open_lmfit_tab)
+            if self.sender() == self.open_splitview_tab_action:
+                self.tab_choose_window.tabs_chosen.connect(
+                    self.open_split_view_tab)
+            else:
+                self.tab_choose_window.tabs_chosen.connect(self.open_lmfit_tab)
+
+    def open_split_view_tab(self, tabs):
+        if len(tabs) != 2 or tabs[0] is None or tabs[1] is None:
+            return
+
+        self.tab_widget.open_split_view_tab(*tabs)
 
     def open_in_matplotlib(self):
         current_tab = self.tab_widget.get_current_tab()
@@ -327,9 +340,12 @@ class MainWindow(QMainWindow, MainWindow_UI):
                                                      'LMFitTab',
                                                      'LMFitResultTab',
                                                      'SlicedDataTab',
-                                                     'OrbitalDataTab']]
+                                                     'OrbitalDataTab',
+                                                     'SplitViewTab']]
         lmfit_tabs = [tab_save for tab_save in
                       save if tab_save[1][0] == 'LMFitTab']
+        split_tabs = [tab_save for tab_save in save if tab_save[1][0] ==
+                      'SplitViewTab']
         result_tabs = [tab_save for tab_save in
                        save if tab_save[1][0] == 'LMFitResultTab']
         plot_tabs = [tab_save for tab_save in
@@ -363,6 +379,18 @@ class MainWindow(QMainWindow, MainWindow_UI):
 
             tab.sliced_data_tab_idx = sliced_idx
             tab.orbital_data_tab_idx = orbital_idx
+
+            save[index] = tab
+
+        for tab_save in split_tabs:
+            index, tab_save, dependencies = tab_save
+            sliced_idx, orbital_idx = dependencies
+            sliced_tab = save[sliced_idx]
+            orbital_tab = save[orbital_idx]
+
+            tab = self.tab_widget.open_tab_by_save(tab_save,
+                                                   sliced_tab,
+                                                   orbital_tab)
 
             save[index] = tab
 
@@ -434,7 +462,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
                    self.open_profile_tab_action, self.mod_log_file_action,
                    self.export_txt, self.load_sliced_from_cubefile_action,
                    self.welcome_action, self.about_action, self.readme_action,
-                   self.export_hdf5]
+                   self.export_hdf5, self.open_splitview_tab_action]
 
         alias = ['load_hdf5', 'load_sliced_from_binding_energy_action',
                  'load_sliced_from_photon_energy_action',
@@ -449,7 +477,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
                  'mod_log_file_action', 'export_txt',
                  'load_sliced_from_cubefile_action',
                  'welcome_action', 'about_action', 'readme_action',
-                 'export_hdf5']
+                 'export_hdf5', 'split_view']
 
         for action, alias in zip(actions, alias):
             shortcut = config.get_key('shortcut', alias, file='shortcut')
@@ -485,6 +513,8 @@ class MainWindow(QMainWindow, MainWindow_UI):
         self.open_sim_tab_action.triggered.connect(self.open_orbital_data_tab)
         self.open_profile_tab_action.triggered.connect(self.open_profile_tab)
         self.open_lmfit_tab_action.triggered.connect(
+            self.open_tab_choose_window)
+        self.open_splitview_tab_action.triggered.connect(
             self.open_tab_choose_window)
 
         # Preferences menu

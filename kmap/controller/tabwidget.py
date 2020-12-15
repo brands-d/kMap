@@ -18,6 +18,7 @@ from kmap.controller.orbitaldatatab import OrbitalDataTab
 from kmap.controller.profileplottab import ProfilePlotTab
 from kmap.controller.renametabwindow import RenameTabWindow
 from kmap.controller.lmfitplottab import LMFitPlotTab
+from kmap.controller.splitviewtab import SplitViewTab
 from kmap.controller.lmfittab import LMFitTab, LMFitResultTab
 from kmap.controller.filetab import FileViewerTab, FileEditorTab
 from kmap.library.qwidgetsub import Tab
@@ -134,6 +135,24 @@ class TabWidget(QWidget, TabWidget_UI):
             tab = FileViewerTab(path, title, richText=richText)
 
         self._open_tab(tab, title)
+
+    def open_split_view_tab(self, sliced_tab, orbital_tab, save=None):
+        if save is None:
+            tab = SplitViewTab(sliced_tab, orbital_tab)
+
+        else:
+            tab = SplitViewTab.init_from_save(save, sliced_tab, orbital_tab)
+
+        tab.locked_tabs = [sliced_tab, orbital_tab]
+
+        sliced_tab.lock_while_open(tab)
+        orbital_tab.lock_while_open(tab)
+        tab.sliced_data_tab = sliced_tab
+        tab.orbital_data_tab = orbital_tab
+
+        self._open_tab(tab, 'Split View')
+
+        return tab
 
     def open_lmfit_tab(self, sliced_tab, orbital_tab, save=None):
         if save is None:
@@ -281,6 +300,9 @@ class TabWidget(QWidget, TabWidget_UI):
         elif isinstance(current_tab, LMFitTab):
             tab = self.open_lmfit_tab(*save[1], save=save[0])
 
+        elif isinstance(current_tab, SplitViewTab):
+            tab = self.open_split_view_tab(*save[1], save=save[0])
+
         elif isinstance(current_tab, LMFitPlotTab):
             tab = self.open_lmfit_plot_tab(sender=save[1][0], save=save[0])
 
@@ -304,6 +326,9 @@ class TabWidget(QWidget, TabWidget_UI):
 
         elif save[0] == 'LMFitTab':
             tab = self.open_lmfit_tab(args[0], args[1], save=save[1])
+
+        elif save[0] == 'SplitViewTab':
+            tab = self.open_split_view_tab(args[0], args[1], save=save[1])
 
         elif save[0] == 'LMFitResultTab':
             tab = self.open_result_tab(
