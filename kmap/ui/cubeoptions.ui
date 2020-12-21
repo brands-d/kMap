@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>319</width>
-    <height>138</height>
+    <width>359</width>
+    <height>187</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,7 +35,7 @@
       </font>
      </property>
      <property name="title">
-      <string>Other Options</string>
+      <string>Cube Options</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -56,77 +56,16 @@
       <property name="spacing">
        <number>3</number>
       </property>
-      <item row="0" column="1">
-       <widget class="QDoubleSpinBox" name="energy_spinbox">
+      <item row="1" column="0">
+       <widget class="QLabel" name="resolution_label">
         <property name="font">
          <font>
           <weight>50</weight>
           <bold>false</bold>
          </font>
         </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-        <property name="correctionMode">
-         <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
-        </property>
-        <property name="keyboardTracking">
-         <bool>false</bool>
-        </property>
-        <property name="suffix">
-         <string>  eV</string>
-        </property>
-        <property name="decimals">
-         <number>1</number>
-        </property>
-        <property name="minimum">
-         <double>5.000000000000000</double>
-        </property>
-        <property name="maximum">
-         <double>150.000000000000000</double>
-        </property>
-        <property name="singleStep">
-         <double>1.000000000000000</double>
-        </property>
-        <property name="value">
-         <double>30.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QDoubleSpinBox" name="resolution_spinbox">
-        <property name="font">
-         <font>
-          <weight>50</weight>
-          <bold>false</bold>
-         </font>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-        <property name="correctionMode">
-         <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
-        </property>
-        <property name="keyboardTracking">
-         <bool>false</bool>
-        </property>
-        <property name="suffix">
-         <string>  Å^-1</string>
-        </property>
-        <property name="decimals">
-         <number>3</number>
-        </property>
-        <property name="minimum">
-         <double>0.010000000000000</double>
-        </property>
-        <property name="maximum">
-         <double>0.100000000000000</double>
-        </property>
-        <property name="singleStep">
-         <double>0.001000000000000</double>
-        </property>
-        <property name="value">
-         <double>0.030000000000000</double>
+        <property name="text">
+         <string>Resolution:</string>
         </property>
        </widget>
       </item>
@@ -190,16 +129,102 @@
         </item>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="symmetrize_label">
+      <item row="0" column="1">
+       <layout class="QHBoxLayout" name="layout">
+        <item>
+         <widget class="QDoubleSpinBox" name="energy_spinbox">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="correctionMode">
+           <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+          </property>
+          <property name="keyboardTracking">
+           <bool>false</bool>
+          </property>
+          <property name="suffix">
+           <string>  eV</string>
+          </property>
+          <property name="decimals">
+           <number>1</number>
+          </property>
+          <property name="minimum">
+           <double>5.000000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>150.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>1.000000000000000</double>
+          </property>
+          <property name="value">
+           <double>30.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="match_button">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="toolTip">
+           <string>Matches the kinetic energy value with the average,
+the max, the min or the current value of the slice
+axis of the first SlicedDataTab open.
+
+See general settings ([orbital]) to change the 
+behaviour.</string>
+          </property>
+          <property name="text">
+           <string>Match</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="1">
+       <widget class="QDoubleSpinBox" name="resolution_spinbox">
         <property name="font">
          <font>
           <weight>50</weight>
           <bold>false</bold>
          </font>
         </property>
-        <property name="text">
-         <string>Symmetrization:</string>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="correctionMode">
+         <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+        </property>
+        <property name="keyboardTracking">
+         <bool>false</bool>
+        </property>
+        <property name="suffix">
+         <string>  Å^-1</string>
+        </property>
+        <property name="decimals">
+         <number>3</number>
+        </property>
+        <property name="minimum">
+         <double>0.010000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>0.100000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.001000000000000</double>
+        </property>
+        <property name="value">
+         <double>0.030000000000000</double>
         </property>
        </widget>
       </item>
@@ -216,19 +241,6 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="resolution_label">
-        <property name="font">
-         <font>
-          <weight>50</weight>
-          <bold>false</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>Resolution:</string>
-        </property>
-       </widget>
-      </item>
       <item row="3" column="0">
        <spacer name="spacer">
         <property name="orientation">
@@ -241,6 +253,19 @@
          </size>
         </property>
        </spacer>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="symmetrize_label">
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Symmetrization:</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>

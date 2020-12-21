@@ -5,4 +5,6 @@ include kmap/resources/images/*
 include kmap/resources/texts/*
 include kmap/resources/misc/background_equations_default
 include kmap/resources/misc/colormaps_default.json
+include kmap/resources/misc/molecules.txt
 include kmap/ui/*
+prune kmap/tests/

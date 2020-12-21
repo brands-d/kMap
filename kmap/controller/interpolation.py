@@ -52,14 +52,16 @@ class Interpolation(InterpolationBase, Interpolation_UI):
     smoothing_changed = pyqtSignal()
 
     def __init__(self):
-
         # Setup GUI
         super(Interpolation, self).__init__()
         self.setupUi(self)
         self._connect()
 
-    def smooth(self, data):
+    def set_force_interpolation(self, bool):
+        self.interpolation_checkbox.setChecked(bool)
+        self.interpolation_checkbox.setEnabled(not bool)
 
+    def smooth(self, data):
         if self.smoothing_checkbox.isChecked():
             sigma = self.get_sigma()
 
@@ -77,14 +79,12 @@ class Interpolation(InterpolationBase, Interpolation_UI):
         return data
 
     def get_sigma(self, pixel=True):
-
         sigma_x = self.sigma_x_spinbox.value()
         sigma_y = self.sigma_y_spinbox.value()
 
         return [sigma_x, sigma_y]
 
     def get_range(self):
-
         x_min = self.x_min_spinbox.value()
         x_max = self.x_max_spinbox.value()
         y_min = self.y_min_spinbox.value()
@@ -93,14 +93,12 @@ class Interpolation(InterpolationBase, Interpolation_UI):
         return [[x_min, x_max], [y_min, y_max]]
 
     def get_resolution(self):
-
         x_resolution = self.x_resolution_spinbox.value()
         y_resolution = self.y_resolution_spinbox.value()
 
         return [x_resolution, y_resolution]
 
     def set_label(self, x, y):
-
         # Set Label
         self.x_label.setText('%s:' % x.label)
         self.y_label.setText('%s:' % y.label)
@@ -137,9 +135,10 @@ class Interpolation(InterpolationBase, Interpolation_UI):
         self._update_dynamic_range_spinboxes()
 
     def save_state(self):
-
         save = {'sigma': self.get_sigma(),
                 'range': self.get_range(),
+                'force_interpolation':
+                    not self.interpolation_checkbox.isEnabled(),
                 'resolution': self.get_resolution(),
                 'enable_smoothing': self.smoothing_checkbox.checkState(),
                 'enable_interpolation': self.interpolation_checkbox.checkState(),
@@ -148,33 +147,29 @@ class Interpolation(InterpolationBase, Interpolation_UI):
         return save
 
     def restore_state(self, save):
-
         self.set_sigma(save['sigma'])
         self.set_range(save['range'])
         self.set_resolution(save['resolution'])
         self.fill_combobox.setCurrentIndex(save['fill_value'])
         self.interpolation_checkbox.setCheckState(save['enable_interpolation'])
         self.smoothing_checkbox.setCheckState(save['enable_smoothing'])
+        self.set_force_interpolation(save['force_interpolation'])
 
     def set_sigma(self, sigma):
-
         self.sigma_x_spinbox.setValue(sigma[0])
         self.sigma_y_spinbox.setValue(sigma[1])
 
     def set_range(self, range_):
-
         self.x_min_spinbox.setValue(range_[0][0])
         self.x_max_spinbox.setValue(range_[0][1])
         self.y_min_spinbox.setValue(range_[1][0])
         self.y_max_spinbox.setValue(range_[1][1])
 
     def set_resolution(self, resolution):
-
         self.x_resolution_spinbox.setValue(resolution[0])
         self.y_resolution_spinbox.setValue(resolution[1])
 
     def _update_dynamic_range_spinboxes(self):
-
         # Set max/min of min/max spinbox to value of other spinbox
         self.x_min_spinbox.setMaximum(self.x_max_spinbox.value() - 1)
         self.y_min_spinbox.setMaximum(self.y_max_spinbox.value() - 1)
@@ -182,11 +177,9 @@ class Interpolation(InterpolationBase, Interpolation_UI):
         self.y_max_spinbox.setMinimum(self.y_min_spinbox.value() + 1)
 
     def _change_smoothing(self):
-
         self.smoothing_changed.emit()
 
     def _connect(self):
-
         self.sigma_x_spinbox.valueChanged.connect(self._change_smoothing)
         self.sigma_y_spinbox.valueChanged.connect(self._change_smoothing)
         self.smoothing_checkbox.stateChanged.connect(

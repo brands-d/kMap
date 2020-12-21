@@ -13,6 +13,7 @@ from kmap import __directory__
 from kmap.library.qwidgetsub import Tab
 from kmap.controller.sliceddatatab import SlicedDataTab
 from kmap.controller.orbitaldatatab import OrbitalDataTab
+from kmap.controller.matplotlibwindow import MatplotlibLineWindow
 
 # Load .ui File
 UI_file = __directory__ / 'ui/profileplottab.ui'
@@ -22,7 +23,6 @@ ProfilePlotTab_UI, _ = uic.loadUiType(UI_file)
 class ProfilePlotTab(Tab, ProfilePlotTab_UI):
 
     def __init__(self, tab_widget, title, *args, **kwargs):
-
         # Setup GUI
         super(ProfilePlotTab, self).__init__(*args, **kwargs)
         self.setupUi(self)
@@ -42,7 +42,6 @@ class ProfilePlotTab(Tab, ProfilePlotTab_UI):
         self.load_tabs(tab_widget)
 
     def refresh_plot(self):
-
         is_slice_plot = self.slice_radiobutton.isChecked()
         is_line_plot = self.line_radiobutton.isChecked()
         phi_sample = self.phi_sample_spinbox.value()
@@ -78,7 +77,6 @@ class ProfilePlotTab(Tab, ProfilePlotTab_UI):
 
         else:
             for tab, show_options in zip(self.tabs, self.show_options):
-
                 data = tab.get_displayed_plot_data()
                 bottom_label, left_label = tab.get_plot_labels()
                 crosshair = tab.get_crosshair().model
@@ -128,7 +126,6 @@ class ProfilePlotTab(Tab, ProfilePlotTab_UI):
         self.plot_item.set_label(x_label, 'Intensity [a.u.]')
 
     def save_state(self):
-
         if self.circle_radiobutton.isChecked():
             type_ = 'circle'
 
@@ -154,10 +151,9 @@ class ProfilePlotTab(Tab, ProfilePlotTab_UI):
                 'states': states,
                 'sample_rate': sample_rate}
 
-        return save
+        return save, []
 
     def restore_state(self, save):
-
         type_ = save['type']
 
         if type_ == 'circle':
@@ -188,12 +184,10 @@ class ProfilePlotTab(Tab, ProfilePlotTab_UI):
         self.refresh_button.click()
 
     def load_tabs(self, tab_widget):
-
         for tab in tab_widget.get_tabs_of_type(None):
             self.add_tab(tab)
 
     def add_tab(self, tab):
-
         if type(tab) in [SlicedDataTab, OrbitalDataTab]:
             tab.close_requested.connect(self._remove_tab)
             self.tab_combobox.blockSignals(True)
@@ -203,7 +197,6 @@ class ProfilePlotTab(Tab, ProfilePlotTab_UI):
             self.show_options.append(6 * [False])
 
     def export_to_txt(self):
-
         data = self.plot_item.get_data()
 
         text = ''
@@ -219,12 +212,17 @@ class ProfilePlotTab(Tab, ProfilePlotTab_UI):
 
         return text
 
-    def current_tab(self):
+    def display_in_matplotlib(self):
+        data = self.plot_item.get_data()
 
+        window = MatplotlibLineWindow(data)
+
+        return window
+
+    def current_tab(self):
         return self.tabs[self.tab_combobox.currentIndex()]
 
     def _remove_tab(self):
-
         tab = self.sender()
 
         if tab in self.tabs:
@@ -244,7 +242,6 @@ class ProfilePlotTab(Tab, ProfilePlotTab_UI):
             pass
 
     def switch_type(self):
-
         # Widgets associated with line-like plotting (e.g. x/y - Line)
         line_widgets = [self.x_checkbox, self.y_checkbox]
         # Widgets associated with ring-like plotting (e.g. ROI, Annulus)
@@ -277,7 +274,6 @@ class ProfilePlotTab(Tab, ProfilePlotTab_UI):
             widget.setVisible(not show_slice_bool)
 
     def _change_tab(self, index):
-
         if isinstance(self.tabs[index], SlicedDataTab):
             self.slice_radiobutton.setVisible(True)
 
@@ -298,7 +294,6 @@ class ProfilePlotTab(Tab, ProfilePlotTab_UI):
             checkbox.blockSignals(False)
 
     def _change_checkbox(self):
-
         checkbox = self.sender()
         checkboxes = [self.center_checkbox,
                       self.x_checkbox, self.y_checkbox,
@@ -306,16 +301,14 @@ class ProfilePlotTab(Tab, ProfilePlotTab_UI):
                       self.annulus_checkbox]
 
         tab_index = self.tab_combobox.currentIndex()
-        checkbox_index = checkboxes.index(checkbox)
-
-        self.show_options[tab_index][checkbox_index] = checkbox.isChecked()
+        if tab_index != -1:
+            checkbox_index = checkboxes.index(checkbox)
+            self.show_options[tab_index][checkbox_index] = checkbox.isChecked()
 
     def _setup(self):
-
         self.switch_type()
 
     def _connect(self, tab_widget):
-
         tab_widget.tab_added.connect(self.add_tab)
 
         self.refresh_button.clicked.connect(self.refresh_plot)

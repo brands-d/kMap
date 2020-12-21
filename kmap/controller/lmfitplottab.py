@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QWidget
 # Own Imports
 from kmap import __directory__
 from kmap.library.qwidgetsub import Tab
+from kmap.controller.matplotlibwindow import MatplotlibLineWindow
 
 # Load .ui File
 UI_file = __directory__ / 'ui/lmfitplottab.ui'
@@ -85,6 +86,13 @@ class LMFitPlotTab(Tab, LMFitPlotTab_UI):
                                               self.x_axis.units),
                                  possible_labels[
                                      self.parameter_combobox.currentIndex()])
+
+    def display_in_matplotlib(self):
+        data = self.plot_item.get_data()
+
+        window = MatplotlibLineWindow(data)
+
+        return window
 
     def _connect(self):
 

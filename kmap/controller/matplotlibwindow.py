@@ -15,66 +15,33 @@ from matplotlib.ticker import AutoMinorLocator
 # Own Imports
 from kmap import __directory__
 from kmap.library.qwidgetsub import AspectWidget
-from kmap.model.matplotlibwindow_model import MatplotlibWindowModel
+from kmap.model.matplotlibwindow_model import (MatplotlibImageModel,
+                                               MatplotlibLineModel)
 
 # Load .ui File
 UI_file = __directory__ / 'ui/matplotlibwindow.ui'
 MatplotlibWindow_UI, _ = uic.loadUiType(UI_file)
 
 
-class MatplotlibWindow(QMainWindow, MatplotlibWindow_UI):
+class MatplotlibWindow(QMainWindow):
 
-    def __init__(self, plot_data, LUT=None):
-
-        self.model = MatplotlibWindowModel(plot_data)
-        self.LUT = ListedColormap(LUT, 'cm_user')
-
-        # Setup GUI
+    def __init__(self):
         super(MatplotlibWindow, self).__init__()
-        self.setupUi(self)
-        self._setup()
-        self._connect()
 
-        self.display_figure()
-
-        self.update_canvas()
-        self.fit_axis()
-
-        self.show()
-        self.options.show()
-
-    def display_figure(self):
-
-        x, y, image = self.model.x, self.model.y, self.model.image
-
-        self.plot = self.axes.pcolormesh(x, y, image, cmap=self.LUT)
+    def update_canvas(self):
+        self.figure.canvas.draw()
 
     def update_x_range(self, range_):
-
         self.axes.set_xlim(range_)
 
         self.update_canvas()
 
     def update_y_range(self, range_):
-
         self.axes.set_ylim(range_)
 
         self.update_canvas()
 
-    def update_canvas(self):
-
-        self.figure.canvas.draw()
-
-    def add_minor_ticks(self, num):
-
-        # Is off by one, no idea why
-        self.axes.xaxis.set_minor_locator(AutoMinorLocator(num + 1))
-        self.axes.yaxis.set_minor_locator(AutoMinorLocator(num + 1))
-
-        self.update_canvas()
-
     def add_grid(self, which='No Grid'):
-
         if which == 'No Grid':
             self.axes.grid(False, which='both')
 
@@ -87,8 +54,70 @@ class MatplotlibWindow(QMainWindow, MatplotlibWindow_UI):
 
         self.update_canvas()
 
-    def fit_axis(self):
+    def add_minor_ticks(self, num):
+        # Is off by one, no idea why
+        self.axes.xaxis.set_minor_locator(AutoMinorLocator(num + 1))
+        self.axes.yaxis.set_minor_locator(AutoMinorLocator(num + 1))
 
+        self.update_canvas()
+
+    def add_x_label(self, label):
+        self.axes.set_xlabel(label)
+
+        self.update_canvas()
+
+    def add_y_label(self, label):
+        self.axes.set_ylabel(label)
+
+        self.update_canvas()
+
+    def add_title(self, title):
+        self.axes.set_title(title)
+
+        self.update_canvas()
+
+    def display(self):
+        pass
+
+    def closeEvent(self, event):
+        # Catch closing to close options window as well
+        try:
+            self.options.close()
+            del self.options
+
+        except:
+            pass
+
+        finally:
+            event.accept()
+
+
+class MatplotlibImageWindow(MatplotlibWindow, MatplotlibWindow_UI):
+
+    def __init__(self, plot_data, LUT=None):
+        self.model = MatplotlibImageModel(plot_data)
+        self.LUT = ListedColormap(LUT, 'cm_user')
+
+        super(MatplotlibImageWindow, self).__init__()
+        self.setupUi(self)
+
+        self._setup()
+        self._connect()
+
+        self.display()
+
+        self.update_canvas()
+        self.fit_axis()
+
+        self.show()
+        self.options.show()
+
+    def display(self):
+        x, y, image = self.model.x, self.model.y, self.model.image
+
+        self.plot = self.axes.pcolormesh(x, y, image, cmap=self.LUT)
+
+    def fit_axis(self):
         # New Limits. Round to second decimal place to always fit entire
         # image
         x, y = self.model.x, self.model.y
@@ -105,21 +134,7 @@ class MatplotlibWindow(QMainWindow, MatplotlibWindow_UI):
 
         self.update_canvas()
 
-    def closeEvent(self, event):
-
-        # Catch closing to close options window as well
-        try:
-            self.options.close()
-            del self.options
-
-        except:
-            pass
-
-        finally:
-            event.accept()
-
     def add_colorbar(self, enable):
-
         if enable:
             self.colorbar = self.figure.colorbar(self.plot, ax=self.axes)
 
@@ -128,26 +143,7 @@ class MatplotlibWindow(QMainWindow, MatplotlibWindow_UI):
 
         self.update_canvas()
 
-    def add_x_label(self, label):
-
-        self.axes.set_xlabel(label)
-
-        self.update_canvas()
-
-    def add_y_label(self, label):
-
-        self.axes.set_ylabel(label)
-
-        self.update_canvas()
-
-    def add_title(self, title):
-
-        self.axes.set_title(title)
-
-        self.update_canvas()
-
     def _setup(self):
-
         self.figure = Figure()
         self.axes = self.figure.add_subplot(111)
 
@@ -164,11 +160,9 @@ class MatplotlibWindow(QMainWindow, MatplotlibWindow_UI):
 
         self.setCentralWidget(self.central_widget)
 
-        self.options = MatplotlibOptions()
+        self.options = MatplotlibImageOptions()
 
-    # noinspection PyUnresolvedReferences
     def _connect(self):
-
         self.options.colorbar_changed.connect(self.add_colorbar)
         self.options.grid_changed.connect(self.add_grid)
         self.options.ticks_changed.connect(self.add_minor_ticks)
@@ -180,13 +174,72 @@ class MatplotlibWindow(QMainWindow, MatplotlibWindow_UI):
         self.options.fit_axis_triggered.connect(self.fit_axis)
 
 
-# Load .ui File
-UI_file = __directory__ / 'ui/matplotliboptions.ui'
-MatplotlibOptions_UI, _ = uic.loadUiType(UI_file)
+class MatplotlibLineWindow(MatplotlibWindow, MatplotlibWindow_UI):
+
+    def __init__(self, plot_data):
+        self.model = MatplotlibLineModel(plot_data)
+
+        super(MatplotlibLineWindow, self).__init__()
+        self.setupUi(self)
+
+        self._setup()
+        self._connect()
+
+        self.display()
+
+        self.update_canvas()
+
+        self.show()
+        self.options.show()
+
+    def display(self):
+        data = self.model.data
+
+        for data_set in data:
+            name = data_set['name']
+            x = data_set['x']
+            y = data_set['y']
+            color = [c / 255 for c in data_set['color']]
+            marker = data_set['marker']
+            marker = '*' if marker == 'star' else marker
+            line_width = data_set['line width']
+            marker_size = data_set['marker size']
+            self.plot = self.axes.plot(x, y, color=color, marker=marker,
+                                       linewidth=line_width,
+                                       markersize=marker_size, label=name)
+
+        self.axes.legend()
+
+    def _setup(self):
+        self.figure = Figure()
+        self.axes = self.figure.add_subplot(111)
+
+        # Canvas
+        canvas = FigureCanvas(self.figure)
+        self.addToolBar(NavigationToolbar2QT(canvas, self))
+
+        # Main Layout
+        layout = QHBoxLayout()
+        layout.addWidget(canvas)
+
+        self.central_widget = AspectWidget()
+        self.central_widget.setLayout(layout)
+
+        self.setCentralWidget(self.central_widget)
+
+        self.options = MatplotlibLineOptions()
+
+    def _connect(self):
+        self.options.grid_changed.connect(self.add_grid)
+        self.options.ticks_changed.connect(self.add_minor_ticks)
+        self.options.title_changed.connect(self.add_title)
+        self.options.x_label_changed.connect(self.add_x_label)
+        self.options.y_label_changed.connect(self.add_y_label)
+        self.options.x_range_changed.connect(self.update_x_range)
+        self.options.y_range_changed.connect(self.update_y_range)
 
 
-class MatplotlibOptions(QWidget, MatplotlibOptions_UI):
-    colorbar_changed = pyqtSignal(int)
+class MatplotlibOptions(QWidget):
     grid_changed = pyqtSignal(str)
     ticks_changed = pyqtSignal(int)
     title_changed = pyqtSignal(str)
@@ -194,13 +247,10 @@ class MatplotlibOptions(QWidget, MatplotlibOptions_UI):
     y_label_changed = pyqtSignal(str)
     x_range_changed = pyqtSignal(list)
     y_range_changed = pyqtSignal(list)
-    fit_axis_triggered = pyqtSignal()
 
     def __init__(self):
         # Setup GUI
         super(MatplotlibOptions, self).__init__()
-        self.setupUi(self)
-        self._connect()
 
     def get_x_range(self):
         min_ = self.x_min_spinbox.value()
@@ -248,10 +298,6 @@ class MatplotlibOptions(QWidget, MatplotlibOptions_UI):
 
         self._update_boundaries()
 
-    def add_colorbar(self, state):
-        enable = True if state != 0 else False
-        self.colorbar_changed.emit(enable)
-
     def add_grid(self, which):
         self.grid_changed.emit(which)
 
@@ -281,9 +327,6 @@ class MatplotlibOptions(QWidget, MatplotlibOptions_UI):
 
         self.y_range_changed.emit(range_)
 
-    def fit_axis(self):
-        self.fit_axis_triggered.emit()
-
     def _update_boundaries(self):
         self.x_min_spinbox.setMaximum(self.x_max_spinbox.value() - 0.01)
         self.x_max_spinbox.setMinimum(self.x_min_spinbox.value() + 0.01)
@@ -291,7 +334,6 @@ class MatplotlibOptions(QWidget, MatplotlibOptions_UI):
         self.y_max_spinbox.setMinimum(self.y_min_spinbox.value() + 0.01)
 
     def _connect(self):
-        self.colorbar_checkbox.stateChanged.connect(self.add_colorbar)
         self.grid_combobox.currentTextChanged.connect(self.add_grid)
         self.ticks_spinbox.valueChanged.connect(self.add_ticks)
         self.title_line_edit.textChanged.connect(self.add_title)
@@ -301,4 +343,45 @@ class MatplotlibOptions(QWidget, MatplotlibOptions_UI):
         self.x_max_spinbox.valueChanged.connect(self.change_x_range)
         self.y_min_spinbox.valueChanged.connect(self.change_y_range)
         self.y_max_spinbox.valueChanged.connect(self.change_y_range)
+
+
+# Load .ui File
+UI_file = __directory__ / 'ui/matplotlibimageoptions.ui'
+MatplotlibImageOptions_UI, _ = uic.loadUiType(UI_file)
+
+
+class MatplotlibImageOptions(MatplotlibOptions, MatplotlibImageOptions_UI):
+    colorbar_changed = pyqtSignal(int)
+    fit_axis_triggered = pyqtSignal()
+
+    def __init__(self):
+        # Setup GUI
+        super(MatplotlibImageOptions, self).__init__()
+        self.setupUi(self)
+        self._connect()
+
+    def add_colorbar(self, state):
+        enable = True if state != 0 else False
+        self.colorbar_changed.emit(enable)
+
+    def fit_axis(self):
+        self.fit_axis_triggered.emit()
+
+    def _connect(self):
+        super()._connect()
+        self.colorbar_checkbox.stateChanged.connect(self.add_colorbar)
         self.fit_button.clicked.connect(self.fit_axis)
+
+
+# Load .ui File
+UI_file = __directory__ / 'ui/matplotliblineoptions.ui'
+MatplotlibLineOptions_UI, _ = uic.loadUiType(UI_file)
+
+
+class MatplotlibLineOptions(MatplotlibOptions, MatplotlibLineOptions_UI):
+
+    def __init__(self):
+        # Setup GUI
+        super(MatplotlibLineOptions, self).__init__()
+        self.setupUi(self)
+        self._connect()

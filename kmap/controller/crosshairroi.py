@@ -152,8 +152,7 @@ class CrosshairROIBase(CrosshairBase):
                                 rotatable=False,
                                 resizable=True,
                                 removable=False,
-                                pen='k',
-                                handlePen='r')
+                                pen='k')
         self.plot_item.addItem(self.roi)
 
     def _connect(self):

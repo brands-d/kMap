@@ -18,6 +18,7 @@ class CubeOptions(QWidget, CubeOptions_UI):
     energy_changed = pyqtSignal()
     resolution_changed = pyqtSignal()
     symmetrization_changed = pyqtSignal()
+    get_match_energy = pyqtSignal()
 
     def __init__(self, *args, **kwargs):
         # Setup GUI
@@ -43,6 +44,10 @@ class CubeOptions(QWidget, CubeOptions_UI):
         self.resolution_spinbox.setValue(resolution)
         self.symmetrize_combobox.setCurrentIndex(symmetry)
 
+    def set_kinetic_energy(self, energy):
+        if energy is not None:
+            self.energy_spinbox.setValue(energy)
+
     def get_parameters(self):
         energy = self.energy_spinbox.value()
         resolution = self.resolution_spinbox.value()
@@ -64,3 +69,4 @@ class CubeOptions(QWidget, CubeOptions_UI):
             self.resolution_changed.emit)
         self.symmetrize_combobox.currentIndexChanged.connect(
             self.symmetrization_changed.emit)
+        self.match_button.clicked.connect(self.get_match_energy.emit)

@@ -193,8 +193,12 @@ class PlotData():
 
             return new_plot_data
 
-    def __add__(self, other):
+    def copy(self):
+        data = self.data.copy()
+        range_ = self.range.copy()
+        return PlotData(data, range_)
 
+    def __add__(self, other):
         if isinstance(other, self.__class__):
             if ((self.x_axis == other.x_axis).all() and
                     (self.y_axis == other.y_axis).all()):
@@ -213,7 +217,6 @@ class PlotData():
             raise TypeError('Can not add \'%s\' to PlotData' % other.__class__)
 
     def __sub__(self, other):
-
         if isinstance(other, self.__class__):
             if ((self.x_axis == other.x_axis).all() and
                     (self.y_axis == other.y_axis).all()):
@@ -233,7 +236,6 @@ class PlotData():
                             other.__class__)
 
     def __mul__(self, other):
-
         if isinstance(other, self.__class__):
             if ((self.x_axis == other.x_axis).all() and
                     (self.y_axis == other.y_axis).all()):
@@ -250,7 +252,6 @@ class PlotData():
                             other.__class__)
 
     def __rmul__(self, other):
-
         if isinstance(other, self.__class__):
             if ((self.x_axis == other.x_axis).all() and
                     (self.y_axis == other.y_axis).all()):
@@ -267,7 +268,6 @@ class PlotData():
                             other.__class__)
 
     def __pow__(self, other):
-
         if isinstance(other, float) or isinstance(other, int):
             return PlotData(self.data * self.data, self.range)
 

@@ -9,7 +9,19 @@ GitHub Page: https://github.com/brands-d/kMap
 - Peter Puschnig, Assoz. Prof. Dipl.-Ing. Dr. (peter.puschnig@uni-graz.at)
 - Dominik Brandstetter, BSc. (dominik.brandstetter@edu.uni-graz.at)
 
-## Installation
+
+## Quick-Start
+
+Installation:
+
+    pip install kMap
+
+Usage:
+
+    python -m kmap
+    
+## Detailed installation guide from source
+
 kMap.py was predominantly developed on and for Linux. There are currently (19.09.2020) no issues on Windows, however, MacOS stands untested so far.
 
 The installation is mostly done via make commands. Because Windows does not support Makefiles natively, this installation guide will differ between Linux and Windows at multiple points. Please follow the part corresponding to your operating system. For Mac users: As MacOS natively support bash, the Linux guide should work fine.
@@ -80,14 +92,8 @@ The following commands will install kMap.py and all necessary packages inside
     make install
 
 #### Windows
-    python -m pip install -r requirements.txt
     python setup.py install
 
-#### Manually
-To have more control over what is happening, please install the packages necessary manually. You can find a list in the requirements.txt file. Afterwards, run
-
-    python setup.py install
-    
 ### 5. Testing
 Last please run the tests to check if they come back passing.
 
@@ -100,7 +106,7 @@ Last please run the tests to check if they come back passing.
 It should say something like "OK" at the end. If you see "FAILED" one or more tests came back negative. If that's the case please make sure you installed kMap.py correctly and retry. If it still fails, please contact one of the authors.
 
 ## Configuration
-All configuration files can be found in ./kmap/resources/config. Each configuration file (logging, settings and shortcut) exists in two different versions (xxx_user.ini and xxx_default.ini). DO NOT edit the default version. You can lose all your settings when updating. Instead, copy any settings you want to change into the respective user file and change it there. The user file does not have to contain all settings, but only those you want to be changed.
+All configuration files can be found in ./kmap/config. Each configuration file (logging, settings and shortcut) exists in two different versions (xxx_user.ini and xxx_default.ini). DO NOT edit the default version. You can lose all your settings when updating. Instead, copy any settings you want to change into the respective user file and change it there. The user file does not have to contain all settings, but only those you want to be changed.
 
 This can be done inside the GUI under the "Preferences" menu. "Reload Settings" reloads the settings at runtime. Most settings (not all of them) can be changed at run time this way.
 
@@ -113,16 +119,12 @@ Before running, make sure you are in the correct environment in which you instal
 
 To start kMap.py simply run
 
-### Linux
-    make run
-    
-### Windows
     python -m kmap
 
 Tutorial videos demonstrating the most important features of kMap.py can be found here: https://www.youtube.com/playlist?list=PLAoZOqtibC5ypO57SU4emdelPzSGQRO8c 
 
 ## Updating
-kMap.py is currently distributed like a regular git project hosted on GitHub (https://github.com/brands-d/kMap). If you cloned the project using git executing
+Major releases for kMap.py are distributaed via the PyPI Server (pip install). The source code and all minor updates with it are hosted on GitHub (https://github.com/brands-d/kMap). If you cloned the project using git executing
 
     git pull origin master
 
@@ -143,6 +145,7 @@ Simply send this file via E-mail to one of the authors
 
 ## Project Structure
 The root folder of the kMap.py source code should contain after successful installation at least the following files and directories:
+- /dist
 - /docs
 - /example
 - /kmap
@@ -150,8 +153,11 @@ The root folder of the kMap.py source code should contain after successful insta
 - LICENSE.md
 - Makefile
 - README.md
-- requirements.txt
+- Manifest.in
 - setup.py
+
+### /dist
+Contains the distribution versions of major releases in wheel and tar.gz form.
 
 ### /docs
 The /docs subdirectory contains documentation regarding the project. This includes a style guide, class- and package-diagrams as well as a description of the .hdf5 file structure.

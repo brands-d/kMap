@@ -2,6 +2,7 @@
 import os
 import logging
 import traceback
+from shutil import copy
 
 # PyQt5 Imports
 from PyQt5 import uic
@@ -26,12 +27,7 @@ class Colormap(QWidget, Colormap_UI):
         self.setupUi(self)
         self._connect()
 
-        # Path for the .json file containing the colormaps
-        temp = __directory__ / config.get_key('paths', 'colormap')
-        default = temp / 'colormaps_default.json'
-        user = temp / 'colormaps_user.json'
-        self.path = user if os.path.isfile(user) else default
-
+        self.path = self.get_path()
         self.model = ColormapModel(plot_item)
 
         self.load_colormaps()
@@ -58,6 +54,19 @@ class Colormap(QWidget, Colormap_UI):
         save = {'current_colormap': current_colormap}
 
         return save
+
+    def get_path(self):
+
+        # Path for the .json file containing the colormaps
+        temp = __directory__ / config.get_key('paths', 'colormap')
+        user = temp / 'colormaps_user.json'
+
+        if not os.path.isfile(user):
+            default = temp / 'colormaps_default.json'
+            copy(default, user)
+
+        return user
+        
 
     def restore_state(self, save):
 
@@ -91,17 +100,7 @@ class Colormap(QWidget, Colormap_UI):
 
     def save(self):
 
-        try:
-            self.model.save_colormaps(self.path)
-
-        except Exception:
-
-            log = logging.getLogger('kmap')
-
-            log.error('Colormaps could not be saved')
-            log.error(traceback.format_exc())
-
-            os.remove(path_temp)
+        self.model.save_colormaps(self.path)
 
     def set_colormap(self, name):
 
@@ -111,7 +110,15 @@ class Colormap(QWidget, Colormap_UI):
     def set_default_colormap(self):
 
         default_colormap = config.get_key('colormap', 'default')
-        self.set_colormap(default_colormap)
+
+        try:
+            self.set_colormap(default_colormap)
+
+        except ValueError:
+            log = logging.getLogger('kmap')
+            log.error(
+                'The colormap set as default does not exist.')
+            log.error(traceback.format_exc())
 
     def _update_combobox(self):
 
