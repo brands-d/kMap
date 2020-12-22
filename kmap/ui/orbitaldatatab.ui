@@ -34,6 +34,9 @@
        <height>0</height>
       </size>
      </property>
+     <property name="verticalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOn</enum>
+     </property>
      <property name="horizontalScrollBarPolicy">
       <enum>Qt::ScrollBarAlwaysOff</enum>
      </property>
@@ -45,7 +48,7 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>748</width>
+        <width>731</width>
         <height>513</height>
        </rect>
       </property>

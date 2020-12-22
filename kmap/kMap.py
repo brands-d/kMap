@@ -7,6 +7,7 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QApplication
 
 import pyqtgraph as pg
+import matplotlib as plt
 
 from kmap.config.config import config
 from kmap.controller.mainwindow import MainWindow
@@ -28,6 +29,14 @@ class kMap(QApplication):
         self.setApplicationVersion(__version__)
         self.setApplicationName(__project__)
         self.setDesktopFileName(__project__)
+
+        if config.get_key('app', 'dark_mode') == 'True':
+            try:
+                import qdarkstyle
+                self.setStyleSheet(qdarkstyle.load_stylesheet(qt_api='pyqt5'))
+            except ImportError:
+                print(
+                    'Dark Theme could not be activated. Please reinstall kMap.py or install "qdarkstyle" manually.')
 
     def run(self):
 
@@ -82,3 +91,7 @@ class kMap(QApplication):
             config.get_key('font', 'size')), QFont.Normal))
 
         logging.getLogger('kmap').debug('Settings loaded successfully.')
+
+        # MatPlotlib
+        path = __directory__ / config.get_key('paths', 'matplotlib')
+        plt.rcParams['savefig.directory'] = str(path)
