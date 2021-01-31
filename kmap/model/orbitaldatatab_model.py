@@ -26,7 +26,7 @@ class OrbitalDataTabModel():
         new_orbital = OrbitalData.init_from_online(
             url, ID=id_, meta_data=meta_data)
 
-        self.orbitals.append([new_orbital, 'url', url, meta_data])
+        self.orbitals.append([new_orbital, 'url', url, meta_data, id_])
 
         return new_orbital
 

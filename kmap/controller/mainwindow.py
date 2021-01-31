@@ -328,6 +328,9 @@ class MainWindow(QMainWindow, MainWindow_UI):
         file_names, _ = QFileDialog.getOpenFileNames(
             None, 'Load Project File (*.kmap)', str(start_path))
 
+        if not file_names:
+            return
+
         file_path = file_names[0]
         # save = pickle.load(open(file_path, 'rb'))
         save = self.decompress_pickle(file_path)
