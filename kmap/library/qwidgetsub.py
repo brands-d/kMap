@@ -3,13 +3,13 @@ from abc import abstractmethod
 
 # PyQt5 Imports
 from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import QLabel, QCheckBox, QDoubleSpinBox, QWidget, QTabWidget
+from PyQt5.QtWidgets import (QLabel, QCheckBox, QDoubleSpinBox, QWidget,
+                             QTabWidget)
 
 
 class CenteredLabel(QLabel):
 
     def __init__(self, *args, **kwargs):
-
         super(CenteredLabel, self).__init__(*args, **kwargs)
         self.setAlignment(Qt.AlignCenter)
 
@@ -17,7 +17,6 @@ class CenteredLabel(QLabel):
 class UseCheckBox(QCheckBox):
 
     def __init__(self, *args, **kwargs):
-
         super(UseCheckBox, self).__init__(*args, **kwargs)
 
         self.setChecked(True)
@@ -26,7 +25,6 @@ class UseCheckBox(QCheckBox):
 class AngleSpinBox(QDoubleSpinBox):
 
     def __init__(self, value, objectname, *args, **kwargs):
-
         super(AngleSpinBox, self).__init__(*args, **kwargs)
 
         self.setSuffix('°')
@@ -43,7 +41,6 @@ class AngleSpinBox(QDoubleSpinBox):
 class WeightSpinBox(QDoubleSpinBox):
 
     def __init__(self, *args, value=1, **kwargs):
-
         super(WeightSpinBox, self).__init__(*args, **kwargs)
 
         self.setMinimum(0)
@@ -55,10 +52,10 @@ class WeightSpinBox(QDoubleSpinBox):
         self.setAlignment(Qt.AlignHCenter)
         self.setObjectName('weight')
 
+
 class BackgroundSpinBox(QDoubleSpinBox):
 
     def __init__(self, *args, value=0, **kwargs):
-
         super(BackgroundSpinBox, self).__init__(*args, **kwargs)
 
         self.setMinimum(-99999.9)
@@ -70,10 +67,10 @@ class BackgroundSpinBox(QDoubleSpinBox):
         self.setAlignment(Qt.AlignHCenter)
         self.setObjectName('background')
 
+
 class EnergySpinBox(QDoubleSpinBox):
 
     def __init__(self, *args, value=30, **kwargs):
-
         super(EnergySpinBox, self).__init__(*args, **kwargs)
 
         self.setSuffix('  eV')
@@ -90,7 +87,6 @@ class EnergySpinBox(QDoubleSpinBox):
 class FixedSizeWidget(QWidget):
 
     def __init__(self, width, ratio, *args, **kwargs):
-
         super(FixedSizeWidget, self).__init__()
 
         height = width * ratio
@@ -102,21 +98,17 @@ class FixedSizeWidget(QWidget):
 class AspectWidget(QWidget):
 
     def __init__(self, *args, ratio=0, **kwargs):
-
         self.ratio = ratio
 
         super().__init__(*args, **kwargs)
 
     def set_ratio(self, ratio):
-
         self.ratio = ratio
 
     def heightForWidth(self, width):
-
         return int(width / self.ratio)
 
     def widthForHeight(self, height):
-
         return int(height * self.ratio)
 
     def resizeEvent(self, event):
@@ -167,38 +159,31 @@ class AspectWidget(QWidget):
 
 
 class Tab(QTabWidget):
-
     close_requested = pyqtSignal()
 
     def __init__(self, *args, **kwargs):
-
         self.title = None
         self.lock_tab = None
         self.locked_tabs = []
-        
+
         super(Tab, self).__init__(*args, **kwargs)
 
     def save_state(self):
         pass
 
     def get_title(self):
-
         return self.title
 
     def set_title(self, title):
-
         self.title = title
 
     def lock_while_open(self, tab):
-
-        self.lock_tab=tab
+        self.lock_tab = tab
 
     def unlock(self):
-
         self.lock_tab = None
 
     def closeEvent(self, event):
-
         self.close_requested.emit()
         self.deleteLater()
         event.accept()
