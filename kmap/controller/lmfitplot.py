@@ -33,10 +33,12 @@ class LMFitPlot(PlotWidget):
     def plot(self, x, y, title):
         index = len(self.plot_item.listDataItems())
         colors = config.get_key('profile_plot', 'colors')
-        color = colors.split(',')[index % len(colors)]
+        colors = colors.split(',')
+        color = colors[index % len(colors)]
         line_width = int(config.get_key('profile_plot', 'line_width'))
         symbols = config.get_key('profile_plot', 'symbols')
-        symbol = symbols.split(',')[index % len(symbols)]
+        symbols = symbols.split(',')
+        symbol = symbols[index % len(symbols)]
         symbol_size = int(config.get_key('profile_plot', 'symbol_size'))
 
         self.plot_item.plot(x, y,

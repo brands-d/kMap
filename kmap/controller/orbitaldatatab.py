@@ -148,10 +148,13 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
             print('Only interpolated OrbitalData can be exported.')
             return
 
-        start_path = __directory__ / config.get_key('paths',
-                                                    'hdf5_export_start')
-        file_name, _ = QFileDialog.getSaveFileName(
-            None, 'Save .hdf5 File (*.hdf5)', str(start_path))
+        if (path := config.get_key('paths', 'hdf5_export_start')) == 'None':
+            file_name, _ = QFileDialog.getSaveFileName(
+                None, 'Save .hdf5 File (*.hdf5)')
+        else:
+            start_path = str(__directory__ / path)
+            file_name, _ = QFileDialog.getSaveFileName(
+                None, 'Save .hdf5 File (*.hdf5)', str(start_path))
 
         if not file_name:
             return

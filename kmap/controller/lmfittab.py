@@ -24,6 +24,7 @@ from kmap.controller.colormap import Colormap
 from kmap.controller.crosshairannulus import CrosshairAnnulus
 from kmap.controller.interpolation import LMFitInterpolation
 from kmap.controller.lmfittree import LMFitTree, LMFitResultTree
+from kmap.controller.matplotlibwindow import MatplotlibImageWindow
 from kmap.controller.lmfitresult import LMFitResult
 from kmap.controller.lmfitoptions import LMFitOptions
 from kmap.controller.lmfitorbitaloptions import LMFitOrbitalOptions
@@ -82,6 +83,16 @@ class LMFitBaseTab(Tab):
             slice_index, weight_sum_data)
         self.residual_label.setText('Residual (red. Chi^2: %.3E)'
                                     % reduced_chi2)
+
+    def display_in_matplotlib(self):
+        windows = []
+
+        for plot in [self.residual_plot, self.sum_plot]:
+            data = plot.model.plot_data
+            LUT = plot.get_LUT()
+            windows.append(MatplotlibImageWindow(data, LUT=LUT))
+
+        return windows
 
     def transpose(self, constant_axis):
         self.model.transpose(constant_axis)

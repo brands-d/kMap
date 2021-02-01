@@ -44,10 +44,15 @@ class MainWindow(QMainWindow, MainWindow_UI):
         log = logging.getLogger('kmap')
         log.info('Loading .hdf5 file(s)...')
 
-        start_path = str(__directory__ / config.get_key('paths', 'hdf5_start'))
         extensions = 'hdf5 files (*.hdf5 *.h5);; All Files (*)'
-        paths, _ = QFileDialog.getOpenFileNames(
-            None, 'Open file(s)', str(start_path), extensions)
+
+        if (path := config.get_key('paths', 'hdf5_start')) == 'None':
+            paths, _ = QFileDialog.getOpenFileNames(
+                None, 'Open file(s)', filter=extensions)
+        else:
+            start_path = str(__directory__ / path)
+            paths, _ = QFileDialog.getOpenFileNames(
+                None, 'Open file(s)', str(start_path), extensions)
 
         if not paths:
             # No file chosen
@@ -127,10 +132,15 @@ class MainWindow(QMainWindow, MainWindow_UI):
     def load_cube_files_locally(self):
         # Load one or more new cube files
 
-        start_path = __directory__ / config.get_key('paths', 'cube_start')
         extensions = 'cube files (*.cube);; All Files (*)'
-        paths, _ = QFileDialog.getOpenFileNames(
-            None, 'Open file(s)', str(start_path), extensions)
+
+        if (path := config.get_key('paths', 'cube_start')) == 'None':
+            paths, _ = QFileDialog.getOpenFileNames(
+                None, 'Open file(s)', filter=extensions)
+        else:
+            start_path = str(__directory__ / path)
+            paths, _ = QFileDialog.getOpenFileNames(
+                None, 'Open file(s)', str(start_path), extensions)
 
         if not paths:
             # No file chosen
@@ -304,9 +314,13 @@ class MainWindow(QMainWindow, MainWindow_UI):
                 tab) for tab in dependencies]
             tab_saves.append([i, [type(tab).__name__, save], dependencies])
 
-        start_path = __directory__ / config.get_key('paths', 'project_start')
-        file_name, _ = QFileDialog.getSaveFileName(
-            None, 'Save Project File (*.kmap)', str(start_path))
+        if (path := config.get_key('paths', 'project_start')) == 'None':
+            file_name, _ = QFileDialog.getSaveFileName(
+                None, 'Save Project File (*.kmap)')
+        else:
+            start_path = str(__directory__ / path)
+            file_name, _ = QFileDialog.getSaveFileName(
+                None, 'Save Project File (*.kmap)', str(start_path))
 
         if not file_name.endswith('.kmap'):
             file_name += '.kmap'
@@ -324,9 +338,16 @@ class MainWindow(QMainWindow, MainWindow_UI):
         return data
 
     def load_project(self):
-        start_path = __directory__ / config.get_key('paths', 'project_start')
-        file_names, _ = QFileDialog.getOpenFileNames(
-            None, 'Load Project File (*.kmap)', str(start_path))
+        if (path := config.get_key('paths', 'project_start')) == 'None':
+            file_names, _ = QFileDialog.getOpenFileNames(
+                None, 'Load Project File (*.kmap)')
+        else:
+            start_path = str(__directory__ / path)
+            file_names, _ = QFileDialog.getOpenFileNames(
+                None, 'Load Project File (*.kmap)', str(start_path))
+
+        if not file_names:
+            return
 
         file_path = file_names[0]
         # save = pickle.load(open(file_path, 'rb'))
