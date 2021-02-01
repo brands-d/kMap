@@ -17,7 +17,6 @@ from kmap import __version__, __project__, __directory__
 class kMap(QApplication):
 
     def __init__(self, sysarg):
-
         # Apply various configurations
         self.load_settings(startup=True)
 
@@ -39,7 +38,6 @@ class kMap(QApplication):
                     'Dark Theme could not be activated. Please reinstall kMap.py or install "qdarkstyle" manually.')
 
     def run(self):
-
         logging.getLogger('kmap').info('Starting up kMap.')
 
         # Creating mainwindow
@@ -51,7 +49,6 @@ class kMap(QApplication):
         pass
 
     def load_settings(self, startup=False):
-
         # Logging
         # Delete old log files if user set to do so
         if startup and config.get_key('logging', 'persistent') == 'False':
@@ -93,5 +90,6 @@ class kMap(QApplication):
         logging.getLogger('kmap').debug('Settings loaded successfully.')
 
         # MatPlotlib
-        path = __directory__ / config.get_key('paths', 'matplotlib')
-        plt.rcParams['savefig.directory'] = str(path)
+        if (path := config.get_key('paths', 'matplotlib')) != 'None':
+            path = __directory__ / path
+            plt.rcParams['savefig.directory'] = str(path)
