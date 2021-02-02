@@ -314,40 +314,40 @@ class TabWidget(QWidget, TabWidget_UI):
         self._open_tab(tab, title)
 
     def open_tab_by_save(self, tab_save, *args):
-        save = tab_save
+        tab_type, save = tab_save
 
-        if save[0] == 'ProfilePlotTab':
+        if tab_type == 'ProfilePlotTab':
             tab = self.open_profile_tab()
-            tab.restore_state(save[1])
+            tab.restore_state(save)
 
-        elif save[0] == 'OrbitalDataTab':
+        elif tab_type == 'OrbitalDataTab':
             tab = self.open_orbital_data_tab()
-            ID_map = tab.restore_state(save[1])
+            ID_map = tab.restore_state(save)
 
-        elif save[0] == 'LMFitTab':
-            tab = self.open_lmfit_tab(args[0], args[1], save=save[1])
+        elif tab_type == 'LMFitTab':
+            tab = self.open_lmfit_tab(args[0], args[1], save=save)
 
-        elif save[0] == 'SplitViewTab':
-            tab = self.open_split_view_tab(args[0], args[1], save=save[1])
+        elif tab_type == 'SplitViewTab':
+            tab = self.open_split_view_tab(args[0], args[1], save=save)
 
-        elif save[0] == 'LMFitResultTab':
+        elif tab_type == 'LMFitResultTab':
             tab = self.open_result_tab(
-                sender=args[0], save=save[1], ID_map=args[1])
+                sender=args[0], save=save, ID_map=args[1])
 
-        elif save[0] == 'LMFitPlotTab':
-            tab = self.open_lmfit_plot_tab(sender=args[0], save=save[1])
+        elif tab_type == 'LMFitPlotTab':
+            tab = self.open_lmfit_plot_tab(sender=args[0], save=save)
 
-        elif save[0] == 'SlicedDataTab':
-            tab, ID_map = SlicedDataTab.init_from_save(save[1], *args)
+        elif tab_type == 'SlicedDataTab':
+            tab, ID_map = SlicedDataTab.init_from_save(save, *args)
 
         else:
             try:
-                tab = eval(save[0]).init_from_save(save[1], *args)
+                tab = eval(tab_type).init_from_save(save, *args)
 
             except:
                 raise ValueError
 
-        title = tab.get_title()
+        title = save['title'] if 'title' in save.keys() else tab.get_title()
         tab.set_title(title)
         self._open_tab(tab, title)
 

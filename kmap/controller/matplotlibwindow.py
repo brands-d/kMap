@@ -15,6 +15,7 @@ from matplotlib.ticker import AutoMinorLocator
 # Own Imports
 from kmap import __directory__
 from kmap.library.qwidgetsub import AspectWidget
+from kmap.config.config import config
 from kmap.model.matplotlibwindow_model import (MatplotlibImageModel,
                                                MatplotlibLineModel)
 
@@ -155,7 +156,9 @@ class MatplotlibImageWindow(MatplotlibWindow, MatplotlibWindow_UI):
         layout = QHBoxLayout()
         layout.addWidget(canvas)
 
-        self.central_widget = AspectWidget()
+        aux = config.get_key('matplotlib', 'ratio')
+        ratio = 0 if aux == 'None' else float(aux)
+        self.central_widget = AspectWidget(ratio=ratio)
         self.central_widget.setLayout(layout)
 
         self.setCentralWidget(self.central_widget)

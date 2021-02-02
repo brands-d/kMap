@@ -90,6 +90,7 @@ class kMap(QApplication):
         logging.getLogger('kmap').debug('Settings loaded successfully.')
 
         # MatPlotlib
-        if (path := config.get_key('paths', 'matplotlib')) != 'None':
+        path = config.get_key('paths', 'matplotlib')
+        if path != 'None':
             path = __directory__ / path
             plt.rcParams['savefig.directory'] = str(path)
