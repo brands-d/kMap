@@ -156,8 +156,8 @@ class MatplotlibImageWindow(MatplotlibWindow, MatplotlibWindow_UI):
         layout = QHBoxLayout()
         layout.addWidget(canvas)
 
-        ratio = 0 if (aux := config.get_key('matplotlib',
-                                            'ratio')) == 'None' else float(aux)
+        aux = config.get_key('matplotlib', 'ratio')
+        ratio = 0 if aux == 'None' else float(aux)
         self.central_widget = AspectWidget(ratio=ratio)
         self.central_widget.setLayout(layout)
 

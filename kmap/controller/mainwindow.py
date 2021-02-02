@@ -46,7 +46,8 @@ class MainWindow(QMainWindow, MainWindow_UI):
 
         extensions = 'hdf5 files (*.hdf5 *.h5);; All Files (*)'
 
-        if (path := config.get_key('paths', 'hdf5_start')) == 'None':
+        path = config.get_key('paths', 'hdf5_start')
+        if path == 'None':
             paths, _ = QFileDialog.getOpenFileNames(
                 None, 'Open file(s)', filter=extensions)
         else:
@@ -134,7 +135,8 @@ class MainWindow(QMainWindow, MainWindow_UI):
 
         extensions = 'cube files (*.cube);; All Files (*)'
 
-        if (path := config.get_key('paths', 'cube_start')) == 'None':
+        path = config.get_key('paths', 'cube_start')
+        if path == 'None':
             paths, _ = QFileDialog.getOpenFileNames(
                 None, 'Open file(s)', filter=extensions)
         else:
@@ -314,7 +316,8 @@ class MainWindow(QMainWindow, MainWindow_UI):
                 tab) for tab in dependencies]
             tab_saves.append([i, [type(tab).__name__, save], dependencies])
 
-        if (path := config.get_key('paths', 'project_start')) == 'None':
+        path = config.get_key('paths', 'project_start')
+        if path == 'None':
             file_name, _ = QFileDialog.getSaveFileName(
                 None, 'Save Project File (*.kmap)')
         else:
@@ -338,7 +341,8 @@ class MainWindow(QMainWindow, MainWindow_UI):
         return data
 
     def load_project(self):
-        if (path := config.get_key('paths', 'project_start')) == 'None':
+        path = config.get_key('paths', 'project_start')
+        if path == 'None':
             file_names, _ = QFileDialog.getOpenFileNames(
                 None, 'Load Project File (*.kmap)')
         else:

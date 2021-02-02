@@ -27,7 +27,7 @@ kMap.py was predominantly developed on and for Linux. There are currently (19.09
 The installation is mostly done via make commands. Because Windows does not support Makefiles natively, this installation guide will differ between Linux and Windows at multiple points. Please follow the part corresponding to your operating system. For Mac users: As MacOS natively support bash, the Linux guide should work fine.
 
 ### 1. Install Python
-Before installing kMap.py, please make sure you have a python version of 3.8 or higher installed. If not, you can get one here
+Before installing kMap.py, please make sure you have a python version of 3.7 or higher installed. If not, you can get one here
 
     https://www.python.org/downloads/
 
