@@ -234,7 +234,8 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
                 'cube_options': cube_options_save,
                 'real_space_options': real_space_options_save,
                 'orbital': orbital_save,
-                'colormap': colormap_save}
+                'colormap': colormap_save,
+                'title': self.title}
 
         return save, []
 
