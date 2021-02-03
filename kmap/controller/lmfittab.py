@@ -277,6 +277,7 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
         self.lmfit_options.method_changed.connect(self.model.set_fit_method)
         self.lmfit_options.slice_policy_changed.connect(
             self._change_slice_policy)
+        self.lmfit_options.region_changed.connect(self._change_region)
 
         self.orbital_options.symmetrization_changed.connect(
             self.model.set_symmetrization)

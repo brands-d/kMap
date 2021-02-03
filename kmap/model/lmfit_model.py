@@ -291,15 +291,17 @@ class LMFitModel():
                 any_parameter_vary = True
                 break
 
-        if not any_parameter_vary and self.method['method'] not in ['leastsq', 'least_squares']:
+        if not any_parameter_vary and self.method['method'] not in ['leastsq',
+                                                                    'least_squares']:
             raise ValueError(
                 'Only leastsq and least_squares can fit if no parameter is set to vary.')
 
         for parameter in self.parameters.values():
             if parameter.vary and parameter.value <= parameter.min:
                 padded_value = parameter.min + lmfit_padding
-                print('WARNING: Initial value for parameter \'%s\' had to be corrected to %f (was %f)' % (
-                    parameter.name, padded_value, parameter.value))
+                print(
+                    'WARNING: Initial value for parameter \'%s\' had to be corrected to %f (was %f)' % (
+                        parameter.name, padded_value, parameter.value))
                 parameter.value = padded_value
 
         results = []
@@ -316,13 +318,11 @@ class LMFitModel():
         return results
 
     def transpose(self, constant_axis):
-
         axis_order = transpose_axis_order(constant_axis)
 
         self.sliced_data.transpose(axis_order)
 
     def get_settings(self):
-
         settings = {'crosshair': self.crosshair,
                     'background': self.background_equation,
                     'symmetrization': self.symmetrization,
@@ -335,7 +335,6 @@ class LMFitModel():
         return copy.deepcopy(settings)
 
     def set_settings(self, settings):
-
         self.set_crosshair(settings['crosshair'])
         self.set_background_equation(settings['background'][0])
         self.set_polarization(*settings['polarization'])
@@ -347,7 +346,6 @@ class LMFitModel():
         self.set_axis(settings['axis'])
 
     def get_sliced_kmap(self, slice_index):
-
         axis_index, slice_indices, is_combined = self.slice_policy
 
         if is_combined:
@@ -371,7 +369,6 @@ class LMFitModel():
         return kmap
 
     def get_orbital_kmap(self, ID, param=None):
-
         if param is None:
             param = self.parameters
 
@@ -390,7 +387,6 @@ class LMFitModel():
         return kmap
 
     def get_weighted_sum_kmap(self, param=None, with_background=True):
-
         if param is None:
             param = self.parameters
 
@@ -419,7 +415,6 @@ class LMFitModel():
             return orbital_kmap
 
     def get_residual(self, slice_, param=None, weight_sum_data=None):
-
         if param is None:
             param = self.parameters
 
@@ -441,7 +436,6 @@ class LMFitModel():
         return residual
 
     def get_reduced_chi2(self, slice_index, weight_sum_data=None):
-
         n = self._get_degrees_of_freedom()
         residual = self.get_residual(
             slice_index, weight_sum_data=weight_sum_data)
@@ -450,7 +444,6 @@ class LMFitModel():
         return reduced_chi2
 
     def ID_to_orbital(self, ID):
-
         for orbital in self.orbitals:
             if orbital.ID == ID:
                 return orbital
@@ -458,7 +451,6 @@ class LMFitModel():
         return None
 
     def _chi2(self, param=None, slice_=0):
-
         if param is None:
             param = self.parameters
 
@@ -467,7 +459,6 @@ class LMFitModel():
         return residual.data
 
     def _get_degrees_of_freedom(self):
-
         n = 0
         for parameter in self.parameters.values():
             if parameter.vary:
@@ -476,14 +467,12 @@ class LMFitModel():
         return n
 
     def _get_background(self, variables=[]):
-
         variables.update({'x': self.axis, 'y': np.array([self.axis]).T})
         background = eval(self.background_equation[0], None, variables)
 
         return background
 
     def _cut_region(self, data):
-
         if self.crosshair is None or self.region[0] == 'all':
             return data
 
@@ -492,7 +481,6 @@ class LMFitModel():
                 data, region=self.region[0], inverted=self.region[1])
 
     def _set_sliced_data(self, sliced_data):
-
         if isinstance(sliced_data, SlicedData):
             self.sliced_data = sliced_data
 
@@ -502,7 +490,6 @@ class LMFitModel():
                     type(SlicedData), type(sliced_data)))
 
     def _add_orbitals(self, orbitals):
-
         if (isinstance(orbitals, list) and
                 all(isinstance(element, OrbitalData)
                     for element in orbitals)):
@@ -517,7 +504,6 @@ class LMFitModel():
                     type(OrbitalData), type(orbitals)))
 
     def _set_parameters(self):
-
         self.parameters = Parameters()
 
         for orbital in self.orbitals:
