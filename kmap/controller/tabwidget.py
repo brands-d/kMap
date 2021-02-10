@@ -157,6 +157,7 @@ class TabWidget(QWidget, TabWidget_UI):
     def open_lmfit_tab(self, sliced_tab, orbital_tab, save=None):
         if save is None:
             tab = LMFitTab(sliced_tab, orbital_tab)
+            tab.title = 'LM-Fit Tab'
 
         else:
             tab = LMFitTab.init_from_save(save, sliced_tab, orbital_tab)

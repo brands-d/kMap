@@ -154,6 +154,7 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
     @classmethod
     def init_from_save(cls, save, sliced_data, orbitals):
         tab = LMFitTab(sliced_data, orbitals)
+        tab.title = save['title']
 
         tab.slider.restore_state(save['slider']),
         tab.crosshair.restore_state(save['crosshair']),
@@ -165,7 +166,7 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
         return tab
 
     def get_title(self):
-        return 'LM-Fit'
+        return self.title
 
     def get_data(self):
         return [self.model.sliced_data, self.model.orbitals]
