@@ -1,5 +1,7 @@
 import numpy as np
 
+from kmap.config.config import config
+
 
 class LMFitTabModel():
 
@@ -25,9 +27,10 @@ class LMFitTabModel():
             raise IndexError('wrong ID')
 
         weight, *parameters = parameters
+        s_share = float(config.get_key('orbital', 's_share'))
 
         # Get scaled kmap
-        kmap = weight * orbital.get_kmap(*parameters)
+        kmap = weight * orbital.get_kmap(*parameters, s_share=s_share)
 
         return kmap
 
@@ -50,6 +53,8 @@ class LMFitTabModel():
 
     def get_residual_plot(self):
         sum_data = self.get_sum_plot()
+
+        return sum_data
 
     def ID_to_orbital(self, ID):
         for orbital in self.orbitals:

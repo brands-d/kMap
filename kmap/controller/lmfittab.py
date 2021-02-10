@@ -136,6 +136,8 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
         self.orbital_tab = orbital_tab
         self.model = LMFitModel(sliced_tab.get_data(),
                                 orbital_tab.get_orbitals())
+        s_share = float(config.get_key('orbital', 's_share'))
+        self.model.set_s_share(s_share)
 
         # Setup GUI
         super(LMFitTab, self).__init__()

@@ -19,7 +19,6 @@ from kmap.library.axis import Axis
 class SlicedData(AbstractData):
 
     def __init__(self, name, axis_1, axis_2, axis_3, data, meta_data={}):
-
         if isinstance(name, str) and name:
             super(SlicedData, self).__init__(ID.new_ID(), name, meta_data)
 
@@ -40,7 +39,6 @@ class SlicedData(AbstractData):
 
     @classmethod
     def init_from_hdf5(cls, file_path, keys={}, meta_data={}):
-
         # Updates default file_keys with user defined keys
         file_keys = {'name': 'name', 'axis_1_label': 'axis_1_label',
                      'axis_1_units': 'axis_1_units',
@@ -55,7 +53,6 @@ class SlicedData(AbstractData):
         file_keys.update(keys)
 
         with h5py.File(file_path, 'r') as file:
-
             # First check if necessary datasets exist
             for _, value in file_keys.items():
                 if value not in file:
@@ -109,7 +106,7 @@ class SlicedData(AbstractData):
         return cls(name, axis_1, axis_2, axis_3, data, meta_data)
 
     @classmethod
-    def init_from_orbitals(cls, name, orbitals, parameters):
+    def init_from_orbitals(cls, name, orbitals, parameters, s_share=0.694):
         """Returns a SlicedData object with the data[BE,kx,ky] 
            computed from the kmaps of several orbitals and
            broadened in energy.
@@ -136,6 +133,7 @@ class SlicedData(AbstractData):
                         Angstroem^-1. str = 'auto' sets gamma automatically
                 symmetrization (str): either 'no', '2-fold', '2-fold+mirror',
                         '3-fold', '3-fold+mirror','4-fold', '4-fold+mirror'
+            s_share (float): Share of s polarized light in unpolarized light.
         Returns:
             (SlicedData): SlicedData containing kmaps of all orbitals
         """
@@ -193,7 +191,7 @@ class SlicedData(AbstractData):
             # Gaussian weight function
             norm = (1 / np.sqrt(2 * np.pi * energy_broadening**2))
             weight = norm * \
-                np.exp(-((BE - BE0)**2 / (2 * energy_broadening**2)))
+                     np.exp(-((BE - BE0)**2 / (2 * energy_broadening**2)))
 
             url = orbital[0]
             log.info('Loading from database: %s' % url)
@@ -206,7 +204,8 @@ class SlicedData(AbstractData):
 
             kmap = orbital_data.get_kmap(E_kin, dk, phi, theta, psi,
                                          Ak_type, polarization, alpha, beta,
-                                         gamma, symmetrization)
+                                         gamma, symmetrization,
+                                         s_share=s_share)
             kmap.interpolate(k_grid, k_grid, update=True)
             log.info('Adding to 3D-array: %s' % orbital[1]['name'])
             for i in range(len(BE)):
@@ -312,7 +311,8 @@ class SlicedData(AbstractData):
         return cls(name, axis_1, axis_2, axis_3, data, meta_data)
 
     @classmethod
-    def init_from_orbital_photonenergy(cls, name, orbital, parameters):
+    def init_from_orbital_photonenergy(cls, name, orbital, parameters,
+                                       s_share=0.694):
         """Returns a SlicedData object with the data[photonenergy,kx,ky] 
            computed from the kmaps of one orbital for a series of
            photon energies.
@@ -340,6 +340,7 @@ class SlicedData(AbstractData):
                         Angstroem^-1. str = 'auto' sets gamma automatically
                 symmetrization (str): either 'no', '2-fold', '2-fold+mirror',
                         '3-fold', '3-fold+mirror','4-fold', '4-fold+mirror'
+                s_share (float): Share of s polarized light in unpolarized light.
         Returns:
             (SlicedData): SlicedData containing kmaps for various photon energies
         """
@@ -392,12 +393,12 @@ class SlicedData(AbstractData):
 
         # loop over photon energies
         for i in range(len(hnu)):
-
             # kinetic energy of emitted electron
             E_kin = hnu[i] - Phi + BE
             kmap = orbital_data.get_kmap(E_kin, dk, phi, theta, psi,
                                          Ak_type, polarization, alpha, beta,
-                                         gamma, symmetrization)
+                                         gamma, symmetrization,
+                                         s_share=s_share)
             kmap.interpolate(k_grid, k_grid, update=True)
             data[i, :, :] = kmap.data
 
@@ -415,12 +416,10 @@ class SlicedData(AbstractData):
         return cls(name, axis_1, axis_2, axis_3, data, meta_data)
 
     def transpose(self, axes_order):
-
         self.data = self.data.transpose(axes_order)
         self.axes = [self.axes[i] for i in axes_order]
 
     def slice_from_index(self, index, axis=0):
-
         if axis == 0:
             data = self.data[index, :, :]
             range_ = [self.axes[2].range, self.axes[1].range]
@@ -439,7 +438,6 @@ class SlicedData(AbstractData):
         return PlotData(data, range_)
 
     def __str__(self):
-
         rep = AbstractData.__str__(self)
 
         for index, axis in enumerate(self.axes):

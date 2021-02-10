@@ -56,6 +56,7 @@ class LMFitModel():
         self.slice_policy = [0, [0], False]
         self.method = {'method': 'leastsq', 'xtol': 1e-12}
         self.region = ['all', False]
+        self.s_share = 0.694
 
         self._set_sliced_data(sliced_data)
         self._add_orbitals(orbitals)
@@ -157,6 +158,17 @@ class LMFitModel():
 
         self.Ak_type = Ak_type
         self.polarization = polarization
+
+    def set_s_share(self, s_share):
+        """A setter method to set the share of s-polarized light in
+        unpolarized light.
+
+        Args:
+            s_share (str): See 'get_kmap' from
+            'kmap.library.orbital.py' for information.
+        """
+
+        self.s_share = s_share
 
     def set_slices(self, slice_indices, axis_index=0, combined=False):
         """A setter method to chose the slices to be fitted next time
@@ -330,7 +342,8 @@ class LMFitModel():
                     'slice_policy': self.slice_policy,
                     'method': self.method,
                     'region': self.region,
-                    'axis': self.axis}
+                    'axis': self.axis,
+                    's_share': self.s_share}
 
         return copy.deepcopy(settings)
 
@@ -344,6 +357,7 @@ class LMFitModel():
         self.set_symmetrization(settings['symmetrization'])
         self.set_fit_method(*settings['method'])
         self.set_axis(settings['axis'])
+        self.set_s_share(settings['s_share'])
 
     def get_sliced_kmap(self, slice_index):
         axis_index, slice_indices, is_combined = self.slice_policy
@@ -382,7 +396,8 @@ class LMFitModel():
                                 beta=param['beta'].value,
                                 Ak_type=self.Ak_type,
                                 polarization=self.polarization,
-                                symmetrization=self.symmetrization)
+                                symmetrization=self.symmetrization,
+                                s_share=self.s_share)
 
         return kmap
 
