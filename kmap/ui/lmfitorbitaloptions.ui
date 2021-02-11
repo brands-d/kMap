@@ -231,6 +231,11 @@
         </item>
         <item>
          <property name="text">
+          <string>NANO-ESCA: He-lamp</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
           <string>NANO-ESCA: circ+</string>
          </property>
         </item>

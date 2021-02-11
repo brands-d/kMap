@@ -47,7 +47,7 @@ class Orbital():
 
     def get_kmap(self, E_kin=30, dk=0.03, phi=0, theta=0, psi=0,
                  Ak_type='no', polarization='p', alpha=60, beta=90,
-                 gamma=0,symmetrization='no'):
+                 gamma=0, symmetrization='no', s_share=0.694):
         """Returns a kmap slice from the orbital data.
 
         Args:
@@ -66,6 +66,9 @@ class Orbital():
                 Angstroem^-1. str = 'auto' sets gamms automatically
             symmetrization (str): either 'no', '2-fold', '2-fold+mirror',
                 '3-fold', '3-fold+mirror','4-fold', '4-fold+mirror'
+            s_share (float): share of s-polarized light for the case
+                of unpolarized light (should be between 0 and 1)
+
         Returns:
             (PlotData): PlotData containing the kmap slice.
         """
@@ -83,9 +86,9 @@ class Orbital():
             self.set_symmetry(symmetrization)
 
         # Compute polarization factor if parameters have changed
-        new_Ak  = self.check_new_Ak(Ak_type, polarization, alpha, beta, gamma)
+        new_Ak  = self.check_new_Ak(Ak_type, polarization, alpha, beta, gamma, s_share)
         if new_cut or new_Ak: self.set_polarization(Ak_type, polarization, 
-                                         alpha, beta,gamma)
+                                         alpha, beta,gamma,s_share)
 
         if Ak_type == 'only-toroid' or Ak_type == 'only-NanoESCA':
             return PlotData(self.Ak['data'], self.kmap['krange'])
@@ -96,10 +99,10 @@ class Orbital():
 
 
     def change_polarization(self, Ak_type='no', polarization='p', alpha=60, beta=90,
-                                  gamma=0):
+                                  gamma=0, s_share=0.694):
         
         self.set_polarization(Ak_type, polarization, alpha, beta,
-                              gamma)
+                              gamma,s_share)
         return PlotData(self.Ak['data']*self.kmap['data'], 
                         self.kmap['krange'])
 
@@ -308,7 +311,8 @@ class Orbital():
         return new_orientation
 
 
-    def set_polarization(self, Ak_type, polarization, alpha, beta, gamma):
+    def set_polarization(self, Ak_type, polarization, alpha, beta, gamma, 
+                               s_share):
 
         if Ak_type == 'no':  # Set |A.k|^2 to 1
             self.Ak = {'Ak_type': Ak_type,
@@ -316,6 +320,7 @@ class Orbital():
                        'alpha': alpha,
                        'beta': beta,
                        'gamma': gamma,
+                       's_share': s_share,
                        'data': np.ones_like(self.kmap['data'])}
 
             return
@@ -373,11 +378,24 @@ class Orbital():
 
             # unpolarized light, e.g. He-lamp 
             # Compare Equation (37) in S. Moser, J. Electr. Spectr.
-            # Rel. Phen. 214, 29-52 (2017).            
+            # Rel. Phen. 214, 29-52 (2017).  
+            # Eq. (37) turned out to be wrong!!!          
+#            elif polarization == 'unpolarized':
+#                Ak = (k2 + gamma_calc**2 + 2*kx*kz*cos_b + 2*ky*kz*sin_b)*np.sin(2*a)  
+#                Ak+= (kx**2*sin_b + ky**2*cos_b - kz**2 - gamma_calc**2)*np.cos(2*a)  
+#                Ak*= (2/3)       
+
+            # unpolarized-light is now correctly treated as average of
+            # s- and p-polarized light
             elif polarization == 'unpolarized':
-                Ak = (k2 + gamma_calc**2 + 2*kx*kz*cos_b + 2*ky*kz*sin_b)*np.sin(2*a)  
-                Ak+= (kx**2*sin_b + ky**2*cos_b - kz**2 - gamma_calc**2)*np.cos(2*a)  
-                Ak*= (2/3)       
+                Ak_p = kx * cos_a * cos_b + ky * cos_a * sin_b + kz * sin_a
+                Ak_p = Ak_p**2 + gamma_calc**2 * sin_a**2
+                Ak_s = -kx * sin_b + ky * cos_b
+                Ak_s = Ak_s**2
+
+                Ak = s_share*Ak_s + (1 - s_share)*Ak_p
+                Ak[kx**2 + ky**2 > kmax**2] = np.nan
+
 
             # Circularly polarized light (right-handed)
             elif polarization == 'C+':
@@ -407,9 +425,10 @@ class Orbital():
                    'alpha': alpha,
                    'beta': beta,
                    'gamma': gamma,
+                   's_share': s_share,
                    'data': Ak}
 
-    def check_new_Ak(self, Ak_type, polarization, alpha, beta, gamma):
+    def check_new_Ak(self, Ak_type, polarization, alpha, beta, gamma, s_share):
 
         if 'Ak_type' in self.Ak:
 
@@ -417,7 +436,8 @@ class Orbital():
                 self.Ak['polarization'] != polarization or
                 self.Ak['alpha']        != alpha        or
                 self.Ak['beta']         != beta         or
-                self.Ak['gamma']        != gamma):
+                self.Ak['gamma']        != gamma        or
+                self.Ak['s_share']      != s_share):
  
                   new_Ak = True
 
@@ -523,8 +543,10 @@ class Orbital():
 
         # format plot
         ax.set_aspect('equal')
-        ax.set_xlabel(r'$\kappa_x(1/\AA)$')
-        ax.set_ylabel(r'$\kappa_y(1/\AA)$')
+#        ax.set_xlabel(r'$\kappa_x(1/\AA)$')
+#        ax.set_ylabel(r'$\kappa_y(1/\AA)$')
+        ax.set_xlabel(r'$k_x$ (Å$^{-1}$)')
+        ax.set_ylabel(r'$k_y$ (Å$^{-1}$)')
 
         if kxlim != None:
             ax.set_xlim(kxlim[0],kxlim[1])        

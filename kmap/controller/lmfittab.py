@@ -136,6 +136,8 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
         self.orbital_tab = orbital_tab
         self.model = LMFitModel(sliced_tab.get_data(),
                                 orbital_tab.get_orbitals())
+        s_share = float(config.get_key('orbital', 's_share'))
+        self.model.set_s_share(s_share)
 
         # Setup GUI
         super(LMFitTab, self).__init__()
@@ -152,6 +154,7 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
     @classmethod
     def init_from_save(cls, save, sliced_data, orbitals):
         tab = LMFitTab(sliced_data, orbitals)
+        tab.title = save['title']
 
         tab.slider.restore_state(save['slider']),
         tab.crosshair.restore_state(save['crosshair']),
@@ -163,7 +166,7 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
         return tab
 
     def get_title(self):
-        return 'LM-Fit'
+        return self.title
 
     def get_data(self):
         return [self.model.sliced_data, self.model.orbitals]
@@ -277,6 +280,7 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
         self.lmfit_options.method_changed.connect(self.model.set_fit_method)
         self.lmfit_options.slice_policy_changed.connect(
             self._change_slice_policy)
+        self.lmfit_options.region_changed.connect(self._change_region)
 
         self.orbital_options.symmetrization_changed.connect(
             self.model.set_symmetrization)

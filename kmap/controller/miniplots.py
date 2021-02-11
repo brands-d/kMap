@@ -9,12 +9,12 @@ from pyqtgraph import isosurface
 from kmap.controller.pyqtgraphplot import PyQtGraphPlot
 from kmap.library.qwidgetsub import FixedSizeWidget
 from kmap.library.misc import get_rotation_axes, energy_to_k
+from kmap.config.config import config
 
 
 class MiniKSpacePlot(FixedSizeWidget, PyQtGraphPlot):
 
     def __init__(self, *args, **kwargs):
-
         width = 250
         self.ratio = 1
         self.ID = None
@@ -23,13 +23,11 @@ class MiniKSpacePlot(FixedSizeWidget, PyQtGraphPlot):
         self._setup()
 
     def plot(self, plot_data, ID):
-
         self.ID = ID
 
         PyQtGraphPlot.plot(self, plot_data)
 
     def _setup(self):
-
         PyQtGraphPlot._setup(self)
 
         self.ui.histogram.hide()
@@ -43,7 +41,6 @@ class MiniKSpacePlot(FixedSizeWidget, PyQtGraphPlot):
 class MiniRealSpacePlot(GLViewWidget):
 
     def __init__(self, *args, **kwargs):
-
         self.options = None
         self.grid = None
         self.bonds = []
@@ -59,19 +56,16 @@ class MiniRealSpacePlot(GLViewWidget):
         self.show()
 
     def set_orbital(self, orbital):
-
         self.orbital = orbital
         self.orientation = [0, 0, 0]
 
         self.refresh_plot()
 
     def set_options(self, options):
-
         self.options = options
         self._connect()
 
     def rotate_orbital(self, phi=0, theta=0, psi=0):
-
         old_axes = get_rotation_axes(*self.orientation[:2])
         new_axes = get_rotation_axes(phi, theta)
         for item in chain(self.bonds, self.mesh):
@@ -84,7 +78,6 @@ class MiniRealSpacePlot(GLViewWidget):
         self.orientation = [phi, theta, psi]
 
     def rotate_photon(self, polarization='p', alpha=0, beta=0):
-
         if self.photon is not None:
             self.removeItem(self.photon)
             self.photon = None
@@ -93,48 +86,40 @@ class MiniRealSpacePlot(GLViewWidget):
         self._refresh_photon()
 
     def refresh_plot(self):
-
         self._refresh_grid()
         self._refresh_bonds()
         self._refresh_photon()
         self._refresh_mesh()
 
     def reset_camera(self, distance=75, elevation=90, azimuth=-90):
-
         # View from top
         self.setCameraPosition(distance=distance, elevation=elevation,
                                azimuth=azimuth)
 
     def toggle_show_grid(self, state):
-
         if self.grid is not None:
             self.grid.setVisible(state)
 
     def toggle_show_bonds(self, state):
-
         if self.bonds:
             for bond in self.bonds:
                 bond.setVisible(state)
 
     def toggle_show_photon(self, state):
-
         if self.photon is not None:
             self.photon.setVisible(state)
 
     def toggle_show_mesh(self, state):
-
         if self.mesh:
             for mesh in self.mesh:
                 mesh.setVisible(state)
 
     def wheelEvent(self, event, *args, **kwargs):
-
         event.accept()
 
         super().wheelEvent(event, *args, **kwargs)
 
     def _refresh_mesh(self):
-
         if self.mesh:
             for mesh in self.mesh:
                 self.removeItem(mesh)
@@ -159,7 +144,6 @@ class MiniRealSpacePlot(GLViewWidget):
             self._rotate_item(item, axes, *self.orientation, backward=False)
 
     def _refresh_bonds(self):
-
         if self.bonds:
             for bond in self.bonds:
                 self.removeItem(bond)
@@ -179,13 +163,12 @@ class MiniRealSpacePlot(GLViewWidget):
             self.addItem(new_bond)
 
     def _refresh_photon(self):
-
         # Couldn't find the bug without second part of if so I removed
         # it for now
         if self.photon:
             self.removeItem(self.photon)
             self.photon = None
-            
+
         polarization, alpha, beta = self.photon_parameters
 
         if self.orbital is None or not self.options.is_show_photon():
@@ -193,9 +176,9 @@ class MiniRealSpacePlot(GLViewWidget):
 
         color = (1, 1, 0.0, 1)  # color for wavy light ray (yellow)
         ray_length = 50  # length of wavy light ray
-        amplitude = 5    # amplitude of oscillation
-        wavelength = 5   # wavelength of oscillation
-        n_points = 200    # number of points along wavy light ray
+        amplitude = 5  # amplitude of oscillation
+        wavelength = 5  # wavelength of oscillation
+        n_points = 200  # number of points along wavy light ray
 
         alpha = alpha * np.pi / 180
         beta = (180 + beta) * np.pi / 180
@@ -219,9 +202,13 @@ class MiniRealSpacePlot(GLViewWidget):
         # ... to be updated ...
         elif polarization == 'unpolarized':
             pol_1 = [0, 0, 0]
-            pol_2 = [np.sin(beta) + np.cos(alpha) * np.cos(beta), 
-                    -np.cos(beta) + np.cos(alpha) * np.sin(beta), 
-                    -np.sin(alpha)]                     
+            s_share = float(config.get_key('orbital', 's_share'))
+            p_share = 1 - s_share
+            pol_2 = [s_share * np.sin(beta) +
+                     p_share * np.cos(alpha) * np.cos(beta),
+                     -s_share * np.cos(beta) +
+                     p_share * np.cos(alpha) * np.sin(beta),
+                     -p_share * np.sin(alpha)]
 
         elif polarization == 'C+':
             pol_1 = [np.sin(beta), -np.cos(beta), 0]
@@ -231,7 +218,7 @@ class MiniRealSpacePlot(GLViewWidget):
         elif polarization == 'C-':
             pol_1 = [np.sin(beta), -np.cos(beta), 0]
             pol_2 = [-np.cos(alpha) * np.cos(beta), -
-                     np.cos(alpha) * np.sin(beta), +np.sin(alpha)]
+            np.cos(alpha) * np.sin(beta), +np.sin(alpha)]
 
         # show C+ spiral ... until I have a better idea ...
         elif polarization == 'CDAD':
@@ -240,11 +227,11 @@ class MiniRealSpacePlot(GLViewWidget):
                      np.sin(beta), -np.sin(alpha)]
 
         dx = amplitude * pol_1[0] * np.cos(2 * np.pi * t / wavelength) + \
-            amplitude * pol_2[0] * np.sin(2 * np.pi * t / wavelength)
+             amplitude * pol_2[0] * np.sin(2 * np.pi * t / wavelength)
         dy = amplitude * pol_1[1] * np.cos(2 * np.pi * t / wavelength) + \
-            amplitude * pol_2[1] * np.sin(2 * np.pi * t / wavelength)
+             amplitude * pol_2[1] * np.sin(2 * np.pi * t / wavelength)
         dz = amplitude * pol_1[2] * np.cos(2 * np.pi * t / wavelength) + \
-            amplitude * pol_2[2] * np.sin(2 * np.pi * t / wavelength)
+             amplitude * pol_2[2] * np.sin(2 * np.pi * t / wavelength)
 
         pos = np.array([x0 + dx, y0 + dy, z0 + dz]).T
 
@@ -255,7 +242,6 @@ class MiniRealSpacePlot(GLViewWidget):
         self.addItem(photon_line)
 
     def _refresh_grid(self):
-
         if self.grid is not None:
             self.removeItem(self.grid)
             self.grid = None
@@ -269,7 +255,6 @@ class MiniRealSpacePlot(GLViewWidget):
         self.addItem(self.grid)
 
     def _rotate_item(self, item, axes, phi, theta, psi, backward=False):
-
         if backward:
             # Undo Rotation in reverse order
             item.rotate(psi, axes[2][0], axes[2][1], axes[2][2], local=True)
@@ -282,7 +267,6 @@ class MiniRealSpacePlot(GLViewWidget):
             item.rotate(-psi, axes[2][0], axes[2][1], axes[2][2], local=True)
 
     def _get_iso_mesh(self, data, color, sign):
-
         iso_val = sign * self.options.get_iso_val()
         vertices, faces = isosurface(data, iso_val * data.max())
         nx, ny, nz = data.shape
@@ -315,7 +299,6 @@ class MiniRealSpacePlot(GLViewWidget):
         return mesh
 
     def _setup(self):
-
         # Set Fixed Size. Due to some unknown reason subclassing from a
         # second class like FixedSizeWidget while also
         # subclassing from gl.GLViewWidget throws error
@@ -329,7 +312,6 @@ class MiniRealSpacePlot(GLViewWidget):
         self.reset_camera()
 
     def _connect(self):
-
         self.options.set_camera.connect(self.reset_camera)
         self.options.show_grid_changed.connect(self.toggle_show_grid)
         self.options.show_mesh_changed.connect(self.toggle_show_mesh)
@@ -341,7 +323,6 @@ class MiniRealSpacePlot(GLViewWidget):
 class Mini3DKSpacePlot(GLViewWidget):
 
     def __init__(self, *args, **kwargs):
-
         self.ID = None
         self.options = None
         self.grid = None
@@ -357,7 +338,6 @@ class Mini3DKSpacePlot(GLViewWidget):
         self.show()
 
     def set_orbital(self, orbital, ID):
-
         self.ID = ID
         self.orbital = orbital
         self.orientation = [0, 0, 0]
@@ -365,12 +345,10 @@ class Mini3DKSpacePlot(GLViewWidget):
         self.refresh_plot()
 
     def set_options(self, options):
-
         self.options = options
         self._connect()
 
     def rotate_orbital(self, phi=0, theta=0, psi=0):
-
         old_axes = get_rotation_axes(*self.orientation[:2])
         new_axes = get_rotation_axes(phi, theta)
 
@@ -383,35 +361,29 @@ class Mini3DKSpacePlot(GLViewWidget):
         self.orientation = [phi, theta, psi]
 
     def change_energy(self, E_kin):
-
         self.E_kin = E_kin
 
         self._refresh_hemisphere()
 
     def refresh_plot(self):
-
         self._refresh_hemisphere()
         self._refresh_grid()
         self._refresh_mesh()
 
     def reset_camera(self, distance=75, elevation=90, azimuth=-90):
-
         # View from top
         self.setCameraPosition(distance=distance, elevation=elevation,
                                azimuth=azimuth)
 
     def toggle_show_grid(self, state):
-
         if self.grid is not None:
             self.grid.setVisible(state)
 
     def toggle_show_hemisphere(self, state):
-
         if self.hemisphere is not None:
             self.hemisphere.setVisible(state)
 
     def _refresh_mesh(self):
-
         if self.mesh is not None:
             self.removeItem(self.mesh)
 
@@ -429,16 +401,12 @@ class Mini3DKSpacePlot(GLViewWidget):
         axes = get_rotation_axes(*self.orientation[:2])
         self._rotate_item(self.mesh, axes, *self.orientation, backward=False)
 
-
     def wheelEvent(self, event, *args, **kwargs):
-
         event.accept()
 
         super().wheelEvent(event, *args, **kwargs)
 
-
     def _refresh_hemisphere(self):
-
         if self.hemisphere is not None:
             self.removeItem(self.hemisphere)
             self.hemisphere = None
@@ -454,10 +422,10 @@ class Mini3DKSpacePlot(GLViewWidget):
         # this produces a hemisphere using the GLSurfacePlotItem, however,
         # the resulting hemisphere appears a little ragged at the circular
         # boundary
-        #x = np.linspace(-k / self.dx, k / self.dx, 200)
-        #y = np.linspace(-k / self.dy, k / self.dy, 200)
-        #X, Y = np.meshgrid(x, y)
-        #Z = np.sqrt(k**2 / (self.dx * self.dy) - X**2 - Y**2)
+        # x = np.linspace(-k / self.dx, k / self.dx, 200)
+        # y = np.linspace(-k / self.dy, k / self.dy, 200)
+        # X, Y = np.meshgrid(x, y)
+        # Z = np.sqrt(k**2 / (self.dx * self.dy) - X**2 - Y**2)
 
         # self.hemisphere = GLSurfacePlotItem(x=x, y=y, z=Z, color=(
         #    0.5, 0.5, 0.5, 0.7), shader='edgeHilight')
@@ -475,7 +443,6 @@ class Mini3DKSpacePlot(GLViewWidget):
         self.addItem(self.hemisphere)
 
     def _refresh_grid(self):
-
         if self.grid is not None:
             self.removeItem(self.grid)
             self.grid = None
@@ -489,7 +456,6 @@ class Mini3DKSpacePlot(GLViewWidget):
         self.addItem(self.grid)
 
     def _rotate_item(self, item, axes, phi, theta, psi, backward=False):
-
         if backward:
             # Undo Rotation in reverse order
             item.rotate(psi, axes[2][0], axes[2][1], axes[2][2], local=True)
@@ -501,8 +467,8 @@ class Mini3DKSpacePlot(GLViewWidget):
             item.rotate(-theta, axes[1][0], axes[1][1], axes[1][2], local=True)
             item.rotate(-psi, axes[2][0], axes[2][1], axes[2][2], local=True)
 
-    def _get_iso_mesh(self, data, iso=None, color=(1, 0.2, 0.2, 1), z_shift=True):
-
+    def _get_iso_mesh(self, data, iso=None, color=(1, 0.2, 0.2, 1),
+                      z_shift=True):
         if iso is None:
             iso_val = self.options.get_iso_val() * data.max()
         else:
@@ -531,7 +497,6 @@ class Mini3DKSpacePlot(GLViewWidget):
         return mesh
 
     def _setup(self):
-
         # Set Fixed Size. Due to some unknown reason subclassing from a
         # second class like FixedSizeWidget while also
         # subclassing from gl.GLViewWidget throws error
@@ -545,7 +510,6 @@ class Mini3DKSpacePlot(GLViewWidget):
         self.reset_camera()
 
     def _connect(self):
-
         self.options.set_camera.connect(self.reset_camera)
         self.options.show_grid_changed.connect(self.toggle_show_grid)
         self.options.show_hemisphere_changed.connect(
