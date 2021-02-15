@@ -31,7 +31,7 @@ class OrbitalData(Orbital, AbstractData):
             file = f.read().decode('utf-8')
 
             name, keys = OrbitalData._get_metadata(file, url)
-            name = meta_data['name'] if name in meta_data else name
+            name = meta_data['name'] if 'name' in meta_data else name
             meta_data.update(keys)
             
               
