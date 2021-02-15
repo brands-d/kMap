@@ -137,6 +137,8 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
             self.refresh_mini_plots(ID, orbital_changed=False)
 
     def remove_orbital_by_ID(self, ID):
+        self.model.remove_orbital_by_ID(ID)
+
         self.refresh_plot()
         self.mini_3Dkspace_plot.set_orbital(None, ID)
         self.mini_real_plot.set_orbital(None)
