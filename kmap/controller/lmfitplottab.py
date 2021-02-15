@@ -14,12 +14,13 @@ LMFitPlotTab_UI, _ = uic.loadUiType(UI_file)
 
 class LMFitPlotTab(Tab, LMFitPlotTab_UI):
 
-    def __init__(self, results, orbitals, axis, result_tab, *args, **kwargs):
-
+    def __init__(self, results, orbitals, axis, residuals, result_tab, *args,
+                 **kwargs):
         self.results = results
         self.result_tab = result_tab
         self.orbitals = orbitals
         self.x_axis = axis
+        self.residuals = residuals
 
         # Setup GUI
         super(LMFitPlotTab, self).__init__(*args, **kwargs)
@@ -31,26 +32,24 @@ class LMFitPlotTab(Tab, LMFitPlotTab_UI):
 
     @classmethod
     def init_from_save(cls, save, tab):
-
         results = save['results']
         axis = save['axis']
-
+        residuals = save['residuals'] if 'residuals' in save else None
         orbitals = tab.get_orbitals()
 
-        tab = LMFitPlotTab(results, orbitals, axis, tab)
+        tab = LMFitPlotTab(results, orbitals, axis, residuals, tab)
 
         return tab
 
     def save_state(self):
-
         save = {'title': self.title,
                 'results': self.results,
-                'axis': self.x_axis}
+                'axis': self.x_axis,
+                'residuals': self.residuals}
 
         return save, [self.result_tab]
 
     def export_to_txt(self):
-
         data = self.plot_item.get_data()
 
         text = ''
@@ -67,25 +66,31 @@ class LMFitPlotTab(Tab, LMFitPlotTab_UI):
         return text
 
     def refresh_plot(self):
-
-        possible_params = ['w_', 'phi_', 'theta_', 'psi_']
-        possible_labels = ['Weight [1]', 'Phi [°]', 'Theta [°]', 'Psi [°]']
-        param = possible_params[self.parameter_combobox.currentIndex()]
-
+        x = self.x_axis.axis
+        x_label = '%s [%s]' % (self.x_axis.label, self.x_axis.units)
         self.plot_item.clear()
 
-        for orbital in self.orbitals:
-            y = [result.params[param + str(orbital.ID)]
-                 for result in self.results]
-            x = self.x_axis.axis
-            title = orbital.name
-
+        if self.parameter_combobox.currentText() == 'Residual':
+            title = 'Residual'
+            y = self.residuals
             self.plot_item.plot(x, y, title)
+            y_label = '|Residual|'
 
-        self.plot_item.set_label('%s [%s]' % (self.x_axis.label,
-                                              self.x_axis.units),
-                                 possible_labels[
-                                     self.parameter_combobox.currentIndex()])
+        else:
+            possible_params = ['w_', 'phi_', 'theta_', 'psi_']
+            possible_labels = ['Weight [1]', 'Phi [°]', 'Theta [°]', 'Psi [°]']
+            param = possible_params[self.parameter_combobox.currentIndex()]
+
+            for orbital in self.orbitals:
+                y = [result.params[param + str(orbital.ID)]
+                     for result in self.results]
+                title = orbital.name
+
+                self.plot_item.plot(x, y, title)
+
+            y_label = possible_labels[self.parameter_combobox.currentIndex()]
+
+        self.plot_item.set_label(x_label, y_label)
 
     def display_in_matplotlib(self):
         data = self.plot_item.get_data()
@@ -95,5 +100,4 @@ class LMFitPlotTab(Tab, LMFitPlotTab_UI):
         return window
 
     def _connect(self):
-
         self.refresh_button.clicked.connect(self.refresh_plot)

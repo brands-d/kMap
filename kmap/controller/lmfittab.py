@@ -294,7 +294,7 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
 
 
 class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
-    open_plot_tab = pyqtSignal(list, list, Axis)
+    open_plot_tab = pyqtSignal(list, list, Axis, list)
 
     def __init__(self, lmfit_tab, results, settings):
         self.results = results
@@ -405,7 +405,10 @@ class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
         results = [result[1] for result in self.results]
         orbitals = self.model.orbitals
         axis = self.model.sliced_data.axes[self.model.slice_policy[0]]
-        self.open_plot_tab.emit(results, orbitals, axis)
+        kmaps = abs(self.get_residual_kmaps())
+        residuals = list(np.nansum(np.nansum(kmaps, axis=1), axis=1))
+
+        self.open_plot_tab.emit(results, orbitals, axis, residuals)
 
     def export_to_hdf5(self):
         path = config.get_key('paths', 'hdf5_export_start')
@@ -422,11 +425,7 @@ class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
         else:
             h5file = h5py.File(file_name, 'w')
 
-        kmaps = []
-        for i, result in enumerate(self.results):
-            residual = self.model.get_residual(i, result[1].params)
-            kmaps.append(residual.data)
-        kmaps = np.array(kmaps)
+        kmaps = self.get_residual_kmaps()
 
         slice_axis = self.slider.data.axes[0]
         x_axis = self.slider.data.axes[1]
@@ -445,6 +444,15 @@ class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
         h5file.create_dataset('data', data=kmaps, dtype='f8',
                               compression='gzip', compression_opts=9)
         h5file.close()
+
+    def get_residual_kmaps(self):
+        kmaps = []
+        for i, result in enumerate(self.results):
+            residual = self.model.get_residual(i, result[1].params)
+            kmaps.append(residual.data)
+        kmaps = np.array(kmaps)
+
+        return kmaps
 
     def _setup(self):
         LMFitBaseTab._setup(self)

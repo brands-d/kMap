@@ -50,7 +50,7 @@
           </font>
          </property>
          <property name="title">
-          <string>Parameter</string>
+          <string>Plot Types</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
@@ -97,6 +97,11 @@
             <item>
              <property name="text">
               <string>Psi</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Residual</string>
              </property>
             </item>
            </widget>
