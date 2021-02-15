@@ -7,12 +7,13 @@ LMFitResult tab as well as a common base class LMFitBaseTab.
 import logging
 
 # Third Party Imports
+import h5py
 import numpy as np
 
 # PyQt5 Imports
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSignal, Qt
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QFileDialog
 
 # Own Imports
 from kmap import __directory__
@@ -405,6 +406,45 @@ class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
         orbitals = self.model.orbitals
         axis = self.model.sliced_data.axes[self.model.slice_policy[0]]
         self.open_plot_tab.emit(results, orbitals, axis)
+
+    def export_to_hdf5(self):
+        path = config.get_key('paths', 'hdf5_export_start')
+        if path == 'None':
+            file_name, _ = QFileDialog.getSaveFileName(
+                None, 'Save .hdf5 File (*.hdf5)')
+        else:
+            start_path = str(__directory__ / path)
+            file_name, _ = QFileDialog.getSaveFileName(
+                None, 'Save .hdf5 File (*.hdf5)', str(start_path))
+
+        if not file_name:
+            return
+        else:
+            h5file = h5py.File(file_name, 'w')
+
+        kmaps = []
+        for i, result in enumerate(self.results):
+            residual = self.model.get_residual(i, result[1].params)
+            kmaps.append(residual.data)
+        kmaps = np.array(kmaps)
+
+        slice_axis = self.slider.data.axes[0]
+        x_axis = self.slider.data.axes[1]
+        y_axis = self.slider.data.axes[2]
+
+        h5file.create_dataset('name', data='Residual')
+        h5file.create_dataset('axis_1_label', data=slice_axis.label)
+        h5file.create_dataset('axis_2_label', data=x_axis.label)
+        h5file.create_dataset('axis_3_label', data=y_axis.label)
+        h5file.create_dataset('axis_1_units', data=slice_axis.units)
+        h5file.create_dataset('axis_2_units', data=x_axis.units)
+        h5file.create_dataset('axis_3_units', data=y_axis.units)
+        h5file.create_dataset('axis_1_range', data=slice_axis.range)
+        h5file.create_dataset('axis_2_range', data=x_axis.range)
+        h5file.create_dataset('axis_3_range', data=y_axis.range)
+        h5file.create_dataset('data', data=kmaps, dtype='f8',
+                              compression='gzip', compression_opts=9)
+        h5file.close()
 
     def _setup(self):
         LMFitBaseTab._setup(self)

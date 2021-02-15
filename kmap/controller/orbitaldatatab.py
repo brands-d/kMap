@@ -2,8 +2,8 @@
 import logging
 
 # Third Party Imports
-import numpy as np
 import h5py
+import numpy as np
 
 # PyQt5 Imports
 from PyQt5 import uic
