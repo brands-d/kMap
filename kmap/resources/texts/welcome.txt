@@ -1,8 +1,8 @@
 <h1>kMap.py</h1>
 
-<p>kMap.py is a python based program for simulation and data analysis in photoemission tomography. The underlying theoretical methodolgy is described here: <a href="https://arxiv.org/abs/2009.13099"> https://arxiv.org/abs/2009.13099 </p>
-
-<p>Even though kMap.py recently saw its first major release of version 1.0.0, it is to be understood that kMap.py is under constant development.</p>
+<p>kMap.py is a python based program for simulation and data analysis in photoemission tomography. The underlying theoretical methodology is described in the following publication:</p>
+<p>Dominik Brandstetter, Xiaosheng Yang, Daniel Lüftner, F. Stefan Tautz, and Peter Puschnig, "kMap.py: A Python program for simulation and data analysis in photoemission tomography", Computer Physics Communications, available online (2021) <a href="https://doi.org/10.1016/j.cpc.2021.107905">https://doi.org/10.1016/j.cpc.2021.107905</a></p>
+<p>Please cite this work when using results from kMap.py in your publications.</p>
 
 <hr/>
 
