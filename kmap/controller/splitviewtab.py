@@ -14,6 +14,7 @@ from kmap.controller.colormap import Colormap
 from kmap.controller.crosshairannulus import CrosshairAnnulus
 from kmap.controller.interpolation import Interpolation
 from kmap.controller.splitviewoptions import SplitViewOptions
+from kmap.controller.matplotlibwindow import MatplotlibImageWindow
 from kmap.config.config import config
 
 # Load .ui File
