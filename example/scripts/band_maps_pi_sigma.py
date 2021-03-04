@@ -57,18 +57,4 @@ parameters =[35.0,  # photon_energy (float): Photon energy in eV.
 # initialize SlicedData object
 kmap_stack = SlicedData.init_from_orbitals(name,orbitals,parameters)  
 kmap_stack.write_hdf5(hdf5_name)
-quit()
-
-# Plot some slices
-fig, _ax = plt.subplots(3,3)
-ax = _ax.flatten()
-nplots = len(ax)
-nslice = kmap_stack.data.shape[0]
-
-count = 0
-for i in range(0,nslice,1+nslice//nplots):
-    plot_data = kmap_stack.slice_from_index(i)
-    ax[count].imshow(plot_data.data)
-    count += 1
-plt.show()
 
