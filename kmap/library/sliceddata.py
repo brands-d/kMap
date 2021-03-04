@@ -437,6 +437,37 @@ class SlicedData(AbstractData):
 
         return PlotData(data, range_)
 
+    def write_hdf5(self, hdf5_name):
+        h5file = h5py.File(hdf5_name,'w')  # create new file
+
+        h5file.create_dataset('name',data=self.name)
+        h5file.create_dataset('alias',data=self.name) 
+
+        h5file.create_dataset('axis_1_label',data=self.axes[0].label) 
+        h5file.create_dataset('axis_2_label',data=self.axes[1].label)
+        h5file.create_dataset('axis_3_label',data=self.axes[2].label)
+
+        h5file.create_dataset('axis_1_units',data=self.axes[0].units) 
+        h5file.create_dataset('axis_2_units',data=self.axes[1].units)
+        h5file.create_dataset('axis_3_units',data=self.axes[2].units)
+
+        h5file.create_dataset('axis_1_range',data=self.axes[0].range) 
+        h5file.create_dataset('axis_2_range',data=self.axes[1].range)
+        h5file.create_dataset('axis_3_range',data=self.axes[2].range)
+
+        h5file.create_dataset('data',data=self.data,dtype='f8')    
+
+        for key in self.meta_data:
+            if key != 'Orbital Info':
+                h5file.create_dataset(key,data=self.meta_data[key])
+
+            else:
+                for orbital in self.meta_data[key]:
+                    h5file.create_dataset(orbital,data=self.meta_data[key][orbital])    
+
+        h5file.close()
+
+
     def __str__(self):
         rep = AbstractData.__str__(self)
 

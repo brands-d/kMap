@@ -22,8 +22,8 @@ from kmap.library.misc import energy_to_k
 # when concatenating with strings
 data_path = Path(__file__).parent / Path('../data/')
 
-cubefile = open(data_path / 'pentacene_HOMO.cube').read()  # read cube-file from file
-orbital  = Orbital(cubefile, dk3D=0.15, E_kin_max=150,value='real') 
+cubefile = open(data_path / 'PTCDA_B.cube').read()  # read cube-file from file
+orbital  = Orbital(cubefile, dk3D=0.15, E_kin_max=150,value='imag') 
 data     = orbital.psik['data']
 kx,ky,kz = orbital.psik['kx'], orbital.psik['ky'], orbital.psik['kz'] 
 dx,dy,dz = kx[1]-kx[0], ky[1]-ky[0], kz[1]-kz[0]

@@ -1,8 +1,9 @@
-# This script demonstrates how kmaps of several orbitals can be used to
-# create the datacube Intensity[BE,kx,ky] as SlicedData object (BE = binding energy)
+# This script computes the datacube Intensity[BE,kx,ky] as SlicedData object 
+# (BE = binding energy)
 # To this end a list of molecular orbitals is loaded from a list of URLs 
 # pointing to the cube files. By using the orbital energies and a given
 # energy broadening parameter the data cube is created and can be sliced as desired.
+# Here, orbitals of a particular symmetry can be selected, e.g. (pi or sigma)
 
 # Python Imports
 from pathlib import Path
@@ -19,18 +20,28 @@ from kmap.library.sliceddata import SlicedData
 data_path = Path(__file__).parent / Path('../../kmap/resources/misc')
 
 db = Database(data_path / 'molecules.txt')
-molecule = db.get_molecule_by_ID(11)  # choose pentacene molecule for testing ...
+molecule = db.get_molecule_by_ID(406)  # choose ID from database (406 = bisanthene, PBE-functional)
 
 # set name and select list of orbitals 
-name       = 'pentacene'   # set name for SlicedData Object
-orbitals   = []
-for orbital in molecule.orbitals[7:-4]:
-    orbitals.append([orbital.URL,{'energy':orbital.energy,'name':orbital.name}])
+name         = 'bisanthene'   # set name for SlicedData Object
+hdf5_name    = 'bisanthene_sigma.hdf5' # choose name fpr hdf5-file to be written 
+energy_range = [-10, -2]       # select a binding energy range
+pi           = ['au','b2g','b3g','b1u']
+sigma        = ['ag','b1g','b2u','b3u']
+selected_symmetry = sigma   # choose between pi or sigma orbitals
+
+
+orbitals     = []
+for orbital in molecule.orbitals:
+    if  (energy_range[0] <= orbital.energy <= energy_range[1]) and \
+        orbital.symmetry in selected_symmetry:
+        orbitals.append([orbital.URL,{'energy':orbital.energy,'name':orbital.name}])
+
 
 # set parameters
 parameters =[35.0,  # photon_energy (float): Photon energy in eV.
              0.0,   # fermi_energy (float): Fermi energy in eV
-             0.4,   # energy_broadening (float): FWHM of Gaussian energy broadenening in eV
+             0.2,   # energy_broadening (float): FWHM of Gaussian energy broadenening in eV
              0.03,  # dk (float): Desired k-resolution in kmap in Angstroem^-1. 
              0,     # phi (float): Euler orientation angle phi in degree. 
              0,     # theta (float): Euler orientation angle phi in degree. 
@@ -45,6 +56,8 @@ parameters =[35.0,  # photon_energy (float): Photon energy in eV.
              
 # initialize SlicedData object
 kmap_stack = SlicedData.init_from_orbitals(name,orbitals,parameters)  
+kmap_stack.write_hdf5(hdf5_name)
+quit()
 
 # Plot some slices
 fig, _ax = plt.subplots(3,3)

@@ -152,7 +152,7 @@ class Plot3DMolecule():
 # when concatenating with strings
 data_path = Path(__file__).parent / Path('../data/')
 
-cubefile = open(data_path / 'pentacene_HOMO.cube').read()  # read cube-file from file
+cubefile = open(data_path / 'PTCDA_B.cube').read()  # read cube-file from file
 molecule = Orbital(cubefile) # Orbital object contains molecular geometry and psi(x,y,z)
 
 # initialize GLViewWidget()
@@ -163,7 +163,9 @@ w.setWindowTitle('test')
 w.setCameraPosition(distance=100,elevation=90,azimuth=-90)  # view from top
 
 molecule_view = Plot3DMolecule(w, molecule, 
-                photon={'polarization':'C-', 'alpha':45, 'beta': 0})
+                photon={'polarization':'p', 'alpha':45, 'beta': 0})
+#molecule_view = Plot3DMolecule(w, molecule, 
+#                photon={})
 
 
 #xdirection = gl.GLLinePlotItem(pos=np.array([[0,0,0],[20,0,0]]), color=(1,1,1,0.5), width=5, antialias=True)

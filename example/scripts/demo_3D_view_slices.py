@@ -19,7 +19,7 @@ from kmap.library.sliceddata import SlicedData
 
 # Path to data folder; replace with your own; use '/' instead of '+'
 # when concatenating with strings
-data_path = Path(__file__).parent / Path('../data/')
+data_path = Path(__file__).parent / Path('../../kmap/resources/misc')
 
 db = Database(data_path / 'molecules.txt')
 molecule = db.get_molecule_by_ID(11)  # choose pentacene molecule for testing ...
