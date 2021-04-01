@@ -6,11 +6,11 @@ calculate and slice data from cube files.
 
 import numpy as np
 import scipy.interpolate as interp
-from scipy.ndimage import rotate
 from kmap.library.plotdata import PlotData
 from kmap.library.misc import energy_to_k, compute_Euler_matrix
 
 np.seterr(invalid='ignore')
+
 
 class Orbital():
     """Class modelling cube files as orbitals from which kmaps can be
@@ -33,17 +33,17 @@ class Orbital():
 
     """
 
-    def __init__(self, file, file_format='cube', dk3D=0.15, E_kin_max=150,value='abs2'):
-        
+    def __init__(self, file, file_format='cube', dk3D=0.15, E_kin_max=150,
+                 value='abs2'):
         # Read orbital data from file
-        if file_format == 'cube': 
+        if file_format == 'cube':
             self._read_cube(file)
         else:
             NotImplementedError('Other formats than cube not implemented')
 
         self.compute_3DFT(dk3D, E_kin_max, value)
         self.kmap = {}
-        self.Ak   = {}
+        self.Ak = {}
 
     def get_kmap(self, E_kin=30, dk=0.03, phi=0, theta=0, psi=0,
                  Ak_type='no', polarization='p', alpha=60, beta=90,
@@ -79,33 +79,33 @@ class Orbital():
 
         # Rotate molecule (that is, rotate hemisphere) if angles have changed
         # ... and symmetrize kmap if necessary
-        new_orientation = self.check_new_orientation(phi, theta, psi)       
+        new_orientation = self.check_new_orientation(phi, theta, psi)
         new_symmetrization = self.check_new_symmetrization(symmetrization)
         if new_symmetrization or new_orientation:
             self.set_orientation(phi, theta, psi)
             self.set_symmetry(symmetrization)
 
         # Compute polarization factor if parameters have changed
-        new_Ak  = self.check_new_Ak(Ak_type, polarization, alpha, beta, gamma, s_share)
-        if new_cut or new_Ak: self.set_polarization(Ak_type, polarization, 
-                                         alpha, beta,gamma,s_share)
+        new_Ak = self.check_new_Ak(Ak_type, polarization, alpha, beta, gamma,
+                                   s_share)
+        if new_cut or new_Ak: self.set_polarization(Ak_type, polarization,
+                                                    alpha, beta, gamma,
+                                                    s_share)
 
         if Ak_type == 'only-toroid' or Ak_type == 'only-NanoESCA':
             return PlotData(self.Ak['data'], self.kmap['krange'])
-        
+
         else:
-            return PlotData(self.Ak['data']*self.kmap['data'], 
-                        self.kmap['krange'])
+            return PlotData(self.Ak['data'] * self.kmap['data'],
+                            self.kmap['krange'])
 
-
-    def change_polarization(self, Ak_type='no', polarization='p', alpha=60, beta=90,
-                                  gamma=0, s_share=0.694):
-        
+    def change_polarization(self, Ak_type='no', polarization='p', alpha=60,
+                            beta=90,
+                            gamma=0, s_share=0.694):
         self.set_polarization(Ak_type, polarization, alpha, beta,
-                              gamma,s_share)
-        return PlotData(self.Ak['data']*self.kmap['data'], 
+                              gamma, s_share)
+        return PlotData(self.Ak['data'] * self.kmap['data'],
                         self.kmap['krange'])
-
 
     def compute_3DFT(self, dk3D, E_kin_max, value):
         """Compute 3D-FT."""
@@ -119,9 +119,9 @@ class Orbital():
         pad_z = max(
             int(2 * np.pi / (dk3D * self.psi['dz'])) - self.psi['nz'], 0)
 
-        if pad_x%2 == 1: pad_x += 1  # make sure it's an even number
-        if pad_y%2 == 1: pad_y += 1  # make sure it's an even number
-        if pad_z%2 == 1: pad_z += 1  # make sure it's an even number
+        if pad_x % 2 == 1: pad_x += 1  # make sure it's an even number
+        if pad_y % 2 == 1: pad_y += 1  # make sure it's an even number
+        if pad_z % 2 == 1: pad_z += 1  # make sure it's an even number
 
         nkx = self.psi['nx'] + pad_x
         nky = self.psi['ny'] + pad_y
@@ -134,35 +134,38 @@ class Orbital():
 
         # Compute 3D FFT
         # !! TESTING !!! This is supposed to yield also proper Real- and Imaginary parts!!
-#        print(nkx, nky, nkz)
-#        print(pad_x, pad_y, pad_z)
-        psi_padded = np.pad(self.psi['data'], 
-                      pad_width=((pad_x//2,pad_x//2), (pad_y//2,pad_y//2), (pad_z//2,pad_z//2)),
-                      mode='constant',
-                      constant_values=(0,0))
-        psi_padded = np.fft.ifftshift(psi_padded)                                
+        #        print(nkx, nky, nkz)
+        #        print(pad_x, pad_y, pad_z)
+        psi_padded = np.pad(self.psi['data'],
+                            pad_width=(
+                                (pad_x // 2, pad_x // 2),
+                                (pad_y // 2, pad_y // 2),
+                                (pad_z // 2, pad_z // 2)),
+                            mode='constant',
+                            constant_values=(0, 0))
+        psi_padded = np.fft.ifftshift(psi_padded)
         psik = np.fft.fftshift(np.fft.fftn(psi_padded))
 
-       # THIS IS THE OLD AND WELL TESTED WAY TO Compute 3D FFT
-#        psik = np.fft.fftshift(np.fft.fftn(self.psi['data'],
-#                                           s=[nkx, nky, nkz]))
+        # THIS IS THE OLD AND WELL TESTED WAY TO Compute 3D FFT
+        #        psik = np.fft.fftshift(np.fft.fftn(self.psi['data'],
+        #                                           s=[nkx, nky, nkz]))
 
         # properly normalize wave function in momentum space
-        dkx, dky, dkz = kx[1]-kx[0], ky[1]-ky[0], kz[1]-kz[0]
-        factor        = dkx*dky*dkz*np.sum(np.abs(psik)**2)
-        psik         /= np.sqrt(factor)
+        dkx, dky, dkz = kx[1] - kx[0], ky[1] - ky[0], kz[1] - kz[0]
+        factor = dkx * dky * dkz * np.sum(np.abs(psik)**2)
+        psik /= np.sqrt(factor)
 
         # Reduce size of array to value given by E_kin_max to save memory
-        k_max      = energy_to_k(E_kin_max)
+        k_max = energy_to_k(E_kin_max)
         kx_indices = np.where((kx <= k_max) & (kx >= -k_max))[0]
         ky_indices = np.where((ky <= k_max) & (ky >= -k_max))[0]
-        kz_indices = np.where((kz <= k_max) & (kz >= -k_max))[0]    
-        kx         = kx[kx_indices]
-        ky         = ky[ky_indices]
-        kz         = kz[kz_indices]
-        psik       = np.take(psik, kx_indices, axis=0)
-        psik       = np.take(psik, ky_indices, axis=1)
-        psik       = np.take(psik, kz_indices, axis=2)
+        kz_indices = np.where((kz <= k_max) & (kz >= -k_max))[0]
+        kx = kx[kx_indices]
+        ky = ky[ky_indices]
+        kz = kz[kz_indices]
+        psik = np.take(psik, kx_indices, axis=0)
+        psik = np.take(psik, ky_indices, axis=1)
+        psik = np.take(psik, kz_indices, axis=2)
 
         # decide whether real, imaginry part, absolute value, or squared absolute value is used
         if value == 'real':
@@ -177,7 +180,6 @@ class Orbital():
         else:
             psik = np.abs(psik)**2
 
-
         # Define interpolating function to be used later for kmap
         # computation
         psik_interp = interp.RegularGridInterpolator((kx, ky, kz), psik,
@@ -186,7 +188,7 @@ class Orbital():
 
         # Set attributes
         self.psik = {'kx': kx, 'ky': ky, 'kz': kz,
-                     'E_kin_max':E_kin_max,
+                     'E_kin_max': E_kin_max,
                      'value': value,
                      'data': psik,
                      'data_interp': psik_interp}
@@ -198,7 +200,6 @@ class Orbital():
 
     # Make hemi-spherical cut through 3D Fourier transform
     def set_kinetic_energy(self, E_kin, dk):
-
         kmax = energy_to_k(E_kin)
         if type(dk) == tuple:
             kxi = dk[0]
@@ -225,18 +226,16 @@ class Orbital():
                      'data': data}
 
     def check_new_cut(self, E_kin, dk):
-
         eps = 1e-10
 
         new_cut = False
 
         if 'E_kin' in self.kmap:
+            if type(dk) != tuple and type(self.kmap['dk']) != tuple:
+                if (np.abs(self.kmap['E_kin'] - E_kin) > eps or
+                        np.abs(self.kmap['dk'] - dk) > eps):
+                    new_cut = True
 
-            if type(dk) != tuple and type(self.kmap['dk']) != tuple: 
-                if (np.abs(self.kmap['E_kin'] - E_kin) > eps or 
-                    np.abs(self.kmap['dk']    - dk)    > eps):
-                   new_cut = True
-           
             elif type(dk) == tuple and type(self.kmap['dk']) != tuple:
                 new_cut = True
 
@@ -250,30 +249,28 @@ class Orbital():
                 if dk[0].shape != self.kmap['dk'][0].shape:
                     new_cut = True
                 else:
-                    if np.any( np.abs(self.kmap['dk'][0] - dk[0]) > eps):
-                        new_cut = True 
+                    if np.any(np.abs(self.kmap['dk'][0] - dk[0]) > eps):
+                        new_cut = True
 
                 if dk[1].shape != self.kmap['dk'][1].shape:
                     new_cut = True
                 else:
-                    if np.any( np.abs(self.kmap['dk'][1] - dk[1]) > eps):
-                        new_cut = True 
+                    if np.any(np.abs(self.kmap['dk'][1] - dk[1]) > eps):
+                        new_cut = True
 
         else:
             new_cut = True
 
         return new_cut
 
-
-    # get the (kx,ky) values of the kmap as a list of tuples 
+    # get the (kx,ky) values of the kmap as a list of tuples
     def get_kxkygrid(self):
-        
-        KX, KY = self.kmap['KX'], self.kmap['KY']   
-        return list(map(lambda a, b: (a, b), KX.flatten(), KY.flatten()))         
+        KX, KY = self.kmap['KX'], self.kmap['KY']
+        return list(map(lambda a, b: (a, b), KX.flatten(), KY.flatten()))
 
-    # Rotate hemisphere KX, KY, KZ by Euler angles phi, theta, psi
+        # Rotate hemisphere KX, KY, KZ by Euler angles phi, theta, psi
+
     def set_orientation(self, phi, theta, psi):
-
         KX, KY, KZ = self.kmap['KX'], self.kmap['KY'], self.kmap['KZ']
         nkx = KX.shape[0]
         nky = KX.shape[1]
@@ -295,25 +292,22 @@ class Orbital():
         self.kmap['data'] = data
 
     def check_new_orientation(self, phi, theta, psi):
-
         eps = 1e-10
         if 'phi' in self.kmap:
-            if (np.abs(self.kmap['phi']   - phi)   > eps or 
-                np.abs(self.kmap['theta'] - theta) > eps or
-                np.abs(self.kmap['psi']   - psi)   > eps ):
-                  new_orientation = True
+            if (np.abs(self.kmap['phi'] - phi) > eps or
+                    np.abs(self.kmap['theta'] - theta) > eps or
+                    np.abs(self.kmap['psi'] - psi) > eps):
+                new_orientation = True
 
             else:
-                  new_orientation = False
+                new_orientation = False
         else:
             new_orientation = True
 
         return new_orientation
 
-
-    def set_polarization(self, Ak_type, polarization, alpha, beta, gamma, 
-                               s_share):
-
+    def set_polarization(self, Ak_type, polarization, alpha, beta, gamma,
+                         s_share):
         if Ak_type == 'no':  # Set |A.k|^2 to 1
             self.Ak = {'Ak_type': Ak_type,
                        'polarization': polarization,
@@ -324,7 +318,6 @@ class Orbital():
                        'data': np.ones_like(self.kmap['data'])}
 
             return
-
 
         # Convert angles to rad and compute sin and cos for later use
         a = np.radians(alpha)
@@ -355,7 +348,7 @@ class Orbital():
 
         # At the toroid, the emitted electron is always in the plane of
         # incidence and the sample is rotated
-        if Ak_type == 'toroid' or Ak_type == 'only-toroid':     
+        if Ak_type == 'toroid' or Ak_type == 'only-toroid':
             # Parallel component of k-vector
             kpar = np.sqrt(k2 - kz**2)
             # |A.k|^2 factor
@@ -380,10 +373,10 @@ class Orbital():
             # Compare Equation (37) in S. Moser, J. Electr. Spectr.
             # Rel. Phen. 214, 29-52 (2017).  
             # Eq. (37) turned out to be wrong!!!          
-#            elif polarization == 'unpolarized':
-#                Ak = (k2 + gamma_calc**2 + 2*kx*kz*cos_b + 2*ky*kz*sin_b)*np.sin(2*a)  
-#                Ak+= (kx**2*sin_b + ky**2*cos_b - kz**2 - gamma_calc**2)*np.cos(2*a)  
-#                Ak*= (2/3)       
+            #            elif polarization == 'unpolarized':
+            #                Ak = (k2 + gamma_calc**2 + 2*kx*kz*cos_b + 2*ky*kz*sin_b)*np.sin(2*a)
+            #                Ak+= (kx**2*sin_b + ky**2*cos_b - kz**2 - gamma_calc**2)*np.cos(2*a)
+            #                Ak*= (2/3)
 
             # unpolarized-light is now correctly treated as average of
             # s- and p-polarized light
@@ -393,7 +386,7 @@ class Orbital():
                 Ak_s = -kx * sin_b + ky * cos_b
                 Ak_s = Ak_s**2
 
-                Ak = s_share*Ak_s + (1 - s_share)*Ak_p
+                Ak = s_share * Ak_s + (1 - s_share) * Ak_p
                 Ak[kx**2 + ky**2 > kmax**2] = np.nan
 
 
@@ -402,14 +395,14 @@ class Orbital():
                 polp = kx * cos_a * cos_b + ky * cos_a * sin_b + kz * sin_a
                 pols = -kx * sin_b + ky * cos_b
                 Ak = 0.5 * (polp**2 + gamma_calc**2 * sin_a**2) + 0.5 * \
-                    pols**2 + (sin_b * kx - cos_b * ky) * gamma_calc * sin_a
+                     pols**2 + (sin_b * kx - cos_b * ky) * gamma_calc * sin_a
 
             # Circularly polarized light (left-handed)
             elif polarization == 'C-':
                 polp = kx * cos_a * cos_b + ky * cos_a * sin_b + kz * sin_a
                 pols = -kx * sin_b + ky * cos_b
                 Ak = 0.5 * (polp**2 + gamma_calc**2 * sin_a**2) + 0.5 * \
-                    pols**2 - (sin_b * kx - cos_b * ky) * gamma_calc * sin_a
+                     pols**2 - (sin_b * kx - cos_b * ky) * gamma_calc * sin_a
 
             # CDAD-signal (right-handed - left-handed) using empirically
             # damped plane wave
@@ -429,25 +422,21 @@ class Orbital():
                    'data': Ak}
 
     def check_new_Ak(self, Ak_type, polarization, alpha, beta, gamma, s_share):
-
         if 'Ak_type' in self.Ak:
-
-            if (self.Ak['Ak_type']      != Ak_type      or
-                self.Ak['polarization'] != polarization or
-                self.Ak['alpha']        != alpha        or
-                self.Ak['beta']         != beta         or
-                self.Ak['gamma']        != gamma        or
-                self.Ak['s_share']      != s_share):
- 
-                  new_Ak = True
+            if (self.Ak['Ak_type'] != Ak_type or
+                    self.Ak['polarization'] != polarization or
+                    self.Ak['alpha'] != alpha or
+                    self.Ak['beta'] != beta or
+                    self.Ak['gamma'] != gamma or
+                    self.Ak['s_share'] != s_share):
+                new_Ak = True
 
             else:
-                  new_Ak = False
+                new_Ak = False
         else:
             new_Ak = True
 
         return new_Ak
-
 
     def set_symmetry(self, symmetrization):
         """Symmterizes the kmap.
@@ -457,71 +446,46 @@ class Orbital():
                 '3-fold', '3-fold+mirror','4-fold', '4-fold+mirror'
 
         """
-        if symmetrization == 'no':
-            self.kmap['symmetrization'] = 'no'
-            return 
+        data = PlotData(self.kmap['data'], self.kmap['krange'])
 
-        data = self.kmap['data']
+        if symmetrization == '2-fold':
+            data.symmetrise(symmetry='2-fold', update=True)
 
-        if symmetrization == '2-fold': 
-            data += rotate(np.nan_to_num(data), 180, reshape=False)
-            data /= 2
-                    
-        elif symmetrization == '2-fold+mirror': 
-            data += rotate(np.nan_to_num(data), 180, reshape=False)
-            data += np.flip(data, 0)  # mirror map with respect to first axis
-            data /= 4
+        elif symmetrization == '2-fold+mirror':
+            data.symmetrise(symmetry='2-fold', mirror=True,
+                                         update=True)
 
-        elif symmetrization == '3-fold': 
-            data1 = rotate(np.nan_to_num(data), 120, reshape=False)
-            data2 = rotate(np.nan_to_num(data), 240, reshape=False)
-            data += (data1 + data2)
-            data /= 3
-                     
-        elif symmetrization == '3-fold+mirror': 
-            data1 = rotate(np.nan_to_num(data), 120, reshape=False)
-            data2 = rotate(np.nan_to_num(data), 240, reshape=False)
-            data += (data1 + data2)
-            data += np.flip(data, 0)
-            data /= 6
+        elif symmetrization == '3-fold':
+            data.symmetrise(symmetry='3-fold', update=True)
 
-        elif symmetrization == '4-fold': 
-            data1 = rotate(np.nan_to_num(data), 90, reshape=False)
-            data2 = rotate(np.nan_to_num(data), 180, reshape=False)
-            data3 = rotate(np.nan_to_num(data), 270, reshape=False)
-            data += (data1 + data2 + data3)
-            data /= 4
-                      
-        elif symmetrization == '4-fold+mirror': 
-            data1 = rotate(np.nan_to_num(data), 90, reshape=False)
-            data2 = rotate(np.nan_to_num(data), 180, reshape=False)
-            data3 = rotate(np.nan_to_num(data), 270, reshape=False)
-            data += (data1 + data2 + data3)
-            data += np.flip(data, 0)  # mirror map with respect to first axis
-            data += np.flip(data, 1)  # mirror map with respect to second axis
-            data /= 8
+        elif symmetrization == '3-fold+mirror':
+            data.symmetrise(symmetry='3-fold', mirror=True,
+                                         update=True)
 
+        elif symmetrization == '4-fold':
+            data.symmetrise(symmetry='4-fold', update=True)
+
+        elif symmetrization == '4-fold+mirror':
+            data.symmetrise(symmetry='4-fold', mirror=True,
+                                         update=True)
+
+        self.kmap['data'] = data.data
         self.kmap['symmetrization'] = symmetrization
-        self.kmap['data'] = data
-        return
 
     def check_new_symmetrization(self, symmetrization):
-
         if 'symmetrization' in self.kmap:
-
             if self.kmap['symmetrization'] != symmetrization:
- 
-                  new_symmetrization = True
+                new_symmetrization = True
 
             else:
-                  new_symmetrization = False
+                new_symmetrization = False
         else:
             new_symmetrization = True
 
         return new_symmetrization
 
-
-    def plot(self, ax, title=None, kxlim=None, kylim=None, interpolation='bicubic'):
+    def plot(self, ax, title=None, kxlim=None, kylim=None,
+             interpolation='bicubic'):
         """Creates a plot of the kmap in axes-obeject ax.
 
         Args:
@@ -530,28 +494,28 @@ class Orbital():
         """
 
         # prepare data
-        data   = self.Ak['data']*self.kmap['data']  
+        data = self.Ak['data'] * self.kmap['data']
         krange = self.kmap['krange']
         limits = [krange[0][0], krange[0][1], krange[1][0], krange[1][1]]
 
         # plot kmap       
         im = ax.imshow(data,
-                      extent=limits,
-                      interpolation=interpolation,
-                      origin='lower',
-                      cmap='jet')
+                       extent=limits,
+                       interpolation=interpolation,
+                       origin='lower',
+                       cmap='jet')
 
         # format plot
         ax.set_aspect('equal')
-#        ax.set_xlabel(r'$\kappa_x(1/\AA)$')
-#        ax.set_ylabel(r'$\kappa_y(1/\AA)$')
+        #        ax.set_xlabel(r'$\kappa_x(1/\AA)$')
+        #        ax.set_ylabel(r'$\kappa_y(1/\AA)$')
         ax.set_xlabel(r'$k_x$ (Å$^{-1}$)')
         ax.set_ylabel(r'$k_y$ (Å$^{-1}$)')
 
         if kxlim != None:
-            ax.set_xlim(kxlim[0],kxlim[1])        
+            ax.set_xlim(kxlim[0], kxlim[1])
         if kylim != None:
-            ax.set_ylim(kxlim[0],kxlim[1])        
+            ax.set_ylim(kxlim[0], kxlim[1])
 
         if title != None:
             ax.set_title(title)
@@ -621,53 +585,58 @@ class Orbital():
                          'chemical_numbers': chemical_numbers,
                          'atomic_coordinates': atomic_coordinates}
 
-    def get_bonds(self,lower_factor=0.8,upper_factor=1.2):
+    def get_bonds(self, lower_factor=0.8, upper_factor=1.2):
         """ returns a list of bond used for plotting the molecular structure.
 
         Args:
             lower_factor (float): lower bound for drawing bonds w.r.t sum of covalent radii
             upper_factor (float): upper bound for drawing bonds w.r.t sum of covalent radii
         """
-        covalent_R = {1:0.32, 2:0.32,  # H, He
-                      3:1.34, 4:0.90, 5:0.82, 6:0.77, 7:0.71, 8:0.73, 9:0.71,10:0.69, # Li - Ne
-                     11:1.54,12:1.30,13:1.18,14:1.11,15:1.06,16:1.02,17:0.99,18:0.97, # Na- Ar
-                     19:1.96,20:1.74,21:1.44,22:1.36,23:1.25,24:1.27,25:1.39,26:1.25, # K - Fe
-                     27:1.26,28:1.21,29:1.38,30:1.31,31:1.26,32:1.22,33:1.21,34:1.16, # Co- Se
-                     35:1.14,36:1.10,                                                 # Br, Kr
-                     37:2.11,38:1.92,39:1.62,40:1.48,41:1.37,41:1.45,43:1.31,44:1.26, # Rb -Ru
-                     45:1.35,46:1.31,47:1.53,48:1.48,49:1.44,50:1.41,51:1.38,52:1.35, # Rh -Te
-                     53:1.33,54:1.30,                                                 #  I, Xe
-                     55:2.25,56:1.98,57:1.69,72:1.50,73:1.38,74:1.46,75:1.59,76:1.28, # Cs -Os
-                     77:1.37,78:1.38,79:1.38,80:1.49,81:1.48,82:1.46,83:1.46,84:1.40, # Ir -Po
-                     85:1.45,86:1.45}                                                 # At, Rn
-               
-        dx,dy,dz    = self.psi['dx'], self.psi['dy'], self.psi['dz'] 
+        covalent_R = {1: 0.32, 2: 0.32,  # H, He
+                      3: 1.34, 4: 0.90, 5: 0.82, 6: 0.77, 7: 0.71, 8: 0.73,
+                      9: 0.71, 10: 0.69,  # Li - Ne
+                      11: 1.54, 12: 1.30, 13: 1.18, 14: 1.11, 15: 1.06,
+                      16: 1.02, 17: 0.99, 18: 0.97,  # Na- Ar
+                      19: 1.96, 20: 1.74, 21: 1.44, 22: 1.36, 23: 1.25,
+                      24: 1.27, 25: 1.39, 26: 1.25,  # K - Fe
+                      27: 1.26, 28: 1.21, 29: 1.38, 30: 1.31, 31: 1.26,
+                      32: 1.22, 33: 1.21, 34: 1.16,  # Co- Se
+                      35: 1.14, 36: 1.10,  # Br, Kr
+                      37: 2.11, 38: 1.92, 39: 1.62, 40: 1.48, 41: 1.37,
+                      41: 1.45, 43: 1.31, 44: 1.26,  # Rb -Ru
+                      45: 1.35, 46: 1.31, 47: 1.53, 48: 1.48, 49: 1.44,
+                      50: 1.41, 51: 1.38, 52: 1.35,  # Rh -Te
+                      53: 1.33, 54: 1.30,  # I, Xe
+                      55: 2.25, 56: 1.98, 57: 1.69, 72: 1.50, 73: 1.38,
+                      74: 1.46, 75: 1.59, 76: 1.28,  # Cs -Os
+                      77: 1.37, 78: 1.38, 79: 1.38, 80: 1.49, 81: 1.48,
+                      82: 1.46, 83: 1.46, 84: 1.40,  # Ir -Po
+                      85: 1.45, 86: 1.45}  # At, Rn
+
+        dx, dy, dz = self.psi['dx'], self.psi['dy'], self.psi['dz']
         coordinates = self.molecule['atomic_coordinates']
-        Z_list      = self.molecule['chemical_numbers']                  
-        bonds       = []
+        Z_list = self.molecule['chemical_numbers']
+        bonds = []
         for atom1, Z1 in zip(coordinates, Z_list):
-            x1,y1,z1 = atom1[0], atom1[1], atom1[2]
-            R1       = covalent_R[Z1]
+            x1, y1, z1 = atom1[0], atom1[1], atom1[2]
+            R1 = covalent_R[Z1]
             for atom2, Z2 in zip(coordinates, Z_list):
-                x2,y2,z2 = atom2[0], atom2[1], atom2[2] 
-                R2       = covalent_R[Z2] 
-                R        = R1 + R2    # sum of covalent radii 
-                distance = np.sqrt((x1-x2)**2 + (y1-y2)**2 + (z1-z2)**2)
-                if lower_factor*R <= distance <= upper_factor*R:
-                    bond = [[x1/dx,y1/dy,z1/dz], [x2/dx,y2/dy,z2/dz]] 
+                x2, y2, z2 = atom2[0], atom2[1], atom2[2]
+                R2 = covalent_R[Z2]
+                R = R1 + R2  # sum of covalent radii
+                distance = np.sqrt((x1 - x2)**2 + (y1 - y2)**2 + (z1 - z2)**2)
+                if lower_factor * R <= distance <= upper_factor * R:
+                    bond = [[x1 / dx, y1 / dy, z1 / dz],
+                            [x2 / dx, y2 / dy, z2 / dz]]
                     bonds.append(np.array(bond))
 
         return bonds
 
-
     def set_3Dkgrid(self, nk, delta):
-
-        k_min = -np.pi/delta
-        k_max = +np.pi/delta
+        k_min = -np.pi / delta
+        k_max = +np.pi / delta
         k, dk = np.linspace(k_min, k_max, nk, retstep=True)
-        if nk%2 == 0:
-            k = k - dk/2
+        if nk % 2 == 0:
+            k = k - dk / 2
 
         return k
-
-

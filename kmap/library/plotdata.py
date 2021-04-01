@@ -12,7 +12,7 @@ from numbers import Number
 # Third Party Imports
 import numpy as np
 import itertools as it
-from scipy.ndimage import gaussian_filter
+from scipy.ndimage import gaussian_filter, rotate
 from scipy.interpolate import RegularGridInterpolator as RGI
 
 # Own Imports
@@ -142,6 +142,70 @@ class PlotData():
 
         return intensities
 
+    def symmetrise(self, symmetry='no', mirror=False, update=False):
+        """Symmetrises the data set. Optional mirroring available.
+
+        Args:
+            symmetry (str): '2-fold', '3-fold', '4-fold' or 'no'.
+            mirror (bool): Whether the data gets mirrored as well. Along first
+                axis for 2- and 3-fold and along first and second axis for 4-
+                fold symmetry.
+            update (bool): If True data in this instance
+                will be overriden with symmetrised result. If False
+                this function will only return the result but data will
+                stay unchanged.
+
+        Returns:
+            (PlotData): PlotData object with the symmetrised data.
+
+        """
+
+        new_data = self.data
+
+        if symmetry == '2-fold':
+            new_data += rotate(np.nan_to_num(new_data), 180, reshape=False)
+
+            if mirror:
+                new_data += np.flip(new_data, 0)
+                new_data /= 2
+
+            new_data /= 2
+
+
+        elif symmetry == '3-fold':
+            aux_1 = rotate(np.nan_to_num(new_data), 120, reshape=False)
+            aux_2 = rotate(np.nan_to_num(new_data), 240, reshape=False)
+            new_data += aux_1 + aux_2
+
+            if mirror:
+                new_data += np.flip(new_data, 0)
+                new_data /= 2
+
+            new_data /= 3
+
+        elif symmetry == '4-fold':
+            aux_1 = rotate(np.nan_to_num(new_data), 90, reshape=False)
+            aux_2 = rotate(np.nan_to_num(new_data), 180, reshape=False)
+            aux_3 = rotate(np.nan_to_num(new_data), 270, reshape=False)
+            new_data += aux_1 + aux_2 + aux_3
+
+            if mirror:
+                new_data += np.flip(new_data, 0)
+                new_data += np.flip(new_data, 1)
+                new_data /= 2
+
+            new_data /= 4
+
+        if update:
+            self.data = new_data
+
+            return self
+
+        else:
+            new_plot_data = PlotData(new_data, self.range)
+
+            return new_plot_data
+
     def smooth(self, sigma_x, sigma_y, mode='nearest',
                update=False, fill_value=np.nan, **kwargs):
         """Applies a 2D Gaussian filter to the current data. Wrapper
@@ -167,7 +231,7 @@ class PlotData():
             **kwargs: See scipy.ndimage.gaussian_filter
 
         Returns:
-            (PlotData): PlotData object with the smoothed data .
+            (PlotData): PlotData object with the smoothed data.
 
         """
 
