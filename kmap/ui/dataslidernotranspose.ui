@@ -6,26 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>373</width>
-    <height>121</height>
+    <width>535</width>
+    <height>220</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="leftMargin">
-    <number>5</number>
-   </property>
-   <property name="topMargin">
-    <number>5</number>
-   </property>
-   <property name="rightMargin">
-    <number>5</number>
-   </property>
-   <property name="bottomMargin">
-    <number>5</number>
-   </property>
+  <layout class="QHBoxLayout" name="horizontalLayout_3">
    <item>
     <widget class="QGroupBox" name="groupbox">
      <property name="font">
@@ -163,6 +151,68 @@
           <property name="value">
            <number>0</number>
           </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QLabel" name="symmetrize_label">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Symmetrization:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="symmetrize_combobox">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <item>
+           <property name="text">
+            <string>No Symmetry</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>2-Fold</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>2-Fold + Mirror</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>3-Fold</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>3-Fold + Mirror</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>4-Fold</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>4-Fold + Mirror</string>
+           </property>
+          </item>
          </widget>
         </item>
        </layout>

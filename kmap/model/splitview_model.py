@@ -11,6 +11,7 @@ class SplitViewTabModel():
         self.interpolation = interpolation
         self.displayed_sliced_data = None
         self.displayed_plot_data = None
+        self.symmetry = ['no', False]
         self.scale = 1
         self.split_type = 'Left Right'
 
@@ -22,6 +23,9 @@ class SplitViewTabModel():
     def set_type(self, type_):
         self.split_type = type_
 
+    def change_symmetry(self, symmetry, mirror):
+        self.symmetry = [symmetry, mirror]
+
     def get_sliced_data(self):
         return self.sliced_data_tab.get_data()
 
@@ -30,6 +34,7 @@ class SplitViewTabModel():
             index, axis).copy()
         temp = self.interpolation.interpolate(temp)
         sliced_data = self.interpolation.smooth(temp)
+        sliced_data = sliced_data.symmetrise(*self.symmetry)
 
         temp = self.orbital_data_tab.get_displayed_plot_data().copy()
         temp = self.interpolation.interpolate(temp)

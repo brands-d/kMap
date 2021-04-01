@@ -100,6 +100,11 @@ class LMFitBaseTab(Tab):
         self.refresh_sliced_plot()
         self.refresh_residual_plot()
 
+    def change_symmetry(self, symmetry, mirror):
+        self.model.set_sliced_symmetrization(symmetry, mirror)
+        self.refresh_sliced_plot()
+        self.refresh_residual_plot()
+
     def closeEvent(self, event):
         del self.model
 
@@ -125,6 +130,7 @@ class LMFitBaseTab(Tab):
         self.slider.slice_changed.connect(self.change_slice)
         self.slider.axis_changed.connect(self.change_slice)
         self.slider.tranpose_triggered.connect(self.transpose)
+        self.slider.symmetry_changed.connect(self.change_symmetry)
 
         self.tree.item_selected.connect(self.refresh_selected_plot)
 

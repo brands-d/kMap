@@ -1,3 +1,6 @@
+# Third Party Imports
+import numpy as np
+
 # PyQt5 Imports
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSignal
@@ -11,6 +14,7 @@ from kmap.config.config import config
 class DataSliderBase(QWidget):
     slice_changed = pyqtSignal(int)
     axis_changed = pyqtSignal(int)
+    symmetry_changed = pyqtSignal(str, bool)
 
     def __init__(self, data, *args, **kwargs):
         self.data = data
@@ -45,6 +49,12 @@ class DataSliderBase(QWidget):
         self._update_slice_label()
 
         self.axis_changed.emit(axis)
+
+    def change_symmetry(self, index):
+        symmetries = ('no', '2-fold', '3-fold', '4-fold')
+        symmetry = symmetries[int(np.ceil(index / 2))]
+        mirror = True if index in (2, 4, 6) else False
+        self.symmetry_changed.emit(symmetry, mirror)
 
     def get_index(self):
         index = self.slider.sliderPosition()
@@ -110,6 +120,8 @@ class DataSliderBase(QWidget):
         self.slider.valueChanged.connect(self.change_slice)
         self.spinbox.valueChanged.connect(self.change_slice)
         self.combobox.currentIndexChanged.connect(self.change_axis)
+        self.symmetrize_combobox.currentIndexChanged.connect(
+            self.change_symmetry)
 
 
 # Load .ui File
@@ -133,6 +145,7 @@ DataSlider_UI, _ = uic.loadUiType(UI_file)
 
 class DataSlider(DataSliderBase, DataSlider_UI):
     tranpose_triggered = pyqtSignal(int)
+    symmetry_changed = pyqtSignal(str, bool)
 
     def __init__(self, *args, **kwargs):
         # Setup GUI
