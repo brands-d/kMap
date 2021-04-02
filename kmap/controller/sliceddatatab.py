@@ -23,7 +23,6 @@ SlicedDataTab_UI, _ = uic.loadUiType(UI_file)
 class SlicedDataTab(Tab, SlicedDataTab_UI):
 
     def __init__(self, model):
-
         self.model = model
 
         # Setup GUI
@@ -37,7 +36,6 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
 
     @classmethod
     def init_from_URLs(cls, URLs):
-
         model = SlicedDataTabModel()
         model.load_data_from_URLs(URLs)
 
@@ -45,7 +43,6 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
 
     @classmethod
     def init_from_URL(cls, URL):
-
         model = SlicedDataTabModel()
         model.load_data_from_URL(URL)
 
@@ -53,7 +50,6 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
 
     @classmethod
     def init_from_cube(cls, URL):
-
         model = SlicedDataTabModel()
         model.load_data_from_cube(URL)
 
@@ -61,7 +57,6 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
 
     @classmethod
     def init_from_path(cls, path):
-
         model = SlicedDataTabModel()
         model.load_data_from_path(path)
 
@@ -69,7 +64,6 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
 
     @classmethod
     def init_from_save(cls, save):
-
         load_type = save['model']['load_type']
         load_args = save['model']['load_args']
 
@@ -97,7 +91,6 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
         return tab, [[save['model']['ID'], new_ID]]
 
     def save_state(self):
-
         save = {'title': self.title,
                 'model': self.model.save_state(),
                 'slider': self.slider.save_state(),
@@ -108,19 +101,15 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
         return save, []
 
     def get_data(self):
-
         return self.model.data
 
     def get_axis(self):
-
         return self.slider.get_axis()
 
     def get_slice(self):
-
         return self.slider.get_index()
 
     def change_slice(self, index=-1):
-
         axis = self.slider.get_axis()
         slice_index = index if index != -1 else self.get_slice()
         data = self.model.change_slice(slice_index, axis)
@@ -132,7 +121,6 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
         self.crosshair.update_label()
 
     def change_axis(self, axis):
-
         # 'axes' is a copy of all axes except the one with index 'axis'
         axes = [a for i, a in enumerate(self.model.data.axes) if i != axis]
 
@@ -144,11 +132,9 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
         self.plot_item.plot(data)
 
     def crosshair_changed(self):
-
         self.crosshair.update_label()
 
     def display_in_matplotlib(self):
-
         data = self.model.displayed_plot_data
         LUT = self.plot_item.get_LUT()
 
@@ -157,38 +143,35 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
         return window
 
     def closeEvent(self, event):
-
         del self.model
 
         Tab.closeEvent(self, event)
 
     def to_string(self):
-
         text = self.model.to_string()
 
         return text
 
     def get_displayed_plot_data(self):
-
         return self.model.displayed_plot_data
 
     def get_crosshair(self):
-
         return self.crosshair
 
     def get_plot_labels(self):
-
         bottom = self.plot_item.get_label('bottom')
         left = self.plot_item.get_label('left')
         return bottom, left
 
     def transpose(self, constant_axis):
-
         self.model.transpose(constant_axis)
         self.change_axis(self.slider.get_axis())
 
-    def _setup(self):
+    def change_symmetry(self, symmetry, mirror):
+        self.model.change_symmetry(symmetry, mirror)
+        self.change_axis(self.slider.get_axis())
 
+    def _setup(self):
         self.slider = DataSlider(self.model.data)
         self.crosshair = CrosshairAnnulus(self.plot_item)
         self.colormap = Colormap(self.plot_item)
@@ -217,10 +200,10 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
             self.title = 'NO DATA'
 
     def _connect(self):
-
         self.crosshair.crosshair_changed.connect(self.crosshair_changed)
         self.slider.slice_changed.connect(self.change_slice)
         self.slider.axis_changed.connect(self.change_axis)
         self.slider.tranpose_triggered.connect(self.transpose)
+        self.slider.symmetry_changed.connect(self.change_symmetry)
         self.interpolation.smoothing_changed.connect(self.change_slice)
         self.interpolation.interpolation_changed.connect(self.change_slice)

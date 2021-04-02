@@ -50,6 +50,7 @@ class LMFitModel():
         self.axis = None
         self.crosshair = None
         self.symmetrization = 'no'
+        self.sliced_symmetry = ['no', False]
         self.background_equation = ['0', []]
         self.Ak_type = 'no'
         self.polarization = 'p'
@@ -128,6 +129,19 @@ class LMFitModel():
         """
 
         self.symmetrization = symmetrization
+
+    def set_sliced_symmetrization(self, symmetry, mirror):
+        """A setter method to set the type of symmetrization for the
+        sliced data kmaps. Default is 'no' and no mirroring.
+
+        Args:
+            symmetry (str): See 'symmetrise' from 'kmap.library.plotdata.py'
+                for information.
+            mirror (bool): See 'symmetrise' from 'kmap.library.plotdata.py'
+                for information.
+        """
+
+        self.sliced_symmetry = [symmetry, mirror]
 
     def set_region(self, region, inverted=False):
         """A setter method to set the region restriction for the lmfit
@@ -379,6 +393,8 @@ class LMFitModel():
 
         else:
             self.axis = kmap.x_axis
+
+        kmap = kmap.symmetrise(*self.sliced_symmetry, update=True)
 
         return kmap
 

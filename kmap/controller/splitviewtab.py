@@ -102,6 +102,10 @@ class SplitViewTab(Tab, SplitViewTab_UI):
         self.model.set_type(type_)
         self.change_slice()
 
+    def change_symmetry(self, symmetry, mirror):
+        self.model.change_symmetry(symmetry, mirror)
+        self.change_axis(self.slider.get_axis())
+
     def closeEvent(self, event):
         del self.model
 
@@ -129,6 +133,7 @@ class SplitViewTab(Tab, SplitViewTab_UI):
         self.crosshair.crosshair_changed.connect(self.crosshair_changed)
         self.slider.slice_changed.connect(self.change_slice)
         self.slider.axis_changed.connect(self.change_axis)
+        self.slider.symmetry_changed.connect(self.change_symmetry)
         self.interpolation.smoothing_changed.connect(self.change_slice)
         self.interpolation.interpolation_changed.connect(self.change_slice)
         self.split_options.values_changed.connect(self.change_split_options)

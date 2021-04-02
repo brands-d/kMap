@@ -9,6 +9,7 @@ class SlicedDataTabModel():
     def __init__(self):
         self.data = None
         self.load_data = None
+        self.symmetry = ['no', False]
 
     def load_data_from_URLs(self, URLs):  # -> create data[BE,kx,ky]
 
@@ -75,8 +76,12 @@ class SlicedDataTabModel():
 
         self.data.transpose(axis_order)
 
+    def change_symmetry(self, symmetry, mirror):
+        self.symmetry = [symmetry, mirror]
+
     def change_slice(self, index, axis):
         self.displayed_plot_data = self.data.slice_from_index(index, axis)
+        self.displayed_plot_data.symmetrise(*self.symmetry)
 
         return self.displayed_plot_data
 
