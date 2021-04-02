@@ -24,11 +24,11 @@ molecule = db.get_molecule_by_ID(406)  # choose ID from database (406 = bisanthe
 
 # set name and select list of orbitals 
 name         = 'bisanthene'   # set name for SlicedData Object
-hdf5_name    = 'bisanthene_sigma.hdf5' # choose name fpr hdf5-file to be written 
-energy_range = [-10, -2]       # select a binding energy range
+hdf5_name    = 'bisanthene_ID406.hdf5' # choose name fpr hdf5-file to be written 
+energy_range = [-13, -2]       # select a binding energy range
 pi           = ['au','b2g','b3g','b1u']
 sigma        = ['ag','b1g','b2u','b3u']
-selected_symmetry = sigma   # choose between pi or sigma orbitals
+selected_symmetry = pi + sigma   # choose between pi or sigma orbitals
 
 
 orbitals     = []
@@ -39,7 +39,7 @@ for orbital in molecule.orbitals:
 
 
 # set parameters
-parameters =[35.0,  # photon_energy (float): Photon energy in eV.
+parameters =[40.0,  # photon_energy (float): Photon energy in eV.
              0.0,   # fermi_energy (float): Fermi energy in eV
              0.2,   # energy_broadening (float): FWHM of Gaussian energy broadenening in eV
              0.03,  # dk (float): Desired k-resolution in kmap in Angstroem^-1. 

@@ -174,6 +174,9 @@ class Orbital():
         elif value == 'abs':
             psik = np.abs(psik)
 
+        elif value == 'complex':
+            psik = psik
+
         else:
             psik = np.abs(psik)**2
 
@@ -521,7 +524,8 @@ class Orbital():
         return new_symmetrization
 
 
-    def plot(self, ax, title=None, kxlim=None, kylim=None, interpolation='bicubic'):
+    def plot(self, ax, title=None, kxlim=None, kylim=None, interpolation='bicubic',
+                       value='leave_as_is'):
         """Creates a plot of the kmap in axes-obeject ax.
 
         Args:
@@ -530,7 +534,16 @@ class Orbital():
         """
 
         # prepare data
-        data   = self.Ak['data']*self.kmap['data']  
+        data   = self.Ak['data']*self.kmap['data'] 
+        if value ==  'abs':
+            data = np.abs(data)
+
+        elif value == 'real':
+            data = np.asarray(np.real(data), order='C')
+
+        elif value == 'imag':
+            data = np.asarray(np.imag(data), order='C')
+
         krange = self.kmap['krange']
         limits = [krange[0][0], krange[0][1], krange[1][0], krange[1][1]]
 
