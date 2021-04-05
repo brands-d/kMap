@@ -14,18 +14,21 @@ LMFitPlotTab_UI, _ = uic.loadUiType(UI_file)
 
 class LMFitPlotTab(Tab, LMFitPlotTab_UI):
 
-    def __init__(self, results, orbitals, axis, residuals, result_tab, *args,
+    def __init__(self, results, orbitals, axis, residuals,
+                 background_parameters, result_tab, *args,
                  **kwargs):
         self.results = results
         self.result_tab = result_tab
         self.orbitals = orbitals
         self.x_axis = axis
         self.residuals = residuals
+        self.background_parameters = background_parameters
 
         # Setup GUI
         super(LMFitPlotTab, self).__init__(*args, **kwargs)
         self.setupUi(self)
 
+        self._setup()
         self._connect()
 
         self.refresh_plot()
@@ -70,16 +73,20 @@ class LMFitPlotTab(Tab, LMFitPlotTab_UI):
         x_label = '%s [%s]' % (self.x_axis.label, self.x_axis.units)
         self.plot_item.clear()
 
-        if self.parameter_combobox.currentText() == 'Residual':
+        option = self.parameter_combobox.currentIndex()
+        if option == 4:
+            # Residual
             title = 'Residual'
             y = self.residuals
             self.plot_item.plot(x, y, title)
             y_label = '|Residual|'
 
-        else:
+        elif option in list(range(4)):
+            # Orbital parameters
             possible_params = ['w_', 'phi_', 'theta_', 'psi_']
             possible_labels = ['Weight [1]', 'Phi [°]', 'Theta [°]', 'Psi [°]']
-            param = possible_params[self.parameter_combobox.currentIndex()]
+            param = possible_params[option]
+            y_label = possible_labels[option]
 
             for orbital in self.orbitals:
                 y = [result.params[param + str(orbital.ID)]
@@ -88,7 +95,14 @@ class LMFitPlotTab(Tab, LMFitPlotTab_UI):
 
                 self.plot_item.plot(x, y, title)
 
-            y_label = possible_labels[self.parameter_combobox.currentIndex()]
+        else:
+            # Background parameters
+            parameter = self.background_parameters[option - 5]
+            y_label = f'{parameter} [a.U.]'
+            y = [result.params[parameter] for result in self.results]
+            title = parameter
+
+            self.plot_item.plot(x, y, title)
 
         self.plot_item.set_label(x_label, y_label)
 
@@ -98,6 +112,10 @@ class LMFitPlotTab(Tab, LMFitPlotTab_UI):
         window = MatplotlibLineWindow(data)
 
         return window
+
+    def _setup(self):
+        for parameter in self.background_parameters:
+            self.parameter_combobox.addItem(parameter)
 
     def _connect(self):
         self.refresh_button.clicked.connect(self.refresh_plot)

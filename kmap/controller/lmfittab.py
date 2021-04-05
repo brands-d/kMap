@@ -300,7 +300,7 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
 
 
 class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
-    open_plot_tab = pyqtSignal(list, list, Axis, list)
+    open_plot_tab = pyqtSignal(list, list, Axis, list, list)
 
     def __init__(self, lmfit_tab, results, settings):
         self.results = results
@@ -414,7 +414,8 @@ class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
         kmaps = abs(self.get_residual_kmaps())
         residuals = list(np.nansum(np.nansum(kmaps, axis=1), axis=1))
 
-        self.open_plot_tab.emit(results, orbitals, axis, residuals)
+        self.open_plot_tab.emit(results, orbitals, axis, residuals,
+                                self.model.background_equation[1])
 
     def export_to_hdf5(self):
         path = config.get_key('paths', 'hdf5_export_start')
