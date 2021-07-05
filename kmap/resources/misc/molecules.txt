@@ -8912,3 +8912,325 @@ CubeName=bi3A_2Cu_H_MO_120, OrbitalName=LUMO, OrbitalEnergy=-2.917, Occupation=0
 CubeName=bi3A_2Cu_H_MO_121, OrbitalName=LUMO+1, OrbitalEnergy=-2.859, Occupation=0, Symmetry=b2
 CubeName=bi3A_2Cu_H_MO_122, OrbitalName=LUMO+2, OrbitalEnergy=-2.745, Occupation=0, Symmetry=a1
 CubeName=bi3A_2Cu_H_MO_123, OrbitalName=LUMO+3, OrbitalEnergy=-1.497, Occupation=0, Symmetry=b1
+moleculeID=412
+ShortName=5A_unilateral_F, FullName=unilaterally-fluorinated-pentacene, Formula=C22F6H8, Orientation=xz, Charge=0, MagneticMoment=0, IP=5.00, EA=2.87, BasisSet=6-31G*, XC-functional=B3LYP
+NumberOfOrbitals=20, PathToCubefiles=B3LYP/5A_unilateral_F/charge0mult1/
+CubeName=5A_unilateral_F_MO_82, OrbitalName=HOMO-15, OrbitalEnergy=-10.637, Occupation=2, Symmetry=a2
+CubeName=5A_unilateral_F_MO_83, OrbitalName=HOMO-14, OrbitalEnergy=-10.584, Occupation=2, Symmetry=a1
+CubeName=5A_unilateral_F_MO_84, OrbitalName=HOMO-13, OrbitalEnergy=-10.451, Occupation=2, Symmetry=b1
+CubeName=5A_unilateral_F_MO_85, OrbitalName=HOMO-12, OrbitalEnergy=-10.288, Occupation=2, Symmetry=b1
+CubeName=5A_unilateral_F_MO_86, OrbitalName=HOMO-11, OrbitalEnergy=-10.019, Occupation=2, Symmetry=b2
+CubeName=5A_unilateral_F_MO_87, OrbitalName=HOMO-10, OrbitalEnergy=-9.792, Occupation=2, Symmetry=a1
+CubeName=5A_unilateral_F_MO_88, OrbitalName=HOMO-9, OrbitalEnergy=-9.712, Occupation=2, Symmetry=a1
+CubeName=5A_unilateral_F_MO_89, OrbitalName=HOMO-8, OrbitalEnergy=-9.476, Occupation=2, Symmetry=b1
+CubeName=5A_unilateral_F_MO_90, OrbitalName=HOMO-7, OrbitalEnergy=-8.936, Occupation=2, Symmetry=a2
+CubeName=5A_unilateral_F_MO_91, OrbitalName=HOMO-6, OrbitalEnergy=-8.570, Occupation=2, Symmetry=b2
+CubeName=5A_unilateral_F_MO_92, OrbitalName=HOMO-5, OrbitalEnergy=-7.979, Occupation=2, Symmetry=a2
+CubeName=5A_unilateral_F_MO_93, OrbitalName=HOMO-4, OrbitalEnergy=-7.942, Occupation=2, Symmetry=b2
+CubeName=5A_unilateral_F_MO_94, OrbitalName=HOMO-3, OrbitalEnergy=-7.229, Occupation=2, Symmetry=b2
+CubeName=5A_unilateral_F_MO_95, OrbitalName=HOMO-2, OrbitalEnergy=-6.978, Occupation=2, Symmetry=a2
+CubeName=5A_unilateral_F_MO_96, OrbitalName=HOMO-1, OrbitalEnergy=-6.117, Occupation=2, Symmetry=a2
+CubeName=5A_unilateral_F_MO_97, OrbitalName=HOMO, OrbitalEnergy=-5.004, Occupation=2, Symmetry=b2
+CubeName=5A_unilateral_F_MO_98, OrbitalName=LUMO, OrbitalEnergy=-2.869, Occupation=0, Symmetry=b2
+CubeName=5A_unilateral_F_MO_99, OrbitalName=LUMO+1, OrbitalEnergy=-1.400, Occupation=0, Symmetry=a2
+CubeName=5A_unilateral_F_MO_100, OrbitalName=LUMO+2, OrbitalEnergy=-1.035, Occupation=0, Symmetry=a2
+CubeName=5A_unilateral_F_MO_101, OrbitalName=LUMO+3, OrbitalEnergy=-0.223, Occupation=0, Symmetry=b2
+moleculeID=413
+ShortName=TiOPc_E0.0_V_A, FullName=TiO-phthalocyanine_E-field+0.0, Formula=TiC32H16N8O, Orientation=xy, Charge=0, MagneticMoment=0, IP=5.11, EA=3.09, BasisSet=6-31G*, XC-functional=B3LYP
+NumberOfOrbitals=20, PathToCubefiles=B3LYP/TiOPc_E0.0_V_A/charge0mult1/
+CubeName=TiOPc_E0.0_V_A_MO_132, OrbitalName=HOMO-15, OrbitalEnergy=-8.408, Occupation=2, Symmetry=a
+CubeName=TiOPc_E0.0_V_A_MO_133, OrbitalName=HOMO-14, OrbitalEnergy=-8.048, Occupation=2, Symmetry=b
+CubeName=TiOPc_E0.0_V_A_MO_134, OrbitalName=HOMO-13, OrbitalEnergy=-8.018, Occupation=2, Symmetry=b
+CubeName=TiOPc_E0.0_V_A_MO_135, OrbitalName=HOMO-12, OrbitalEnergy=-7.782, Occupation=2, Symmetry=b
+CubeName=TiOPc_E0.0_V_A_MO_136, OrbitalName=HOMO-11, OrbitalEnergy=-7.683, Occupation=2, Symmetry=a
+CubeName=TiOPc_E0.0_V_A_MO_137, OrbitalName=HOMO-10, OrbitalEnergy=-7.665, Occupation=2, Symmetry=b
+CubeName=TiOPc_E0.0_V_A_MO_138, OrbitalName=HOMO-9, OrbitalEnergy=-7.342, Occupation=2, Symmetry=a
+CubeName=TiOPc_E0.0_V_A_MO_139, OrbitalName=HOMO-8, OrbitalEnergy=-7.255, Occupation=2, Symmetry=a
+CubeName=TiOPc_E0.0_V_A_MO_140, OrbitalName=HOMO-7, OrbitalEnergy=-7.217, Occupation=2, Symmetry=b
+CubeName=TiOPc_E0.0_V_A_MO_141, OrbitalName=HOMO-6, OrbitalEnergy=-7.116, Occupation=2, Symmetry=a
+CubeName=TiOPc_E0.0_V_A_MO_142, OrbitalName=HOMO-5, OrbitalEnergy=-7.108, Occupation=2, Symmetry=b
+CubeName=TiOPc_E0.0_V_A_MO_143, OrbitalName=HOMO-4, OrbitalEnergy=-6.919, Occupation=2, Symmetry=a
+CubeName=TiOPc_E0.0_V_A_MO_144, OrbitalName=HOMO-3, OrbitalEnergy=-6.891, Occupation=2, Symmetry=a
+CubeName=TiOPc_E0.0_V_A_MO_145, OrbitalName=HOMO-2, OrbitalEnergy=-6.885, Occupation=2, Symmetry=b
+CubeName=TiOPc_E0.0_V_A_MO_146, OrbitalName=HOMO-1, OrbitalEnergy=-6.813, Occupation=2, Symmetry=b
+CubeName=TiOPc_E0.0_V_A_MO_147, OrbitalName=HOMO, OrbitalEnergy=-5.112, Occupation=2, Symmetry=a
+CubeName=TiOPc_E0.0_V_A_MO_148, OrbitalName=LUMO, OrbitalEnergy=-3.089, Occupation=0, Symmetry=b
+CubeName=TiOPc_E0.0_V_A_MO_149, OrbitalName=LUMO+1, OrbitalEnergy=-2.929, Occupation=0, Symmetry=b
+CubeName=TiOPc_E0.0_V_A_MO_150, OrbitalName=LUMO+2, OrbitalEnergy=-1.978, Occupation=0, Symmetry=a
+CubeName=TiOPc_E0.0_V_A_MO_151, OrbitalName=LUMO+3, OrbitalEnergy=-1.279, Occupation=0, Symmetry=a
+moleculeID=414
+ShortName=TiOPc_E0.1_V_A, FullName=TiO-phthalocyanine_E-field+0.1, Formula=TiC32H16N8O, Orientation=xy, Charge=0, MagneticMoment=0, IP=5.11, EA=3.09, BasisSet=6-31G*, XC-functional=B3LYP
+NumberOfOrbitals=20, PathToCubefiles=B3LYP/TiOPc_E0.1_V_A/charge0mult1/
+CubeName=TiOPc_E0.1_V_A_MO_132, OrbitalName=HOMO-15, OrbitalEnergy=-8.391, Occupation=2, Symmetry=a
+CubeName=TiOPc_E0.1_V_A_MO_133, OrbitalName=HOMO-14, OrbitalEnergy=-8.029, Occupation=2, Symmetry=b
+CubeName=TiOPc_E0.1_V_A_MO_134, OrbitalName=HOMO-13, OrbitalEnergy=-7.997, Occupation=2, Symmetry=b
+CubeName=TiOPc_E0.1_V_A_MO_135, OrbitalName=HOMO-12, OrbitalEnergy=-7.780, Occupation=2, Symmetry=b
+CubeName=TiOPc_E0.1_V_A_MO_136, OrbitalName=HOMO-11, OrbitalEnergy=-7.684, Occupation=2, Symmetry=a
+CubeName=TiOPc_E0.1_V_A_MO_137, OrbitalName=HOMO-10, OrbitalEnergy=-7.664, Occupation=2, Symmetry=b
+CubeName=TiOPc_E0.1_V_A_MO_138, OrbitalName=HOMO-9, OrbitalEnergy=-7.341, Occupation=2, Symmetry=a
+CubeName=TiOPc_E0.1_V_A_MO_139, OrbitalName=HOMO-8, OrbitalEnergy=-7.257, Occupation=2, Symmetry=a
+CubeName=TiOPc_E0.1_V_A_MO_140, OrbitalName=HOMO-7, OrbitalEnergy=-7.218, Occupation=2, Symmetry=b
+CubeName=TiOPc_E0.1_V_A_MO_141, OrbitalName=HOMO-6, OrbitalEnergy=-7.117, Occupation=2, Symmetry=a
+CubeName=TiOPc_E0.1_V_A_MO_142, OrbitalName=HOMO-5, OrbitalEnergy=-7.107, Occupation=2, Symmetry=b
+CubeName=TiOPc_E0.1_V_A_MO_143, OrbitalName=HOMO-4, OrbitalEnergy=-6.921, Occupation=2, Symmetry=a
+CubeName=TiOPc_E0.1_V_A_MO_144, OrbitalName=HOMO-3, OrbitalEnergy=-6.892, Occupation=2, Symmetry=a
+CubeName=TiOPc_E0.1_V_A_MO_145, OrbitalName=HOMO-2, OrbitalEnergy=-6.885, Occupation=2, Symmetry=b
+CubeName=TiOPc_E0.1_V_A_MO_146, OrbitalName=HOMO-1, OrbitalEnergy=-6.812, Occupation=2, Symmetry=b
+CubeName=TiOPc_E0.1_V_A_MO_147, OrbitalName=HOMO, OrbitalEnergy=-5.113, Occupation=2, Symmetry=a
+CubeName=TiOPc_E0.1_V_A_MO_148, OrbitalName=LUMO, OrbitalEnergy=-3.089, Occupation=0, Symmetry=b
+CubeName=TiOPc_E0.1_V_A_MO_149, OrbitalName=LUMO+1, OrbitalEnergy=-2.930, Occupation=0, Symmetry=b
+CubeName=TiOPc_E0.1_V_A_MO_150, OrbitalName=LUMO+2, OrbitalEnergy=-1.979, Occupation=0, Symmetry=a
+CubeName=TiOPc_E0.1_V_A_MO_151, OrbitalName=LUMO+3, OrbitalEnergy=-1.280, Occupation=0, Symmetry=a
+moleculeID=415
+ShortName=TiOPc_E0.5_V_A, FullName=TiO-phthalocyanine_E-field+0.5, Formula=TiC32H16N8O, Orientation=xy, Charge=0, MagneticMoment=0, IP=5.12, EA=3.10, BasisSet=6-31G*, XC-functional=B3LYP
+NumberOfOrbitals=20, PathToCubefiles=B3LYP/TiOPc_E0.5_V_A/charge0mult1/
+CubeName=TiOPc_E0.5_V_A_MO_132, OrbitalName=HOMO-15, OrbitalEnergy=-8.316, Occupation=2, Symmetry=a
+CubeName=TiOPc_E0.5_V_A_MO_133, OrbitalName=HOMO-14, OrbitalEnergy=-7.949, Occupation=2, Symmetry=b
+CubeName=TiOPc_E0.5_V_A_MO_134, OrbitalName=HOMO-13, OrbitalEnergy=-7.906, Occupation=2, Symmetry=b
+CubeName=TiOPc_E0.5_V_A_MO_135, OrbitalName=HOMO-12, OrbitalEnergy=-7.770, Occupation=2, Symmetry=b
+CubeName=TiOPc_E0.5_V_A_MO_136, OrbitalName=HOMO-11, OrbitalEnergy=-7.688, Occupation=2, Symmetry=a
+CubeName=TiOPc_E0.5_V_A_MO_137, OrbitalName=HOMO-10, OrbitalEnergy=-7.662, Occupation=2, Symmetry=b
+CubeName=TiOPc_E0.5_V_A_MO_138, OrbitalName=HOMO-9, OrbitalEnergy=-7.342, Occupation=2, Symmetry=a
+CubeName=TiOPc_E0.5_V_A_MO_139, OrbitalName=HOMO-8, OrbitalEnergy=-7.263, Occupation=2, Symmetry=a
+CubeName=TiOPc_E0.5_V_A_MO_140, OrbitalName=HOMO-7, OrbitalEnergy=-7.221, Occupation=2, Symmetry=b
+CubeName=TiOPc_E0.5_V_A_MO_141, OrbitalName=HOMO-6, OrbitalEnergy=-7.121, Occupation=2, Symmetry=a
+CubeName=TiOPc_E0.5_V_A_MO_142, OrbitalName=HOMO-5, OrbitalEnergy=-7.102, Occupation=2, Symmetry=b
+CubeName=TiOPc_E0.5_V_A_MO_143, OrbitalName=HOMO-4, OrbitalEnergy=-6.928, Occupation=2, Symmetry=a
+CubeName=TiOPc_E0.5_V_A_MO_144, OrbitalName=HOMO-3, OrbitalEnergy=-6.898, Occupation=2, Symmetry=a
+CubeName=TiOPc_E0.5_V_A_MO_145, OrbitalName=HOMO-2, OrbitalEnergy=-6.884, Occupation=2, Symmetry=b
+CubeName=TiOPc_E0.5_V_A_MO_146, OrbitalName=HOMO-1, OrbitalEnergy=-6.807, Occupation=2, Symmetry=b
+CubeName=TiOPc_E0.5_V_A_MO_147, OrbitalName=HOMO, OrbitalEnergy=-5.117, Occupation=2, Symmetry=a
+CubeName=TiOPc_E0.5_V_A_MO_148, OrbitalName=LUMO, OrbitalEnergy=-3.097, Occupation=0, Symmetry=b
+CubeName=TiOPc_E0.5_V_A_MO_149, OrbitalName=LUMO+1, OrbitalEnergy=-2.939, Occupation=0, Symmetry=b
+CubeName=TiOPc_E0.5_V_A_MO_150, OrbitalName=LUMO+2, OrbitalEnergy=-1.982, Occupation=0, Symmetry=a
+CubeName=TiOPc_E0.5_V_A_MO_151, OrbitalName=LUMO+3, OrbitalEnergy=-1.289, Occupation=0, Symmetry=a
+moleculeID=416
+ShortName=TiOPc_E-0.1_V_A, FullName=TiO-phthalocyanine_E-field-0.1, Formula=TiC32H16N8O, Orientation=xy, Charge=0, MagneticMoment=0, IP=5.11, EA=3.09, BasisSet=6-31G*, XC-functional=B3LYP
+NumberOfOrbitals=20, PathToCubefiles=B3LYP/TiOPc_E-0.1_V_A/charge0mult1/
+CubeName=TiOPc_E-0.1_V_A_MO_132, OrbitalName=HOMO-15, OrbitalEnergy=-8.427, Occupation=2, Symmetry=a
+CubeName=TiOPc_E-0.1_V_A_MO_133, OrbitalName=HOMO-14, OrbitalEnergy=-8.070, Occupation=2, Symmetry=b
+CubeName=TiOPc_E-0.1_V_A_MO_134, OrbitalName=HOMO-13, OrbitalEnergy=-8.041, Occupation=2, Symmetry=b
+CubeName=TiOPc_E-0.1_V_A_MO_135, OrbitalName=HOMO-12, OrbitalEnergy=-7.782, Occupation=2, Symmetry=b
+CubeName=TiOPc_E-0.1_V_A_MO_136, OrbitalName=HOMO-11, OrbitalEnergy=-7.681, Occupation=2, Symmetry=a
+CubeName=TiOPc_E-0.1_V_A_MO_137, OrbitalName=HOMO-10, OrbitalEnergy=-7.664, Occupation=2, Symmetry=b
+CubeName=TiOPc_E-0.1_V_A_MO_138, OrbitalName=HOMO-9, OrbitalEnergy=-7.340, Occupation=2, Symmetry=a
+CubeName=TiOPc_E-0.1_V_A_MO_139, OrbitalName=HOMO-8, OrbitalEnergy=-7.253, Occupation=2, Symmetry=a
+CubeName=TiOPc_E-0.1_V_A_MO_140, OrbitalName=HOMO-7, OrbitalEnergy=-7.216, Occupation=2, Symmetry=b
+CubeName=TiOPc_E-0.1_V_A_MO_141, OrbitalName=HOMO-6, OrbitalEnergy=-7.114, Occupation=2, Symmetry=a
+CubeName=TiOPc_E-0.1_V_A_MO_142, OrbitalName=HOMO-5, OrbitalEnergy=-7.109, Occupation=2, Symmetry=b
+CubeName=TiOPc_E-0.1_V_A_MO_143, OrbitalName=HOMO-4, OrbitalEnergy=-6.918, Occupation=2, Symmetry=a
+CubeName=TiOPc_E-0.1_V_A_MO_144, OrbitalName=HOMO-3, OrbitalEnergy=-6.889, Occupation=2, Symmetry=a
+CubeName=TiOPc_E-0.1_V_A_MO_145, OrbitalName=HOMO-2, OrbitalEnergy=-6.884, Occupation=2, Symmetry=b
+CubeName=TiOPc_E-0.1_V_A_MO_146, OrbitalName=HOMO-1, OrbitalEnergy=-6.814, Occupation=2, Symmetry=b
+CubeName=TiOPc_E-0.1_V_A_MO_147, OrbitalName=HOMO, OrbitalEnergy=-5.111, Occupation=2, Symmetry=a
+CubeName=TiOPc_E-0.1_V_A_MO_148, OrbitalName=LUMO, OrbitalEnergy=-3.087, Occupation=0, Symmetry=b
+CubeName=TiOPc_E-0.1_V_A_MO_149, OrbitalName=LUMO+1, OrbitalEnergy=-2.928, Occupation=0, Symmetry=b
+CubeName=TiOPc_E-0.1_V_A_MO_150, OrbitalName=LUMO+2, OrbitalEnergy=-1.978, Occupation=0, Symmetry=a
+CubeName=TiOPc_E-0.1_V_A_MO_151, OrbitalName=LUMO+3, OrbitalEnergy=-1.279, Occupation=0, Symmetry=a
+moleculeID=417
+ShortName=TiOPc_E-0.5_V_A, FullName=TiO-phthalocyanine_E-field-0.5, Formula=TiC32H16N8O, Orientation=xy, Charge=0, MagneticMoment=0, IP=5.11, EA=3.08, BasisSet=6-31G*, XC-functional=B3LYP
+NumberOfOrbitals=20, PathToCubefiles=B3LYP/TiOPc_E-0.5_V_A/charge0mult1/
+CubeName=TiOPc_E-0.5_V_A_MO_132, OrbitalName=HOMO-15, OrbitalEnergy=-8.475, Occupation=2, Symmetry=a
+CubeName=TiOPc_E-0.5_V_A_MO_133, OrbitalName=HOMO-14, OrbitalEnergy=-8.137, Occupation=2, Symmetry=b
+CubeName=TiOPc_E-0.5_V_A_MO_134, OrbitalName=HOMO-13, OrbitalEnergy=-8.109, Occupation=2, Symmetry=b
+CubeName=TiOPc_E-0.5_V_A_MO_135, OrbitalName=HOMO-12, OrbitalEnergy=-7.783, Occupation=2, Symmetry=b
+CubeName=TiOPc_E-0.5_V_A_MO_136, OrbitalName=HOMO-11, OrbitalEnergy=-7.674, Occupation=2, Symmetry=a
+CubeName=TiOPc_E-0.5_V_A_MO_137, OrbitalName=HOMO-10, OrbitalEnergy=-7.657, Occupation=2, Symmetry=b
+CubeName=TiOPc_E-0.5_V_A_MO_138, OrbitalName=HOMO-9, OrbitalEnergy=-7.334, Occupation=2, Symmetry=a
+CubeName=TiOPc_E-0.5_V_A_MO_139, OrbitalName=HOMO-8, OrbitalEnergy=-7.247, Occupation=2, Symmetry=a
+CubeName=TiOPc_E-0.5_V_A_MO_140, OrbitalName=HOMO-7, OrbitalEnergy=-7.212, Occupation=2, Symmetry=b
+CubeName=TiOPc_E-0.5_V_A_MO_141, OrbitalName=HOMO-6, OrbitalEnergy=-7.111, Occupation=2, Symmetry=b
+CubeName=TiOPc_E-0.5_V_A_MO_142, OrbitalName=HOMO-5, OrbitalEnergy=-7.109, Occupation=2, Symmetry=a
+CubeName=TiOPc_E-0.5_V_A_MO_143, OrbitalName=HOMO-4, OrbitalEnergy=-6.912, Occupation=2, Symmetry=a
+CubeName=TiOPc_E-0.5_V_A_MO_144, OrbitalName=HOMO-3, OrbitalEnergy=-6.884, Occupation=2, Symmetry=a
+CubeName=TiOPc_E-0.5_V_A_MO_145, OrbitalName=HOMO-2, OrbitalEnergy=-6.882, Occupation=2, Symmetry=b
+CubeName=TiOPc_E-0.5_V_A_MO_146, OrbitalName=HOMO-1, OrbitalEnergy=-6.816, Occupation=2, Symmetry=b
+CubeName=TiOPc_E-0.5_V_A_MO_147, OrbitalName=HOMO, OrbitalEnergy=-5.108, Occupation=2, Symmetry=a
+CubeName=TiOPc_E-0.5_V_A_MO_148, OrbitalName=LUMO, OrbitalEnergy=-3.080, Occupation=0, Symmetry=b
+CubeName=TiOPc_E-0.5_V_A_MO_149, OrbitalName=LUMO+1, OrbitalEnergy=-2.921, Occupation=0, Symmetry=b
+CubeName=TiOPc_E-0.5_V_A_MO_150, OrbitalName=LUMO+2, OrbitalEnergy=-1.987, Occupation=0, Symmetry=a
+CubeName=TiOPc_E-0.5_V_A_MO_151, OrbitalName=LUMO+3, OrbitalEnergy=-1.275, Occupation=0, Symmetry=a
+moleculeID=418
+ShortName=5A_unilateral2_F, FullName=unilaterally-fluorinated-pentacene2, Formula=C22F6H8, Orientation=zy, Charge=0, MagneticMoment=0, IP=5.02, EA=2.85, BasisSet=6-31G*, XC-functional=B3LYP
+NumberOfOrbitals=20, PathToCubefiles=B3LYP/5A_unilateral2_F/charge0mult1/
+CubeName=5A_unilateral2_F_MO_82, OrbitalName=HOMO-15, OrbitalEnergy=-10.768, Occupation=2, Symmetry=a1
+CubeName=5A_unilateral2_F_MO_83, OrbitalName=HOMO-14, OrbitalEnergy=-10.545, Occupation=2, Symmetry=b1
+CubeName=5A_unilateral2_F_MO_84, OrbitalName=HOMO-13, OrbitalEnergy=-10.211, Occupation=2, Symmetry=a1
+CubeName=5A_unilateral2_F_MO_85, OrbitalName=HOMO-12, OrbitalEnergy=-10.060, Occupation=2, Symmetry=b2
+CubeName=5A_unilateral2_F_MO_86, OrbitalName=HOMO-11, OrbitalEnergy=-9.983, Occupation=2, Symmetry=b1
+CubeName=5A_unilateral2_F_MO_87, OrbitalName=HOMO-10, OrbitalEnergy=-9.920, Occupation=2, Symmetry=a1
+CubeName=5A_unilateral2_F_MO_88, OrbitalName=HOMO-9, OrbitalEnergy=-9.540, Occupation=2, Symmetry=b2
+CubeName=5A_unilateral2_F_MO_89, OrbitalName=HOMO-8, OrbitalEnergy=-9.277, Occupation=2, Symmetry=a1
+CubeName=5A_unilateral2_F_MO_90, OrbitalName=HOMO-7, OrbitalEnergy=-8.908, Occupation=2, Symmetry=b1
+CubeName=5A_unilateral2_F_MO_91, OrbitalName=HOMO-6, OrbitalEnergy=-8.650, Occupation=2, Symmetry=a2
+CubeName=5A_unilateral2_F_MO_92, OrbitalName=HOMO-5, OrbitalEnergy=-7.975, Occupation=2, Symmetry=a2
+CubeName=5A_unilateral2_F_MO_93, OrbitalName=HOMO-4, OrbitalEnergy=-7.805, Occupation=2, Symmetry=b1
+CubeName=5A_unilateral2_F_MO_94, OrbitalName=HOMO-3, OrbitalEnergy=-7.328, Occupation=2, Symmetry=a2
+CubeName=5A_unilateral2_F_MO_95, OrbitalName=HOMO-2, OrbitalEnergy=-6.939, Occupation=2, Symmetry=b1
+CubeName=5A_unilateral2_F_MO_96, OrbitalName=HOMO-1, OrbitalEnergy=-6.167, Occupation=2, Symmetry=a2
+CubeName=5A_unilateral2_F_MO_97, OrbitalName=HOMO, OrbitalEnergy=-5.018, Occupation=2, Symmetry=a2
+CubeName=5A_unilateral2_F_MO_98, OrbitalName=LUMO, OrbitalEnergy=-2.852, Occupation=0, Symmetry=b1
+CubeName=5A_unilateral2_F_MO_99, OrbitalName=LUMO+1, OrbitalEnergy=-1.349, Occupation=0, Symmetry=b1
+CubeName=5A_unilateral2_F_MO_100, OrbitalName=LUMO+2, OrbitalEnergy=-1.085, Occupation=0, Symmetry=a2
+CubeName=5A_unilateral2_F_MO_101, OrbitalName=LUMO+3, OrbitalEnergy=-0.164, Occupation=0, Symmetry=b1
+moleculeID=419
+ShortName=guanine, FullName=guanine, Formula=C5H5N5O, Orientation=xy, Charge=0, MagneticMoment=0, IP=5.59, EA=0.50, BasisSet=6-31G*, XC-functional=B3LYP
+NumberOfOrbitals=20, PathToCubefiles=B3LYP/guanine/charge0mult1/
+CubeName=guanine_MO_24, OrbitalName=HOMO-15, OrbitalEnergy=-14.818, Occupation=2, Symmetry=a'
+CubeName=guanine_MO_25, OrbitalName=HOMO-14, OrbitalEnergy=-14.128, Occupation=2, Symmetry=a'
+CubeName=guanine_MO_26, OrbitalName=HOMO-13, OrbitalEnergy=-13.263, Occupation=2, Symmetry=a'
+CubeName=guanine_MO_27, OrbitalName=HOMO-12, OrbitalEnergy=-12.779, Occupation=2, Symmetry=a"
+CubeName=guanine_MO_28, OrbitalName=HOMO-11, OrbitalEnergy=-12.459, Occupation=2, Symmetry=a'
+CubeName=guanine_MO_29, OrbitalName=HOMO-10, OrbitalEnergy=-11.689, Occupation=2, Symmetry=a'
+CubeName=guanine_MO_30, OrbitalName=HOMO-9, OrbitalEnergy=-11.561, Occupation=2, Symmetry=a"
+CubeName=guanine_MO_31, OrbitalName=HOMO-8, OrbitalEnergy=-11.323, Occupation=2, Symmetry=a'
+CubeName=guanine_MO_32, OrbitalName=HOMO-7, OrbitalEnergy=-10.498, Occupation=2, Symmetry=a"
+CubeName=guanine_MO_33, OrbitalName=HOMO-6, OrbitalEnergy=-8.552, Occupation=2, Symmetry=a"
+CubeName=guanine_MO_34, OrbitalName=HOMO-5, OrbitalEnergy=-8.044, Occupation=2, Symmetry=a'
+CubeName=guanine_MO_35, OrbitalName=HOMO-4, OrbitalEnergy=-7.701, Occupation=2, Symmetry=a"
+CubeName=guanine_MO_36, OrbitalName=HOMO-3, OrbitalEnergy=-7.358, Occupation=2, Symmetry=a'
+CubeName=guanine_MO_37, OrbitalName=HOMO-2, OrbitalEnergy=-7.272, Occupation=2, Symmetry=a"
+CubeName=guanine_MO_38, OrbitalName=HOMO-1, OrbitalEnergy=-6.940, Occupation=2, Symmetry=a'
+CubeName=guanine_MO_39, OrbitalName=HOMO, OrbitalEnergy=-5.593, Occupation=2, Symmetry=a"
+CubeName=guanine_MO_40, OrbitalName=LUMO, OrbitalEnergy=-0.502, Occupation=0, Symmetry=a"
+CubeName=guanine_MO_41, OrbitalName=LUMO+1, OrbitalEnergy=0.560, Occupation=0, Symmetry=a"
+CubeName=guanine_MO_42, OrbitalName=LUMO+2, OrbitalEnergy=1.326, Occupation=0, Symmetry=a'
+CubeName=guanine_MO_43, OrbitalName=LUMO+3, OrbitalEnergy=1.525, Occupation=0, Symmetry=a"
+moleculeID=420
+ShortName=cytosine, FullName=cytosine, Formula=C4H5N3O, Orientation=xy, Charge=0, MagneticMoment=0, IP=5.86, EA=0.78, BasisSet=6-31G*, XC-functional=B3LYP
+NumberOfOrbitals=20, PathToCubefiles=B3LYP/cytosine/charge0mult1/
+CubeName=cytosine_MO_14, OrbitalName=HOMO-15, OrbitalEnergy=-18.277, Occupation=2, Symmetry=a'
+CubeName=cytosine_MO_15, OrbitalName=HOMO-14, OrbitalEnergy=-17.764, Occupation=2, Symmetry=a'
+CubeName=cytosine_MO_16, OrbitalName=HOMO-13, OrbitalEnergy=-16.080, Occupation=2, Symmetry=a'
+CubeName=cytosine_MO_17, OrbitalName=HOMO-12, OrbitalEnergy=-15.197, Occupation=2, Symmetry=a'
+CubeName=cytosine_MO_18, OrbitalName=HOMO-11, OrbitalEnergy=-14.426, Occupation=2, Symmetry=a'
+CubeName=cytosine_MO_19, OrbitalName=HOMO-10, OrbitalEnergy=-13.658, Occupation=2, Symmetry=a'
+CubeName=cytosine_MO_20, OrbitalName=HOMO-9, OrbitalEnergy=-12.429, Occupation=2, Symmetry=a"
+CubeName=cytosine_MO_21, OrbitalName=HOMO-8, OrbitalEnergy=-12.391, Occupation=2, Symmetry=a'
+CubeName=cytosine_MO_22, OrbitalName=HOMO-7, OrbitalEnergy=-11.545, Occupation=2, Symmetry=a'
+CubeName=cytosine_MO_23, OrbitalName=HOMO-6, OrbitalEnergy=-10.586, Occupation=2, Symmetry=a'
+CubeName=cytosine_MO_24, OrbitalName=HOMO-5, OrbitalEnergy=-10.488, Occupation=2, Symmetry=a"
+CubeName=cytosine_MO_25, OrbitalName=HOMO-4, OrbitalEnergy=-8.792, Occupation=2, Symmetry=a"
+CubeName=cytosine_MO_26, OrbitalName=HOMO-3, OrbitalEnergy=-7.878, Occupation=2, Symmetry=a"
+CubeName=cytosine_MO_27, OrbitalName=HOMO-2, OrbitalEnergy=-7.044, Occupation=2, Symmetry=a'
+CubeName=cytosine_MO_28, OrbitalName=HOMO-1, OrbitalEnergy=-6.672, Occupation=2, Symmetry=a'
+CubeName=cytosine_MO_29, OrbitalName=HOMO, OrbitalEnergy=-5.863, Occupation=2, Symmetry=a"
+CubeName=cytosine_MO_30, OrbitalName=LUMO, OrbitalEnergy=-0.779, Occupation=0, Symmetry=a"
+CubeName=cytosine_MO_31, OrbitalName=LUMO+1, OrbitalEnergy=0.748, Occupation=0, Symmetry=a"
+CubeName=cytosine_MO_32, OrbitalName=LUMO+2, OrbitalEnergy=0.981, Occupation=0, Symmetry=a'
+CubeName=cytosine_MO_33, OrbitalName=LUMO+3, OrbitalEnergy=2.180, Occupation=0, Symmetry=a'
+moleculeID=421
+ShortName=GC_pair, FullName=guanine-cytosine, Formula=C9H10N8O2, Orientation=xy, Charge=0, MagneticMoment=0, IP=4.70, EA=1.55, BasisSet=6-31G*, XC-functional=B3LYP
+NumberOfOrbitals=20, PathToCubefiles=B3LYP/GC_pair/charge0mult1/
+CubeName=GC_pair_MO_53, OrbitalName=HOMO-15, OrbitalEnergy=-10.922, Occupation=2, Symmetry=a'
+CubeName=GC_pair_MO_54, OrbitalName=HOMO-14, OrbitalEnergy=-10.672, Occupation=2, Symmetry=a"
+CubeName=GC_pair_MO_55, OrbitalName=HOMO-13, OrbitalEnergy=-10.453, Occupation=2, Symmetry=a'
+CubeName=GC_pair_MO_56, OrbitalName=HOMO-12, OrbitalEnergy=-9.541, Occupation=2, Symmetry=a"
+CubeName=GC_pair_MO_57, OrbitalName=HOMO-11, OrbitalEnergy=-9.473, Occupation=2, Symmetry=a"
+CubeName=GC_pair_MO_58, OrbitalName=HOMO-10, OrbitalEnergy=-8.602, Occupation=2, Symmetry=a"
+CubeName=GC_pair_MO_59, OrbitalName=HOMO-9, OrbitalEnergy=-8.083, Occupation=2, Symmetry=a'
+CubeName=GC_pair_MO_60, OrbitalName=HOMO-8, OrbitalEnergy=-7.719, Occupation=2, Symmetry=a"
+CubeName=GC_pair_MO_61, OrbitalName=HOMO-7, OrbitalEnergy=-7.713, Occupation=2, Symmetry=a'
+CubeName=GC_pair_MO_62, OrbitalName=HOMO-6, OrbitalEnergy=-7.213, Occupation=2, Symmetry=a'
+CubeName=GC_pair_MO_63, OrbitalName=HOMO-5, OrbitalEnergy=-6.685, Occupation=2, Symmetry=a"
+CubeName=GC_pair_MO_64, OrbitalName=HOMO-4, OrbitalEnergy=-6.536, Occupation=2, Symmetry=a"
+CubeName=GC_pair_MO_65, OrbitalName=HOMO-3, OrbitalEnergy=-6.502, Occupation=2, Symmetry=a'
+CubeName=GC_pair_MO_66, OrbitalName=HOMO-2, OrbitalEnergy=-6.494, Occupation=2, Symmetry=a"
+CubeName=GC_pair_MO_67, OrbitalName=HOMO-1, OrbitalEnergy=-6.122, Occupation=2, Symmetry=a'
+CubeName=GC_pair_MO_68, OrbitalName=HOMO, OrbitalEnergy=-4.699, Occupation=2, Symmetry=a"
+CubeName=GC_pair_MO_69, OrbitalName=LUMO, OrbitalEnergy=-1.554, Occupation=0, Symmetry=a"
+CubeName=GC_pair_MO_70, OrbitalName=LUMO+1, OrbitalEnergy=-0.084, Occupation=0, Symmetry=a"
+CubeName=GC_pair_MO_71, OrbitalName=LUMO+2, OrbitalEnergy=0.251, Occupation=0, Symmetry=a"
+CubeName=GC_pair_MO_72, OrbitalName=LUMO+3, OrbitalEnergy=0.432, Occupation=0, Symmetry=a'
+moleculeID=422
+ShortName=GC_pair_E0.0_V_A, FullName=guanine-cytosine_E0.0V/A, Formula=C9H10N8O2, Orientation=xy, Charge=0, MagneticMoment=0, IP=4.73, EA=1.54, BasisSet=6-31G*, XC-functional=B3LYP
+NumberOfOrbitals=20, PathToCubefiles=B3LYP/GC_pair_E0.0_V_A/charge0mult1/
+CubeName=GC_pair_E0.0_V_A_MO_53, OrbitalName=HOMO-15, OrbitalEnergy=-10.951, Occupation=2, Symmetry=a'
+CubeName=GC_pair_E0.0_V_A_MO_54, OrbitalName=HOMO-14, OrbitalEnergy=-10.693, Occupation=2, Symmetry=a"
+CubeName=GC_pair_E0.0_V_A_MO_55, OrbitalName=HOMO-13, OrbitalEnergy=-10.466, Occupation=2, Symmetry=a'
+CubeName=GC_pair_E0.0_V_A_MO_56, OrbitalName=HOMO-12, OrbitalEnergy=-9.546, Occupation=2, Symmetry=a"
+CubeName=GC_pair_E0.0_V_A_MO_57, OrbitalName=HOMO-11, OrbitalEnergy=-9.472, Occupation=2, Symmetry=a"
+CubeName=GC_pair_E0.0_V_A_MO_58, OrbitalName=HOMO-10, OrbitalEnergy=-8.578, Occupation=2, Symmetry=a"
+CubeName=GC_pair_E0.0_V_A_MO_59, OrbitalName=HOMO-9, OrbitalEnergy=-8.072, Occupation=2, Symmetry=a'
+CubeName=GC_pair_E0.0_V_A_MO_60, OrbitalName=HOMO-8, OrbitalEnergy=-7.742, Occupation=2, Symmetry=a"
+CubeName=GC_pair_E0.0_V_A_MO_61, OrbitalName=HOMO-7, OrbitalEnergy=-7.702, Occupation=2, Symmetry=a'
+CubeName=GC_pair_E0.0_V_A_MO_62, OrbitalName=HOMO-6, OrbitalEnergy=-7.233, Occupation=2, Symmetry=a'
+CubeName=GC_pair_E0.0_V_A_MO_63, OrbitalName=HOMO-5, OrbitalEnergy=-6.675, Occupation=2, Symmetry=a"
+CubeName=GC_pair_E0.0_V_A_MO_64, OrbitalName=HOMO-4, OrbitalEnergy=-6.554, Occupation=2, Symmetry=a"
+CubeName=GC_pair_E0.0_V_A_MO_65, OrbitalName=HOMO-3, OrbitalEnergy=-6.518, Occupation=2, Symmetry=a'
+CubeName=GC_pair_E0.0_V_A_MO_66, OrbitalName=HOMO-2, OrbitalEnergy=-6.513, Occupation=2, Symmetry=a"
+CubeName=GC_pair_E0.0_V_A_MO_67, OrbitalName=HOMO-1, OrbitalEnergy=-6.151, Occupation=2, Symmetry=a'
+CubeName=GC_pair_E0.0_V_A_MO_68, OrbitalName=HOMO, OrbitalEnergy=-4.729, Occupation=2, Symmetry=a"
+CubeName=GC_pair_E0.0_V_A_MO_69, OrbitalName=LUMO, OrbitalEnergy=-1.535, Occupation=0, Symmetry=a"
+CubeName=GC_pair_E0.0_V_A_MO_70, OrbitalName=LUMO+1, OrbitalEnergy=-0.064, Occupation=0, Symmetry=a"
+CubeName=GC_pair_E0.0_V_A_MO_71, OrbitalName=LUMO+2, OrbitalEnergy=0.215, Occupation=0, Symmetry=a"
+CubeName=GC_pair_E0.0_V_A_MO_72, OrbitalName=LUMO+3, OrbitalEnergy=0.456, Occupation=0, Symmetry=a'
+moleculeID=423
+ShortName=GC_pair_E+0.5_V_A, FullName=guanine-cytosine_E0.5V/A, Formula=C9H10N8O2, Orientation=xy, Charge=0, MagneticMoment=0, IP=4.64, EA=1.52, BasisSet=6-31G*, XC-functional=B3LYP
+NumberOfOrbitals=20, PathToCubefiles=B3LYP/GC_pair_E+0.5_V_A/charge0mult1/
+CubeName=GC_pair_E+0.5_V_A_MO_53, OrbitalName=HOMO-15, OrbitalEnergy=-11.001, Occupation=2, Symmetry=a'
+CubeName=GC_pair_E+0.5_V_A_MO_54, OrbitalName=HOMO-14, OrbitalEnergy=-10.712, Occupation=2, Symmetry=a"
+CubeName=GC_pair_E+0.5_V_A_MO_55, OrbitalName=HOMO-13, OrbitalEnergy=-10.463, Occupation=2, Symmetry=a'
+CubeName=GC_pair_E+0.5_V_A_MO_56, OrbitalName=HOMO-12, OrbitalEnergy=-9.571, Occupation=2, Symmetry=a"
+CubeName=GC_pair_E+0.5_V_A_MO_57, OrbitalName=HOMO-11, OrbitalEnergy=-9.469, Occupation=2, Symmetry=a"
+CubeName=GC_pair_E+0.5_V_A_MO_58, OrbitalName=HOMO-10, OrbitalEnergy=-8.549, Occupation=2, Symmetry=a"
+CubeName=GC_pair_E+0.5_V_A_MO_59, OrbitalName=HOMO-9, OrbitalEnergy=-8.070, Occupation=2, Symmetry=a'
+CubeName=GC_pair_E+0.5_V_A_MO_60, OrbitalName=HOMO-8, OrbitalEnergy=-7.787, Occupation=2, Symmetry=a"
+CubeName=GC_pair_E+0.5_V_A_MO_61, OrbitalName=HOMO-7, OrbitalEnergy=-7.694, Occupation=2, Symmetry=a'
+CubeName=GC_pair_E+0.5_V_A_MO_62, OrbitalName=HOMO-6, OrbitalEnergy=-7.251, Occupation=2, Symmetry=a'
+CubeName=GC_pair_E+0.5_V_A_MO_63, OrbitalName=HOMO-5, OrbitalEnergy=-6.675, Occupation=2, Symmetry=a"
+CubeName=GC_pair_E+0.5_V_A_MO_64, OrbitalName=HOMO-4, OrbitalEnergy=-6.617, Occupation=2, Symmetry=a"
+CubeName=GC_pair_E+0.5_V_A_MO_65, OrbitalName=HOMO-3, OrbitalEnergy=-6.557, Occupation=2, Symmetry=a"
+CubeName=GC_pair_E+0.5_V_A_MO_66, OrbitalName=HOMO-2, OrbitalEnergy=-6.524, Occupation=2, Symmetry=a'
+CubeName=GC_pair_E+0.5_V_A_MO_67, OrbitalName=HOMO-1, OrbitalEnergy=-6.162, Occupation=2, Symmetry=a'
+CubeName=GC_pair_E+0.5_V_A_MO_68, OrbitalName=HOMO, OrbitalEnergy=-4.637, Occupation=2, Symmetry=a"
+CubeName=GC_pair_E+0.5_V_A_MO_69, OrbitalName=LUMO, OrbitalEnergy=-1.516, Occupation=0, Symmetry=a"
+CubeName=GC_pair_E+0.5_V_A_MO_70, OrbitalName=LUMO+1, OrbitalEnergy=-0.043, Occupation=0, Symmetry=a"
+CubeName=GC_pair_E+0.5_V_A_MO_71, OrbitalName=LUMO+2, OrbitalEnergy=0.183, Occupation=0, Symmetry=a"
+CubeName=GC_pair_E+0.5_V_A_MO_72, OrbitalName=LUMO+3, OrbitalEnergy=0.489, Occupation=0, Symmetry=a'
+moleculeID=424
+ShortName=GC_pair_E-0.5_V_A, FullName=guanine-cytosine_E-0.5V/A, Formula=C9H10N8O2, Orientation=xy, Charge=0, MagneticMoment=0, IP=4.48, EA=1.75, BasisSet=6-31G*, XC-functional=B3LYP
+NumberOfOrbitals=20, PathToCubefiles=B3LYP/GC_pair_E-0.5_V_A/charge0mult1/
+CubeName=GC_pair_E-0.5_V_A_MO_53, OrbitalName=HOMO-15, OrbitalEnergy=-10.725, Occupation=2, Symmetry=a'
+CubeName=GC_pair_E-0.5_V_A_MO_54, OrbitalName=HOMO-14, OrbitalEnergy=-10.505, Occupation=2, Symmetry=a"
+CubeName=GC_pair_E-0.5_V_A_MO_55, OrbitalName=HOMO-13, OrbitalEnergy=-10.323, Occupation=2, Symmetry=a'
+CubeName=GC_pair_E-0.5_V_A_MO_56, OrbitalName=HOMO-12, OrbitalEnergy=-9.676, Occupation=2, Symmetry=a"
+CubeName=GC_pair_E-0.5_V_A_MO_57, OrbitalName=HOMO-11, OrbitalEnergy=-9.353, Occupation=2, Symmetry=a"
+CubeName=GC_pair_E-0.5_V_A_MO_58, OrbitalName=HOMO-10, OrbitalEnergy=-8.797, Occupation=2, Symmetry=a"
+CubeName=GC_pair_E-0.5_V_A_MO_59, OrbitalName=HOMO-9, OrbitalEnergy=-8.228, Occupation=2, Symmetry=a'
+CubeName=GC_pair_E-0.5_V_A_MO_60, OrbitalName=HOMO-8, OrbitalEnergy=-7.846, Occupation=2, Symmetry=a'
+CubeName=GC_pair_E-0.5_V_A_MO_61, OrbitalName=HOMO-7, OrbitalEnergy=-7.546, Occupation=2, Symmetry=a"
+CubeName=GC_pair_E-0.5_V_A_MO_62, OrbitalName=HOMO-6, OrbitalEnergy=-7.059, Occupation=2, Symmetry=a'
+CubeName=GC_pair_E-0.5_V_A_MO_63, OrbitalName=HOMO-5, OrbitalEnergy=-6.841, Occupation=2, Symmetry=a"
+CubeName=GC_pair_E-0.5_V_A_MO_64, OrbitalName=HOMO-4, OrbitalEnergy=-6.380, Occupation=2, Symmetry=a"
+CubeName=GC_pair_E-0.5_V_A_MO_65, OrbitalName=HOMO-3, OrbitalEnergy=-6.347, Occupation=2, Symmetry=a'
+CubeName=GC_pair_E-0.5_V_A_MO_66, OrbitalName=HOMO-2, OrbitalEnergy=-6.330, Occupation=2, Symmetry=a"
+CubeName=GC_pair_E-0.5_V_A_MO_67, OrbitalName=HOMO-1, OrbitalEnergy=-5.929, Occupation=2, Symmetry=a'
+CubeName=GC_pair_E-0.5_V_A_MO_68, OrbitalName=HOMO, OrbitalEnergy=-4.481, Occupation=2, Symmetry=a"
+CubeName=GC_pair_E-0.5_V_A_MO_69, OrbitalName=LUMO, OrbitalEnergy=-1.747, Occupation=0, Symmetry=a"
+CubeName=GC_pair_E-0.5_V_A_MO_70, OrbitalName=LUMO+1, OrbitalEnergy=-0.283, Occupation=0, Symmetry=a"
+CubeName=GC_pair_E-0.5_V_A_MO_71, OrbitalName=LUMO+2, OrbitalEnergy=0.253, Occupation=0, Symmetry=a'
+CubeName=GC_pair_E-0.5_V_A_MO_72, OrbitalName=LUMO+3, OrbitalEnergy=0.469, Occupation=0, Symmetry=a"
+moleculeID=425
+ShortName=NH2_4P_NO2, FullName=NH2_quaterphenyl_NO2, Formula=C24H18N2O2, Orientation=zy, Charge=0, MagneticMoment=0, IP=5.10, EA=2.41, BasisSet=6-31G*, XC-functional=B3LYP
+NumberOfOrbitals=20, PathToCubefiles=B3LYP/NH2_4P_NO2/charge0mult1/
+CubeName=NH2_4P_NO2_MO_81, OrbitalName=HOMO-15, OrbitalEnergy=-9.717, Occupation=2, Symmetry=b2
+CubeName=NH2_4P_NO2_MO_82, OrbitalName=HOMO-14, OrbitalEnergy=-9.423, Occupation=2, Symmetry=a1
+CubeName=NH2_4P_NO2_MO_83, OrbitalName=HOMO-13, OrbitalEnergy=-9.249, Occupation=2, Symmetry=b2
+CubeName=NH2_4P_NO2_MO_84, OrbitalName=HOMO-12, OrbitalEnergy=-8.889, Occupation=2, Symmetry=b1
+CubeName=NH2_4P_NO2_MO_85, OrbitalName=HOMO-11, OrbitalEnergy=-8.764, Occupation=2, Symmetry=b2
+CubeName=NH2_4P_NO2_MO_86, OrbitalName=HOMO-10, OrbitalEnergy=-8.193, Occupation=2, Symmetry=a2
+CubeName=NH2_4P_NO2_MO_87, OrbitalName=HOMO-9, OrbitalEnergy=-8.187, Occupation=2, Symmetry=b1
+CubeName=NH2_4P_NO2_MO_88, OrbitalName=HOMO-8, OrbitalEnergy=-8.142, Occupation=2, Symmetry=a1
+CubeName=NH2_4P_NO2_MO_89, OrbitalName=HOMO-7, OrbitalEnergy=-7.676, Occupation=2, Symmetry=b2
+CubeName=NH2_4P_NO2_MO_90, OrbitalName=HOMO-6, OrbitalEnergy=-7.424, Occupation=2, Symmetry=a2
+CubeName=NH2_4P_NO2_MO_91, OrbitalName=HOMO-5, OrbitalEnergy=-7.189, Occupation=2, Symmetry=b1
+CubeName=NH2_4P_NO2_MO_92, OrbitalName=HOMO-4, OrbitalEnergy=-7.098, Occupation=2, Symmetry=a2
+CubeName=NH2_4P_NO2_MO_93, OrbitalName=HOMO-3, OrbitalEnergy=-6.919, Occupation=2, Symmetry=a2
+CubeName=NH2_4P_NO2_MO_94, OrbitalName=HOMO-2, OrbitalEnergy=-6.781, Occupation=2, Symmetry=a2
+CubeName=NH2_4P_NO2_MO_95, OrbitalName=HOMO-1, OrbitalEnergy=-6.154, Occupation=2, Symmetry=b1
+CubeName=NH2_4P_NO2_MO_96, OrbitalName=HOMO, OrbitalEnergy=-5.100, Occupation=2, Symmetry=b1
+CubeName=NH2_4P_NO2_MO_97, OrbitalName=LUMO, OrbitalEnergy=-2.411, Occupation=0, Symmetry=b1
+CubeName=NH2_4P_NO2_MO_98, OrbitalName=LUMO+1, OrbitalEnergy=-1.314, Occupation=0, Symmetry=b1
+CubeName=NH2_4P_NO2_MO_99, OrbitalName=LUMO+2, OrbitalEnergy=-0.692, Occupation=0, Symmetry=a2
+CubeName=NH2_4P_NO2_MO_100, OrbitalName=LUMO+3, OrbitalEnergy=-0.316, Occupation=0, Symmetry=a2
