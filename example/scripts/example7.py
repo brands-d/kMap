@@ -43,8 +43,17 @@ lmfit.edit_parameter('c', value=1)  # constant background
 # Set slices to be used and perform fit
 lmfit.set_slices('all', combined=False)
 lmfit.set_fit_method(method='matrix_inversion')
-weights = lmfit.fit()
-print(weights)
+results = lmfit.fit()
+
+# Extract fitting results
+weights = np.array([[result[1].params['w_0'].value,
+                     result[1].params['w_1'].value,
+                     result[1].params['w_2'].value,
+                     result[1].params['w_3'].value,
+                     result[1].params['c'].value]
+                    for result in results])
+
+#print(weights)
 
 # Plot results: weights of orbitals (pDOS) vs. kinetic energy
 names = ['PTCDA_C', 'PTCDA_D', 'PTCDA_E', 'PTCDA_F', 'background']

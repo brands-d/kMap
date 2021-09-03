@@ -55,7 +55,7 @@ weights = np.array([[result[1].params['w_0'].value,
                      result[1].params['c'].value]
                     for result in results])
 
-print(weights)
+#print(weights)
 
 # Plot results: weights of orbitals (pDOS) vs. kinetic energy
 names = ['PTCDA_C', 'PTCDA_D', 'PTCDA_E', 'PTCDA_F', 'background']

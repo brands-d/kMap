@@ -238,6 +238,18 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
         else:
             self.model.set_slices('all', axis_index=axis, combined=True)
 
+    def _change_method(self, method):
+
+        self._change_to_matrix_state(method == 'matrix_inversion')
+        self.model.set_fit_method(method)
+
+    def _change_to_matrix_state(self, state):
+
+        if state:
+            pass
+        else:
+            pass
+
     def _change_region(self, *args):
         self.model.set_region(*args)
         self.refresh_residual_plot()
@@ -284,7 +296,7 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
         self.tree.vary_changed.connect(self.update_chi2_label)
         self.lmfit_options.background_changed.connect(self._change_background)
         self.lmfit_options.fit_triggered.connect(self.trigger_fit)
-        self.lmfit_options.method_changed.connect(self.model.set_fit_method)
+        self.lmfit_options.method_changed.connect(self._change_method)
         self.lmfit_options.slice_policy_changed.connect(
             self._change_slice_policy)
         self.lmfit_options.region_changed.connect(self._change_region)

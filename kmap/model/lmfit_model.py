@@ -15,6 +15,7 @@ import builtins
 # Third Party Imports
 import numpy as np
 from lmfit import minimize, Parameters
+from lmfit.minimizer import MinimizerResult
 
 # Own Imports
 from kmap.model.crosshair_model import CrosshairModel, CrosshairAnnulusModel
@@ -310,6 +311,7 @@ class LMFitModel():
         """
 
         # Calculate all the orbital maps once for speed
+        print(self.parameters)
         orbital_kmaps_vector = np.array(
             [self.get_orbital_kmap(orbital.ID, self.parameters).data
              for orbital in self.orbitals])
@@ -335,16 +337,15 @@ class LMFitModel():
                 y[i] = np.nansum(sliced_kmap * aux[i])
                 for j in range(N):
                     A[i, j] = np.nansum(aux[i] * aux[j])
-
             result = np.linalg.solve(A, y)
 
             if N == len(orbital_kmaps_vector):
                 # == No background
                 result = np.append(result, 0)
 
-            weights.append(result)
+            weights.append([index, result])
 
-        return np.array(weights)
+        return self._construct_minimizer_result(weights)
 
     def fit(self):
         """Calling this method will trigger a lmfit with the current
@@ -604,3 +605,19 @@ class LMFitModel():
         for angle in ['alpha', 'beta']:
             self.parameters.add(angle, value=0,
                                 min=90, max=-90, vary=False, expr=None)
+
+    def _construct_minimizer_result(self, results):
+
+        out = []
+        for index, result in results:
+            minimizer_result = MinimizerResult()
+            minimizer_result.params = self.parameters.copy()
+
+            for weight, orbital in zip(result[:-1], self.orbitals):
+                ID = orbital.ID
+                minimizer_result.params['w_' + str(ID)].value = weight
+
+            minimizer_result.params['c'].value = result[-1]
+            out.append([index, minimizer_result])
+
+        return out
