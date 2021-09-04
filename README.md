@@ -80,7 +80,7 @@ The environment is set up but needs to be activated manually. ATTENTION: You wil
     source ./venv/bin/activate
     
 #### Windows
-    .\env\Scripts\activate
+    .\venv\Scripts\activate
 
 To deactivate the environment simply call (both operation systems)
 
