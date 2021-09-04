@@ -150,6 +150,17 @@ command (only Linux, no equivalent for Windows currently). This will create a re
 Simply send this file via E-mail to one of the authors
 (dominik.brandstetter@edu.uni-graz.at).
 
+## Troubleshooting
+
+A list of problems users had before and how they solved it:
+
+### Windows
+
+#### ImportError: DLL load failed while importing QtGui: The specified procedure could not be found.
+Origin is not clear. Make sure you have python 3.8.x installed (not 3.7) and force reinstall PyQt5 in your enviroment:
+    pip uninstall pyqt5
+    pip install pyqt5 --force-reinstall --no-cache
+
 ## Project Structure
 The root folder of the kMap.py source code should contain after successful installation at least the following files and directories:
 - /dist
