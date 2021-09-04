@@ -23,7 +23,11 @@ Installation:
 Usage:
 
     python -m kmap
-    
+
+## Pre-packaged distribution (Windows 10 only)
+
+Download the kMap_win10_x86.zip file from the /dist folder. Unzip and enter the resulting folder. Double click the kMap.exe file.
+
 ## Detailed installation guide from source
 
 kMap.py was predominantly developed on and for Linux. There are currently (19.09.2020) no issues on Windows, however, MacOS stands untested so far.
