@@ -476,7 +476,7 @@ class LMFitModel():
 
         kmap = kmap.symmetrise(*self.sliced_symmetry, update=True)
 
-        return kmap
+        return self._cut_region(kmap)
 
     def get_orbital_kmap(self, ID, param=None):
         if param is None:
@@ -495,7 +495,7 @@ class LMFitModel():
                                 symmetrization=self.symmetrization,
                                 s_share=self.s_share)
 
-        return kmap
+        return self._cut_region(kmap)
 
     def get_weighted_sum_kmap(self, param=None, with_background=True):
         if param is None:
@@ -537,8 +537,6 @@ class LMFitModel():
 
         else:
             residual = slice_ - orbital_kmap
-
-        residual = self._cut_region(residual)
 
         return residual
 

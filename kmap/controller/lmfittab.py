@@ -78,6 +78,13 @@ class LMFitBaseTab(Tab):
 
         self.update_chi2_label(weight_sum_data)
 
+    def refresh_all(self):
+
+        self.refresh_sliced_plot()
+        self.refresh_selected_plot()
+        kmap = self.refresh_sum_plot()
+        self.refresh_residual_plot(weight_sum_data=kmap)
+
     def update_chi2_label(self, weight_sum_data=None):
         slice_index = self.slider.get_index()
         reduced_chi2 = self.model.get_reduced_chi2(
@@ -126,6 +133,7 @@ class LMFitBaseTab(Tab):
 
     def _connect(self):
         self.crosshair.crosshair_changed.connect(self.crosshair.update_label)
+        self.crosshair.crosshair_changed.connect(self.refresh_all)
 
         self.slider.slice_changed.connect(self.change_slice)
         self.slider.axis_changed.connect(self.change_slice)
@@ -153,10 +161,7 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
         self._setup()
         self._connect()
 
-        self.refresh_sliced_plot()
-        self.refresh_selected_plot()
-        kmap = self.refresh_sum_plot()
-        self.refresh_residual_plot(weight_sum_data=kmap)
+        self.refresh_all()
 
     @classmethod
     def init_from_save(cls, save, sliced_data, orbitals):
@@ -209,10 +214,7 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
         axis = self.interpolation.get_axis()
         self.model.set_axis(axis)
 
-        self.refresh_sliced_plot()
-        self.refresh_selected_plot()
-        kmap = self.refresh_sum_plot()
-        self.refresh_residual_plot(weight_sum_data=kmap)
+        self.refresh_all()
 
     def save_state(self):
         save = {'title': self.title,
@@ -250,12 +252,13 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
             variables = self.model.background_equation[1]
             if 'c' not in variables:
                 self.lmfit_options._pre_factor_background()
-            
+
         self.tree._change_to_matrix_state(state)
 
     def _change_region(self, *args):
         self.model.set_region(*args)
-        self.refresh_residual_plot()
+
+        self.refresh_all()
 
     def _change_background(self, *args):
 
@@ -334,10 +337,7 @@ class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
         self._setup()
         self._connect()
 
-        self.refresh_sliced_plot()
-        self.refresh_selected_plot()
-        kmap = self.refresh_sum_plot()
-        self.refresh_residual_plot(weight_sum_data=kmap)
+        self.refresh_all()
 
     @classmethod
     def init_from_save(cls, save, tab, ID_map=None):
