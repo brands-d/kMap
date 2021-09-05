@@ -95,7 +95,7 @@ class LMFitBaseTab(Tab):
     def display_in_matplotlib(self):
         windows = []
 
-        for plot in [self.residual_plot, self.sum_plot]:
+        for plot in [self.residual_plot, self.sum_plot, self.sliced_plot, self.selected_plot]:
             data = plot.model.plot_data
             LUT = plot.get_LUT()
             windows.append(MatplotlibImageWindow(data, LUT=LUT))
