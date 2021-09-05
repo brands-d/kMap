@@ -73,6 +73,11 @@ class LMFitTree(LMFitBaseTree, LMFitTree_UI):
 
         self.background_item.add_equation_parameter(self.tree, parameter)
 
+    def _change_to_matrix_state(self, state):
+
+        for i in range(self.tree.topLevelItemCount()):
+            self.tree.topLevelItem(i)._change_to_matrix_state(state)
+
     def _setup(self, orbitals, parameters):
 
         widths = [60, 0, 100, 80, 130, 130, 130, 200]

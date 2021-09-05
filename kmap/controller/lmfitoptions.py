@@ -125,6 +125,11 @@ class LMFitOptions(QWidget, LMFitOptions_UI):
 
         self.slice_policy_changed.emit(slice_policy)
 
+    def _pre_factor_background(self):
+
+        background = 'c*' + self.get_background()
+        self.background_combobox.setCurrentText(background)
+
     def _change_background(self):
 
         equation = self.get_background()
@@ -155,4 +160,6 @@ class LMFitOptions(QWidget, LMFitOptions_UI):
         self.slice_combobox.currentIndexChanged.connect(
             self._change_slice_policy)
         self.background_combobox.currentIndexChanged.connect(
+            self._change_background)
+        self.background_combobox.currentTextChanged.connect(
             self._change_background)

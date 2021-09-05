@@ -311,24 +311,41 @@ class LMFitModel():
         """
 
         # Calculate all the orbital maps once for speed
-        print(self.parameters)
         orbital_kmaps_vector = np.array(
-            [self.get_orbital_kmap(orbital.ID, self.parameters).data
+            [self._cut_region(
+                self.get_orbital_kmap(orbital.ID, self.parameters).data)
              for orbital in self.orbitals])
+
+        # Filter later for non variable parameters
+        vary_vector = [self.parameters['w_' + str(orbital.ID)].vary
+                       for orbital in self.orbitals]
+        vary_vector.append(self.parameters['c'].vary)
+
+        # Initial values important if orbital or background is not varied
+        initials = [self.parameters['w_' + str(orbital.ID)].value
+                       for orbital in self.orbitals]
+        initials.append(self.parameters['c'].value)
 
         weights = []
         for index in self.slice_policy[1]:
-            sliced_kmap = self.get_sliced_kmap(index).data
+            sliced_kmap = self._cut_region(self.get_sliced_kmap(index).data)
             background = self._get_background(self.parameters)
 
+            # Transform background to a equally sized map
             if not isinstance(background, np.ndarray):
                 background *= np.ones(orbital_kmaps_vector[0].shape)
             background[np.isnan(sliced_kmap)] = 0
+            background = self._cut_region(background)
+            aux = np.append(orbital_kmaps_vector, [background], axis=0)
 
+            # All zero background would lead to singular matrix
             if np.all(background == 0):
-                aux = orbital_kmaps_vector
-            else:
-                aux = np.append(orbital_kmaps_vector, [background], axis=0)
+                vary_vector[-1] = False
+
+            # Subtract orbitals not to be varied from the sliced data once
+            for i, (kmap, initial) in enumerate(zip(aux, initials)):
+                if not vary_vector[i]:
+                    sliced_kmap -= initial*kmap
 
             N = len(aux)
             A = np.zeros((N, N))
@@ -337,7 +354,20 @@ class LMFitModel():
                 y[i] = np.nansum(sliced_kmap * aux[i])
                 for j in range(N):
                     A[i, j] = np.nansum(aux[i] * aux[j])
-            result = np.linalg.solve(A, y)
+
+            result = np.array(initials)
+            try:
+                result[vary_vector] = np.linalg.solve(
+                    A[np.ix_(vary_vector, vary_vector)], y[vary_vector])
+
+            except np.linalg.LinAlgError as err:
+                if 'Singular matrix' in str(err):
+                    result = np.zeros(y.shape)
+                    print(
+                        'WARNING: Slice {index} produced a singular matrix.\nPlease make sure the background is non zero and there aren\'t identical orbitals loaded.')
+
+                else:
+                    raise
 
             if N == len(orbital_kmaps_vector):
                 # == No background

@@ -241,20 +241,24 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
     def _change_method(self, method):
 
         self._change_to_matrix_state(method == 'matrix_inversion')
+
         self.model.set_fit_method(method)
 
     def _change_to_matrix_state(self, state):
 
         if state:
-            pass
-        else:
-            pass
+            variables = self.model.background_equation[1]
+            if 'c' not in variables:
+                self.lmfit_options._pre_factor_background()
+            
+        self.tree._change_to_matrix_state(state)
 
     def _change_region(self, *args):
         self.model.set_region(*args)
         self.refresh_residual_plot()
 
     def _change_background(self, *args):
+
         new_variables = self.model.set_background_equation(*args)
         for variable in new_variables:
             self.tree.add_equation_parameter(variable)
