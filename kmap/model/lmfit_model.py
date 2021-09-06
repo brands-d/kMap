@@ -328,7 +328,7 @@ class LMFitModel():
 
         weights = []
         for index in self.slice_policy[1]:
-            sliced_kmap = self._cut_region(self.get_sliced_kmap(index).data)
+            sliced_kmap = self._cut_region(self.get_sliced_kmap(index)).data
             background = self._get_background(self.parameters)
 
             # Transform background to a equally sized map
