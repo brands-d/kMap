@@ -19,6 +19,7 @@ from lmfit.minimizer import MinimizerResult
 
 # Own Imports
 from kmap.model.crosshair_model import CrosshairModel, CrosshairAnnulusModel
+from kmap.library.plotdata import PlotData
 from kmap.library.orbitaldata import OrbitalData
 from kmap.library.sliceddata import SlicedData
 from kmap.library.misc import (
@@ -323,19 +324,21 @@ class LMFitModel():
 
         # Initial values important if orbital or background is not varied
         initials = [self.parameters['w_' + str(orbital.ID)].value
-                       for orbital in self.orbitals]
+                    for orbital in self.orbitals]
         initials.append(self.parameters['c'].value)
 
         weights = []
         for index in self.slice_policy[1]:
-            sliced_kmap = self._cut_region(self.get_sliced_kmap(index)).data
+            sliced_plot_data = self.get_sliced_kmap(index)
+            sliced_kmap = self._cut_region(sliced_plot_data).data
             background = self._get_background(self.parameters)
 
             # Transform background to a equally sized map
             if not isinstance(background, np.ndarray):
                 background *= np.ones(orbital_kmaps_vector[0].shape)
             background[np.isnan(sliced_kmap)] = 0
-            background = self._cut_region(background)
+            background = self._cut_region(
+                PlotData(background, sliced_plot_data.range)).data
             aux = np.append(orbital_kmaps_vector, [background], axis=0)
 
             # All zero background would lead to singular matrix
