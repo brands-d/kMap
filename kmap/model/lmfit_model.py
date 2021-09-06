@@ -313,7 +313,7 @@ class LMFitModel():
         # Calculate all the orbital maps once for speed
         orbital_kmaps_vector = np.array(
             [self._cut_region(
-                self.get_orbital_kmap(orbital.ID, self.parameters).data)
+                self.get_orbital_kmap(orbital.ID, self.parameters)).data
              for orbital in self.orbitals])
 
         # Filter later for non variable parameters
