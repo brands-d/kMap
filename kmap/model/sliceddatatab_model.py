@@ -19,7 +19,7 @@ class SlicedDataTabModel():
         # dictionary
         *orbitals, options = URLs
         name, *parameters = options
-        s_share = float(config.get_key('orbital', 's_share'))
+        s_share = float(config.get_key('orbital', 's_share_sliced'))
 
         self.data = SlicedData.init_from_orbitals(name, orbitals,
                                                   parameters, s_share=s_share)
@@ -35,7 +35,7 @@ class SlicedDataTabModel():
         # dictionary
         *orbital, options = URL
         name, *parameters = options
-        s_share = float(config.get_key('orbital', 's_share'))
+        s_share = float(config.get_key('orbital', 's_share_sliced'))
 
         self.data = SlicedData.init_from_orbital_photonenergy(
             name, orbital, parameters, s_share=s_share)

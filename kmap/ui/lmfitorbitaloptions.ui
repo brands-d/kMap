@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>514</width>
-    <height>133</height>
+    <height>146</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -56,7 +56,7 @@
       <property name="spacing">
        <number>3</number>
       </property>
-      <item row="2" column="1">
+      <item row="3" column="1">
        <widget class="QComboBox" name="symmetrize_combobox">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -129,7 +129,7 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
+      <item row="3" column="0">
        <widget class="QLabel" name="symmetrize_label">
         <property name="font">
          <font>
@@ -231,7 +231,7 @@
         </item>
         <item>
          <property name="text">
-          <string>NANO-ESCA: He-lamp</string>
+          <string>NANO-ESCA: unpol.</string>
          </property>
         </item>
         <item>
@@ -267,6 +267,50 @@
         </property>
         <property name="text">
          <string>Factor:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="s_share_label">
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="toolTip">
+         <string>The share of s-polarised light.</string>
+        </property>
+        <property name="text">
+         <string>Share of s-Polarisation:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QDoubleSpinBox" name="s_share_spinbox">
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="toolTip">
+         <string>The share of s-polarised light.</string>
+        </property>
+        <property name="keyboardTracking">
+         <bool>false</bool>
+        </property>
+        <property name="decimals">
+         <number>3</number>
+        </property>
+        <property name="maximum">
+         <double>1.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.001000000000000</double>
+        </property>
+        <property name="value">
+         <double>0.694000000000000</double>
         </property>
        </widget>
       </item>

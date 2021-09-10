@@ -43,11 +43,11 @@ class OrbitalDataTabModel():
             raise IndexError('wrong ID')
 
         parameters = self.controller.get_parameters(ID)
+
         # Split of first element
         weight, *other = parameters
-        s_share = float(config.get_key('orbital', 's_share'))
         # Get scaled kmap
-        kmap = weight * orbital.get_kmap(*other, s_share=s_share)
+        kmap = weight * orbital.get_kmap(*other)
 
         return kmap
 

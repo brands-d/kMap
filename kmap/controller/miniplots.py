@@ -45,7 +45,7 @@ class MiniRealSpacePlot(GLViewWidget):
         self.grid = None
         self.bonds = []
         self.photon = None
-        self.photon_parameters = ['p', 45, 0]
+        self.photon_parameters = ['p', 45, 0, 0.694]
         self.mesh = []
         self.orbital = None
         self.orientation = [0, 0, 0]
@@ -77,12 +77,12 @@ class MiniRealSpacePlot(GLViewWidget):
 
         self.orientation = [phi, theta, psi]
 
-    def rotate_photon(self, polarization='p', alpha=0, beta=0):
+    def rotate_photon(self, polarization='p', alpha=0, beta=0, s_share=0.694):
         if self.photon is not None:
             self.removeItem(self.photon)
             self.photon = None
 
-        self.photon_parameters = [polarization, alpha, beta]
+        self.photon_parameters = [polarization, alpha, beta, s_share]
         self._refresh_photon()
 
     def refresh_plot(self):
@@ -169,7 +169,7 @@ class MiniRealSpacePlot(GLViewWidget):
             self.removeItem(self.photon)
             self.photon = None
 
-        polarization, alpha, beta = self.photon_parameters
+        polarization, alpha, beta, s_share = self.photon_parameters
 
         if self.orbital is None or not self.options.is_show_photon():
             return
@@ -202,7 +202,6 @@ class MiniRealSpacePlot(GLViewWidget):
         # ... to be updated ...
         elif polarization == 'unpolarized':
             pol_1 = [0, 0, 0]
-            s_share = float(config.get_key('orbital', 's_share'))
             p_share = 1 - s_share
             pol_2 = [s_share * np.sin(beta) +
                      p_share * np.cos(alpha) * np.cos(beta),

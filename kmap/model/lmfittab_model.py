@@ -27,10 +27,9 @@ class LMFitTabModel():
             raise IndexError('wrong ID')
 
         weight, *parameters = parameters
-        s_share = float(config.get_key('orbital', 's_share'))
 
         # Get scaled kmap
-        kmap = weight * orbital.get_kmap(*parameters, s_share=s_share)
+        kmap = weight * orbital.get_kmap(*parameters)
 
         return kmap
 

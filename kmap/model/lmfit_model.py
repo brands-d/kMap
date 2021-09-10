@@ -161,7 +161,7 @@ class LMFitModel():
         if region != 'all' and self.crosshair is None:
             self.crosshair = CrosshairAnnulusModel()
 
-    def set_polarization(self, Ak_type, polarization):
+    def set_polarization(self, Ak_type, polarization, s_share=None):
         """A setter method to set the type of polarization for the
         orbital kmaps. Default is 'toroid' and 'p'.
 
@@ -174,6 +174,9 @@ class LMFitModel():
 
         self.Ak_type = Ak_type
         self.polarization = polarization
+        # For backwards compatability
+        if s_share is not None:
+            self.set_s_share(s_share)
 
     def set_s_share(self, s_share):
         """A setter method to set the share of s-polarized light in

@@ -14,12 +14,13 @@ LMFitOrbitalOptions_UI, _ = uic.loadUiType(UI_file)
 
 class LMFitOrbitalOptions(QWidget, LMFitOrbitalOptions_UI):
     symmetrization_changed = pyqtSignal(str)
-    polarization_changed = pyqtSignal(str, str)
+    polarization_changed = pyqtSignal(str, str, float)
 
     def __init__(self, *args, **kwargs):
         # Setup GUI
         super(LMFitOrbitalOptions, self).__init__(*args, **kwargs)
         self.setupUi(self)
+        self._setup()
         self._connect()
 
     def save_state(self):
@@ -33,6 +34,13 @@ class LMFitOrbitalOptions(QWidget, LMFitOrbitalOptions_UI):
         self.ak_combobox.setCurrentIndex(save['factor'])
         self.polarization_combobox.setCurrentIndex(save['polarization'])
         self.symmetrize_combobox.setCurrentIndex(save['symmetry'])
+
+        if 's_share' in save:
+            self.s_share_spinbox.setValue(save['s_share'])
+        else:
+            print('WARNING: s_share setting not found in save file. Using default.')
+            s_share = config.get_key('orbital', 's_share_default')
+            self.s_share_spinbox.setValue(s_share)
 
     def get_symmetrization(self):
         index = self.symmetrize_combobox.currentIndex()
@@ -96,7 +104,22 @@ class LMFitOrbitalOptions(QWidget, LMFitOrbitalOptions_UI):
 
     def _change_polarization(self):
         Ak_type, polarization = self.get_polarization()
-        self.polarization_changed.emit(Ak_type, polarization)
+        s_share = self.get_s_share()
+
+        self.s_share_label.setVisible(polarization == 'unpolarized')
+        self.s_share_spinbox.setVisible(polarization == 'unpolarized')
+
+        self.polarization_changed.emit(Ak_type, polarization, s_share)
+
+    def get_s_share(self):
+        return self.s_share_spinbox.value()
+
+    def _setup(self):
+        s_share = config.get_key('orbital', 's_share_default')
+        self.s_share_spinbox.setValue(float(s_share))
+
+        self.s_share_label.setVisible(False)
+        self.s_share_spinbox.setVisible(False)
 
     def _connect(self):
         self.polarization_combobox.currentIndexChanged.connect(
@@ -104,3 +127,4 @@ class LMFitOrbitalOptions(QWidget, LMFitOrbitalOptions_UI):
         self.ak_combobox.currentIndexChanged.connect(self._change_polarization)
         self.symmetrize_combobox.currentIndexChanged.connect(
             self._change_symmetrization)
+        self.s_share_spinbox.valueChanged.connect(self._change_polarization)

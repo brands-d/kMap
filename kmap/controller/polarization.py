@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import QWidget
 
 # Own Imports
 from kmap import __directory__
+from kmap.config.config import config
 
 # Load .ui File
 UI_file = __directory__ / 'ui/polarization.ui'
@@ -22,10 +23,14 @@ class Polarization(QWidget, Polarization_UI):
         # Setup GUI
         super(Polarization, self).__init__(*args, **kwargs)
         self.setupUi(self)
+        self._setup()
         self._connect()
 
     def change_polarization(self):
 
+        _, polarization = self._get_polarization()
+        self.s_share_label.setVisible(polarization == 'unpolarized')
+        self.s_share_spinbox.setVisible(polarization == 'unpolarized')
         self.polarization_changed.emit()
 
     def get_parameters(self):
@@ -34,8 +39,9 @@ class Polarization(QWidget, Polarization_UI):
         factor = self._get_factor()
         Ak_type = factor if factor == 'no' else factor + Ak_type
         angles = self._get_angles()
+        s_share = self._get_s_share()
 
-        return (Ak_type, polarization, *angles)
+        return (Ak_type, polarization, *angles, s_share)
 
     def save_state(self):
 
@@ -43,9 +49,10 @@ class Polarization(QWidget, Polarization_UI):
         polarization = self.polarization_combobox.currentIndex()
         angle = self.angle_spinbox.value()
         azimuth = self.azimuth_spinbox.value()
+        s_share = self._get_s_share()
 
         save = {'Ak': Ak, 'polarization': polarization,
-                'angle': angle, 'azimuth': azimuth}
+                'angle': angle, 'azimuth': azimuth, 's_share': s_share}
 
         return save
 
@@ -55,11 +62,19 @@ class Polarization(QWidget, Polarization_UI):
         polarization = save['polarization']
         angle = save['angle']
         azimuth = save['azimuth']
+        if 's_share' in save:
+            s_share = save['s_share']
+        else:
+            # For backwards compatability
+            print(
+                'WARNING: s_share setting not found in save file. Using default of 0.694.')
+            s_share = config.get_key('orbital', 's_share_default')
 
         self.ak_combobox.setCurrentIndex(Ak)
         self.polarization_combobox.setCurrentIndex(polarization)
         self.angle_spinbox.setValue(angle)
         self.azimuth_spinbox.setValue(azimuth)
+        self.s_share_spinbox.setValue(s_share)
 
     def _get_factor(self):
 
@@ -115,6 +130,18 @@ class Polarization(QWidget, Polarization_UI):
 
         return alpha, beta, gamma
 
+    def _get_s_share(self):
+
+        return self.s_share_spinbox.value()
+
+    def _setup(self):
+
+        s_share = config.get_key('orbital', 's_share_default')
+        self.s_share_spinbox.setValue(float(s_share))
+
+        self.s_share_label.setVisible(False)
+        self.s_share_spinbox.setVisible(False)
+
     def _connect(self):
 
         self.polarization_combobox.currentIndexChanged.connect(
@@ -122,3 +149,4 @@ class Polarization(QWidget, Polarization_UI):
         self.angle_spinbox.valueChanged.connect(self.change_polarization)
         self.azimuth_spinbox.valueChanged.connect(self.change_polarization)
         self.ak_combobox.currentIndexChanged.connect(self.change_polarization)
+        self.s_share_spinbox.valueChanged.connect(self.change_polarization)

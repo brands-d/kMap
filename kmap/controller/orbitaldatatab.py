@@ -97,9 +97,10 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         self.mini_real_plot.rotate_orbital(phi, theta, psi)
 
     def refresh_mini_plot_polarization(self):
-        polarization, alpha, beta = self.polarization.get_parameters()[1:4]
+        polarization, alpha, beta, _, s_share = self.polarization.get_parameters()[
+            1:]
 
-        self.mini_real_plot.rotate_photon(polarization, alpha, beta)
+        self.mini_real_plot.rotate_photon(polarization, alpha, beta, s_share)
 
     def get_crosshair(self):
         return self.crosshair
@@ -108,10 +109,10 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         kinetic_energy, dk, symmetry = self.cube_options.get_parameters()
         parameters = self.table.get_parameters_by_ID(ID)
         weight, *orientation = parameters
-        polarization = self.polarization.get_parameters()
+        *polarization, s_share = self.polarization.get_parameters()
 
         return (weight, kinetic_energy, dk,
-                *orientation, *polarization, symmetry)
+                *orientation, *polarization, symmetry, s_share)
 
     def get_use(self, ID):
         return self.table.get_use_by_ID(ID)
