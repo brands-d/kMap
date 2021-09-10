@@ -1,0 +1,2 @@
+dist/kMap_win10_x86.zip filter=lfs diff=lfs merge=lfs -text
+dist/kMap_1.19.1-b.zip filter=lfs diff=lfs merge=lfs -text

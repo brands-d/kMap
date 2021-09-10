@@ -21,6 +21,9 @@ run:
 test-all:
 	python -m unittest discover
 
+package:
+	pyinstaller .\cli.py -w --clean --name kMap --add-data "./kmap/config/*.ini;kmap/config" --add-data "./kmap/resources/images/icon.png;kmap/resources/images" --add-data "./kmap/resources/misc/*;kmap/resources/misc" --add-data "./kmap/resources/texts/*;kmap/resources/texts" --add-data "./kmap/ui/*.ui;kmap/ui" --hidden-import "kmap.controller.realplotoptions" --hidden-import "kmap.controller.miniplots" --hidden-import "kmap.controller.tabwidget" --hidden-import "kmap.controller.profileplot" --hidden-import "kmap.controller.lmfitplot"
+
 report:
 	rm -f report.tar.gz report.tar
 	tar -cf report.tar *.log 

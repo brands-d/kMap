@@ -599,7 +599,7 @@ class Orbital():
                          'chemical_numbers': chemical_numbers,
                          'atomic_coordinates': atomic_coordinates}
 
-    def get_bonds(self, lower_factor=0.8, upper_factor=1.2):
+    def get_bonds(self, lower_factor=0.7, upper_factor=1.2):
         """ returns a list of bond used for plotting the molecular structure.
 
         Args:

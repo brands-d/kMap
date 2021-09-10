@@ -92,6 +92,11 @@
           </item>
           <item>
            <property name="text">
+            <string>Matrix Inversion (matrix_inversion)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
             <string>Least-Square (least_squares)</string>
            </property>
           </item>

@@ -216,7 +216,7 @@ The kmap displayed has been interpolated and, if checked, smoothed. </string>
           </font>
          </property>
          <property name="text">
-          <string>Σ Weight * Orbital</string>
+          <string>Σ Weight * Orbital + Background</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
@@ -264,14 +264,7 @@ The kmap displayed has been interpolated and, if checked, smoothed. </string>
           </font>
          </property>
          <property name="toolTip">
-          <string>Sliced Data - Σ Weight * Orbital
-
-Displays the current reduced Chi^2 value of the data displayed
-in the residual plot (region restriction, interpolation etc. already included).
-
-Reduced Chi^2 = Data^2 / (N-n)
-N ... Number of non-nan and non-zero data points.
-n ... Degrees of freedom (number of parameters set to vary).</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sliced Data - Σ Weight * Orbital - Background&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Displays the current reduced Chi^2 value of the data displayed&lt;/p&gt;&lt;p&gt;in the residual plot (region restriction, interpolation etc. already included).&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Reduced Chi^2 = Data^2 / (N-n)&lt;/p&gt;&lt;p&gt;N ... Number of non-nan and non-zero data points.&lt;/p&gt;&lt;p&gt;n ... Degrees of freedom (number of parameters set to vary).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="text">
           <string>Residual</string>

@@ -72,6 +72,13 @@ class LMFitTreeTopLevelItem(LMFitTreeItem):
         for child in self.children:
             child.set_vary(state)
 
+    def _change_to_matrix_state(self, state):
+
+        self.vary.setEnabled(not state)
+        
+        for child in self.children:
+            child._change_to_matrix_state(state)
+
     def _connect_child(self, child):
         # value_changed == redraw necessary
         child.signals.value_changed.connect(self.signals.value_changed.emit)
@@ -107,6 +114,10 @@ class BackgroundOptionsTreeItem(LMFitTreeTopLevelItem):
             index = self.parameters.index(name)
             item = self.children[index]
             item.update_parameter(parameter)
+
+    def _change_to_matrix_state(self, state):
+
+        super()._change_to_matrix_state(state)
 
     def _setup(self, tree, parameters):
 
@@ -194,6 +205,13 @@ class LMFitDataTreeItem(LMFitTreeItem):
         self.min_spinbox.setValue(save['min'])
         self.max_spinbox.setValue(save['max'])
         self.expression.setText(save['expr'])
+
+    def _change_to_matrix_state(self, state):
+
+        self.vary.setEnabled(not state)
+        self.min_spinbox.setEnabled(not state)
+        self.max_spinbox.setEnabled(not state)
+        self.expression.setEnabled(not state)
 
     def _change_initial(self, value):
 
@@ -291,6 +309,16 @@ class BackgroundTreeItem(LMFitDataTreeItem):
         self._change_expression(expr)
         self._change_vary(vary)
 
+    def _change_to_matrix_state(self, state):
+
+        super()._change_to_matrix_state(state)
+
+        if state and self.parameter.name == 'c':
+            if self.initial_spinbox.value() == 0.:
+                self.initial_spinbox.setValue(1.0)
+
+            self.vary.setEnabled(True)
+
     def _setup(self, tree, name):
 
         initial = self.parameter.value
@@ -334,6 +362,11 @@ class WeightTreeItem(LMFitDataTreeItem):
 
         self._setup(tree, name)
         self._connect()
+
+    def _change_to_matrix_state(self, state):
+
+        super()._change_to_matrix_state(state)
+        self.vary.setEnabled(True)
 
     def _setup(self, tree, name):
 

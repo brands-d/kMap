@@ -23,7 +23,11 @@ Installation:
 Usage:
 
     python -m kmap
-    
+
+## Pre-packaged distribution (Windows 10 only)
+
+Download the kMap_win10_x86.zip file from the /dist folder. Unzip and enter the resulting folder. Double click the kMap.exe file.
+
 ## Detailed installation guide from source
 
 kMap.py was predominantly developed on and for Linux. There are currently (19.09.2020) no issues on Windows, however, MacOS stands untested so far.
@@ -31,12 +35,15 @@ kMap.py was predominantly developed on and for Linux. There are currently (19.09
 The installation is mostly done via make commands. Because Windows does not support Makefiles natively, this installation guide will differ between Linux and Windows at multiple points. Please follow the part corresponding to your operating system. For Mac users: As MacOS natively support bash, the Linux guide should work fine.
 
 ### 1. Install Python
-Before installing kMap.py, please make sure you have a python version of 3.7 or higher installed. If not, you can get one here
+Before installing kMap.py, please make sure you have a python version of 3.8 or higher installed. If not, you can get one here
 
     https://www.python.org/downloads/
 
 With this, you should have pip already installed. If not please install it using this guide (https://pip.pypa.io/en/stable/installing/).
 
+Note: If you are using Python 3.7 you might need to install importlib_metadata manually using:
+    pip install importlib_metadata
+    
 ### 2. Clone Git Project
 Clone the project into a local repository. If you have git installed, simply execute the following command for https:
 
@@ -77,7 +84,7 @@ The environment is set up but needs to be activated manually. ATTENTION: You wil
     source ./venv/bin/activate
     
 #### Windows
-    .\env\Scripts\activate
+    .\venv\Scripts\activate
 
 To deactivate the environment simply call (both operation systems)
 
@@ -146,6 +153,17 @@ command (only Linux, no equivalent for Windows currently). This will create a re
 
 Simply send this file via E-mail to one of the authors
 (dominik.brandstetter@edu.uni-graz.at).
+
+## Troubleshooting
+
+A list of problems users had before and how they solved it:
+
+### Windows
+
+#### ImportError: DLL load failed while importing QtGui: The specified procedure could not be found.
+Origin is not clear. Make sure you have python 3.8.x installed (not 3.7) and force reinstall PyQt5 in your enviroment:
+    pip uninstall pyqt5
+    pip install pyqt5 --force-reinstall --no-cache
 
 ## Project Structure
 The root folder of the kMap.py source code should contain after successful installation at least the following files and directories:

@@ -38,13 +38,13 @@ lmfit.edit_parameter('E_kin', value=27.2, vary=False)
 lmfit.edit_parameter('alpha', value=40, vary=False)
 
 # Activate fitting for background ('c') and all orbital weights
-lmfit.edit_parameter('c', value=1, vary=True)  # constant background
+lmfit.edit_parameter('c', value=250, vary=True)  # constant background
 for i in [0, 1, 2, 3]:
     lmfit.edit_parameter('w_' + str(i), vary=True)
 
 # Set slices to be used and perform fit
 lmfit.set_slices('all', combined=False)
-lmfit.set_fit_method(method='leastsq', xtol=1e-7)
+lmfit.set_fit_method(method='matrix_inversion')
 results = lmfit.fit()
 
 # Extract fitting results
@@ -68,5 +68,6 @@ for j, p in enumerate(names):
 plt.legend()
 plt.xlabel(x_label)
 plt.ylabel('weights (arb. units)')
+plt.title('Matrix Inversion')
 # plt.savefig('Fig6_deconvolution.png',dpi=300)
 plt.show()
