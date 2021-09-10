@@ -198,11 +198,29 @@ class MainWindow(QMainWindow, MainWindow_UI):
         self.tab_widget.open_file_tab(
             path, title, editable=True, richText=False)
 
+    def open_shortcut_settings(self):
+        # Open shortcut user settings
+
+        path = __directory__ / 'config/shortcut_user.ini'
+        title = 'Shortcut Settings'
+
+        self.tab_widget.open_file_tab(
+            path, title, editable=True, richText=False)
+
     def open_general_default_settings(self):
         # Open general default settings
 
         path = __directory__ / 'config/settings_default.ini'
         title = 'General Settings (Default)'
+
+        self.tab_widget.open_file_tab(
+            path, title, editable=False, richText=False)
+
+    def open_shortcut_default_settings(self):
+        # Open general default settings
+
+        path = __directory__ / 'config/shortcut_default.ini'
+        title = 'Shortcut Settings (Default)'
 
         self.tab_widget.open_file_tab(
             path, title, editable=False, richText=False)
@@ -544,9 +562,12 @@ class MainWindow(QMainWindow, MainWindow_UI):
 
         # Preferences menu
         self.general_action.triggered.connect(self.open_general_settings)
+        self.shortcut_action.triggered.connect(self.open_shortcut_settings)
         self.logging_action.triggered.connect(self.open_logging_settings)
         self.general_default_action.triggered.connect(
             self.open_general_default_settings)
+        self.shortcut_default_action.triggered.connect(
+            self.open_shortcut_default_settings)
         self.logging_default_action.triggered.connect(
             self.open_logging_default_settings)
         self.settings_action.triggered.connect(self.reload_settings)

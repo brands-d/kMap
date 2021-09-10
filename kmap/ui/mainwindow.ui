@@ -38,7 +38,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>26</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="file_menu">
@@ -115,8 +115,16 @@
      <addaction name="logging_action"/>
      <addaction name="logging_default_action"/>
     </widget>
+    <widget class="QMenu" name="shortcut_menu">
+     <property name="title">
+      <string>Shortcut Settings</string>
+     </property>
+     <addaction name="shortcut_action"/>
+     <addaction name="shortcut_default_action"/>
+    </widget>
     <addaction name="general_menu"/>
     <addaction name="logging_menu"/>
+    <addaction name="shortcut_menu"/>
     <addaction name="separator"/>
     <addaction name="settings_action"/>
    </widget>
@@ -281,6 +289,16 @@ Currently the profile plot and the lmfit plot tab support this feature.</string>
   <action name="open_splitview_tab_action">
    <property name="text">
     <string>Open new Split-View Tab</string>
+   </property>
+  </action>
+  <action name="shortcut_action">
+   <property name="text">
+    <string>Edit User</string>
+   </property>
+  </action>
+  <action name="shortcut_default_action">
+   <property name="text">
+    <string>Show Default</string>
    </property>
   </action>
  </widget>
