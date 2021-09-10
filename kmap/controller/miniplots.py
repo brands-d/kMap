@@ -3,7 +3,7 @@ import numpy as np
 
 from pyqtgraph.opengl import (
     GLViewWidget, GLGridItem, GLLinePlotItem,
-    MeshData, GLMeshItem, GLSurfacePlotItem)
+    MeshData, GLMeshItem, GLSurfacePlotItem, GLAxisItem)
 from pyqtgraph import isosurface
 
 from kmap.controller.pyqtgraphplot import PyQtGraphPlot
@@ -45,6 +45,7 @@ class MiniRealSpacePlot(GLViewWidget):
         self.grid = None
         self.bonds = []
         self.photon = None
+        self.axis = None
         self.photon_parameters = ['p', 45, 0, 0.694]
         self.mesh = []
         self.orbital = None
@@ -86,6 +87,7 @@ class MiniRealSpacePlot(GLViewWidget):
         self._refresh_photon()
 
     def refresh_plot(self):
+        self._refresh_axis()
         self._refresh_grid()
         self._refresh_bonds()
         self._refresh_photon()
@@ -113,6 +115,10 @@ class MiniRealSpacePlot(GLViewWidget):
         if self.mesh:
             for mesh in self.mesh:
                 mesh.setVisible(state)
+
+    def toggle_show_axis(self, state):
+        if self.axis is not None:
+            self.axis.setVisible(state)
 
     def wheelEvent(self, event, *args, **kwargs):
         event.accept()
@@ -217,7 +223,7 @@ class MiniRealSpacePlot(GLViewWidget):
         elif polarization == 'C-':
             pol_1 = [np.sin(beta), -np.cos(beta), 0]
             pol_2 = [-np.cos(alpha) * np.cos(beta), -
-            np.cos(alpha) * np.sin(beta), +np.sin(alpha)]
+                     np.cos(alpha) * np.sin(beta), +np.sin(alpha)]
 
         # show C+ spiral ... until I have a better idea ...
         elif polarization == 'CDAD':
@@ -226,11 +232,11 @@ class MiniRealSpacePlot(GLViewWidget):
                      np.sin(beta), -np.sin(alpha)]
 
         dx = amplitude * pol_1[0] * np.cos(2 * np.pi * t / wavelength) + \
-             amplitude * pol_2[0] * np.sin(2 * np.pi * t / wavelength)
+            amplitude * pol_2[0] * np.sin(2 * np.pi * t / wavelength)
         dy = amplitude * pol_1[1] * np.cos(2 * np.pi * t / wavelength) + \
-             amplitude * pol_2[1] * np.sin(2 * np.pi * t / wavelength)
+            amplitude * pol_2[1] * np.sin(2 * np.pi * t / wavelength)
         dz = amplitude * pol_1[2] * np.cos(2 * np.pi * t / wavelength) + \
-             amplitude * pol_2[2] * np.sin(2 * np.pi * t / wavelength)
+            amplitude * pol_2[2] * np.sin(2 * np.pi * t / wavelength)
 
         pos = np.array([x0 + dx, y0 + dy, z0 + dz]).T
 
@@ -239,6 +245,15 @@ class MiniRealSpacePlot(GLViewWidget):
         photon_line.setGLOptions('translucent')
         self.photon = photon_line
         self.addItem(photon_line)
+
+    def _refresh_axis(self):
+        if self.axis is not None:
+            self.removeItem(self.axis)
+            self.axis = None
+
+        self.axis = GLAxisItem(glOptions='translucent')
+        self.axis.setSize(x=50,y=50,z=50)
+        self.addItem(self.axis)
 
     def _refresh_grid(self):
         if self.grid is not None:
@@ -317,6 +332,7 @@ class MiniRealSpacePlot(GLViewWidget):
         self.options.show_bonds_changed.connect(self.toggle_show_bonds)
         self.options.show_photon_changed.connect(self.toggle_show_photon)
         self.options.iso_val_changed.connect(self._refresh_mesh)
+        self.options.show_axis_changed.connect(self.toggle_show_axis)
 
 
 class Mini3DKSpacePlot(GLViewWidget):

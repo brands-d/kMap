@@ -18,6 +18,7 @@ class RealPlotOptions(QWidget, RealPlotOptions_UI):
     show_bonds_changed = pyqtSignal(int)
     show_photon_changed = pyqtSignal(int)
     show_hemisphere_changed = pyqtSignal(int)
+    show_axis_changed = pyqtSignal(int)
     iso_val_changed = pyqtSignal()
 
     def __init__(self, plot_item):
@@ -32,7 +33,8 @@ class RealPlotOptions(QWidget, RealPlotOptions_UI):
                       self.show_isosurface_checkbox,
                       self.show_bond_checkbox,
                       self.show_photon_checkbox,
-                      self.show_hemisphere_checkbox]
+                      self.show_hemisphere_checkbox,
+                      self.show_axis_checkbox]
         booleans = [checkbox.checkState() for checkbox in checkboxes]
 
         save = {'iso_val': iso_val, 'booleans': booleans}
@@ -47,7 +49,8 @@ class RealPlotOptions(QWidget, RealPlotOptions_UI):
                       self.show_isosurface_checkbox,
                       self.show_bond_checkbox,
                       self.show_photon_checkbox,
-                      self.show_hemisphere_checkbox]
+                      self.show_hemisphere_checkbox,
+                      self.show_axis_checkbox]
         for checkbox, state in zip(checkboxes, save['booleans']):
             checkbox.setCheckState(state)
 
@@ -72,6 +75,9 @@ class RealPlotOptions(QWidget, RealPlotOptions_UI):
     def is_show_mesh(self):
         return self.show_isosurface_checkbox.isChecked()
 
+    def is_show_axis(self):
+        return self.show_axis_checkbox.isChecked()
+
     def get_iso_val(self):
         return self.iso_spinbox.value()
 
@@ -90,6 +96,9 @@ class RealPlotOptions(QWidget, RealPlotOptions_UI):
     def _change_hemisphere_show(self, state):
         self.show_hemisphere_changed.emit(state)
 
+    def _change_axis_show(self, state):
+        self.show_axis_changed.emit(state)
+
     def _change_iso_val(self):
         self.iso_val_changed.emit()
 
@@ -103,4 +112,6 @@ class RealPlotOptions(QWidget, RealPlotOptions_UI):
             self._change_hemisphere_show)
         self.show_isosurface_checkbox.stateChanged.connect(
             self._change_mesh_show)
+        self.show_axis_checkbox.stateChanged.connect(
+            self._change_axis_show)
         self.iso_spinbox.valueChanged.connect(self._change_iso_val)
