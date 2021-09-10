@@ -1,14 +1,19 @@
 <h1 id="kmap-py">kMap.py</h1>
-<p>kMap.py is a python based program for simulation and data analysis in photoemission tomography. The underlying theoretical methodology is described in the following publication:</p>
-<p>Dominik Brandstetter, Xiaosheng Yang, Daniel Lüftner, F. Stefan Tautz, and Peter Puschnig, "kMap.py: A Python program for simulation and data analysis in photoemission tomography", Computer Physics Communications, available online (2021) <a href="https://doi.org/10.1016/j.cpc.2021.107905">https://doi.org/10.1016/j.cpc.2021.107905</a></p>
+<p>kMap.py is a python based program for simulation and data analysis in photoemission tomography
+(<a href="https://en.wikipedia.org/wiki/Photoemission_orbital_tomography"> https://en.wikipedia.org/wiki/Photoemission_orbital_tomography</a>). The underlying theoretical methodology is described in the following publication:</p>
+<p>Dominik Brandstetter, Xiaosheng Yang, Daniel Lüftner, F. Stefan Tautz, and Peter Puschnig, "kMap.py: A Python program for simulation and data analysis in photoemission tomography", Computer Physics Communications 263, 107905 (2021) <a href="https://doi.org/10.1016/j.cpc.2021.107905">https://doi.org/10.1016/j.cpc.2021.107905</a></p>
 <p>Please cite this work when using results from kMap.py in your publications.</p>
-<p>It provides an easy-to-use graphical user interface powered by PyQt5 to simulate photoemission momentum maps of molecular orbitals and to perform a one-to-one comparison between simulation and experiment. For this kMap.py provides tools like line- or region-restricted intensity scans/plots, interpolation capabilities, adjustable simulation parameters (like orientation, final state kinetic energy and polarization state of the incident light field) as well as an interface to powerful least-square fits between simulation and experiment to quickly determine optimal parameters.</p>
-<p>GitHub Page: <a href="https://github.com/brands-d/kMap">https://github.com/brands-d/kMap</a></p>
+
+
+
 <h2 id="authors">Authors</h2>
 <ul>
-<li>Peter Puschnig, Assoz. Prof. Dipl.-Ing. Dr. (peter.puschnig@uni-graz.at)</li>
-<li>Dominik Brandstetter, BSc. (dominik.brandstetter@edu.uni-graz.at)</li>
+<li>Peter Puschnig  (peter.puschnig@uni-graz.at)</li>
+<li>Dominik Brandstetter (dominik.brandstetter@edu.uni-graz.at)</li>
 </ul>
+<p>Download Code from GitHub Page: <a href="https://github.com/brands-d/kMap">https://github.com/brands-d/kMap</a></p>
+
+
 <h2 id="quick-start">Quick-Start</h2>
 <p>Installation:</p>
 <pre><code>pip <span class="hljs-keyword">install</span> kMap
