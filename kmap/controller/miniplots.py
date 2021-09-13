@@ -118,7 +118,8 @@ class MiniRealSpacePlot(GLViewWidget):
 
     def toggle_show_axis(self, state):
         if self.axis is not None:
-            self.axis.setVisible(state)
+            for item in self.axis:
+                item.setVisible(state)
 
     def wheelEvent(self, event, *args, **kwargs):
         event.accept()
@@ -248,12 +249,25 @@ class MiniRealSpacePlot(GLViewWidget):
 
     def _refresh_axis(self):
         if self.axis is not None:
-            self.removeItem(self.axis)
+            for item in self.axis:
+                self.removeItem(item)
             self.axis = None
 
-        self.axis = GLAxisItem(glOptions='translucent')
-        self.axis.setSize(x=50,y=50,z=50)
-        self.addItem(self.axis)
+        axes_items = []
+
+        colors = [(1, 0, 0, 1), (0, 1, 0, 1), (0, 0, 1, 1)]
+        end_points = [[50,0,0], [0,50,0], [0,0,30]]
+
+        for color, end_point in zip(colors, end_points):
+            pos = np.array([[0,0,0],end_point])
+            axis = GLLinePlotItem(
+                pos=pos, color=color, width=3, antialias=True)
+            axis.setGLOptions('translucent')
+            axes_items.append(axis)
+
+        self.axis = axes_items
+        for item in axes_items:
+            self.addItem(item)
 
     def _refresh_grid(self):
         if self.grid is not None:
@@ -341,6 +355,7 @@ class Mini3DKSpacePlot(GLViewWidget):
         self.ID = None
         self.options = None
         self.grid = None
+        self.axis = None
         self.hemisphere = None
         self.mesh = None
         self.orbital = None
@@ -381,6 +396,7 @@ class Mini3DKSpacePlot(GLViewWidget):
         self._refresh_hemisphere()
 
     def refresh_plot(self):
+        self._refresh_axis()
         self._refresh_hemisphere()
         self._refresh_grid()
         self._refresh_mesh()
@@ -389,6 +405,11 @@ class Mini3DKSpacePlot(GLViewWidget):
         # View from top
         self.setCameraPosition(distance=distance, elevation=elevation,
                                azimuth=azimuth)
+
+    def toggle_show_axis(self, state):
+        if self.axis is not None:
+            for item in self.axis:
+                item.setVisible(state)
 
     def toggle_show_grid(self, state):
         if self.grid is not None:
@@ -456,6 +477,28 @@ class Mini3DKSpacePlot(GLViewWidget):
         self.hemisphere = self._get_iso_mesh(data, iso, color, z_shift=False)
 
         self.addItem(self.hemisphere)
+
+    def _refresh_axis(self):
+        if self.axis is not None:
+            for item in self.axis:
+                self.removeItem(item)
+            self.axis = None
+
+        axes_items = []
+
+        colors = [(1, 0, 0, 1), (0, 1, 0, 1), (0, 0, 1, 1)]
+        end_points = [[40,0,0], [0,40,0], [0,0,40]]
+
+        for color, end_point in zip(colors, end_points):
+            pos = np.array([[0,0,0],end_point])
+            axis = GLLinePlotItem(
+                pos=pos, color=color, width=3, antialias=True)
+            axis.setGLOptions('translucent')
+            axes_items.append(axis)
+
+        self.axis = axes_items
+        for item in axes_items:
+            self.addItem(item)
 
     def _refresh_grid(self):
         if self.grid is not None:
@@ -530,3 +573,4 @@ class Mini3DKSpacePlot(GLViewWidget):
         self.options.show_hemisphere_changed.connect(
             self.toggle_show_hemisphere)
         self.options.iso_val_changed.connect(self._refresh_mesh)
+        self.options.show_axis_changed.connect(self.toggle_show_axis)

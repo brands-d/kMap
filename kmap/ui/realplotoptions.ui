@@ -161,7 +161,7 @@
    <item>
     <widget class="QCheckBox" name="show_axis_checkbox">
      <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#204a87;&quot;&gt;x-axis in blue&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; color:#c4a000;&quot;&gt;y-axis in yellow&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; color:#4e9a06;&quot;&gt;z-axis in green&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ff0000;&quot;&gt;x-axis in red&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; color:#00ff00;&quot;&gt;y-axis in green&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; color:#0000ff;&quot;&gt;z-axis in blue&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Axis</string>
