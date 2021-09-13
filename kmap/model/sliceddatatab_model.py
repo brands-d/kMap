@@ -34,7 +34,6 @@ class SlicedDataTabModel():
         # with first entry being the URL, the second the meta_data
         # dictionary
         *orbital, options = URL
-        print(options)
         name, *parameters = options
         s_share = float(config.get_key('orbital', 's_share_sliced'))
 

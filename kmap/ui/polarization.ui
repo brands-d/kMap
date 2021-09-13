@@ -96,7 +96,7 @@
         </item>
         <item>
          <property name="text">
-          <string>Nano-ESCA: unpol.</string>
+          <string>s-pol.</string>
          </property>
         </item>
         <item>
@@ -354,6 +354,9 @@
         </property>
         <property name="decimals">
          <number>3</number>
+        </property>
+        <property name="minimum">
+         <double>0.000000000000000</double>
         </property>
         <property name="maximum">
          <double>1.000000000000000</double>

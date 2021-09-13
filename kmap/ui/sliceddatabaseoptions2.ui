@@ -470,10 +470,10 @@
          <number>0</number>
         </property>
         <property name="maxVisibleItems">
-         <number>7</number>
+         <number>8</number>
         </property>
         <property name="maxCount">
-         <number>7</number>
+         <number>8</number>
         </property>
         <item>
          <property name="text">
@@ -492,7 +492,7 @@
         </item>
         <item>
          <property name="text">
-          <string>Nano-ESCA: s-pol</string>
+          <string>s-pol.</string>
          </property>
         </item>
         <item>
@@ -503,6 +503,11 @@
         <item>
          <property name="text">
           <string>Nano-ESCA: circ+</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Nano-ESCA: circ-</string>
          </property>
         </item>
         <item>
