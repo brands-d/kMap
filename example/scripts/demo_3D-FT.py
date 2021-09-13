@@ -23,7 +23,7 @@ from kmap.library.misc import energy_to_k
 data_path = Path(__file__).parent / Path('../data/')
 
 cubefile = open(data_path / 'tetracene_HOMO.cube').read()  # read cube-file from file
-orbital  = Orbital(cubefile, dk3D=0.15, E_kin_max=150,value='imag') 
+orbital  = Orbital(cubefile, dk3D=0.15, E_kin_max=150, value='imag') 
 data     = orbital.psik['data']
 kx,ky,kz = orbital.psik['kx'], orbital.psik['ky'], orbital.psik['kz'] 
 dx,dy,dz = kx[1]-kx[0], ky[1]-ky[0], kz[1]-kz[0]
@@ -73,13 +73,6 @@ for isoval, color in zip(isovals, colors):
 # add hemisphere for a given kinetic energy
 E_kin = 35.0
 k = energy_to_k(E_kin)    
-
-#x = np.linspace(-k/dx, k/dx, 200)
-#y = np.linspace(-k/dy, k/dy, 200)
-#X,Y = np.meshgrid(x,y)
-#Z = np.sqrt(k**2/(dx*dy) - X**2 - Y**2)
-#hemisphere = gl.GLSurfacePlotItem(x=x, y=y, z=Z, color=(0.5, 0.5, 0.5, 0.7), shader='edgeHilight')
-
 x = np.linspace(kx[0]/dx, kx[-1]/dx, nx)
 y = np.linspace(ky[0]/dy, ky[-1]/dy, ny)
 z = np.linspace(    0,    kz[-1]/dz, nz//2)
