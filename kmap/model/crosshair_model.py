@@ -56,7 +56,7 @@ class CrosshairModel():
             if y_idx is not None:
                 mask[y_idx, :] = 1
 
-        mask = mask.astype(np.bool, copy=False)
+        mask = mask.astype(bool, copy=False)
 
         if inverted:
             return ~mask
@@ -118,7 +118,7 @@ class CrosshairROIModel(CrosshairModel):
             if region == 'roi':
                 # Calculate distance from center for all values
                 distance = distance_in_meshgrid(Y, X)
-                mask = np.array(distance < self.radius, dtype=np.bool)
+                mask = np.array(distance < self.radius, dtype=bool)
 
             # region == 'border'
             else:
@@ -140,7 +140,7 @@ class CrosshairROIModel(CrosshairModel):
                 mask = np.array(
                     (lower_bound < self.radius) & (
                         self.radius < upper_bound),
-                    dtype=np.bool)
+                    dtype=bool)
 
             if inverted:
                 mask = ~mask

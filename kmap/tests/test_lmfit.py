@@ -92,7 +92,7 @@ class TestLMFitModel(unittest.TestCase):
         self.lmfit.set_background_equation(
             '(np.exp(-x**2-y**2)-np.exp(-(x-1)**2-(y-1)**2))/2')
 
-        background = self.lmfit._get_background(variables={})
+        background = self.lmfit._get_background(param=[])
 
         npt.assert_almost_equal(background, TestLMFitModel.background_expected)
 

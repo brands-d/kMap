@@ -141,3 +141,5 @@ report.tar.gz
 example/testing
 *.kmap
 .idea/
+report.tar
+test_results.txt
