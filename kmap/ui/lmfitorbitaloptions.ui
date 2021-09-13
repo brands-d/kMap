@@ -221,27 +221,27 @@
         </item>
         <item>
          <property name="text">
-          <string>NANO-ESCA: p-pol</string>
+          <string>p-polarized</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>NANO-ESCA: s-pol</string>
+          <string>s-polarized</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>s-pol.</string>
+          <string>unpolarized</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>NANO-ESCA: circ+</string>
+          <string>circular+</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>NANO-ESCA: circ-</string>
+          <string>circular-</string>
          </property>
         </item>
         <item>
