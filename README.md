@@ -26,7 +26,8 @@ Usage:
 
 ## Pre-packaged distribution (Windows 10 only)
 
-Download the kMap_win10_x86.zip file from the /dist folder. Unzip and enter the resulting folder. Double click the kMap.exe file.
+A built distribution for Windows 10 in form of a .zip file is available on request. For this, please send an email to peter.puschnig(at)uni-graz.at.
+To use this version of kMap, please unzuip the file, enter the resulting folder and double click the kMap.exe file.
 
 ## Detailed installation guide from source
 
