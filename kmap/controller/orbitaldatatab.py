@@ -1,5 +1,6 @@
 # Python Imports
 import logging
+from pathlib import Path
 
 # Third Party Imports
 import h5py
@@ -195,6 +196,57 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         h5file.create_dataset('data', data=kmaps, dtype='f8',
                               compression='gzip', compression_opts=9)
         h5file.close()
+
+    def export_to_txt(self):
+        if not self.interpolation.interpolation_checkbox.isChecked():
+            # Otherwise maps at different energies would be of different size
+            print('Only interpolated OrbitalData can be exported.')
+            return
+
+        path = config.get_key('paths', 'txt_export_start')
+        if path == 'None':
+            file_name, _ = QFileDialog.getSaveFileName(
+                None, 'Save .itx File (*.itx)')
+        else:
+            start_path = str(__directory__ / path)
+            file_name, _ = QFileDialog.getSaveFileName(
+                None, 'Save .itx File (*.itx)', str(start_path))
+
+        if not file_name:
+            return
+
+        export_energies = eval(config.get_key('orbital', 'export_energies'))
+        if isinstance(export_energies, dict):
+            export_energies = np.linspace(export_energies['min'],
+                                          export_energies['max'],
+                                          export_energies['num'],
+                                          endpoint=True)
+
+        kmaps = []
+        old_energy = self.cube_options.energy_spinbox.value()
+        for energy in export_energies:
+            self.cube_options.energy_spinbox.setValue(energy)
+            kmaps.append(self.get_displayed_plot_data().data)
+        self.cube_options.energy_spinbox.setValue(old_energy)
+        kmaps = np.array(kmaps)
+        xrange, yrange = self.get_displayed_plot_data().range
+        shape = kmaps[0].shape
+        xscale = (xrange[1] - xrange[0]) / shape[1]
+        yscale = (yrange[1] - yrange[0]) / shape[0]
+        name = Path(file_name).stem
+
+        with open(file_name, 'w') as f:
+            f.write('IGOR\n')
+            f.write(f'WAVES/N=({shape[1]},{shape[0]},{len(export_energies)})\t{name}\n')
+            f.write('BEGIN\n')
+            for data in kmaps:
+                f.write('\t')
+                np.savetxt(f, data.T, newline='\t')
+            f.write('\nEND\n')
+            f.write(f'X SetScale/P x {xrange[0]},{xscale}, "A^-1", {name}; ')
+            f.write(f'SetScale/P y {yrange[0]},{yscale}, "A^-1", {name}; ')
+            f.write(f'SetScale/P z {export_energies[0]},{export_energies[1]-export_energies[0]}, "eV", {name}; ')
+            f.write(f'SetScale d 0,0, "", {name}\n')
 
     def display_in_matplotlib(self):
         data = self.model.displayed_plot_data

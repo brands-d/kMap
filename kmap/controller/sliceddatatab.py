@@ -1,8 +1,14 @@
 # Python Imports
 import logging
+from pathlib import Path
+
+
+# Third Party Imports
+import numpy as np
 
 # PyQt5 Imports
 from PyQt5 import uic
+from PyQt5.QtWidgets import QFileDialog
 
 # Own Imports
 from kmap import __directory__
@@ -14,6 +20,7 @@ from kmap.controller.dataslider import DataSlider
 from kmap.controller.crosshairannulus import CrosshairAnnulus
 from kmap.controller.pyqtgraphplot import PyQtGraphPlot
 from kmap.controller.colormap import Colormap
+from kmap.config.config import config
 
 # Load .ui File
 UI_file = __directory__ / 'ui/sliceddatatab.ui'
@@ -102,6 +109,46 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
 
     def get_data(self):
         return self.model.data
+
+    def export_to_txt(self):
+        path = config.get_key('paths', 'txt_export_start')
+        if path == 'None':
+            file_name, _ = QFileDialog.getSaveFileName(
+                None, 'Save .txt File (*.txt)')
+        else:
+            start_path = str(__directory__ / path)
+            file_name, _ = QFileDialog.getSaveFileName(
+                None, 'Save .txt File (*.txt)', str(start_path))
+
+        if not file_name:
+            return
+
+        old_index = self.get_slice()
+        z = self.model.data.axes[self.get_axis()]
+        y, x = [a for i, a in enumerate(self.model.data.axes) if i != self.get_axis()]
+        shape = self.get_displayed_plot_data().data.shape
+        xrange, yrange = self.get_displayed_plot_data().range
+        xscale = (xrange[1] - xrange[0]) / shape[1]
+        yscale = (yrange[1] - yrange[0]) / shape[0]
+        indicies = list(range((int(z.num))))
+        name = Path(file_name).stem
+
+        with open(file_name, 'w') as f:
+            f.write('IGOR\n')
+            f.write(f'WAVES/N=({shape[1]},{shape[0]},{len(indicies)})\t{name}\n')
+            f.write('BEGIN\n')
+            for i in indicies:
+                f.write('\t')
+                self.change_slice(i)
+                np.savetxt(f, self.get_displayed_plot_data().data.T.flatten(), newline='\t')
+
+            f.write('\nEND\n')
+            f.write(f'X SetScale/P x {xrange[0]},{xscale}, "{x.units}", {name}; ')
+            f.write(f'SetScale/P y {yrange[0]},{yscale}, "{y.units}", {name}; ')
+            f.write(f'SetScale/P z {z.range[0]},{z.stepsize}, "{z.units}", {name}; ')
+            f.write(f'SetScale d 0,0, "", {name}\n')
+
+        self.change_slice(old_index)
 
     def get_axis(self):
         return self.slider.get_axis()

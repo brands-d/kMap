@@ -307,6 +307,9 @@ class MainWindow(QMainWindow, MainWindow_UI):
         if hasattr(current_tab, 'export_to_txt'):
             text = current_tab.export_to_txt()
 
+            if type(text) is not str:
+                return
+
             file_name, _ = QFileDialog.getSaveFileName(self, 'Save .txt File')
 
             with open(file_name, 'w') as file:
