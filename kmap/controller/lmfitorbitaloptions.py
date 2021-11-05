@@ -36,11 +36,11 @@ class LMFitOrbitalOptions(QWidget, LMFitOrbitalOptions_UI):
         self.symmetrize_combobox.setCurrentIndex(save['symmetry'])
 
         if 's_share' in save:
-            self.s_share_spinbox.setValue(save['s_share'])
+            self.s_share_spinbox.setValue(float(save['s_share']))
         else:
             print('WARNING: s_share setting not found in save file. Using default.')
             s_share = config.get_key('orbital', 's_share_default')
-            self.s_share_spinbox.setValue(s_share)
+            self.s_share_spinbox.setValue(float(s_share))
 
     def get_symmetrization(self):
         index = self.symmetrize_combobox.currentIndex()
