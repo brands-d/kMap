@@ -159,6 +159,10 @@ Simply send this file via E-mail to one of the authors
 
 A list of problems users had before and how they solved it:
 
+### Ubuntu (LTS 20.04)
+#### ImportError: /lib/x86_64-linux-gnu/libQt5Core.so.5: version 'Qt_5.15' not found
+    pip install pyqt5 --force-reinstall --no-cache
+
 ### Windows
 
 #### ImportError: DLL load failed while importing QtGui: The specified procedure could not be found.
