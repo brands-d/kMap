@@ -588,11 +588,16 @@ class Orbital2Povray():
     def _set_colormap(self, value_min, value_max, num, color_type):
 
         if color_type == 'phase':
-            colors = [[0,   0,   1  , 0.2], 
-                      [0.2, 0.2, 0.2, 0.2], 
-                      [1,   1,   0,   0.2], 
-                      [1,   1,   1,   0.2], 
-                      [0,   0,   1,   0.2] ]
+#            colors = [[0,   0,   1  , 0.2], 
+#                      [0.2, 0.2, 0.2, 0.2], 
+#                      [1,   1,   0,   0.2], 
+#                      [1,   1,   1,   0.2], 
+#                      [0,   0,   1,   0.2] ]
+            colors = [[1,   0,   0  , 0.2], 
+                      [0,   0 ,  1, 0.2], 
+                      [1,   0,   0,   0.2], 
+                      [0,   0,   1,   0.2], 
+                      [1,   0,   0,   0.2] ]                      
             value_range = value_max - value_min
             intervals = [value_min, 
                          value_min+0.25*value_range,
