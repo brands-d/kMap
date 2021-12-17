@@ -228,9 +228,9 @@ class LMFitDataTreeItem(LMFitTreeItem):
         self.parameter.max = value
         self.signals.boundary_changed.emit()
 
-    def _change_expression(self, expression):
+    def _change_expression(self):
 
-        self.parameter.expr = expression
+        self.parameter.expr = self.expression.text()
         self.signals.expression_changed.emit()
 
     def _change_vary(self, state):
