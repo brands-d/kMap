@@ -155,12 +155,15 @@ class Orbital2Povray():
             else:
                 grid[key] = self.grid[key]
 
-        structure = {}
-        for key in self.structure:
-            if key != 'num_atom':
-                structure[key] = self.structure[key].copy()
-            else:
-                structure[key] = self.structure[key]
+        if self.structure != None:
+            structure = {}
+            for key in self.structure:
+                if key != 'num_atom':
+                    structure[key] = self.structure[key].copy()
+                else:
+                    structure[key] = self.structure[key]
+        else:
+            structure = None
 
         settingsfile = self.settingsfile
 
