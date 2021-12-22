@@ -163,7 +163,7 @@ w.setWindowTitle('test')
 w.setCameraPosition(distance=100,elevation=90,azimuth=-90)  # view from top
 
 molecule_view = Plot3DMolecule(w, molecule, 
-                photon={'polarization':'p', 'alpha':45, 'beta': 0})
+                photon={'polarization':'p', 'alpha':60, 'beta':115})
 #molecule_view = Plot3DMolecule(w, molecule, 
 #                photon={})
 
