@@ -183,17 +183,26 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
 
     def trigger_fit(self):
         try:
-            results = self.model.fit()
-
+            new_results = self.model.fit()
+            
         except ValueError as e:
             logging.getLogger('kmap').warning(str(e))
             self.lmfit_options.update_fit_button()
 
             return
+        
+        if not hasattr(self, 'results'):
+            self.results = new_results
 
+        else:
+            results_dict = dict(self.results)
+            new_results_dict = dict(new_results)
+            results_dict.update(new_results_dict)
+            self.results = sorted(list(results_dict.items()), key=lambda x: x[0])
+        
         settings = self.model.get_settings()
 
-        self.fit_finished.emit(results, settings)
+        self.fit_finished.emit(self.results, settings)
 
     def change_slice(self):
         axis_index = self.slider.get_axis()
@@ -324,6 +333,7 @@ class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
     open_plot_tab = pyqtSignal(list, list, Axis, list, list)
 
     def __init__(self, lmfit_tab, results, settings):
+        
         self.results = results
         self.lmfit_tab = lmfit_tab
         self.current_result = self.results[0]
@@ -387,7 +397,7 @@ class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
 
     def change_slice(self):
         index = self.slider.get_index()
-        slices = self.model.slice_policy[1]
+        slices = [result[0] for result in self.results]
         
         if len(self.results) == 1:
             self.current_result = self.results[-1]
@@ -436,10 +446,11 @@ class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
         return self.model.orbitals
 
     def plot(self):
+        indices = [result[0] for result in self.results]
         results = [result[1] for result in self.results]
         orbitals = self.model.orbitals
         axis = self.model.sliced_data.axes[self.model.slice_policy[0]]
-        axis = axis.sublist(self.model.slice_policy[1])
+        axis = axis.sublist(indices)
         kmaps = abs(self.get_residual_kmaps())
         residuals = list(np.nansum(np.nansum(kmaps, axis=1), axis=1))
         

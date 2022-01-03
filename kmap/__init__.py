@@ -2,6 +2,6 @@ import os
 from pathlib import Path
 
 __project__ = 'kMap.py'
-__version__ = '1.24.0'
+__version__ = '1.25.0'
 __date__ = '03.01.2021'
 __directory__ = Path(os.path.dirname(os.path.realpath(__file__)))
