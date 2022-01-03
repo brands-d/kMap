@@ -53,3 +53,14 @@ class Axis():
         rep = 'Label:\t%s\nUnits:\t%s\nRange:\t[%.3f, %.3f]' % (
             self.label, self.units, *self.range)
         return rep
+
+    def sublist(self, indices):
+        
+        num = len(indices)
+        units = self.units
+        label = self.label
+        range_ = [self.axis[indices[0]], self.axis[indices[-1]]]
+
+        subaxis = Axis(label, units, range_, num)
+
+        return subaxis 

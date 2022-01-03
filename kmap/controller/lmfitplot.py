@@ -31,6 +31,7 @@ class LMFitPlot(PlotWidget):
         return data_sets
 
     def plot(self, x, y, title):
+        
         index = len(self.plot_item.listDataItems())
         colors = config.get_key('profile_plot', 'colors')
         colors = colors.split(',')

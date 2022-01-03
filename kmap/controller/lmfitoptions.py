@@ -83,13 +83,35 @@ class LMFitOptions(QWidget, LMFitOptions_UI):
         index = self.slice_combobox.currentIndex()
 
         if index == 0:
+            self.from_slice_spinbox.setEnabled(False)
+            self.to_slice_spinbox.setEnabled(False)
+
             return 'only one'
 
         elif index == 1:
+            self.from_slice_spinbox.setEnabled(False)
+            self.to_slice_spinbox.setEnabled(False)
+
             return 'all'
 
-        else:
+        elif index == 2:
+            self.from_slice_spinbox.setEnabled(False)
+            self.to_slice_spinbox.setEnabled(False)
+        
             return 'all combined'
+
+        else:
+            self.from_slice_spinbox.setEnabled(True)
+            self.to_slice_spinbox.setEnabled(True)
+            
+            from_ = self.from_slice_spinbox.value()
+            to_ = self.to_slice_spinbox.value()
+            indices = range(from_, to_ + 1)
+
+            if not indices:
+                indices = [from_]
+
+            return ' '.join(str(e) for e in indices)
 
     def get_background(self):
 
@@ -122,7 +144,6 @@ class LMFitOptions(QWidget, LMFitOptions_UI):
     def _change_slice_policy(self):
 
         slice_policy = self.get_slice_policy()
-
         self.slice_policy_changed.emit(slice_policy)
 
     def _pre_factor_background(self):
@@ -163,3 +184,5 @@ class LMFitOptions(QWidget, LMFitOptions_UI):
             self._change_background)
         self.background_combobox.currentTextChanged.connect(
             self._change_background)
+        self.from_slice_spinbox.valueChanged.connect(self._change_slice_policy)
+        self.to_slice_spinbox.valueChanged.connect(self._change_slice_policy)

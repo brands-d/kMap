@@ -235,8 +235,12 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
             index = self.slider.get_index()
             self.model.set_slices([index], axis_index=axis, combined=False)
 
-        else:
+        elif slice_policy == 'all combined':
             self.model.set_slices('all', axis_index=axis, combined=True)
+        
+        else:
+            indices = [int(e) for e in slice_policy.split(' ')]
+            self.model.set_slices(indices, axis_index=axis, combined=False)
 
     def _change_method(self, method):
 
@@ -383,9 +387,19 @@ class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
 
     def change_slice(self):
         index = self.slider.get_index()
+        slices = self.model.slice_policy[1]
+        
+        if len(self.results) == 1:
+            self.current_result = self.results[-1]
 
-        self.current_result = self.results[0] if len(
-            self.results) == 1 else self.results[index]
+        elif index <= slices[0]:
+            self.current_result = self.results[0]
+
+        elif index >= slices[-1]:
+            self.current_result = self.results[-1]
+
+        else:
+            self.current_result = self.results[index-slices[0]]
 
         self.update_tree()
         self.result.result = self.current_result[1]
@@ -425,9 +439,10 @@ class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
         results = [result[1] for result in self.results]
         orbitals = self.model.orbitals
         axis = self.model.sliced_data.axes[self.model.slice_policy[0]]
+        axis = axis.sublist(self.model.slice_policy[1])
         kmaps = abs(self.get_residual_kmaps())
         residuals = list(np.nansum(np.nansum(kmaps, axis=1), axis=1))
-
+        
         self.open_plot_tab.emit(results, orbitals, axis, residuals,
                                 self.model.background_equation[1])
 
