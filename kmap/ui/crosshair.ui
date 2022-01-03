@@ -163,6 +163,38 @@
       </item>
       <item>
        <layout class="QGridLayout" name="bottom_layout">
+        <item row="1" column="3">
+         <widget class="QLabel" name="point_value">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="y_label">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>y-Pos.</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
         <item row="1" column="1">
          <widget class="QDoubleSpinBox" name="y_spinbox">
           <property name="font">
@@ -191,22 +223,6 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="2">
-         <widget class="QLabel" name="distance_label">
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;k&lt;span style=&quot;vertical-align:sub;&quot;&gt;||&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
         <item row="1" column="2">
          <widget class="QLabel" name="point_label">
           <property name="font">
@@ -214,6 +230,9 @@
             <weight>50</weight>
             <bold>false</bold>
            </font>
+          </property>
+          <property name="toolTip">
+           <string>Intensity at the crosshair.</string>
           </property>
           <property name="text">
            <string>Int. (Point)</string>
@@ -239,8 +258,8 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="y_label">
+        <item row="0" column="3">
+         <widget class="QLabel" name="distance_value">
           <property name="font">
            <font>
             <weight>50</weight>
@@ -248,7 +267,7 @@
            </font>
           </property>
           <property name="text">
-           <string>y-Pos.</string>
+           <string/>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -283,24 +302,46 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="3">
-         <widget class="QLabel" name="distance_value">
+        <item row="0" column="2">
+         <widget class="QLabel" name="distance_label">
           <property name="font">
            <font>
             <weight>50</weight>
             <bold>false</bold>
            </font>
           </property>
+          <property name="toolTip">
+           <string>Distance of the crosshair from the origin.</string>
+          </property>
           <property name="text">
-           <string/>
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;k&lt;span style=&quot;vertical-align:sub;&quot;&gt;||&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
           </property>
          </widget>
         </item>
-        <item row="1" column="3">
-         <widget class="QLabel" name="point_value">
+        <item row="0" column="4">
+         <widget class="QLabel" name="total_area_label">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="toolTip">
+           <string>Total area (only non-NaN).</string>
+          </property>
+          <property name="text">
+           <string>Area (Total)</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="5">
+         <widget class="QLabel" name="total_area_value">
           <property name="font">
            <font>
             <weight>50</weight>

@@ -82,6 +82,7 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         data = self.interpolation.smooth(data)
 
         self.plot_item.plot(data)
+        self.crosshair.update_label()
 
     def refresh_mini_plots(self, ID, orbital_changed=True):
         parameters = self.get_parameters(ID)

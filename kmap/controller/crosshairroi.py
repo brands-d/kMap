@@ -100,23 +100,22 @@ class CrosshairROIBase(CrosshairBase):
         plot_data = self.plot_item.get_plot_data()
 
         if plot_data == None:
-            intensity = 0
+            intensity = np.nan
+            area = np.nan
 
         else:
             cut = self.model.cut_from_data(plot_data, region='roi')
+            area = cut.data[~np.isnan(cut.data)].size * plot_data.step_size[0] * plot_data.step_size[1]
+            intensity = np.nansum(cut.data)
 
-            # Normalize by dividing by the number of non nan elements
+            # Normalize by dividing by the area
             if config.get_key('crosshair', 'normalized_intensity') == 'True':
-                intensity = normalize(cut.data)
+                intensity /= area
 
-            else:
-                intensity = np.nansum(cut.data)
-
-        if abs(intensity) > 1000:
-            self.area_value_label.setText('%.2fk' % (intensity / 1000))
-
-        else:
-            self.area_value_label.setText('%.2f' % intensity)
+        
+        decimals = int(config.get_key('crosshair', 'decimal_places'))
+        self.area_value_label.setText(f'{intensity:.{decimals}e}')
+        self.roi_area_value.setText(f'{area:.{decimals}e}')
 
     def save_state(self):
 
