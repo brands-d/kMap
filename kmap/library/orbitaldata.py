@@ -1,5 +1,6 @@
 import os
 import urllib.request
+from pathlib import Path
 from kmap.library.orbital import Orbital
 from kmap.config.config import config
 from kmap.library.abstractdata import AbstractData
@@ -26,16 +27,27 @@ class OrbitalData(Orbital, AbstractData):
 
     @classmethod
     def init_from_online(cls, url, ID, meta_data={}):
+        
+        cache_dir = Path(config.get_key('paths', 'cache'))
+        cache_file = url.split('OrganicMolecule/')[1].replace('/', '_')
+        cache_file = str(cache_dir / cache_file)
 
-        with urllib.request.urlopen(url) as f:
-            file = f.read().decode('utf-8')
+        if os.path.isfile(cache_file):
+            with open(cache_file, 'r') as f:
+                file = f.read()
+                
+        else:
+            with urllib.request.urlopen(url) as f:
+                file = f.read().decode('utf-8')
 
-            name, keys = OrbitalData._get_metadata(file, url)
-            name = meta_data['name'] if 'name' in meta_data else name
-            meta_data.update(keys)
+                if os.path.isdir(cache_dir):
+                    with open(cache_file, 'w') as f:
+                        f.write(file)
+
+        name, keys = OrbitalData._get_metadata(file, url)
+        name = meta_data['name'] if 'name' in meta_data else name
+        meta_data.update(keys)
             
-              
-
         return cls(file, ID, name=name, meta_data=meta_data)
 
     @classmethod

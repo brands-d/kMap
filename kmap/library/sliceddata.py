@@ -1,6 +1,8 @@
 # Python Imports
+import os
 import logging
 import urllib.request
+from pathlib import Path
 
 # Third Party Imports
 import h5py
@@ -8,6 +10,7 @@ import numpy as np
 
 # Own Imports
 from kmap.library.id import ID
+from kmap.config.config import config
 from kmap.library.plotdata import PlotData
 from kmap.library.abstractdata import AbstractData
 from kmap.library.misc import axis_from_range, energy_to_k
@@ -195,9 +198,9 @@ class SlicedData(AbstractData):
 
             url = orbital[0]
             log.info('Loading from database: %s' % url)
-            with urllib.request.urlopen(url) as f:
-                file = f.read().decode('utf-8')
-                orbital_data = Orbital(file)
+            
+            file = SlicedData.load_orbital_online(url)
+            orbital_data = Orbital(file)
 
             orbital_names.append(orbital[1]['name'])
             log.info('Computing k-map for %s' % orbital[1]['name'])
@@ -273,9 +276,8 @@ class SlicedData(AbstractData):
         log.info('Loading from database: %s' % orbital_file)
 
         # decision if reading cube-file from URL or local file
-        if orbital_file[:4] == 'http':
-            with urllib.request.urlopen(orbital_file) as f:
-                file = f.read().decode('utf-8')
+        if orbital_file[:4] == 'http': 
+            file = SlicedData.load_orbital_online(orbital_file)
 
         else:
             file = open(orbital_file).read()
@@ -387,9 +389,8 @@ class SlicedData(AbstractData):
         # read orbital from cube-file database
         url = orbital[0]
         log.info('Loading from database: %s' % url)
-        with urllib.request.urlopen(url) as f:
-            file = f.read().decode('utf-8')
-            orbital_data = Orbital(file)
+        file = SlicedData.load_orbital_online(url)
+        orbital_data = Orbital(file)
 
         # loop over photon energies
         for i in range(len(hnu)):
@@ -414,6 +415,27 @@ class SlicedData(AbstractData):
                      'Orbital Info': orbital_info}
 
         return cls(name, axis_1, axis_2, axis_3, data, meta_data)
+
+    @classmethod
+    def load_orbital_online(cls, url):
+        
+        cache_dir = Path(config.get_key('paths', 'cache'))
+        cache_file = url.split('OrganicMolecule/')[1].replace('/', '_')
+        cache_file = str(cache_dir / cache_file)
+
+        if os.path.isfile(cache_file):
+            with open(cache_file, 'r') as f:
+                file = f.read()
+                
+        else:
+            with urllib.request.urlopen(url) as f:
+                file = f.read().decode('utf-8')
+
+                if os.path.isdir(cache_dir):
+                    with open(cache_file, 'w') as f:
+                        f.write(file)
+
+        return file
 
     def transpose(self, axes_order):
         self.data = self.data.transpose(axes_order)
