@@ -34,13 +34,20 @@ class LMFitPlotTab(Tab, LMFitPlotTab_UI):
         self.refresh_plot()
 
     @classmethod
-    def init_from_save(cls, save, tab):
+    def init_from_save(cls, save, dependencies, tab_widget):
         results = save['results']
         axis = save['axis']
         residuals = save['residuals'] if 'residuals' in save else None
-        orbitals = tab.get_orbitals()
+        result_tab = tab_widget.get_tab_by_ID(dependencies['lmfitresulttab'])
+        orbitals = result_tab.get_orbitals()
+        background_param = save['background_param']
 
-        tab = LMFitPlotTab(results, orbitals, axis, residuals, tab)
+        tab = LMFitPlotTab(results, orbitals, axis, residuals,
+                background_param, result_tab)
+        
+        tab.parameter_combobox.setCurrentIndex(save['combobox'])
+        tab.locked_tabs = [result_tab]
+        tab.refresh_plot()
 
         return tab
 
@@ -48,9 +55,13 @@ class LMFitPlotTab(Tab, LMFitPlotTab_UI):
         save = {'title': self.title,
                 'results': self.results,
                 'axis': self.x_axis,
-                'residuals': self.residuals}
+                'background_param': self.background_parameters,
+                'residuals': self.residuals,
+                'combobox': self.parameter_combobox.currentIndex()}
+        
+        dependencies = {'lmfitresulttab': self.result_tab.ID}
 
-        return save, [self.result_tab]
+        return save, dependencies
 
     def export_to_txt(self):
         data = self.plot_item.get_data()

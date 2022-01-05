@@ -40,6 +40,34 @@ class ProfilePlotTab(Tab, ProfilePlotTab_UI):
         self._connect(tab_widget)
 
         self.load_tabs(tab_widget)
+   
+    @classmethod
+    def init_from_save(cls, save, dependencies, tab_widget=None):
+        self = cls(tab_widget, save['title'])
+
+        if save['type'] == 'circle':
+            self.circle_radiobutton.setChecked(True)
+        
+        elif save['type'] == 'line':
+            self.line_radiobutton.setChecked(True)
+
+        else:
+            self.slice_radiobutton.setChecked(True)
+
+        self.center_checkbox.setCheckState(save['states']['center'])
+        self.x_checkbox.setCheckState(save['states']['x'])
+        self.y_checkbox.setCheckState(save['states']['y'])
+        self.roi_checkbox.setCheckState(save['states']['roi'])
+        self.border_checkbox.setCheckState(save['states']['border'])
+        self.annulus_checkbox.setCheckState(save['states']['annulus'])
+        
+        self.phi_sample_spinbox.setValue(save['sample_rate']['phi'])
+        self.line_sample_spinbox.setValue(save['sample_rate']['line'])
+
+        self.normalize_checkbox.setCheckState(save['normalized'])
+        self.refresh_plot()
+
+        return self
 
     def refresh_plot(self):
         is_slice_plot = self.slice_radiobutton.isChecked()
@@ -135,53 +163,22 @@ class ProfilePlotTab(Tab, ProfilePlotTab_UI):
         else:
             type_ = 'slice'
 
-        states = []
-        checkboxes = [self.center_checkbox, self.x_checkbox,
-                      self.y_checkbox, self.roi_checkbox,
-                      self.border_checkbox, self.annulus_checkbox]
-        for checkbox in checkboxes:
-            states.append(checkbox.checkState())
+        states = {'center': self.center_checkbox.checkState(),
+                  'x': self.x_checkbox.checkState(),
+                  'y': self.y_checkbox.checkState(),
+                  'roi': self.roi_checkbox.checkState(),
+                  'border': self.border_checkbox.checkState(),
+                  'annulus': self.annulus_checkbox.checkState()}
+        sample_rate = {'phi': self.phi_sample_spinbox.value(),
+                       'line': self.line_sample_spinbox.value()}
 
-        sample_rate = [self.phi_sample_spinbox.value(),
-                       self.line_sample_spinbox.value()]
-
-        save = {'title': self.get_title(),
+        save = {'title': self.title,
                 'type': type_,
+                'normalized': self.normalize_checkbox.checkState(),
                 'tab_index': self.tab_combobox.currentIndex(),
                 'states': states,
                 'sample_rate': sample_rate}
-
         return save, []
-
-    def restore_state(self, save):
-        type_ = save['type']
-
-        if type_ == 'circle':
-            self.circle_radiobutton.click()
-
-        elif type_ == 'line':
-            self.line_radiobutton.click()
-
-        elif type_ == 'slice':
-            self.slice_radiobutton.click()
-
-        else:
-            raise ValueError
-
-        tab_index = save['tab_index']
-        self.tab_combobox.setCurrentIndex(tab_index)
-
-        sample_rate = save['sample_rate']
-        self.phi_sample_spinbox.setValue(sample_rate[0])
-        self.line_sample_spinbox.setValue(sample_rate[1])
-
-        checkboxes = [self.center_checkbox, self.x_checkbox,
-                      self.y_checkbox, self.roi_checkbox,
-                      self.border_checkbox, self.annulus_checkbox]
-        for state, checkbox in zip(save['states'], checkboxes):
-            checkbox.setCheckState(state)
-
-        self.refresh_button.click()
 
     def load_tabs(self, tab_widget):
         for tab in tab_widget.get_tabs_of_type(None):

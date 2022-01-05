@@ -162,6 +162,7 @@ class Tab(QTabWidget):
     close_requested = pyqtSignal()
 
     def __init__(self, *args, **kwargs):
+        self.ID = None
         self.title = None
         self.lock_tab = None
         self.locked_tabs = []
@@ -176,6 +177,12 @@ class Tab(QTabWidget):
 
     def set_title(self, title):
         self.title = title
+
+    def set_ID(self, ID):
+        self.ID = ID
+
+    def get_ID(self):
+        return self.ID
 
     def lock_while_open(self, tab):
         self.lock_tab = tab

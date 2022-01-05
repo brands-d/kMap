@@ -33,6 +33,9 @@ class TabWidget(QWidget, TabWidget_UI):
     tab_added = pyqtSignal(Tab)
 
     def __init__(self, *args, **kwargs):
+        
+        self.ID_counter = -1
+
         # Setup GUI
         super(TabWidget, self).__init__(*args, **kwargs)
         self.setupUi(self)
@@ -144,7 +147,6 @@ class TabWidget(QWidget, TabWidget_UI):
             tab = SplitViewTab.init_from_save(save, sliced_tab, orbital_tab)
 
         tab.locked_tabs = [sliced_tab, orbital_tab]
-
         sliced_tab.lock_while_open(tab)
         orbital_tab.lock_while_open(tab)
         tab.sliced_data_tab = sliced_tab
@@ -161,7 +163,6 @@ class TabWidget(QWidget, TabWidget_UI):
 
         else:
             tab = LMFitTab.init_from_save(save, sliced_tab, orbital_tab)
-
         tab.fit_finished.connect(self.open_result_tab)
         tab.locked_tabs = [sliced_tab, orbital_tab]
 
@@ -176,7 +177,6 @@ class TabWidget(QWidget, TabWidget_UI):
 
     def open_result_tab(self, *args, sender=None, save=None, ID_map=None):
         lmfit_tab = self.sender() if sender is None else sender
-
         if save is None:
             tab = LMFitResultTab(lmfit_tab, *args)
         else:
@@ -248,7 +248,7 @@ class TabWidget(QWidget, TabWidget_UI):
     def get_all_tabs(self):
         count = self.tab_widget.count()
         tabs = [self.tab_widget.widget(i) for i in range(count)]
-
+        tabs = [tab for tab in tabs if tab.title != 'Welcome'] 
         return tabs
 
     def get_tabs_of_type(self, type_):
@@ -265,6 +265,14 @@ class TabWidget(QWidget, TabWidget_UI):
     def rename_current_tab(self):
         self.rename_tab = RenameTabWindow()
         self.rename_tab.title_chosen.connect(self.set_tab_title)
+
+    def get_tab_by_ID(self, ID):
+        tabs = self.get_all_tabs()
+        for tab in tabs:
+            if tab.ID == ID:
+                return tab
+
+        raise Exception('Tab not found')
 
     def set_tab_title(self, title):
         current_tab = self.get_current_tab()
@@ -314,49 +322,51 @@ class TabWidget(QWidget, TabWidget_UI):
         tab.set_title(title)
         self._open_tab(tab, title)
 
-    def open_tab_by_save(self, tab_save, *args):
-        tab_type, save = tab_save
+    def open_tab_by_save(self, tab_save):
+        class_, ID, title, save_, dependencies = tab_save
+        if class_ == 'SlicedDataTab':
+            tab = SlicedDataTab.init_from_save(save_, dependencies)
+        
+        elif class_ == 'OrbitalDataTab':
+            tab = OrbitalDataTab.init_from_save(save_, dependencies)
+        
+        elif class_ == 'SplitViewTab':
+            tab = SplitViewTab.init_from_save(save_, dependencies, self)
+            sliced_tab, orbital_tab = tab.locked_tabs
+            sliced_tab.lock_while_open(tab)
+            orbital_tab.lock_while_open(tab)
+        
+        elif class_ == 'ProfilePlotTab':
+            tab = ProfilePlotTab.init_from_save(save_, dependencies, self)
+        
+        elif class_ == 'LMFitTab':
+            tab = LMFitTab.init_from_save(save_, dependencies, self)
+            
+            tab.fit_finished.connect(self.open_result_tab)
+            sliced_tab, orbital_tab = tab.locked_tabs
+            sliced_tab.lock_while_open(tab)
+            orbital_tab.lock_while_open(tab)
+        
+        elif class_ == 'LMFitResultTab':
+            tab = LMFitResultTab.init_from_save(save_, dependencies, self)
 
-        if tab_type == 'ProfilePlotTab':
-            tab = self.open_profile_tab()
-            tab.restore_state(save)
+            lmfittab = tab.locked_tabs[0]
+            lmfittab.lock_while_open(tab)
+            tab.open_plot_tab.connect(self.open_lmfit_plot_tab)
+        
+        elif class_ == 'LMFitPlotTab':
+            tab = LMFitPlotTab.init_from_save(save_, dependencies, self)
 
-        elif tab_type == 'OrbitalDataTab':
-            tab = self.open_orbital_data_tab()
-            ID_map = tab.restore_state(save)
-
-        elif tab_type == 'LMFitTab':
-            tab = self.open_lmfit_tab(args[0], args[1], save=save)
-
-        elif tab_type == 'SplitViewTab':
-            tab = self.open_split_view_tab(args[0], args[1], save=save)
-
-        elif tab_type == 'LMFitResultTab':
-            tab = self.open_result_tab(
-                sender=args[0], save=save, ID_map=args[1])
-
-        elif tab_type == 'LMFitPlotTab':
-            tab = self.open_lmfit_plot_tab(sender=args[0], save=save)
-
-        elif tab_type == 'SlicedDataTab':
-            tab, ID_map = SlicedDataTab.init_from_save(save, *args)
+            lmfitresulttab = tab.locked_tabs[0]
+            lmfitresulttab.lock_while_open(tab)
 
         else:
-            try:
-                tab = eval(tab_type).init_from_save(save, *args)
+            print('ERROR: Invalid save file')
+            return
 
-            except:
-                raise ValueError
-
-        title = save['title'] if 'title' in save.keys() else tab.get_title()
         tab.set_title(title)
-        self._open_tab(tab, title)
-
-        if isinstance(tab, SlicedDataTab) or isinstance(tab, OrbitalDataTab):
-            return tab, ID_map
-
-        else:
-            return tab
+        tab.set_ID(ID)
+        self._open_tab(tab, title, ID=ID)
 
     def close_tab(self, index):
         # Close tab specified with index
@@ -375,10 +385,55 @@ class TabWidget(QWidget, TabWidget_UI):
             log = logging.getLogger('kmap')
             log.warning(
                 'Tab is locked open because different tab still references it.')
+    
+    def save_state(self):
+        all_tabs = self.get_all_tabs()
+        tab_saves = []
+        display_order = []
 
-    def _open_tab(self, tab, title, tooltip=None, index=None):
+        for tab in all_tabs:
+            class_ = tab.__class__.__name__
+            if class_ in ['FileEditorTab', 'FileViewerTab', 'FileTab']:
+                continue
+            
+            title = tab.title
+            ID = tab.ID
+            display_order.append(ID)
+            save_, dependencies = tab.save_state()
+            tab_saves.append((class_, ID, title, save_, dependencies))
+        
+        load_order = sorted(display_order)
+        save = {'tab_saves': tab_saves,
+                'display_order': display_order,
+                'load_order': load_order}
+        return save
+
+    def restore_state(self, save):
+        
+        start_index = self.tab_widget.count()
+        if self.ID_counter != 0:
+            print('Save files can only be loaded into new kMap windows.')
+            return
+
+        tab_saves = save['tab_saves']
+        for ID in save['load_order']:
+            for tab_save in tab_saves:
+                if tab_save[1] == ID:
+                    self.open_tab_by_save(tab_save)                        
+
+        tabbar = self.tab_widget.tabBar()
+        for i, ID in enumerate(save['display_order']):
+            tab = self.get_tab_by_ID(ID)
+            index = self.tab_widget.indexOf(tab)
+            tabbar.moveTab(index, i+start_index)
+
+    def _open_tab(self, tab, title, tooltip=None, index=None, ID=None):
+        self.ID_counter += 1
+        ID = self.ID_counter if ID is None else ID
+        tab.set_ID(ID)
+
         index = self.tab_widget.addTab(tab, title)
-
+        
         self.tab_widget.setCurrentIndex(index)
 
         if tooltip is not None:

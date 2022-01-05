@@ -42,16 +42,14 @@ class LMFitResult(QWidget, LMFitResult_UI):
         slices = lmfit_model.slice_policy[1]
 
         if len(list(slices)) == 1:
-            type_ = 'Only One Slice (%i)' % slices[0]
+            type_ = 'Fitted Slice (%i)' % slices[0]
             self.plot_button.setEnabled(False)
-
+        
         else:
+            type_ = f'Fitted Slices {slices[0]}-{slices[-1]}'
             if lmfit_model.slice_policy[2]:
-                type_ = 'All Slices Combined'
+                type_ += ' (Combined)'
                 self.plot_button.setEnabled(False)
-
-            else:
-                type_ = 'All Slices Individually'
 
         self.type_label.setText(type_)
 

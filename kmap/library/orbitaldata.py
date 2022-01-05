@@ -1,4 +1,5 @@
 import os
+import logging
 import urllib.request
 from pathlib import Path
 from kmap.library.orbital import Orbital
@@ -17,30 +18,49 @@ class OrbitalData(Orbital, AbstractData):
                          value='abs2')
 
     @classmethod
-    def init_from_file(cls, file_path, ID):
-        with open(file_path, 'r') as f:
-            file = f.read()
+    def init_from_file(cls, path, ID):
+        log = logging.getLogger('kmap')
+        possible_paths = [path]
+        file_name = Path(path).name
+        possible_paths.append(Path(config.get_key('paths', 'cube_start')) /
+                file_name)
+        for path in config.get_key('paths', 'path').split(','):
+            possible_paths.append(Path(path) / file_name)
 
-            name, keys = OrbitalData._get_metadata(file, file_path)
+        for path in possible_paths:
+            log.info(f'Looking for {file_name} in {path}.')
+            if os.path.isfile(path):
+                log.info(f'Found.')
+                with open(path, 'r') as f:
+                    file = f.read()
+               
+                name, keys = OrbitalData._get_metadata(file, path)
+                return cls(file, ID, name=name, meta_data=keys)
+            else:
+                continue
 
-        return cls(file, ID, name=name, meta_data=keys)
+        print(f'ERROR: File {file_name} wasn\'t found. Please add its location to the search path (general_settings.paths.path')
 
     @classmethod
     def init_from_online(cls, url, ID, meta_data={}):
         
+        log = logging.getLogger('kmap')
         cache_dir = Path(config.get_key('paths', 'cache'))
         cache_file = url.split('OrganicMolecule/')[1].replace('/', '_')
         cache_file = str(cache_dir / cache_file)
 
         if os.path.isfile(cache_file):
+            log.info(f'Found file {url} in cache.')
             with open(cache_file, 'r') as f:
                 file = f.read()
                 
         else:
+            log.info('Loading from database: %s' % url)
             with urllib.request.urlopen(url) as f:
                 file = f.read().decode('utf-8')
 
                 if os.path.isdir(cache_dir):
+                    log.info(f'Putting {url} into cache {cache_file}')
                     with open(cache_file, 'w') as f:
                         f.write(file)
 

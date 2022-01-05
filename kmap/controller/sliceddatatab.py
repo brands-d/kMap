@@ -31,7 +31,6 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
 
     def __init__(self, model):
         self.model = model
-
         # Setup GUI
         super(SlicedDataTab, self).__init__()
         self.setupUi(self)
@@ -70,35 +69,24 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
         return cls(model)
 
     @classmethod
-    def init_from_save(cls, save):
-        load_type = save['model']['load_type']
-        load_args = save['model']['load_args']
+    def init_from_save(cls, save, dependencies, tab_widget=None):
+        model = SlicedDataTabModel()
+        model.restore_state(save['model'])
+        self = cls(model)
 
-        if load_type == 'load_from_path':
-            tab = SlicedDataTab.init_from_path(load_args)
+        self.slider.restore_state(save['slider'])
+        self.interpolation.restore_state(save['interpolation'])
+        self.crosshair.restore_state(save['crosshair'])
+        self.colormap.restore_state(save['colormap'])
+        self.plot_item.set_levels(save['levels'])
+        self.plot_item.set_colormap(save['colorscale'])
 
-        elif load_type == 'load_from_cube':
-            tab = SlicedDataTab.init_from_cube(load_args)
-
-        elif load_type == 'load_from_URL':
-            tab = SlicedDataTab.init_from_URL(load_args)
-
-        elif load_type == 'load_from_URLs':
-            tab = SlicedDataTab.init_from_URLs(load_args)
-
-        else:
-            raise ValueError
-
-        tab.slider.restore_state(save['slider'])
-        tab.crosshair.restore_state(save['crosshair'])
-        tab.interpolation.restore_state(save['interpolation'])
-        tab.colormap.restore_state(save['colormap'])
-
-        new_ID = tab.model.data.ID
-        return tab, [[save['model']['ID'], new_ID]]
+        return self 
 
     def save_state(self):
         save = {'title': self.title,
+                'colorscale': self.plot_item.get_colormap(),
+                'levels': self.plot_item.get_levels(),
                 'model': self.model.save_state(),
                 'slider': self.slider.save_state(),
                 'crosshair': self.crosshair.save_state(),
@@ -210,8 +198,8 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
         left = self.plot_item.get_label('left')
         return bottom, left
 
-    def transpose(self, constant_axis):
-        self.model.transpose(constant_axis)
+    def transpose(self, axis_order):
+        self.model.transpose(axis_order)
         self.change_axis(self.slider.get_axis())
 
     def change_symmetry(self, symmetry, mirror):

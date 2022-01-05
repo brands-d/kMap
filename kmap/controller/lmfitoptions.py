@@ -34,6 +34,8 @@ class LMFitOptions(QWidget, LMFitOptions_UI):
 
         save = {'slices': self.slice_combobox.currentIndex(),
                 'region': self.region_comboBox.currentIndex(),
+                'slice_range': (self.from_slice_spinbox.value(),
+                    self.to_slice_spinbox.value()),
                 'method': self.method_combobox.currentIndex(),
                 'background': self.background_combobox.currentText()}
 
@@ -45,6 +47,8 @@ class LMFitOptions(QWidget, LMFitOptions_UI):
         self.region_comboBox.setCurrentIndex(save['region'])
         self.method_combobox.setCurrentIndex(save['method'])
         self.background_combobox.setCurrentText(save['background'])
+        self.from_slice_spinbox.setValue(save['slice_range'][0])
+        self.to_slice_spinbox.setValue(save['slice_range'][1])
 
     def get_region(self):
 

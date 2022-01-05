@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import QWidget
 # Own Imports
 from kmap import __directory__
 from kmap.config.config import config
+from kmap.library.misc import transpose_axis_order
 
 
 class DataSliderBase(QWidget):
@@ -67,16 +68,16 @@ class DataSliderBase(QWidget):
         return axis
 
     def save_state(self):
-        slice_ = self.get_index()
-        axis = self.get_axis()
-
-        save = {'slice': slice_, 'axis': axis}
+        save = {'slice': self.get_index(), 
+                'axis': self.get_axis(),
+                'symmetry': self.symmetrize_combobox.currentIndex()}
 
         return save
 
     def restore_state(self, save):
         self.combobox.setCurrentIndex(save['axis'])
         self.slider.setValue(save['slice'])
+        self.symmetrize_combobox.setCurrentIndex(save['symmetry'])
 
     def _update_slice_label(self):
         index = self.slider.sliderPosition()
@@ -144,20 +145,28 @@ DataSlider_UI, _ = uic.loadUiType(UI_file)
 
 
 class DataSlider(DataSliderBase, DataSlider_UI):
-    tranpose_triggered = pyqtSignal(int)
+    tranpose_triggered = pyqtSignal(tuple)
     symmetry_changed = pyqtSignal(str, bool)
 
     def __init__(self, *args, **kwargs):
+        self.axis_order = (0, 1, 2)
+
         # Setup GUI
         super(DataSlider, self).__init__(*args, **kwargs)
         self.setupUi(self)
         self._setup()
         self._connect()
 
-    def trigger_transpose(self):
+    def trigger_transpose(self, axis_order=None):
+        
         index = self.slider.sliderPosition()
+        
+        if axis_order and axis_order is not None:
+            self.axis_order = axis_order
+        else:
+            self.axis_order = transpose_axis_order(self.get_axis())
 
-        self.tranpose_triggered.emit(self.get_axis())
+        self.tranpose_triggered.emit(self.axis_order)
 
         for i in range(3):
             self.combobox.setItemText(i, self.data.axes[i].label)
@@ -165,6 +174,21 @@ class DataSlider(DataSliderBase, DataSlider_UI):
         self._update_slice_label()
         self._update_slider_silently(index)
         self._update_spinbox_silently(index)
+    
+    def save_state(self):
+        
+        save_ = {'transpose': self.axis_order}
+        save = super().save_state()
+        save.update(save_)
+
+        return save
+    
+    def restore_state(self, save):
+        super().restore_state(save)
+        if self.axis_order == save['transpose']:
+            return
+        else:
+            self.trigger_transpose(save['transpose'])
 
     def _connect(self):
         super()._connect()

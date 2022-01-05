@@ -79,6 +79,18 @@ class OrbitalTable(QWidget, OrbitalTable_UI):
         row.update_use(state)
 
         self.change_use(ID)
+    
+    def save_state(self):
+        save = {}
+        for row in self.rows:
+            save.update({f'{row.ID}': row.save_state()})
+
+        return save
+
+    def restore_state(self, save):
+        for ID, row_save in save.items():
+            index = self._ID_to_row_index(int(ID))
+            self.rows[index].restore_state(row_save)
 
     def change_use(self, ID):
 

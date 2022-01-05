@@ -60,6 +60,7 @@ class LMFitModel():
         self.method = {'method': 'leastsq', 'xtol': 1e-12}
         self.region = ['all', False]
         self.s_share = 0.694
+        self.axis_order = [0, 1, 2]
 
         self._set_sliced_data(sliced_data)
         self._add_orbitals(orbitals)
@@ -429,10 +430,9 @@ class LMFitModel():
 
         return results
 
-    def transpose(self, constant_axis):
-        axis_order = transpose_axis_order(constant_axis)
-
-        self.sliced_data.transpose(axis_order)
+    def transpose(self, axis_order):
+        self.axis_order = constant_axis
+        self.sliced_data.transpose(self.axis_order)
 
     def get_settings(self):
         settings = {'crosshair': self.crosshair,

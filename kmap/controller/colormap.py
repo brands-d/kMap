@@ -49,9 +49,7 @@ class Colormap(QWidget, Colormap_UI):
 
     def save_state(self):
 
-        current_colormap = self.combobox.currentText()
-
-        save = {'current_colormap': current_colormap}
+        save = {'current_colormap': self.combobox.currentText()}
 
         return save
 
@@ -79,6 +77,8 @@ class Colormap(QWidget, Colormap_UI):
             log.error(
                 'This colormap does not exist. Please save the colormap first.')
             log.error(traceback.format_exc())
+            self.set_default_colormap()
+
 
     def add_colormap(self):
 

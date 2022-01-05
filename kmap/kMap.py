@@ -49,13 +49,6 @@ class kMap(QApplication):
         pass
 
     def load_settings(self, startup=False):
-        # Logging
-        # Delete old log files if user set to do so
-        if startup and config.get_key('logging', 'persistent') == 'False':
-            log_file = __directory__ / '../default.log'
-            if os.path.exists(log_file):
-                os.remove(log_file)
-
         logging.config.fileConfig(config.get_config(
             'logging'), disable_existing_loggers=False)
 

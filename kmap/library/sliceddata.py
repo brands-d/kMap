@@ -9,7 +9,7 @@ import h5py
 import numpy as np
 
 # Own Imports
-from kmap.library.id import ID
+from kmap.library.id import ID as IDD
 from kmap.config.config import config
 from kmap.library.plotdata import PlotData
 from kmap.library.abstractdata import AbstractData
@@ -21,9 +21,13 @@ from kmap.library.axis import Axis
 
 class SlicedData(AbstractData):
 
-    def __init__(self, name, axis_1, axis_2, axis_3, data, meta_data={}):
+    def __init__(self, name, axis_1, axis_2, axis_3, data, meta_data={},
+            ID=None):
         if isinstance(name, str) and name:
-            super(SlicedData, self).__init__(ID.new_ID(), name, meta_data)
+            if ID is not None:
+                super(SlicedData, self).__init__(ID, name, meta_data)
+            else:
+                super(SlicedData, self).__init__(IDD.new_ID(), name, meta_data)
 
         else:
             raise ValueError('name has to be string and not empty')
@@ -41,7 +45,7 @@ class SlicedData(AbstractData):
         self.axes = [axis_1, axis_2, axis_3]
 
     @classmethod
-    def init_from_hdf5(cls, file_path, keys={}, meta_data={}):
+    def init_from_hdf5(cls, file_path, keys={}, meta_data={}, ID=None):
         # Updates default file_keys with user defined keys
         file_keys = {'name': 'name', 'axis_1_label': 'axis_1_label',
                      'axis_1_units': 'axis_1_units',
@@ -106,10 +110,15 @@ class SlicedData(AbstractData):
         axis_2 = [axis_2_label, axis_2_units, axis_2_range]
         axis_3 = [axis_3_label, axis_3_units, axis_3_range]
 
-        return cls(name, axis_1, axis_2, axis_3, data, meta_data)
+        self =  cls(name, axis_1, axis_2, axis_3, data, meta_data)
+        if ID is not None:
+            self.ID = ID
+
+        return self
 
     @classmethod
-    def init_from_orbitals(cls, name, orbitals, parameters, s_share=0.694):
+    def init_from_orbitals(cls, name, orbitals, parameters, s_share=0.694,
+            ID=None):
         """Returns a SlicedData object with the data[BE,kx,ky] 
            computed from the kmaps of several orbitals and
            broadened in energy.
@@ -197,7 +206,6 @@ class SlicedData(AbstractData):
                      np.exp(-((BE - BE0)**2 / (2 * energy_broadening**2)))
 
             url = orbital[0]
-            log.info('Loading from database: %s' % url)
             
             file = SlicedData.load_orbital_online(url)
             orbital_data = Orbital(file)
@@ -239,10 +247,10 @@ class SlicedData(AbstractData):
                      'Symmetrization': symmetrization,
                      'Orbital Info': orbital_info}
 
-        return cls(name, axis_1, axis_2, axis_3, data, meta_data)
+        return cls(name, axis_1, axis_2, axis_3, data, meta_data, ID=ID)
 
     @classmethod
-    def init_from_orbital_cube(cls, name, orbital, parameters):
+    def init_from_orbital_cube(cls, name, orbital, parameters, ID=None):
         """Returns a SlicedData object with the data[x,y,z] 
            taken from the real space wave function in orbital.
 
@@ -273,7 +281,6 @@ class SlicedData(AbstractData):
         value = parameters[3]
 
         orbital_file = orbital[0]
-        log.info('Loading from database: %s' % orbital_file)
 
         # decision if reading cube-file from URL or local file
         if orbital_file[:4] == 'http': 
@@ -310,11 +317,11 @@ class SlicedData(AbstractData):
         # no meta data
         meta_data = {}
 
-        return cls(name, axis_1, axis_2, axis_3, data, meta_data)
+        return cls(name, axis_1, axis_2, axis_3, data, meta_data, ID=ID)
 
     @classmethod
     def init_from_orbital_photonenergy(cls, name, orbital, parameters,
-                                       s_share=0.694):
+                                       s_share=0.694, ID=None):
         """Returns a SlicedData object with the data[photonenergy,kx,ky] 
            computed from the kmaps of one orbital for a series of
            photon energies.
@@ -388,7 +395,6 @@ class SlicedData(AbstractData):
         log.info('Adding orbital to SlicedData Object, please wait!')
         # read orbital from cube-file database
         url = orbital[0]
-        log.info('Loading from database: %s' % url)
         file = SlicedData.load_orbital_online(url)
         orbital_data = Orbital(file)
 
@@ -414,24 +420,26 @@ class SlicedData(AbstractData):
                      'Symmetrization': symmetrization,
                      'Orbital Info': orbital_info}
 
-        return cls(name, axis_1, axis_2, axis_3, data, meta_data)
+        return cls(name, axis_1, axis_2, axis_3, data, meta_data, ID=ID)
 
     @classmethod
     def load_orbital_online(cls, url):
-        
+        log = logging.getLogger('kmap')
         cache_dir = Path(config.get_key('paths', 'cache'))
         cache_file = url.split('OrganicMolecule/')[1].replace('/', '_')
         cache_file = str(cache_dir / cache_file)
 
         if os.path.isfile(cache_file):
+            log.info(f'Found file {url} in cache.')
             with open(cache_file, 'r') as f:
                 file = f.read()
-                
         else:
+            log.info('Loading from database: %s' % url)
             with urllib.request.urlopen(url) as f:
                 file = f.read().decode('utf-8')
 
                 if os.path.isdir(cache_dir):
+                    log.info(f'Putting {url} into cache {cache_file}')
                     with open(cache_file, 'w') as f:
                         f.write(file)
 

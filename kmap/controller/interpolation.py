@@ -135,25 +135,27 @@ class Interpolation(InterpolationBase, Interpolation_UI):
         self._update_dynamic_range_spinboxes()
 
     def save_state(self):
+        
         save = {'sigma': self.get_sigma(),
                 'range': self.get_range(),
-                'force_interpolation':
-                    not self.interpolation_checkbox.isEnabled(),
                 'resolution': self.get_resolution(),
-                'enable_smoothing': self.smoothing_checkbox.checkState(),
-                'enable_interpolation': self.interpolation_checkbox.checkState(),
+                'checkbox_smoothing': self.smoothing_checkbox.checkState(),
+                'checkbox_interpolation': self.interpolation_checkbox.checkState(),
                 'fill_value': self.fill_combobox.currentIndex()}
 
         return save
 
     def restore_state(self, save):
+
         self.set_sigma(save['sigma'])
         self.set_range(save['range'])
         self.set_resolution(save['resolution'])
         self.fill_combobox.setCurrentIndex(save['fill_value'])
-        self.interpolation_checkbox.setCheckState(save['enable_interpolation'])
-        self.smoothing_checkbox.setCheckState(save['enable_smoothing'])
-        self.set_force_interpolation(save['force_interpolation'])
+        self.interpolation_checkbox.setCheckState(save['checkbox_interpolation'])
+        self.smoothing_checkbox.setCheckState(save['checkbox_smoothing'])
+        
+        self._change_interpolation()
+        self._change_smoothing()
 
     def set_sigma(self, sigma):
         self.sigma_x_spinbox.setValue(sigma[0])
@@ -205,7 +207,8 @@ class Interpolation(InterpolationBase, Interpolation_UI):
             self._change_interpolation)
         self.y_resolution_spinbox.valueChanged.connect(
             self._change_interpolation)
-
+        
+        self.fill_combobox.currentIndexChanged.connect(self._change_interpolation)
 
 # Load .ui File
 UI_file = __directory__ / 'ui/lmfitinterpolation.ui'

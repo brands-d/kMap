@@ -22,6 +22,22 @@ class OrbitalTableRow(QWidget):
 
         self._setup(orbital, orientation)
         self._connect()
+    
+    def save_state(self):
+        save = {'weight': self.weight.value(),
+                'phi': self.phi.value(),
+                'theta': self.theta.value(),
+                'psi': self.psi.value(),
+                'use': self.get_use()}
+
+        return save
+
+    def restore_state(self, save):
+        
+        for param in ['weight', 'phi', 'theta', 'psi']:
+            self.update_parameter_silently(param, save[param])
+
+        self.update_use(save['use'])
 
     def remove_row(self):
 

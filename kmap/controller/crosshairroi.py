@@ -118,10 +118,11 @@ class CrosshairROIBase(CrosshairBase):
         self.roi_area_value.setText(f'{area:.{decimals}e}')
 
     def save_state(self):
-
+        
+        save_ = {'spinbox_radius': self.roi_spinbox.value(),
+                'checkbox_roi': self.enable_roi_checkbox.checkState()}
         save = super().save_state()
-        save.update(
-            {'enable_roi': self.enable_roi_checkbox.checkState()})
+        save.update(save_)
 
         return save
 
@@ -129,7 +130,11 @@ class CrosshairROIBase(CrosshairBase):
 
         super().restore_state(save)
 
-        self.enable_roi_checkbox.setCheckState(save['enable_roi'])
+        self.enable_roi_checkbox.setCheckState(save['checkbox_roi'])
+        self.roi_spinbox.setValue(save['spinbox_radius'])
+
+        self.move_crosshair_from_spinbox()
+        self.update_label()
 
     def _set_model(self, model=None):
 

@@ -24,24 +24,19 @@ class LMFitOrbitalOptions(QWidget, LMFitOrbitalOptions_UI):
         self._connect()
 
     def save_state(self):
-        save = {'factor': self.ak_combobox.currentIndex(),
+        save = {'Ak': self.ak_combobox.currentIndex(),
                 'polarization': self.polarization_combobox.currentIndex(),
-                'symmetry': self.symmetrize_combobox.currentIndex()}
+                'symmetry': self.symmetrize_combobox.currentIndex(),
+                's_share': self.get_s_share()}
 
         return save
 
     def restore_state(self, save):
-        self.ak_combobox.setCurrentIndex(save['factor'])
+        self.ak_combobox.setCurrentIndex(save['Ak'])
         self.polarization_combobox.setCurrentIndex(save['polarization'])
         self.symmetrize_combobox.setCurrentIndex(save['symmetry'])
-
-        if 's_share' in save:
-            self.s_share_spinbox.setValue(float(save['s_share']))
-        else:
-            print('WARNING: s_share setting not found in save file. Using default.')
-            s_share = config.get_key('orbital', 's_share_default')
-            self.s_share_spinbox.setValue(float(s_share))
-
+        self.s_share_spinbox.setValue(save['s_share'])
+        
     def get_symmetrization(self):
         index = self.symmetrize_combobox.currentIndex()
         available_symmetries = ['no', '2-fold', '2-fold+mirror',

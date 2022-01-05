@@ -115,21 +115,25 @@ class CrosshairBase(QWidget):
 
     def save_state(self):
 
-        model_save = self.model.save_state()
-        save = {'model': model_save,
-                'enable_crosshair': self.enable_crosshair_checkbox.checkState(),
-                'color': self.color_combobox.currentIndex()}
+        model = self.model.save_state()
+        save = {'model': model,
+                'spinbox_x': self.x_spinbox.value(),
+                'spinbox_y': self.y_spinbox.value(),
+                'color': self.color_combobox.currentIndex(),
+                'checkbox_crosshair': self.enable_crosshair_checkbox.checkState()}
 
         return save
 
     def restore_state(self, save):
 
         self.model.restore_state(save['model'])
-        self.update()
-        self.update_label()
-        self.move_crosshair_from_spinbox()
-        self.enable_crosshair_checkbox.setCheckState(save['enable_crosshair'])
+        self.x_spinbox.setValue(save['spinbox_x'])
+        self.y_spinbox.setValue(save['spinbox_y'])
+        self.enable_crosshair_checkbox.setCheckState(save['checkbox_crosshair'])
         self.color_combobox.setCurrentIndex(save['color'])
+        
+        self.move_crosshair_from_spinbox()
+        self.update_label()
 
     def _set_model(self, model=None):
 

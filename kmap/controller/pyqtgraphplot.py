@@ -79,7 +79,6 @@ class PyQtGraphPlot(ImageView):
                            update=True, padding=padding)
 
     def set_levels(self, levels):
-
         self.getHistogramWidget().setLevels(*levels)
         self.setHistogramRange(*levels)
 
@@ -142,6 +141,14 @@ class PyQtGraphPlot(ImageView):
         LUT = colormap.getLookupTable(mode='float', alpha=True, nPts=nPts)
 
         return LUT
+    
+    def get_colormap(self):
+
+        return self.getHistogramWidget().gradient.colorMap()
+    
+    def set_colormap(self, colormap):
+
+        self.getHistogramWidget().gradient.setColorMap(colormap)
 
     def get_label(self, side):
 

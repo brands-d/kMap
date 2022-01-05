@@ -143,3 +143,4 @@ example/testing
 .idea/
 report.tar
 test_results.txt
+cache/*

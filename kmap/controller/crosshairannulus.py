@@ -119,17 +119,22 @@ class CrosshairAnnulusBase(CrosshairROIBase):
 
     def save_state(self):
 
+        save_ = {'spinbox_width': self.width_spinbox.value(),
+                'checkbox_annulus': self.enable_annulus_checkbox.checkState()}
         save = super().save_state()
-        save.update(
-            {'enable_annulus': self.enable_annulus_checkbox.checkState()})
+        save.update(save_)
 
         return save
 
     def restore_state(self, save):
 
         super().restore_state(save)
-
-        self.enable_annulus_checkbox.setCheckState(save['enable_annulus'])
+        
+        self.enable_annulus_checkbox.setCheckState(save['checkbox_annulus'])
+        self.width_spinbox.setValue(save['spinbox_width'])
+        
+        self.move_crosshair_from_spinbox()
+        self.update_label()
 
     def _set_model(self, model=None):
 

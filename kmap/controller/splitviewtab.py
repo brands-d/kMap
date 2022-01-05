@@ -39,13 +39,19 @@ class SplitViewTab(Tab, SplitViewTab_UI):
         self.change_slice(0)
 
     @classmethod
-    def init_from_save(cls, save, sliced_tab, orbital_tab):
+    def init_from_save(cls, save, dependencies, tab_widget):
+        sliced_tab = tab_widget.get_tab_by_ID(dependencies['sliced_tab'])
+        orbital_tab = tab_widget.get_tab_by_ID(dependencies['orbital_tab'])
         tab = SplitViewTab(sliced_tab, orbital_tab)
+        tab.locked_tabs = [sliced_tab, orbital_tab]
 
         tab.slider.restore_state(save['slider']),
         tab.crosshair.restore_state(save['crosshair']),
         tab.interpolation.restore_state(save['interpolation']),
         tab.split_options.restore_state(save['split_options'])
+        tab.colormap.restore_state(save['colormap'])
+        tab.plot_item.set_colormap(save['colorscale'])
+        tab.plot_item.set_levels(save['levels'])
 
         return tab
 
@@ -53,13 +59,19 @@ class SplitViewTab(Tab, SplitViewTab_UI):
         save = {'title': self.title,
                 'slider': self.slider.save_state(),
                 'crosshair': self.crosshair.save_state(),
+                'colorscale': self.plot_item.get_colormap(),
+                'levels': self.plot_item.get_levels(),
                 'interpolation': self.interpolation.save_state(),
-                'split_options': self.split_options.save_state()}
+                'split_options': self.split_options.save_state(),
+                'colormap': self.colormap.save_state()}
 
-        return save, [self.sliced_tab, self.orbital_tab]
+        dependencies = {'sliced_tab': self.sliced_tab.ID,
+                'orbital_tab': self.orbital_tab.ID}
+
+        return save, dependencies
 
     def get_title(self):
-        return 'Split View'
+        return self.title
 
     def get_axis(self):
         return self.slider.get_axis()
@@ -112,6 +124,7 @@ class SplitViewTab(Tab, SplitViewTab_UI):
         Tab.closeEvent(self, event)
 
     def _setup(self):
+        self.title = 'Split View'
         self.crosshair = CrosshairAnnulus(self.plot_item)
         self.colormap = Colormap(self.plot_item)
         self.interpolation = Interpolation()

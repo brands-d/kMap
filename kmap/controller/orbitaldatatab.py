@@ -44,15 +44,41 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         self._connect()
 
         self.model = OrbitalDataTabModel(self)
+    
+    @classmethod
+    def init_from_save(cls, save, dependencies, tab_widget=None):
+        self = cls()
+        
+        for orbital in save['orbitals']:
+            if orbital['load_type'] == 'path':
+                self.add_orbital_from_filepath(orbital['load_args'],
+                        orbital['ID'])
 
-    def add_orbital_from_filepath(self, path):
-        orbital = self.model.load_data_from_path(path)
+            elif orbital['load_type'] == 'url':
+                self.add_orbital_from_online(orbital['load_args'],
+                        meta_data=orbital['meta_data'],
+                        ID=orbital['ID'])
+
+        self.interpolation.restore_state(save['interpolation'])
+        self.table.restore_state(save['table'])
+        self.polarization.restore_state(save['polarization'])
+        self.cube_options.restore_state(save['cube_options'])
+        self.real_space_options.restore_state(save['real_space_options'])
+        self.crosshair.restore_state(save['crosshair'])
+        self.colormap.restore_state(save['colormap'])
+        self.plot_item.set_levels(save['levels'])
+        self.plot_item.set_colormap(save['colorscale'])
+
+        return self
+
+    def add_orbital_from_filepath(self, path, ID=None):
+        orbital = self.model.load_data_from_path(path, ID=ID)
         self.add_orbital(orbital)
 
         return orbital.ID
 
-    def add_orbital_from_online(self, URL, meta_data={}):
-        orbital = self.model.load_data_from_online(URL, meta_data)
+    def add_orbital_from_online(self, URL, meta_data={}, ID=None):
+        orbital = self.model.load_data_from_online(URL, meta_data, ID=ID)
         self.add_orbital(orbital)
 
         return orbital.ID
@@ -271,63 +297,27 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         return bottom, left
 
     def save_state(self):
-        crosshair_save = self.crosshair.save_state()
-        interpolation_save = self.interpolation.save_state()
-        polarization_save = self.polarization.save_state()
-        cube_options_save = self.cube_options.save_state()
-        real_space_options_save = self.real_space_options.save_state()
-        colormap_save = self.colormap.save_state()
-
+        
         orbital_save = []
         for orbital in self.model.orbitals:
-            parameters = self.get_parameters(orbital[0].ID)
-            use = self.get_use(orbital[0].ID)
-            orbital_save.append([*orbital[1:], parameters, use])
-
-        save = {'crosshair': crosshair_save,
-                'interpolation': interpolation_save,
-                'polarization': polarization_save,
-                'cube_options': cube_options_save,
-                'real_space_options': real_space_options_save,
-                'orbital': orbital_save,
-                'colormap': colormap_save,
-                'title': self.title}
+            orbital_save.append({'ID': orbital[4],
+                                 'load_type': orbital[1],
+                                 'load_args': orbital[2],
+                                 'meta_data': orbital[3]})
+        
+        save = {'orbitals': orbital_save,
+                'title': self.title,
+                'table': self.table.save_state(),
+                'interpolation': self.interpolation.save_state(),
+                'colormap': self.colormap.save_state(),
+                'crosshair': self.crosshair.save_state(),
+                'polarization': self.polarization.save_state(),
+                'cube_options': self.cube_options.save_state(),
+                'real_space_options': self.real_space_options.save_state(),
+                'colorscale': self.plot_item.get_colormap(),
+                'levels': self.plot_item.get_levels()}
 
         return save, []
-
-    def restore_state(self, save):
-        ID_maps = []
-        for orbital in save['orbital']:
-            if orbital[0] == 'path':
-                ID = self.add_orbital_from_filepath(orbital[1])
-
-            elif orbital[0] == 'url':
-                ID = self.add_orbital_from_online(orbital[1], orbital[2])
-
-            else:
-                raise ValueError
-
-            ID_maps.append([orbital[3], ID])
-            parameter = [orbital[4][0], *orbital[4][3:6]]
-            use = orbital[5]
-            self.table.update_orbital_parameters(ID, parameter)
-            self.table.update_orbital_use(ID, use)
-
-        crosshair_save = save['crosshair']
-        interpolation_save = save['interpolation']
-        polarization_save = save['polarization']
-        cube_options_save = save['cube_options']
-        real_space_options_save = save['real_space_options']
-        colormap_save = save['colormap']
-
-        self.crosshair.restore_state(crosshair_save)
-        self.interpolation.restore_state(interpolation_save)
-        self.polarization.restore_state(polarization_save)
-        self.cube_options.restore_state(cube_options_save)
-        self.real_space_options.restore_state(real_space_options_save)
-        self.colormap.restore_state(colormap_save)
-
-        return ID_maps
 
     def _setup(self):
         self.crosshair = CrosshairAnnulus(self.plot_item)

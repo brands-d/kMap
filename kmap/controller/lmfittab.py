@@ -37,6 +37,26 @@ LMFitTab_UI, _ = uic.loadUiType(UI_file)
 
 
 class LMFitBaseTab(Tab):
+   
+    def save_state(self):
+        colorscales= {'sliced': self.sliced_plot.get_colormap(),
+                       'selected': self.selected_plot.get_colormap(),
+                       'residual': self.residual_plot.get_colormap(),
+                       'sum': self.sum_plot.get_colormap()}
+            
+        levels= {'sliced': self.sliced_plot.get_levels(),
+                       'selected': self.selected_plot.get_levels(),
+                       'residual': self.residual_plot.get_levels(),
+                       'sum': self.sum_plot.get_levels()}
+        
+        save = {'title': self.title,
+                'levels': levels,
+                'colorscales': colorscales,
+                'slider': self.slider.save_state(),
+                'crosshair': self.crosshair.save_state(),
+                'colormap': self.colormap.save_state()}
+
+        return save, {}
 
     def refresh_sliced_plot(self):
         index = self.slider.get_index()
@@ -63,7 +83,6 @@ class LMFitBaseTab(Tab):
     def refresh_residual_plot(self, param=None, weight_sum_data=None):
         index = self.slider.get_index()
         residual = self.model.get_residual(index, param, weight_sum_data)
-
         level = np.nanmax(np.absolute(residual.data))
 
         if config.get_key('pyqtgraph', 'keep_max_level_residual') == 'True':
@@ -75,7 +94,7 @@ class LMFitBaseTab(Tab):
         self.residual_plot.plot(residual)
 
         self.residual_plot.set_levels([-level, level])
-
+        self.crosshair.update_label()
         self.update_chi2_label(weight_sum_data)
 
     def refresh_all(self):
@@ -162,18 +181,30 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
         self.refresh_all()
 
     @classmethod
-    def init_from_save(cls, save, sliced_data, orbitals):
-        tab = LMFitTab(sliced_data, orbitals)
-        tab.title = save['title']
+    def init_from_save(cls, save, dependencies, tab_widget):
+        sliced_tab = tab_widget.get_tab_by_ID(dependencies['sliced_tab'])
+        orbital_tab = tab_widget.get_tab_by_ID(dependencies['orbital_tab'])
+        self = cls(sliced_tab, orbital_tab)
 
-        tab.slider.restore_state(save['slider']),
-        tab.crosshair.restore_state(save['crosshair']),
-        tab.orbital_options.restore_state(save['orbital_options']),
-        tab.interpolation.restore_state(save['interpolation']),
-        tab.lmfit_options.restore_state(save['lmfit_options'])
-        tab.tree.restore_state(save['tree'])
+        self.locked_tabs = [sliced_tab, orbital_tab]
+        self.title = save['title']
+        self.tree.restore_state(save['tree'])
+        self.interpolation.restore_state(save['interpolation']),
+        self.lmfit_options.restore_state(save['lmfit_options'])
+        self.orbital_options.restore_state(save['orbital_options']),
+        self.slider.restore_state(save['slider'])
+        self.colormap.restore_state(save['colormap'])
+        self.crosshair.restore_state(save['crosshair'])
+        self.sliced_plot.set_colormap(save['colorscales']['sliced'])
+        self.sliced_plot.set_levels(save['levels']['sliced'])
+        self.sum_plot.set_colormap(save['colorscales']['sum'])
+        self.sum_plot.set_levels(save['levels']['sum'])
+        self.residual_plot.set_levels(save['levels']['residual'])
+        self.residual_plot.set_colormap(save['colorscales']['residual'])
+        self.selected_plot.set_levels(save['levels']['selected'])
+        self.selected_plot.set_colormap(save['colorscales']['selected'])
 
-        return tab
+        return self
 
     def get_title(self):
         return self.title
@@ -184,7 +215,6 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
     def trigger_fit(self):
         try:
             new_results = self.model.fit()
-            
         except ValueError as e:
             logging.getLogger('kmap').warning(str(e))
             self.lmfit_options.update_fit_button()
@@ -224,15 +254,18 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
         self.refresh_all()
 
     def save_state(self):
-        save = {'title': self.title,
-                'slider': self.slider.save_state(),
-                'crosshair': self.crosshair.save_state(),
-                'orbital_options': self.orbital_options.save_state(),
-                'interpolation': self.interpolation.save_state(),
-                'lmfit_options': self.lmfit_options.save_state(),
-                'tree': self.tree.save_state()}
 
-        return save, [self.sliced_tab, self.orbital_tab]
+        save, dependencies = super().save_state()
+
+        save.update({'orbital_options': self.orbital_options.save_state(),
+                     'interpolation': self.interpolation.save_state(),
+                     'lmfit_options': self.lmfit_options.save_state(),
+                     'tree': self.tree.save_state()})
+        
+        dependencies.update({'sliced_tab': self.sliced_tab.ID,
+                             'orbital_tab': self.orbital_tab.ID})
+
+        return save, dependencies
 
     def _change_slice_policy(self, slice_policy):
         axis = self.slider.get_axis()
@@ -338,7 +371,6 @@ class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
         self.lmfit_tab = lmfit_tab
         self.current_result = self.results[0]
         self.settings = settings
-
         self.model = LMFitModel(*self.lmfit_tab.get_data())
         self.model.set_settings(settings)
 
@@ -352,45 +384,41 @@ class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
         self.refresh_all()
 
     @classmethod
-    def init_from_save(cls, save, tab, ID_map=None):
+    def init_from_save(cls, save, dependencies, tab_widget):
         results = save['results']
-
-        if ID_map is not None:
-            for result in results:
-                result = LMFitResultTab._apply_ID_map(result[1], ID_map)
-
         settings = save['settings']
+        tab = tab_widget.get_tab_by_ID(dependencies['lmfittab'])
+        
+        self = LMFitResultTab(tab, results, settings)
+        self.slider.restore_state(save['slider'])
+        self.crosshair.restore_state(save['crosshair'])
+        self.colormap.restore_state(save['colormap'])
+        self.sliced_plot.set_colormap(save['colorscales']['sliced'])
+        self.sliced_plot.set_levels(save['levels']['sliced'])
+        self.sum_plot.set_colormap(save['colorscales']['sum'])
+        self.sum_plot.set_levels(save['levels']['sum'])
+        self.residual_plot.set_levels(save['levels']['residual'])
+        self.residual_plot.set_colormap(save['colorscales']['residual'])
+        self.selected_plot.set_levels(save['levels']['selected'])
+        self.selected_plot.set_colormap(save['colorscales']['selected'])
 
-        tab = LMFitResultTab(tab, results, settings)
+        self.locked_tabs = [tab]
 
-        return tab
-
-    @classmethod
-    def _apply_ID_map(cls, result, ID_map):
-        params = result.params
-        new_params = params.copy()
-
-        for map_ in ID_map:
-            for parameter in params.items():
-                old_name, parameter = parameter
-
-                if old_name.endswith(str(map_[0])):
-                    new_name = '_'.join(old_name.split(
-                        '_')[:-1]) + '_' + str(map_[1])
-                    new_params[new_name] = new_params[old_name]
-
-                    if old_name != new_name:
-                        del new_params[old_name]
-
-        result.params = new_params
-        return result
+        return self
 
     def save_state(self):
-        save = {'title': self.title,
-                'results': self.results,
-                'settings': self.settings}
+        save, dependencies = super().save_state()
 
-        return save, [self.lmfit_tab]
+        save.update({'title': self.title,
+                'crosshair': self.crosshair.save_state(),
+                'slider': self.slider.save_state(),
+                'colormap': self.colormap.save_state(),
+                'results': self.results,
+                'settings': self.settings})
+        
+        dependencies.update({'lmfittab': self.lmfit_tab.ID})
+
+        return save, dependencies
 
     def get_title(self):
         return 'Results'

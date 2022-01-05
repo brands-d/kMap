@@ -1,6 +1,7 @@
 # Python Imports
 import _pickle as pickle
 import bz2
+from pathlib import Path
 import logging
 
 # PyQt5 Imports
@@ -329,29 +330,24 @@ class MainWindow(QMainWindow, MainWindow_UI):
         self.tab_widget.duplicate_tab()
 
     def save_project(self):
-        tabs = self.tab_widget.get_all_tabs()
-        tab_saves = []
-        for i, tab in enumerate(tabs):
-            save, dependencies = tab.save_state()
-            dependencies = [self.tab_widget.get_index_of(
-                tab) for tab in dependencies]
-            tab_saves.append([i, [type(tab).__name__, save], dependencies])
-
-        path = config.get_key('paths', 'project_start')
-        if path == 'None':
-            file_name, _ = QFileDialog.getSaveFileName(
-                None, 'Save Project File (*.kmap)')
+        save = {'tabs': self.tab_widget.save_state()}
+        
+        start_path = config.get_key('paths', 'project_start')
+        if start_path == 'None':
+            file_name, _ = QFileDialog.getSaveFileName(None, 'Save Project File (*.kmap)')
         else:
-            start_path = str(__directory__ / path)
-            file_name, _ = QFileDialog.getSaveFileName(
-                None, 'Save Project File (*.kmap)', str(start_path))
+            start_path = str(Path(start_path))
+            file_name, _ = QFileDialog.getSaveFileName(None, 'Save Project File (.*kmap)', start_path)
+        
+        if not file_name:
+            return
 
         if not file_name.endswith('.kmap'):
             file_name += '.kmap'
 
-        # pickle.dump(tab_saves, open(file_name, 'wb'))
-        self.compress_pickle_dump(file_name, tab_saves)
-
+        self.compress_pickle_dump(file_name, save)
+        log = logging.getLogger('kmap').info(f'Saving project {file_name} successful.')
+         
     def compress_pickle_dump(self, title, data):
         with bz2.BZ2File(title, 'w') as f:
             pickle.dump(data, f)
@@ -362,100 +358,19 @@ class MainWindow(QMainWindow, MainWindow_UI):
         return data
 
     def load_project(self):
-        path = config.get_key('paths', 'project_start')
-        if path == 'None':
-            file_names, _ = QFileDialog.getOpenFileNames(
-                None, 'Load Project File (*.kmap)')
+        start_path = config.get_key('paths', 'project_start')
+        if start_path == 'None':
+            file_names, _ = QFileDialog.getOpenFileNames(None, 'Load Project File (*.kmap)')
         else:
-            start_path = str(__directory__ / path)
-            file_names, _ = QFileDialog.getOpenFileNames(
-                None, 'Load Project File (*.kmap)', str(start_path))
+            start_path = str(Path(start_path))
+            file_names, _ = QFileDialog.getOpenFileNames(None, 'Load Project File (*.kmap)', start_path)
 
         if not file_names:
             return
 
-        file_path = file_names[0]
-        # save = pickle.load(open(file_path, 'rb'))
-        save = self.decompress_pickle(file_path)
-
-        data_tabs = [tab_save for tab_save in
-                     save if tab_save[1][0] in ['SlicedDataTab',
-                                                'OrbitalDataTab']]
-        basic_tabs = [tab_save for tab_save in
-                      save if tab_save[1][0] not in ['LMFitPlotTab',
-                                                     'LMFitTab',
-                                                     'LMFitResultTab',
-                                                     'SlicedDataTab',
-                                                     'OrbitalDataTab',
-                                                     'SplitViewTab']]
-        lmfit_tabs = [tab_save for tab_save in
-                      save if tab_save[1][0] == 'LMFitTab']
-        split_tabs = [tab_save for tab_save in save if tab_save[1][0] ==
-                      'SplitViewTab']
-        result_tabs = [tab_save for tab_save in
-                       save if tab_save[1][0] == 'LMFitResultTab']
-        plot_tabs = [tab_save for tab_save in
-                     save if tab_save[1][0] == 'LMFitPlotTab']
-
-        # Go through all non lmfit tabs first and replace the save
-        # for a tab with the tab itself to be used for tabs that
-        # depend on it
-        for tab_save in basic_tabs:
-            index, tab_save, _ = tab_save
-            save[index] = self.tab_widget.open_tab_by_save(
-                tab_save)
-
-        ID_maps = []
-        for tab_save in data_tabs:
-            index, tab_save, _ = tab_save
-            tab, ID_map = self.tab_widget.open_tab_by_save(
-                tab_save)
-            save[index] = tab
-            ID_maps.append(ID_map)
-
-        for tab_save in lmfit_tabs:
-            index, tab_save, dependencies = tab_save
-            sliced_idx, orbital_idx = dependencies
-            sliced_tab = save[sliced_idx]
-            orbital_tab = save[orbital_idx]
-
-            tab = self.tab_widget.open_tab_by_save(tab_save,
-                                                   sliced_tab,
-                                                   orbital_tab)
-
-            tab.sliced_data_tab_idx = sliced_idx
-            tab.orbital_data_tab_idx = orbital_idx
-
-            save[index] = tab
-
-        for tab_save in split_tabs:
-            index, tab_save, dependencies = tab_save
-            sliced_idx, orbital_idx = dependencies
-            sliced_tab = save[sliced_idx]
-            orbital_tab = save[orbital_idx]
-
-            tab = self.tab_widget.open_tab_by_save(tab_save,
-                                                   sliced_tab,
-                                                   orbital_tab)
-
-            save[index] = tab
-
-        for tab_save in result_tabs:
-            index, tab_save, dependencies = tab_save
-            lmfit_tab_idx = dependencies[0]
-            lmfit_tab = save[lmfit_tab_idx]
-
-            tab = self.tab_widget.open_tab_by_save(
-                tab_save, lmfit_tab, ID_maps)
-
-            save[index] = tab
-
-        for tab_save in plot_tabs:
-            index, tab_save, dependencies = tab_save
-            result_tab_idx = dependencies[0]
-            result_tab = save[result_tab_idx]
-
-            self.tab_widget.open_tab_by_save(tab_save, result_tab)
+        save = self.decompress_pickle(file_names[0])
+        self.tab_widget.restore_state(save['tabs'])
+        log = logging.getLogger('kmap').info(f'Loading project {file_names[0]} successful.')
 
     def closeEvent(self, event):
         for window in self.sub_windows.values():
