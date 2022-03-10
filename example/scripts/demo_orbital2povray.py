@@ -9,7 +9,7 @@
 from pathlib import Path
 
 # kMap.py Imports
-from orbital2povray import Orbital2Povray 
+from kmap.library.orbital2povray import Orbital2Povray
 
 # Path to data folder; replace with your own; use '/' instead of '+'
 # when concatenating with strings
