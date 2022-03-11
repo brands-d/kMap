@@ -15,8 +15,8 @@ import urllib.request
 
 # kMap.py Imports
 from kmap.library.database import Database
-from orbital2povray import Orbital2Povray 
-
+from kmap.library.orbital2povray import Orbital2Povray
+ 
 # set path to molecules.txt file containing the summary of the OrganicMoelculeDatabase at http://143.50.77.12:5000/
 molecules_path = '../../kmap/resources/misc/molecules.txt'
 

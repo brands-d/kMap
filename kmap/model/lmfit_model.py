@@ -636,9 +636,10 @@ class LMFitModel():
                             min=0, vary=False, expr=None)
         self.parameters.add('E_kin', value=30,
                             min=5, max=150, vary=False, expr=None)
-        for angle in ['alpha', 'beta']:
-            self.parameters.add(angle, value=0,
-                                min=90, max=-90, vary=False, expr=None)
+        self.parameters.add('alpha', value=45,
+                            min=0, max=90, vary=False, expr=None)
+        self.parameters.add('beta', value=0,
+                            min=-180, max=180, vary=False, expr=None)
 
     def _construct_minimizer_result(self, results):
 
