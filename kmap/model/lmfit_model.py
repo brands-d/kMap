@@ -499,7 +499,8 @@ class LMFitModel():
                                 Ak_type=self.Ak_type,
                                 polarization=self.polarization,
                                 symmetrization=self.symmetrization,
-                                s_share=self.s_share)
+                                s_share=self.s_share,
+                                V0=param['V0'].value)
 
         return self._cut_region(kmap)
 
@@ -636,6 +637,8 @@ class LMFitModel():
                             min=0, vary=False, expr=None)
         self.parameters.add('E_kin', value=30,
                             min=5, max=150, vary=False, expr=None)
+        self.parameters.add('V0', value=0,
+                            min=-5, max=30, vary=False, expr=None)        
         self.parameters.add('alpha', value=45,
                             min=0, max=90, vary=False, expr=None)
         self.parameters.add('beta', value=0,

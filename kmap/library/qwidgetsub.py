@@ -83,6 +83,21 @@ class EnergySpinBox(QDoubleSpinBox):
         self.setAlignment(Qt.AlignHCenter)
         self.setObjectName('energy')
 
+class InnerPotentialSpinBox(QDoubleSpinBox):
+
+    def __init__(self, *args, value=0, **kwargs):
+        super(InnerPotentialSpinBox, self).__init__(*args, **kwargs)
+
+        self.setSuffix('  eV')
+        self.setMinimum(-5)
+        self.setMaximum(30)
+        self.setValue(value)
+        self.setDecimals(1)
+        self.setSingleStep(0.5)
+        self.setKeyboardTracking(False)
+        self.setAlignment(Qt.AlignHCenter)
+        self.setObjectName('energy')
+
 
 class FixedSizeWidget(QWidget):
 

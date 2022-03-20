@@ -6,7 +6,7 @@ from PyQt5.QtCore import Qt, QObject, pyqtSignal
 # Own Imports
 from kmap.library.qwidgetsub import (
     CenteredLabel, WeightSpinBox,
-    AngleSpinBox, EnergySpinBox, BackgroundSpinBox)
+    AngleSpinBox, EnergySpinBox, InnerPotentialSpinBox, BackgroundSpinBox)
 
 
 class SignalObject(QObject):
@@ -144,9 +144,11 @@ class OrbitalOptionsTreeItem(LMFitTreeTopLevelItem):
         beta = AngleTreeItem(self, tree, parameters['beta'], 'Beta')
         energy = EnergyTreeItem(
             self, tree, parameters['E_kin'], 'Kinetic Energy')
+        V0 = InnerPotentialTreeItem(
+            self, tree, parameters['V0'], 'Inner Potential')
 
-        self.children = [alpha, beta, energy]
-        self.parameters = ['alpha', 'beta', 'E_kin']
+        self.children = [alpha, beta, energy, V0]
+        self.parameters = ['alpha', 'beta', 'E_kin', 'V0']
 
 
 class OrbitalTreeItem(LMFitTreeTopLevelItem):
@@ -353,6 +355,27 @@ class EnergyTreeItem(LMFitDataTreeItem):
 
         super()._setup(tree, name)
 
+class InnerPotentialTreeItem(LMFitDataTreeItem):
+
+    def __init__(self, parent, tree, parameter, name=None):
+
+        super().__init__(parent, parameter)
+
+        self._setup(tree, name)
+        self._connect()
+
+    def _setup(self, tree, name):
+
+        initial = self.parameter.value
+        min_ = self.parameter.min
+        max_ = self.parameter.max
+
+        self.initial_spinbox = InnerPotentialSpinBox(value=initial)
+        self.min_spinbox = InnerPotentialSpinBox(value=min_)
+        self.max_spinbox = InnerPotentialSpinBox(value=max_)
+
+        super()._setup(tree, name)
+
 
 class WeightTreeItem(LMFitDataTreeItem):
 
@@ -444,9 +467,13 @@ class OrbitalOptionsResultTreeItem(LMFitResultTreeItem):
         energy = DataResultTreeItem(self, tree, result['E_kin'],
                                     'Kinetic Engery', units='  eV',
                                     decimals=2)
+        V0 = DataResultTreeItem(self, tree, result['V0'],
+                                    'Inner Potential', units='  eV',
+                                    decimals=2)
 
-        self.parameters = ['alpha', 'beta', 'E_kin']
-        self.children = [alpha, beta, energy]
+
+        self.parameters = ['alpha', 'beta', 'E_kin', 'V0']
+        self.children = [alpha, beta, energy, V0]
 
 
 class OrbitalResultTreeItem(LMFitResultTreeItem):
