@@ -361,6 +361,7 @@ class Mini3DKSpacePlot(GLViewWidget):
         self.orbital = None
         self.orientation = [0, 0, 0]
         self.E_kin = 30
+        self.V0 = 0
 
         super(Mini3DKSpacePlot, self).__init__(*args, **kwargs)
         self._setup()
@@ -392,6 +393,11 @@ class Mini3DKSpacePlot(GLViewWidget):
 
     def change_energy(self, E_kin):
         self.E_kin = E_kin
+
+        self._refresh_hemisphere()
+
+    def change_inner_potential(self, V0):
+        self.V0 = V0
 
         self._refresh_hemisphere()
 
@@ -451,6 +457,8 @@ class Mini3DKSpacePlot(GLViewWidget):
             return
 
         k = energy_to_k(self.E_kin)
+        kV = energy_to_k(self.E_kin + self.V0)
+
         kx, ky, kz = [self.orbital.psik[key] for key in ['kx', 'ky', 'kz']]
         self.dx, self.dy, self.dz = [
             kx[1] - kx[0], ky[1] - ky[0], kz[1] - kz[0]]
@@ -471,7 +479,7 @@ class Mini3DKSpacePlot(GLViewWidget):
         nz = len(kz)
         X, Y, Z = np.meshgrid(kx / self.dx, ky / self.dy,
                               kz[nz // 2:] / self.dz)
-        data = X**2 + Y**2 + Z**2
+        data = X**2 + Y**2 + ((k/kV)*Z)**2
         iso = k**2 / (self.dx * self.dy)
         color = (0.5, 0.5, 0.5, 0.8)
         self.hemisphere = self._get_iso_mesh(data, iso, color, z_shift=False)

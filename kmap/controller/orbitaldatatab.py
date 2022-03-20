@@ -87,6 +87,7 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         parameters = self.get_parameters(ID)
         phi, theta, psi = parameters[3:6]
         E_kin = parameters[1]
+        V0 = parameters[-1]
 
         if orbital_changed:
             orbital = self.model.ID_to_orbital(ID)
@@ -94,6 +95,7 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
             self.mini_real_plot.set_orbital(orbital)
 
         self.mini_3Dkspace_plot.change_energy(E_kin)
+        self.mini_3Dkspace_plot.change_inner_potential(V0)
         self.mini_3Dkspace_plot.rotate_orbital(phi, theta, psi)
         self.mini_real_plot.rotate_orbital(phi, theta, psi)
 
@@ -107,13 +109,13 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         return self.crosshair
 
     def get_parameters(self, ID):
-        kinetic_energy, dk, symmetry = self.cube_options.get_parameters()
+        kinetic_energy, dk, symmetry, V0 = self.cube_options.get_parameters()
         parameters = self.table.get_parameters_by_ID(ID)
         weight, *orientation = parameters
         *polarization, s_share = self.polarization.get_parameters()
 
         return (weight, kinetic_energy, dk,
-                *orientation, *polarization, symmetry, s_share)
+                *orientation, *polarization, symmetry, s_share, V0)
 
     def get_use(self, ID):
         return self.table.get_use_by_ID(ID)
@@ -361,6 +363,8 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         self.cube_options.symmetrization_changed.connect(
             self.change_parameter)
         self.cube_options.energy_changed.connect(
+            self.change_parameter)
+        self.cube_options.V0_changed.connect(
             self.change_parameter)
         self.cube_options.resolution_changed.connect(
             self.change_parameter)

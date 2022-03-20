@@ -47,7 +47,8 @@ class Orbital():
 
     def get_kmap(self, E_kin=30, dk=0.03, phi=0, theta=0, psi=0,
                  Ak_type='no', polarization='p', alpha=60, beta=90,
-                 gamma=0, symmetrization='no', s_share=0.694):
+                 gamma=0, symmetrization='no', s_share=0.694,
+                 V0=0.0):
         """Returns a kmap slice from the orbital data.
 
         Args:
@@ -68,14 +69,16 @@ class Orbital():
                 '3-fold', '3-fold+mirror','4-fold', '4-fold+mirror'
             s_share (float): share of s-polarized light for the case
                 of unpolarized light (should be between 0 and 1)
+            V0 (float): inner potential used to correct the k-vector
+                in z-direction
 
         Returns:
             (PlotData): PlotData containing the kmap slice.
         """
 
         # Compute new hemispherical cut if E_kin or dk has changed
-        new_cut = self.check_new_cut(E_kin, dk)
-        if new_cut: self.set_kinetic_energy(E_kin, dk)
+        new_cut = self.check_new_cut(E_kin, dk, V0)
+        if new_cut: self.set_kinetic_energy(E_kin, dk, V0)
 
         # Rotate molecule (that is, rotate hemisphere) if angles have changed
         # ... and symmetrize kmap if necessary
@@ -202,8 +205,9 @@ class Orbital():
         del psik
 
     # Make hemi-spherical cut through 3D Fourier transform
-    def set_kinetic_energy(self, E_kin, dk):
+    def set_kinetic_energy(self, E_kin, dk, V0):
         kmax = energy_to_k(E_kin)
+        k_V = energy_to_k(E_kin + V0)
         if type(dk) == tuple:
             kxi = dk[0]
             kyi = dk[1]
@@ -217,18 +221,19 @@ class Orbital():
 
         krange = ((kxi[0], kxi[-1]), (kyi[0], kyi[-1]))
         KX, KY = np.meshgrid(kxi, kyi, indexing='xy')
-        KZ = np.sqrt(kmax**2 - KX**2 - KY**2)
+        #KZ = np.sqrt(kmax**2 - KX**2 - KY**2)
+        KZ = np.sqrt(k_V**2 - (k_V**2/kmax**2)*KX**2 - (k_V**2/kmax**2)*KY**2)
         kxkykz = list(map(lambda a, b, c: (a, b, c),
                           KX.flatten(), KY.flatten(), KZ.flatten()))
         data = np.reshape(self.psik['data_interp'](kxkykz), (num_kx, num_ky))
 
         # Set kmap attributes
-        self.kmap = {'E_kin': E_kin, 'dk': dk, 'krange': krange,
+        self.kmap = {'E_kin': E_kin, 'V_0':V0, 'dk': dk, 'krange': krange,
                      'KX': KX, 'KY': KY, 'KZ': KZ,
                      'phi': 0, 'theta': 0, 'psi': 0,
                      'data': data}
 
-    def check_new_cut(self, E_kin, dk):
+    def check_new_cut(self, E_kin, dk, V0):
         eps = 1e-10
 
         new_cut = False
@@ -263,6 +268,15 @@ class Orbital():
 
         else:
             new_cut = True
+
+
+        if 'V_0' in self.kmap:
+            if np.abs(self.kmap['V_0'] - V0) > eps:
+                new_cut = True
+
+        else:
+            new_cut = True
+
 
         return new_cut
 
