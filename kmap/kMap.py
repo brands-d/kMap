@@ -3,8 +3,8 @@ import logging
 import logging.config
 from pathlib import Path
 
-from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QApplication
+from PyQt6.QtGui import QFont
+from PyQt6.QtWidgets import QApplication
 
 import pyqtgraph as pg
 import matplotlib as plt
@@ -43,7 +43,7 @@ class kMap(QApplication):
         # Creating mainwindow
         self.main_window = MainWindow()
 
-        super().exec_()
+        super().exec()
 
     def test(self):
         pass
@@ -78,7 +78,7 @@ class kMap(QApplication):
         pg.setConfigOption('imageAxisOrder', value)
 
         self.setFont(QFont(config.get_key('font', 'font'), int(
-            config.get_key('font', 'size')), QFont.Normal))
+            config.get_key('font', 'size')), QFont.Weight.Normal))
 
         logging.getLogger('kmap').debug('Settings loaded successfully.')
 

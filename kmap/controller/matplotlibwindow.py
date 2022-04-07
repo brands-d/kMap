@@ -2,9 +2,9 @@
 from math import ceil, floor
 
 # PyQt5 Imports
-from PyQt5 import uic
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QWidget
+from PyQt6 import uic
+from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtWidgets import QMainWindow, QHBoxLayout, QWidget
 from matplotlib.backends.backend_qt5agg import (FigureCanvas,
                                                 NavigationToolbar2QT)
 from matplotlib.colors import ListedColormap

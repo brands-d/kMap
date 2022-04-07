@@ -1,7 +1,7 @@
 # PyQt5 Imports
-from PyQt5 import uic
-from PyQt5.QtWidgets import QMainWindow
-from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt6 import uic
+from PyQt6.QtWidgets import QMainWindow
+from PyQt6.QtCore import Qt, pyqtSignal
 
 # Own Imports
 from kmap import __directory__
@@ -36,7 +36,7 @@ class RenameTabWindow(QMainWindow, RenameTabWindow_UI):
         event.accept()
 
     def _setup(self):
-        self.setWindowFlags(Qt.CustomizeWindowHint | Qt.WindowTitleHint)
+        self.setWindowFlags(Qt.WindowType.CustomizeWindowHint | Qt.WindowType.WindowTitleHint)
 
     def _connect(self):
         self.rename_tab_edit.returnPressed.connect(self.name_chosen)

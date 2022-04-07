@@ -1,7 +1,7 @@
 # PyQt5 Imports
-from PyQt5.QtWidgets import (
+from PyQt6.QtWidgets import (
     QTreeWidgetItem, QCheckBox, QWidget, QLabel, QHBoxLayout, QLineEdit)
-from PyQt5.QtCore import Qt, QObject, pyqtSignal
+from PyQt6.QtCore import Qt, QObject, pyqtSignal
 
 # Own Imports
 from kmap.library.qwidgetsub import (
@@ -40,7 +40,7 @@ class LMFitTreeItem(QTreeWidgetItem):
         self.vary = QCheckBox()
         layout = QHBoxLayout()
         layout.addWidget(self.vary)
-        layout.setAlignment(Qt.AlignCenter)
+        layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.setContentsMargins(0, 0, 0, 0)
         center_widget = QWidget()
         center_widget.setLayout(layout)

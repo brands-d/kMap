@@ -1,7 +1,7 @@
 # PyQt5 Imports
-from PyQt5 import uic
-from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import QMainWindow
+from PyQt6 import uic
+from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtWidgets import QMainWindow
 
 # Own Imports
 from kmap import __directory__
@@ -23,7 +23,7 @@ class TabChooseWindow(QMainWindow, TabChooseWindow_UI):
         super(TabChooseWindow, self).__init__(*args, **kwargs)
         self.setupUi(self)
 
-        self.setAttribute(Qt.WA_DeleteOnClose, True)
+        self.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, True)
 
         self._setup()
         self._connect()

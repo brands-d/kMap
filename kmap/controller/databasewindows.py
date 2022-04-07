@@ -2,9 +2,9 @@
 import logging
 
 # PyQt5 Imports
-from PyQt5 import uic
-from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import QMainWindow, QTreeWidgetItem, QHeaderView
+from PyQt6 import uic
+from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtWidgets import QMainWindow, QTreeWidgetItem, QHeaderView
 
 # Own Imports
 from kmap import __directory__
@@ -29,7 +29,7 @@ class DatabaseWindowBase(QMainWindow):
 
         # Setup GUI
         super(DatabaseWindowBase, self).__init__()
-        self.setAttribute(Qt.WA_DeleteOnClose, True)
+        self.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, True)
 
     def fill_tree(self):
 
@@ -54,7 +54,7 @@ class DatabaseWindowBase(QMainWindow):
 
         for col, entry in enumerate(entries):
             molecule_item.setText(col, entry)
-            molecule_item.setTextAlignment(col, Qt.AlignCenter)
+            molecule_item.setTextAlignment(col, Qt.AlignmentFlag.AlignCenter)
 
         # Add item to tree
         self.tree.addTopLevelItem(molecule_item)
@@ -73,7 +73,7 @@ class DatabaseWindowBase(QMainWindow):
 
         for col, entry in enumerate(entries):
             orbital_item.setText(col, entry)
-            orbital_item.setTextAlignment(col, Qt.AlignCenter)
+            orbital_item.setTextAlignment(col, Qt.AlignmentFlag.AlignCenter)
 
         # Add item to tree
         molecule_item.addChild(orbital_item)
@@ -130,8 +130,8 @@ class DatabaseWindowBase(QMainWindow):
         self.tree.setColumnWidth(4, 150)
         self.tree.setColumnWidth(5, 150)
         self.tree.setColumnWidth(6, 120)
-        self.tree.header().setDefaultAlignment(Qt.AlignCenter)
-        self.tree.header().setSectionResizeMode(1, QHeaderView.Stretch)
+        self.tree.header().setDefaultAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.tree.header().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
 
         self.tree.sortItems(0, Qt.SortOrder.AscendingOrder)
 

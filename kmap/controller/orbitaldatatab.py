@@ -7,9 +7,9 @@ import h5py
 import numpy as np
 
 # PyQt5 Imports
-from PyQt5 import uic
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QFileDialog
+from PyQt6 import uic
+from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtWidgets import QFileDialog
 
 # Own Imports
 from kmap import __directory__

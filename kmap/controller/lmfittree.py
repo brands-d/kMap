@@ -2,9 +2,9 @@
 import logging
 
 # PyQt5 Imports
-from PyQt5 import uic
-from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import QWidget, QHeaderView, QHBoxLayout, QSizePolicy
+from PyQt6 import uic
+from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtWidgets import QWidget, QHeaderView, QHBoxLayout, QSizePolicy
 
 # Own Imports
 from kmap import __directory__
@@ -85,8 +85,8 @@ class LMFitTree(LMFitBaseTree, LMFitTree_UI):
         for col, width in enumerate(widths):
             self.tree.setColumnWidth(col, width)
 
-        self.tree.header().setResizeMode(1, QHeaderView.Stretch)
-        self.tree.header().setDefaultAlignment(Qt.AlignCenter)
+        self.tree.header().setResizeMode(1, QHeaderView.ResizeMode.Stretch)
+        self.tree.header().setDefaultAlignment(Qt.AlignmentFlag.AlignCenter)
 
         # Add TreeItems
         self.orbital_options_item = OrbitalOptionsTreeItem(
@@ -135,8 +135,8 @@ class LMFitResultTree(LMFitBaseTree, LMFitResultTree_UI):
         for col, width in enumerate(widths):
             self.tree.setColumnWidth(col, width)
 
-        self.tree.header().setResizeMode(1, QHeaderView.Stretch)
-        self.tree.header().setDefaultAlignment(Qt.AlignCenter)
+        self.tree.header().setResizeMode(1, QHeaderView.ResizeMode.Stretch)
+        self.tree.header().setDefaultAlignment(Qt.AlignmentFlag.AlignCenter)
 
         # Add TreeItems
         self.tree.addTopLevelItem(OrbitalOptionsResultTreeItem(

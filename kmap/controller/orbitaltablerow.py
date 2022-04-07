@@ -1,6 +1,6 @@
 # PyQt5 Imports
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QWidget, QPushButton
+from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtWidgets import QWidget, QPushButton
 
 # Own Imports
 from kmap.library.misc import orientation_to_euler_angle

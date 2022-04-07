@@ -2,8 +2,8 @@
 from abc import abstractmethod
 
 # PyQt5 Imports
-from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import (QLabel, QCheckBox, QDoubleSpinBox, QWidget,
+from PyQt6.QtCore import Qt, pyqtSignal, QTimer
+from PyQt6.QtWidgets import (QLabel, QCheckBox, QDoubleSpinBox, QWidget,
                              QTabWidget)
 
 
@@ -11,7 +11,7 @@ class CenteredLabel(QLabel):
 
     def __init__(self, *args, **kwargs):
         super(CenteredLabel, self).__init__(*args, **kwargs)
-        self.setAlignment(Qt.AlignCenter)
+        self.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
 
 class UseCheckBox(QCheckBox):
@@ -34,7 +34,7 @@ class AngleSpinBox(QDoubleSpinBox):
         self.setDecimals(1)
         self.setSingleStep(1)
         self.setKeyboardTracking(False)
-        self.setAlignment(Qt.AlignHCenter)
+        self.setAlignment(Qt.AlignmentFlag.AlignHCenter)
         self.setObjectName(objectname)
 
 
@@ -49,7 +49,7 @@ class WeightSpinBox(QDoubleSpinBox):
         self.setDecimals(1)
         self.setSingleStep(0.1)
         self.setKeyboardTracking(False)
-        self.setAlignment(Qt.AlignHCenter)
+        self.setAlignment(Qt.AlignmentFlag.AlignHCenter)
         self.setObjectName('weight')
 
 
@@ -64,7 +64,7 @@ class BackgroundSpinBox(QDoubleSpinBox):
         self.setDecimals(1)
         self.setSingleStep(0.1)
         self.setKeyboardTracking(False)
-        self.setAlignment(Qt.AlignHCenter)
+        self.setAlignment(Qt.AlignmentFlag.AlignHCenter)
         self.setObjectName('background')
 
 
@@ -80,7 +80,7 @@ class EnergySpinBox(QDoubleSpinBox):
         self.setDecimals(1)
         self.setSingleStep(0.1)
         self.setKeyboardTracking(False)
-        self.setAlignment(Qt.AlignHCenter)
+        self.setAlignment(Qt.AlignmentFlag.AlignHCenter)
         self.setObjectName('energy')
 
 class InnerPotentialSpinBox(QDoubleSpinBox):
@@ -95,7 +95,7 @@ class InnerPotentialSpinBox(QDoubleSpinBox):
         self.setDecimals(1)
         self.setSingleStep(0.5)
         self.setKeyboardTracking(False)
-        self.setAlignment(Qt.AlignHCenter)
+        self.setAlignment(Qt.AlignmentFlag.AlignHCenter)
         self.setObjectName('energy')
 
 
@@ -172,7 +172,7 @@ class AspectWidget(QWidget):
         self.resize(width, height)
         self.blockSignals(False)
 
-
+import functools
 class Tab(QTabWidget):
     close_requested = pyqtSignal()
 

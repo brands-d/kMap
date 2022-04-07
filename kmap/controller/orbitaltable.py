@@ -2,9 +2,9 @@
 import logging
 
 # PyQt5 Imports
-from PyQt5 import uic
-from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import QWidget, QHeaderView, QHBoxLayout
+from PyQt6 import uic
+from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtWidgets import QWidget, QHeaderView, QHBoxLayout
 
 # Own Imports
 from kmap import __directory__
@@ -129,15 +129,14 @@ class OrbitalTable(QWidget, OrbitalTable_UI):
 
         for col, width in enumerate(widths):
             self.table.setColumnWidth(col, width)
-
-        self.table.horizontalHeader().setResizeMode(2, QHeaderView.Stretch)
+        self.table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
 
     def _embed_row(self, row, row_index):
 
         # To center checkbox, embed it inside a layout inside a widget
         layout = QHBoxLayout()
         layout.addWidget(row.use)
-        layout.setAlignment(Qt.AlignCenter)
+        layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.setContentsMargins(0, 0, 0, 0)
         center_widget = QWidget()
         center_widget.setLayout(layout)

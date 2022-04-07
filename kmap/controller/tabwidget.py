@@ -7,9 +7,9 @@ import datetime
 import numpy as np
 
 # PyQt5 Imports
-from PyQt5 import uic
-from PyQt5.QtWidgets import QWidget
-from PyQt5.QtCore import pyqtSignal
+from PyQt6 import uic
+from PyQt6.QtWidgets import QWidget
+from PyQt6.QtCore import pyqtSignal, QTimer, Slot
 
 # Own Imports
 from kmap import __directory__
@@ -428,12 +428,12 @@ class TabWidget(QWidget, TabWidget_UI):
             tabbar.moveTab(index, i+start_index)
 
     def _open_tab(self, tab, title, tooltip=None, index=None, ID=None):
+
         self.ID_counter += 1
         ID = self.ID_counter if ID is None else ID
         tab.set_ID(ID)
 
         index = self.tab_widget.addTab(tab, title)
-        
         self.tab_widget.setCurrentIndex(index)
 
         if tooltip is not None:

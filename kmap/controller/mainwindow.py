@@ -5,9 +5,9 @@ from pathlib import Path
 import logging
 
 # PyQt5 Imports
-from PyQt5 import uic
-from PyQt5.QtGui import QIcon, QKeySequence
-from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox
+from PyQt6 import uic
+from PyQt6.QtGui import QIcon, QKeySequence
+from PyQt6.QtWidgets import QMainWindow, QFileDialog, QMessageBox
 
 # Own Imports
 from kmap import __directory__

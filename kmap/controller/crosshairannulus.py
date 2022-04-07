@@ -3,7 +3,7 @@ import numpy as np
 import pyqtgraph as pg
 
 # PyQt5 Imports
-from PyQt5 import uic
+from PyQt6 import uic
 
 # Own Imports
 from kmap import __directory__

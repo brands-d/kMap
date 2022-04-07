@@ -2,8 +2,8 @@
 from os.path import abspath
 
 # PyQt5 Imports
-from PyQt5 import uic
-from PyQt5.QtGui import QTextDocument
+from PyQt6 import uic
+from PyQt6.QtGui import QTextDocument
 
 # Own Imports
 from kmap import __directory__
@@ -60,7 +60,7 @@ class FileTab(Tab):
 
     def find_prev(self):
 
-        self.display.find(self.line_edit.text(), QTextDocument.FindBackward)
+        self.display.find(self.line_edit.text(), QTextDocument.FindFlag.FindBackward)
 
     def get_title(self):
 
