@@ -1,9 +1,12 @@
 # Python Imports
 import logging
 
+# Third Party Imports
+import numpy as np
+
 # PyQt5 Imports
 from PyQt5 import uic
-from PyQt5.QtWidgets import QVBoxLayout
+from PyQt5.QtWidgets import QVBoxLayout, QFileDialog
 
 # Own Imports
 from kmap import __directory__
@@ -69,6 +72,26 @@ class SplitViewTab(Tab, SplitViewTab_UI):
                 'orbital_tab': self.orbital_tab.ID}
 
         return save, dependencies
+
+    def export_to_numpy(self):
+        path = config.get_key('paths', 'numpy_export_start')
+        if path == 'None':
+            file_name, _ = QFileDialog.getSaveFileName(
+                None, 'Save .npy File (*.npy)')
+        else:
+            start_path = str(__directory__ / path)
+            file_name, _ = QFileDialog.getSaveFileName(
+                None, 'Save .npy File (*.npy)', str(start_path))
+
+        if not file_name:
+            return
+
+        index = self.get_slice()
+        axis = self.slider.get_axis()
+        data = self.model.update_displayed_plot_data(index, axis)
+        axis_1 = data.x_axis
+        axis_2 = data.y_axis
+        np.savez(file_name, axis_1=axis_1, axis_2=axis_2, data=data.data)
 
     def get_title(self):
         return self.title

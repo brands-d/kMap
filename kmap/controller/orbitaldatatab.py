@@ -176,6 +176,24 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
 
         self.orbital_removed.emit(ID)
 
+    def export_to_numpy(self):
+        path = config.get_key('paths', 'numpy_export_start')
+        if path == 'None':
+            file_name, _ = QFileDialog.getSaveFileName(
+                None, 'Save .npy File (*.npy)')
+        else:
+            start_path = str(__directory__ / path)
+            file_name, _ = QFileDialog.getSaveFileName(
+                None, 'Save .npy File (*.npy)', str(start_path))
+
+        if not file_name:
+            return
+
+        axis_1 = self.get_displayed_plot_data().x_axis
+        axis_2 = self.get_displayed_plot_data().y_axis
+        data = self.get_displayed_plot_data().data
+        np.savez(file_name, axis_1=axis_1, axis_2=axis_2, data=data)
+
     def export_to_hdf5(self):
         if not self.interpolation.interpolation_checkbox.isChecked():
             print('Only interpolated OrbitalData can be exported.')

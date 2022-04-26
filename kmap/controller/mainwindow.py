@@ -322,6 +322,12 @@ class MainWindow(QMainWindow, MainWindow_UI):
         if hasattr(current_tab, 'export_to_hdf5'):
             current_tab.export_to_hdf5()
 
+    def export_to_numpy(self):
+        current_tab = self.tab_widget.get_current_tab()
+
+        if hasattr(current_tab, 'export_to_numpy'):
+            current_tab.export_to_numpy()
+
     def reload_settings(self):
         # Reload the settings
         config.setup()
@@ -465,6 +471,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
         self.show_matplotlib.triggered.connect(self.open_in_matplotlib)
         self.export_txt.triggered.connect(self.export_to_txt)
         self.export_hdf5.triggered.connect(self.export_to_hdf5)
+        self.export_numpy.triggered.connect(self.export_to_numpy)
         self.duplicate_tab_action.triggered.connect(self.duplicate_tab)
         self.close_tab_action.triggered.connect(self.close_current_tab)
         self.save_project_action.triggered.connect(self.save_project)

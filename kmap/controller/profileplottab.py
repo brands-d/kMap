@@ -3,13 +3,14 @@ from itertools import chain
 
 # PyQt5 Imports
 from PyQt5 import uic
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QWidget, QFileDialog
 
 # Third Party Imports
 import numpy as np
 
 # Own Imports
 from kmap import __directory__
+from kmap.config.config import config
 from kmap.library.qwidgetsub import Tab
 from kmap.controller.sliceddatatab import SlicedDataTab
 from kmap.controller.orbitaldatatab import OrbitalDataTab
@@ -68,6 +69,23 @@ class ProfilePlotTab(Tab, ProfilePlotTab_UI):
         self.refresh_plot()
 
         return self
+
+    def export_to_numpy(self):
+        path = config.get_key('paths', 'numpy_export_start')
+        if path == 'None':
+            file_name, _ = QFileDialog.getSaveFileName(
+                None, 'Save .npy File (*.npy)')
+        else:
+            start_path = str(__directory__ / path)
+            file_name, _ = QFileDialog.getSaveFileName(
+                None, 'Save .npy File (*.npy)', str(start_path))
+
+        if not file_name:
+            return
+
+        data = [(d['x'], d['y']) for d in self.plot_item.get_data()]
+        data = np.asanyarray(data, dtype=object)
+        np.savez(file_name, data=data)
 
     def refresh_plot(self):
         is_slice_plot = self.slice_radiobutton.isChecked()

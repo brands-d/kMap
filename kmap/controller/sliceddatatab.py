@@ -98,6 +98,31 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
     def get_data(self):
         return self.model.data
 
+    def export_to_numpy(self):
+        path = config.get_key('paths', 'numpy_export_start')
+        if path == 'None':
+            file_name, _ = QFileDialog.getSaveFileName(
+                None, 'Save .npy File (*.npy)')
+        else:
+            start_path = str(__directory__ / path)
+            file_name, _ = QFileDialog.getSaveFileName(
+                None, 'Save .npy File (*.npy)', str(start_path))
+
+        if not file_name:
+            return
+
+        old_index = self.get_slice()
+        axis_1 = self.model.data.axes[0].axis
+        axis_2 = self.get_displayed_plot_data().x_axis
+        axis_3 = self.get_displayed_plot_data().y_axis
+        data = np.zeros((self.model.data.axes[self.get_axis()].num,
+            *self.get_displayed_plot_data().data.shape))
+        for i in list(range((int(self.model.data.axes[self.get_axis()].num)))):
+            self.change_slice(i)
+            data[i,:,:] = self.get_displayed_plot_data().data
+        np.savez(file_name, axis_1=axis_1, axis_2=axis_2, axis_3=axis_3, slices=data)
+        self.change_slice(old_index)
+
     def export_to_txt(self):
         path = config.get_key('paths', 'txt_export_start')
         if path == 'None':
