@@ -466,6 +466,8 @@ class Orbital2Povray():
         color_map = self._set_colormap(
             color_min, color_max, color_num, color_type)
 
+        #print(color_map)
+
         import scipy.interpolate as interp
 
         a, b, c = self.grid['a'][0], self.grid['b'][1], self.grid['c'][2]
@@ -491,10 +493,11 @@ class Orbital2Povray():
                 if color_type == 'phase':
                     p = color_interp(vertex)
                     c = np.angle(p)
+                    i = int(color_num/2 + (color_num/(color_max - color_min))*c)
                 else:
                     c = color_interp(vertex)
-
-                i = int(color_num/2 + (color_num/(color_max - color_min))*c)
+                    i = int((color_num/(color_max - color_min))*c)
+                
                 i = max(0, i)
                 i = min(color_num-1, i)
                 color_index.append(i)
@@ -628,6 +631,15 @@ class Orbital2Povray():
                          value_min+0.50*value_range,
                          value_min+0.75*value_range,
                          value_max]
+
+        elif color_type == 'kmap':
+
+            colors = [[1,   1,   1  , 1.0], 
+                      [1 ,  0,   0,   0.2] ]                                  
+            value_range = value_max - value_min
+            intervals = [value_min,
+                         value_max]
+
 
         value_grid = np.linspace(value_min, value_max, num)
         color_map = []

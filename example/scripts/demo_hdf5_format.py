@@ -22,10 +22,10 @@ h5file.create_dataset('name',data='name of my dataset')
 
 h5file.create_dataset('axis_1_label',data='x') # label for x-axis (str)
 h5file.create_dataset('axis_2_label',data='y') # label for y-axis (str)
-h5file.create_dataset('axis_3_label',data='z') # label for z-axis (str)
+h5file.create_dataset('axis_3_label',data='voltage') # label for z-axis (str)
 
-h5file.create_dataset('axis_1_units',data='-') # physical units for x-axis (str)
-h5file.create_dataset('axis_2_units',data='-') # physical units for x-axis (str)
+h5file.create_dataset('axis_1_units',data='Å') # physical units for x-axis (str)
+h5file.create_dataset('axis_2_units',data='Å') # physical units for x-axis (str)
 h5file.create_dataset('axis_3_units',data='-') # physical units for x-axis (str)
 
 h5file.create_dataset('axis_1_range',data=[x[0], x[-1]]) # axis-1 range:  [float, float]
