@@ -4,6 +4,7 @@ This file defines a class named Orbital designed to read, hold,
 calculate and slice data from cube files.
 """
 
+import h5py
 import numpy as np
 import scipy.interpolate as interp
 from kmap.library.plotdata import PlotData
@@ -34,10 +35,13 @@ class Orbital():
     """
 
     def __init__(self, file, file_format='cube', dk3D=0.15, E_kin_max=150,
-                 value='abs2'):
+                 value='abs2', orbital_name=None):
         
         if file_format == 'cube': # Read orbital data from cube-file
             self._read_cube(file)
+
+        elif file_format == 'hdf5':
+            self._read_local_hdf5(file, orbital_name)
 
         self.compute_3DFT(dk3D, E_kin_max, value)
         self.kmap = {}
@@ -672,19 +676,27 @@ class Orbital():
 
 
 
-    def _read_local_hdf5(self, file_path, orbital_name):
+    def _read_local_hdf5(self, file, orbital_name):
         """ Read orbital data from local hdf5 file."""
+        
+        if type(file) == str:
+            with h5py.File('aux.hdf5', 'r') as f:
+                num_atom = f['num_atom'][()]
+                chemical_numbers = f['chemical_numbers'][()]
+                atomic_coordinates = f['atomic_coordinates'][()]
+                x = f[orbital_name]['x'][()]
+                y = f[orbital_name]['y'][()]
+                z = f[orbital_name]['z'][()]
+                data = f[orbital_name]['data'][()]
 
-        import h5py
-
-        with h5py.File(file_path, 'r') as file:
+        else:
             num_atom = file['num_atom'][()]
             chemical_numbers = file['chemical_numbers'][()]
             atomic_coordinates = file['atomic_coordinates'][()]
-            x = file[orbital_name]['x'][()]
-            y = file[orbital_name]['y'][()]
-            z = file[orbital_name]['z'][()]
-            data = file[orbital_name]['data'][()]
+            x = file['x'][()]
+            y = file['y'][()]
+            z = file['z'][()]
+            data = file['data'][()]
 
         dx = x[1] - x[0]
         dy = y[1] - y[0]
@@ -702,96 +714,6 @@ class Orbital():
         self.molecule = {'num_atom': num_atom,
                          'chemical_numbers': chemical_numbers,
                          'atomic_coordinates': atomic_coordinates}
-
-
-    def _read_remote_hdf5(self, server, port, moleculeID, orbital_number):
-        """ Read orbital data from remote hdf5 file."""
-
-        from urllib import request
-        import json
-
-        def get_molecule(server, port, ID):
-
-            url = 'http://' + server + ':' + str(port)
-            filename = 'ID%05i'%ID
-
-            req = request.Request(url, headers={'Host': filename + '.hdfgroup.org'})
-            with request.urlopen(req) as response:
-                body = json.loads(response.read())
-
-            uuid = body['root']
-
-            fields = ['num_atom', 'chemical_numbers', 'atomic_coordinates']
-            molecule = {}
-            for field in fields:
-                req = request.Request(url + '/groups/' + uuid + '/links/' + field, 
-                          headers={'Host': filename + '.hdfgroup.org'})
-                with request.urlopen(req) as response:
-                    body = json.loads(response.read())
-
-                for href in body['hrefs']:
-                    if href['rel'] == 'target':
-                        uuid_field = href['href'].split('/')[-1]
-
-                req = request.Request(url + '/datasets/' + uuid_field + '/value', 
-                          headers={'Host': filename + '.hdfgroup.org'})
-
-                with request.urlopen(req) as response:
-                    body = json.loads(response.read())  
-
-                molecule[field] = body['value']
-
-            return molecule
-
-        def get_psi(server, port, ID, orbital_number):
-
-            url = 'http://' + server + ':' + str(port)
-            filename = 'ID%05i'%ID
-
-            req = request.Request(url + '/groups', headers={'Host': filename + '.hdfgroup.org'})
-            with request.urlopen(req) as response:
-                body = json.loads(response.read())
-
-            group_uuid = body['groups'][orbital_number]
-
-            psi = {}
-            fields = ['x', 'y', 'z', 'data', 'name']
-            for field in fields:
-                req = request.Request(url + '/groups/' + group_uuid + '/links/'+field, 
-                          headers={'Host': filename + '.hdfgroup.org'})
-                with request.urlopen(req) as response:
-                    body = json.loads(response.read())
-
-                for href in body['hrefs']:
-                    if href['rel'] == 'target':
-                        uuid = href['href'].split('/')[-1]
-
-                req = request.Request(url + '/datasets/' + uuid + '/value', 
-                          headers={'Host': filename + '.hdfgroup.org'})
-      
-                with request.urlopen(req) as response:
-                        body = json.loads(response.read())  
-
-                if field == 'name':
-                    psi[field] = body['value']
-                else:
-                    psi[field] = np.array(body['value'])
-
-            psi['nx'] = len(psi['x'])
-            psi['ny'] = len(psi['y'])
-            psi['nz'] = len(psi['z'])
-            psi['dx'] = psi['x'][1] - psi['x'][0]
-            psi['dy'] = psi['y'][1] - psi['y'][0]
-            psi['dz'] = psi['z'][1] - psi['z'][0]
-
-            return psi
-
-        molecule = get_molecule(server, port, moleculeID)
-        psi = get_psi(server, port, moleculeID, orbital_number)
-
-        self.psi = psi
-        self.molecule = molecule
-
 
     def get_bonds(self, lower_factor=0.7, upper_factor=1.2):
         """ returns a list of bond used for plotting the molecular structure.

@@ -1,21 +1,25 @@
 import os
+import h5py
 import logging
 import urllib.request
 from pathlib import Path
+import numpy as np
 from kmap.library.orbital import Orbital
 from kmap.config.config import config
 from kmap.library.abstractdata import AbstractData
+from kmap.library.misc import get_remote_hdf5_orbital
 
 
 class OrbitalData(Orbital, AbstractData):
 
-    def __init__(self, cube, ID, name='', meta_data={}):
+    def __init__(self, data, ID, name='', meta_data={}, file_format='cube'):
 
         self.dk3D = float(config.get_key('orbital', 'dk3D'))
 
         AbstractData.__init__(self, ID, name, meta_data)
-        Orbital.__init__(self, cube, file_format='cube', dk3D=self.dk3D,
-                         value='abs2')
+        Orbital.__init__(self, data, file_format=file_format, dk3D=self.dk3D,
+                         value='abs2', orbital_name=name)
+
 
     @classmethod
     def init_from_file(cls, path, ID):
@@ -54,21 +58,43 @@ class OrbitalData(Orbital, AbstractData):
             with open(cache_file, 'r') as f:
                 file = f.read()
                 
+            name, keys = OrbitalData._get_metadata(file, url)
+            name = meta_data['name'] if 'name' in meta_data else name
+            meta_data.update(keys)
+            file_format = 'cube'
+
         else:
-            log.info('Loading from database: %s' % url)
-            with urllib.request.urlopen(url) as f:
-                file = f.read().decode('utf-8')
+            try:
+                log.info(f'Loading from ID{meta_data["ID"]:05d} hdf5 file....')
+                molecule, psi = get_remote_hdf5_orbital('143.50.77.12', '5002',
+                int(float(meta_data['database ID'])), int(meta_data['ID']))
+                file = h5py.File('aux.hdf5', 'w', driver='core', backing_store=False)
+                file.create_dataset('num_atom', data=molecule['num_atom'])
+                file.create_dataset('chemical_numbers', data=molecule['chemical_numbers'])
+                file.create_dataset('atomic_coordinates', data=molecule['atomic_coordinates'], dtype="float64")
+                file.create_dataset('x', data=psi['x'], dtype="float64")
+                file.create_dataset('y', data=psi['y'], dtype="float64")
+                file.create_dataset('z', data=psi['z'], dtype="float64")
+                file.create_dataset('data', data=psi['data'], dtype="float64")
+                name = psi['name']
+                file_format = 'hdf5'
 
-                if os.path.isdir(cache_dir):
-                    log.info(f'Putting {url} into cache {cache_file}')
-                    with open(cache_file, 'w') as f:
-                        f.write(file)
+            except:
+                log.info('HDF5 File not available, loading cube file...')
+                log.info('Loading from database: %s' % url)
+                with urllib.request.urlopen(url) as f:
+                    file = f.read().decode('utf-8')
 
-        name, keys = OrbitalData._get_metadata(file, url)
-        name = meta_data['name'] if 'name' in meta_data else name
-        meta_data.update(keys)
-            
-        return cls(file, ID, name=name, meta_data=meta_data)
+                    if os.path.isdir(cache_dir):
+                        log.info(f'Putting {url} into cache {cache_file}')
+                        with open(cache_file, 'w') as f:
+                            f.write(file)
+                name, keys = OrbitalData._get_metadata(file, url)
+                name = meta_data['name'] if 'name' in meta_data else name
+                meta_data.update(keys)
+                file_format = 'cube'
+
+        return cls(file, ID, name=name, meta_data=meta_data, file_format=file_format)
 
     @classmethod
     def _get_metadata(cls, file, file_path):

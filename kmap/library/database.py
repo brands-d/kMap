@@ -113,6 +113,7 @@ class Orbital():
     def get_meta_data(self):
 
         meta_data = {'name': self.name,
+                     'ID': self.ID,
                      'database ID': self.database_ID,
                      'energy': self.energy,
                      'occupation': self.occupation,

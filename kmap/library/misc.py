@@ -8,6 +8,8 @@ reduce the amount of copy-paste code.
 # Python Imports
 import re
 from math import isclose
+from urllib import request
+import json
 
 # Third Party Imports
 import numpy as np
@@ -348,3 +350,73 @@ def split_view(data_1, data_2, type_, scale=1):
         data.data.T[half_idx:] = scale * data_2.data.T[half_idx:]
 
     return data
+
+def get_remote_hdf5_orbital(server, port, ID, orbital_number):
+
+    url = 'http://' + server + ':' + str(port)
+    filename = 'ID%05i'%ID
+
+    req = request.Request(url + '/groups', headers={'Host': filename + '.hdfgroup.org'})
+    with request.urlopen(req) as response:
+        body = json.loads(response.read())
+
+    group_uuid = body['groups'][orbital_number]
+
+    psi = {}
+    fields = ['x', 'y', 'z', 'data', 'name']
+    for field in fields:
+        req = request.Request(url + '/groups/' + group_uuid + '/links/'+field, 
+                  headers={'Host': filename + '.hdfgroup.org'})
+        with request.urlopen(req) as response:
+            body = json.loads(response.read())
+
+        for href in body['hrefs']:
+            if href['rel'] == 'target':
+                uuid = href['href'].split('/')[-1]
+
+        req = request.Request(url + '/datasets/' + uuid + '/value', 
+                  headers={'Host': filename + '.hdfgroup.org'})
+
+        with request.urlopen(req) as response:
+                body = json.loads(response.read())  
+
+        if field == 'name':
+            psi[field] = body['value']
+        else:
+            psi[field] = np.array(body['value'])
+
+    psi['nx'] = len(psi['x'])
+    psi['ny'] = len(psi['y'])
+    psi['nz'] = len(psi['z'])
+    psi['dx'] = psi['x'][1] - psi['x'][0]
+    psi['dy'] = psi['y'][1] - psi['y'][0]
+    psi['dz'] = psi['z'][1] - psi['z'][0]
+
+
+    req = request.Request(url, headers={'Host': filename + '.hdfgroup.org'})
+    with request.urlopen(req) as response:
+        body = json.loads(response.read())
+
+    uuid = body['root']
+
+    fields = ['num_atom', 'chemical_numbers', 'atomic_coordinates']
+    molecule = {}
+    for field in fields:
+        req = request.Request(url + '/groups/' + uuid + '/links/' + field, 
+                  headers={'Host': filename + '.hdfgroup.org'})
+        with request.urlopen(req) as response:
+            body = json.loads(response.read())
+
+        for href in body['hrefs']:
+            if href['rel'] == 'target':
+                uuid_field = href['href'].split('/')[-1]
+
+        req = request.Request(url + '/datasets/' + uuid_field + '/value', 
+                  headers={'Host': filename + '.hdfgroup.org'})
+
+        with request.urlopen(req) as response:
+            body = json.loads(response.read())  
+
+        molecule[field] = body['value']
+
+    return molecule, psi
