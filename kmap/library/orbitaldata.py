@@ -7,7 +7,7 @@ import numpy as np
 from kmap.library.orbital import Orbital
 from kmap.config.config import config
 from kmap.library.abstractdata import AbstractData
-from kmap.library.misc import get_remote_hdf5_orbital
+from kmap.library.misc import get_remote_hdf5_orbital, write_cube
 
 
 class OrbitalData(Orbital, AbstractData):
@@ -68,6 +68,11 @@ class OrbitalData(Orbital, AbstractData):
                 log.info(f'Loading from ID{meta_data["ID"]:05d} hdf5 file....')
                 molecule, psi = get_remote_hdf5_orbital('143.50.77.12', '5002',
                 int(float(meta_data['database ID'])), int(meta_data['ID'])-1)
+
+                if os.path.isdir(cache_dir):
+                    log.info(f'Putting {url} into cache {cache_file}')
+                    write_cube(psi, molecule, cache_file)
+
                 file = h5py.File('aux.hdf5', 'w', driver='core', backing_store=False)
                 file.create_dataset('num_atom', data=molecule['num_atom'])
                 file.create_dataset('chemical_numbers', data=molecule['chemical_numbers'])
@@ -89,6 +94,7 @@ class OrbitalData(Orbital, AbstractData):
                         log.info(f'Putting {url} into cache {cache_file}')
                         with open(cache_file, 'w') as f:
                             f.write(file)
+
                 name, keys = OrbitalData._get_metadata(file, url)
                 name = meta_data['name'] if 'name' in meta_data else name
                 meta_data.update(keys)

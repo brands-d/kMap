@@ -13,7 +13,7 @@ from kmap.library.id import ID as IDD
 from kmap.config.config import config
 from kmap.library.plotdata import PlotData
 from kmap.library.abstractdata import AbstractData
-from kmap.library.misc import axis_from_range, energy_to_k, get_remote_hdf5_orbital
+from kmap.library.misc import axis_from_range, energy_to_k, get_remote_hdf5_orbital, write_cube
 from kmap.library.database import Database
 from kmap.library.orbital import Orbital
 from kmap.library.axis import Axis
@@ -452,6 +452,10 @@ class SlicedData(AbstractData):
                 file.create_dataset('data', data=psi['data'], dtype="float64")
                 name = psi['name']
                 file_format = 'hdf5'
+
+                if os.path.isdir(cache_dir):
+                    log.info(f'Putting {url} into cache {cache_file}')
+                    write_cube(psi, molecule, cache_file)
 
             except Exception as e:
                 log.info('Loading from database: %s' % url)
