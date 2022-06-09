@@ -67,7 +67,7 @@ class OrbitalData(Orbital, AbstractData):
             try:
                 log.info(f'Loading from ID{meta_data["ID"]:05d} hdf5 file....')
                 molecule, psi = get_remote_hdf5_orbital('143.50.77.12', '5002',
-                int(float(meta_data['database ID'])), int(meta_data['ID']))
+                int(float(meta_data['database ID'])), int(meta_data['ID'])-1)
                 file = h5py.File('aux.hdf5', 'w', driver='core', backing_store=False)
                 file.create_dataset('num_atom', data=molecule['num_atom'])
                 file.create_dataset('chemical_numbers', data=molecule['chemical_numbers'])

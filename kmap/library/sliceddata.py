@@ -13,7 +13,7 @@ from kmap.library.id import ID as IDD
 from kmap.config.config import config
 from kmap.library.plotdata import PlotData
 from kmap.library.abstractdata import AbstractData
-from kmap.library.misc import axis_from_range, energy_to_k
+from kmap.library.misc import axis_from_range, energy_to_k, get_remote_hdf5_orbital
 from kmap.library.database import Database
 from kmap.library.orbital import Orbital
 from kmap.library.axis import Axis
@@ -206,10 +206,9 @@ class SlicedData(AbstractData):
                      np.exp(-((BE - BE0)**2 / (2 * energy_broadening**2)))
 
             url = orbital[0]
-            
-            file = SlicedData.load_orbital_online(url)
-            orbital_data = Orbital(file)
 
+            file, file_format = SlicedData.load_orbital_online(orbital)
+            orbital_data = Orbital(file, file_format)
             orbital_names.append(orbital[1]['name'])
             log.info('Computing k-map for %s' % orbital[1]['name'])
 
@@ -284,13 +283,12 @@ class SlicedData(AbstractData):
 
         # decision if reading cube-file from URL or local file
         if orbital_file[:4] == 'http': 
-            file = SlicedData.load_orbital_online(orbital_file)
-
+            file, file_format = SlicedData.load_orbital_online(orbital)
+            orbital_data = Orbital(file, dk3D=dk3D, E_kin_max=E_kin_max,
+                value=value, file_format=file_format, orbital_name=orbital[1]['name'])
         else:
             file = open(orbital_file).read()
-
-        orbital_data = Orbital(
-            file, dk3D=dk3D, E_kin_max=E_kin_max, value=value)
+            orbital_data = Orbital(file, dk3D=dk3D, E_kin_max=E_kin_max, value=value)
 
         # set name for SliceData object
         name = orbital_data.psi['name']
@@ -316,7 +314,6 @@ class SlicedData(AbstractData):
 
         # no meta data
         meta_data = {}
-
         return cls(name, axis_1, axis_2, axis_3, data, meta_data, ID=ID)
 
     @classmethod
@@ -395,8 +392,11 @@ class SlicedData(AbstractData):
         log.info('Adding orbital to SlicedData Object, please wait!')
         # read orbital from cube-file database
         url = orbital[0]
-        file = SlicedData.load_orbital_online(url)
-        orbital_data = Orbital(file)
+        file, file_format = SlicedData.load_orbital_online(orbital)
+        orbital_data = Orbital(file, file_format=file_format, orbital_name=orbital[1]['name'])
+
+        #file = SlicedData.load_orbital_online(url)
+        #orbital_data = Orbital(file)
 
         # loop over photon energies
         for i in range(len(hnu)):
@@ -423,8 +423,10 @@ class SlicedData(AbstractData):
         return cls(name, axis_1, axis_2, axis_3, data, meta_data, ID=ID)
 
     @classmethod
-    def load_orbital_online(cls, url):
+    def load_orbital_online(cls, orbital):
+
         log = logging.getLogger('kmap')
+        url = orbital[0]
         cache_dir = Path(config.get_key('paths', 'cache'))
         cache_file = url.split('OrganicMolecule/')[1].replace('/', '_')
         cache_file = str(cache_dir / cache_file)
@@ -433,17 +435,36 @@ class SlicedData(AbstractData):
             log.info(f'Found file {url} in cache.')
             with open(cache_file, 'r') as f:
                 file = f.read()
+            file_format='cube'
+
         else:
-            log.info('Loading from database: %s' % url)
-            with urllib.request.urlopen(url) as f:
-                file = f.read().decode('utf-8')
+            try:
+                log.info(f'Loading from ID{orbital[1]["ID"]:05d} hdf5 file....')
+                molecule, psi = get_remote_hdf5_orbital('143.50.77.12', '5002',
+                int(float(orbital[1]['database ID'])), int(orbital[1]['ID'])-1)
+                file = h5py.File('aux.hdf5', 'w', driver='core', backing_store=False)
+                file.create_dataset('num_atom', data=molecule['num_atom'])
+                file.create_dataset('chemical_numbers', data=molecule['chemical_numbers'])
+                file.create_dataset('atomic_coordinates', data=molecule['atomic_coordinates'], dtype="float64")
+                file.create_dataset('x', data=psi['x'], dtype="float64")
+                file.create_dataset('y', data=psi['y'], dtype="float64")
+                file.create_dataset('z', data=psi['z'], dtype="float64")
+                file.create_dataset('data', data=psi['data'], dtype="float64")
+                name = psi['name']
+                file_format = 'hdf5'
 
-                if os.path.isdir(cache_dir):
-                    log.info(f'Putting {url} into cache {cache_file}')
-                    with open(cache_file, 'w') as f:
-                        f.write(file)
+            except Exception as e:
+                log.info('Loading from database: %s' % url)
+                with urllib.request.urlopen(url) as f:
+                    file = f.read().decode('utf-8')
 
-        return file
+                    if os.path.isdir(cache_dir):
+                        log.info(f'Putting {url} into cache {cache_file}')
+                        with open(cache_file, 'w') as f:
+                            f.write(file)
+                file_format='cube'
+
+        return file, file_format
 
     def transpose(self, axes_order):
         self.data = self.data.transpose(axes_order)
