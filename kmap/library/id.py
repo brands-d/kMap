@@ -9,5 +9,9 @@ class IDGenerator():
         self.id += 1
 
         return self.id
+    
+    def update(self, new_id):
+        if self.id <= new_id:
+            self.id = new_id + 1
 
 ID = IDGenerator()

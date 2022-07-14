@@ -165,11 +165,15 @@ class LMFitBaseTab(Tab):
 class LMFitTab(LMFitBaseTab, LMFitTab_UI):
     fit_finished = pyqtSignal(list, dict)
 
-    def __init__(self, sliced_tab, orbital_tab):
+    def __init__(self, sliced_tab, orbital_tab, max_orbitals=-1):
         self.sliced_tab = sliced_tab
         self.orbital_tab = orbital_tab
-        self.model = LMFitModel(sliced_tab.get_data(),
-                                orbital_tab.get_orbitals())
+        if max_orbitals != -1:
+            self.model = LMFitModel(sliced_tab.get_data(),
+                                    orbital_tab.get_orbitals()[:max_orbitals])
+        else:
+            self.model = LMFitModel(sliced_tab.get_data(),
+                                    orbital_tab.get_orbitals())
 
         # Setup GUI
         super(LMFitTab, self).__init__()
@@ -184,7 +188,9 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
     def init_from_save(cls, save, dependencies, tab_widget):
         sliced_tab = tab_widget.get_tab_by_ID(dependencies['sliced_tab'])
         orbital_tab = tab_widget.get_tab_by_ID(dependencies['orbital_tab'])
-        self = cls(sliced_tab, orbital_tab)
+        # max orbitals: If orbitals were loaded after lmfit was created they
+        # will not be reflected in the results -> not load them
+        self = cls(sliced_tab, orbital_tab, max_orbitals=len(save['tree'])-2)
 
         self.locked_tabs = [sliced_tab, orbital_tab]
         self.title = save['title']

@@ -14,14 +14,26 @@ class OrbitalDataTabModel():
         self.orbitals = []
 
     def load_data_from_path(self, path, ID=None):
-        id_ = IDD.new_ID() if ID is None else ID
+        if ID is None:
+            id_ = IDD.new_ID()
+
+        else:
+            id_ = ID
+            IDD.update(id_)
+
         new_orbital = OrbitalData.init_from_file(path, ID=id_)
         self.orbitals.append([new_orbital, 'path', path, None, id_])
 
         return new_orbital
 
     def load_data_from_online(self, url, meta_data={}, ID=None):
-        id_ = IDD.new_ID() if ID is None else ID
+        if ID is None:
+            id_ = IDD.new_ID()
+
+        else:
+            id_ = ID
+            IDD.update(id_)
+
         new_orbital = OrbitalData.init_from_online(
             url, ID=id_, meta_data=meta_data)
 
