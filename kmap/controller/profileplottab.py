@@ -109,7 +109,10 @@ class ProfilePlotTab(Tab, ProfilePlotTab_UI):
 
             for region in regions:
                 tab = self.current_tab()
-                axis = tab.get_axis()
+                try:
+                    axis = tab.get_axis()
+                except AttributeError:
+                    return
                 data = [tab.get_data(), axis]
                 crosshair = tab.get_crosshair().model
                 title = tab.get_title()
