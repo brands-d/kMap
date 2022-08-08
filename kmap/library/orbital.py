@@ -591,9 +591,16 @@ class Orbital():
         dx, dy, dz = b2a * float(lines[3].split()[1]), b2a * float(
             lines[4].split()[2]), b2a * float(lines[5].split()[3])
         lx, ly, lz = (nx - 1) * dx, (ny - 1) * dy, (nz - 1) * dz
-        x = np.linspace(x0, x0 + lx, nx)
-        y = np.linspace(y0, y0 + ly, ny)
-        z = np.linspace(z0, z0 + lz, nz)
+
+        # version before 2022-08-08: use cell origin from cube-file
+        #x = np.linspace(x0, x0 + lx, nx)
+        #y = np.linspace(y0, y0 + ly, ny)
+        #z = np.linspace(z0, z0 + lz, nz)
+
+        # new version after 2022-08-08: center of box is always at (x,y,z)=(0,0,0)
+        x = np.linspace(-lx/2, +lx/2, nx)
+        y = np.linspace(-ly/2, +ly/2, ny)
+        z = np.linspace(-lz/2, +lz/2, nz)
 
         # Read atomic coordinates
         # Number of atoms from line 3
@@ -607,6 +614,14 @@ class Orbital():
             atomic_coordinates.append([b2a * a, b2a * b, b2a * c])
 
         atomic_coordinates = np.array(atomic_coordinates)
+
+        # added in new version after 2022-08-08: shift atomic coordinates to center of cell
+        shiftx = -lx/2 - x0
+        shifty = -ly/2 - y0
+        shiftz = -lz/2 - z0         
+        atomic_coordinates[:,0] += shiftx
+        atomic_coordinates[:,1] += shifty
+        atomic_coordinates[:,2] += shiftz
 
         # Now read cube data
         data = []
