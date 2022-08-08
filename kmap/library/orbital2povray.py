@@ -280,6 +280,8 @@ class Orbital2Povray():
 
         if isovalues is None:
             isovalues = self.isovalues.split(',')
+
+        if colors is None:
             colors = []
             for i in range(len(isovalues)):
                 colors.append(self.get_isocolor(i))
