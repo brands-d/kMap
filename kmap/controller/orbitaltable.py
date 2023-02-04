@@ -130,7 +130,7 @@ class OrbitalTable(QWidget, OrbitalTable_UI):
         for col, width in enumerate(widths):
             self.table.setColumnWidth(col, width)
 
-        self.table.horizontalHeader().setResizeMode(2, QHeaderView.Stretch)
+        self.table.horizontalHeader().setSectionResizeMode(2, QHeaderView.Stretch)
 
     def _embed_row(self, row, row_index):
 
