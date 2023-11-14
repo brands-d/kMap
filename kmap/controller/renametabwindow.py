@@ -1,13 +1,11 @@
-# PyQt5 Imports
-from PyQt5 import uic
-from PyQt5.QtWidgets import QMainWindow
-from PyQt5.QtCore import Qt, pyqtSignal
+from PySide6 import uic
+from PySide6.QtCore import Qt, pyqtSignal
+from PySide6.QtWidgets import QMainWindow
 
-# Own Imports
 from kmap import __directory__
 
 # Load .ui File
-UI_file = __directory__ / 'ui/renametabwindow.ui'
+UI_file = __directory__ / "ui/renametabwindow.ui"
 RenameTabWindow_UI, _ = uic.loadUiType(UI_file)
 
 

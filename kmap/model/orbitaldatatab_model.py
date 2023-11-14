@@ -2,11 +2,9 @@ import numpy as np
 
 from kmap.library.id import ID as IDD
 from kmap.library.orbitaldata import OrbitalData
-from kmap.config.config import config
 
 
-class OrbitalDataTabModel():
-
+class OrbitalDataTabModel:
     def __init__(self, controller):
         self.controller = controller
 
@@ -22,7 +20,7 @@ class OrbitalDataTabModel():
             IDD.update(id_)
 
         new_orbital = OrbitalData.init_from_file(path, ID=id_)
-        self.orbitals.append([new_orbital, 'path', path, None, id_])
+        self.orbitals.append([new_orbital, "path", path, None, id_])
 
         return new_orbital
 
@@ -34,10 +32,9 @@ class OrbitalDataTabModel():
             id_ = ID
             IDD.update(id_)
 
-        new_orbital = OrbitalData.init_from_online(
-            url, ID=id_, meta_data=meta_data)
+        new_orbital = OrbitalData.init_from_online(url, ID=id_, meta_data=meta_data)
 
-        self.orbitals.append([new_orbital, 'url', url, meta_data, id_])
+        self.orbitals.append([new_orbital, "url", url, meta_data, id_])
 
         return new_orbital
 
@@ -52,7 +49,7 @@ class OrbitalDataTabModel():
     def get_orbital_kmap_by_ID(self, ID):
         orbital = self.ID_to_orbital(ID)
         if orbital is None:
-            raise IndexError('wrong ID')
+            raise IndexError("wrong ID")
 
         parameters = self.controller.get_parameters(ID)
 

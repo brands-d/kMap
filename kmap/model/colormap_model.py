@@ -1,15 +1,13 @@
 import json
 import os
 
-import traceback
 from pyqtgraph import ColorMap
+
 from kmap.library.colormap import Colormap
 
 
-class ColormapModel():
-
+class ColormapModel:
     def __init__(self, plot_item):
-
         self.colormaps = []
 
         if isinstance(plot_item, list):
@@ -21,8 +19,7 @@ class ColormapModel():
     def load_colormaps(self, path):
         # Load colormaps from json file
 
-        with open(path, 'r') as file:
-
+        with open(path, "r") as file:
             data = json.loads(json.load(file))
             self.colormaps = []
 
@@ -49,7 +46,6 @@ class ColormapModel():
         self.colormaps.append(new_colormap)
 
     def remove_colormap(self, name):
-
         index = self._name_to_index(name)
 
         del self.colormaps[index]
@@ -57,9 +53,9 @@ class ColormapModel():
     def save_colormaps(self, path):
         # Save colormaps in json file
 
-        path_temp = path.parent / (path.name + '.temp')
+        path_temp = path.parent / (path.name + ".temp")
 
-        with open(path_temp, 'w') as file:
+        with open(path_temp, "w") as file:
             data = json.dumps([obj.toList() for obj in self.colormaps])
             json.dump(data, file)
 
@@ -86,7 +82,6 @@ class ColormapModel():
             plot_item.setColorMap(ColorMap(pos, colors))
 
     def _name_to_index(self, name):
-
         name_list = [colormap.name for colormap in self.colormaps]
         index = name_list.index(name)
 

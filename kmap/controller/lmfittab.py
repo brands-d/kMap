@@ -3,58 +3,60 @@
 This file defines two similar types of tabs: the LMFit and the
 LMFitResult tab as well as a common base class LMFitBaseTab.
 """
-# Python Imports
+
 import logging
 
-# Third Party Imports
 import h5py
 import numpy as np
-
-# PyQt5 Imports
-from PyQt5 import uic
-from PyQt5.QtCore import pyqtSignal, Qt
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QFileDialog
+from PySide6 import uic
+from PySide6.QtCore import pyqtSignal
+from PySide6.QtWidgets import QFileDialog, QVBoxLayout
 
 # Own Imports
 from kmap import __directory__
+from kmap.config.config import config
+from kmap.controller.colormap import Colormap
+from kmap.controller.crosshairannulus import CrosshairAnnulus
+from kmap.controller.dataslider import DataSlider
+from kmap.controller.interpolation import LMFitInterpolation
+from kmap.controller.lmfitoptions import LMFitOptions
+from kmap.controller.lmfitorbitaloptions import LMFitOrbitalOptions
+from kmap.controller.lmfitresult import LMFitResult
+from kmap.controller.lmfittree import LMFitResultTree, LMFitTree
+from kmap.controller.matplotlibwindow import MatplotlibImageWindow
 from kmap.library.axis import Axis
 from kmap.library.qwidgetsub import Tab
 from kmap.model.lmfit_model import LMFitModel
-from kmap.controller.dataslider import DataSlider
-from kmap.controller.colormap import Colormap
-from kmap.controller.crosshairannulus import CrosshairAnnulus
-from kmap.controller.interpolation import LMFitInterpolation
-from kmap.controller.lmfittree import LMFitTree, LMFitResultTree
-from kmap.controller.matplotlibwindow import MatplotlibImageWindow
-from kmap.controller.lmfitresult import LMFitResult
-from kmap.controller.lmfitoptions import LMFitOptions
-from kmap.controller.lmfitorbitaloptions import LMFitOrbitalOptions
-from kmap.config.config import config
 
 # Load .ui File
-UI_file = __directory__ / 'ui/lmfittab.ui'
+UI_file = __directory__ / "ui/lmfittab.ui"
 LMFitTab_UI, _ = uic.loadUiType(UI_file)
 
 
 class LMFitBaseTab(Tab):
-   
     def save_state(self):
-        colorscales= {'sliced': self.sliced_plot.get_colormap(),
-                       'selected': self.selected_plot.get_colormap(),
-                       'residual': self.residual_plot.get_colormap(),
-                       'sum': self.sum_plot.get_colormap()}
-            
-        levels= {'sliced': self.sliced_plot.get_levels(),
-                       'selected': self.selected_plot.get_levels(),
-                       'residual': self.residual_plot.get_levels(),
-                       'sum': self.sum_plot.get_levels()}
-        
-        save = {'title': self.title,
-                'levels': levels,
-                'colorscales': colorscales,
-                'slider': self.slider.save_state(),
-                'crosshair': self.crosshair.save_state(),
-                'colormap': self.colormap.save_state()}
+        colorscales = {
+            "sliced": self.sliced_plot.get_colormap(),
+            "selected": self.selected_plot.get_colormap(),
+            "residual": self.residual_plot.get_colormap(),
+            "sum": self.sum_plot.get_colormap(),
+        }
+
+        levels = {
+            "sliced": self.sliced_plot.get_levels(),
+            "selected": self.selected_plot.get_levels(),
+            "residual": self.residual_plot.get_levels(),
+            "sum": self.sum_plot.get_levels(),
+        }
+
+        save = {
+            "title": self.title,
+            "levels": levels,
+            "colorscales": colorscales,
+            "slider": self.slider.save_state(),
+            "crosshair": self.crosshair.save_state(),
+            "colormap": self.colormap.save_state(),
+        }
 
         return save, {}
 
@@ -85,7 +87,7 @@ class LMFitBaseTab(Tab):
         residual = self.model.get_residual(index, param, weight_sum_data)
         level = np.nanmax(np.absolute(residual.data))
 
-        if config.get_key('pyqtgraph', 'keep_max_level_residual') == 'True':
+        if config.get_key("pyqtgraph", "keep_max_level_residual") == "True":
             old_level = np.nanmax(np.absolute(self.residual_plot.get_levels()))
 
             if old_level != 1 and old_level > level:
@@ -98,7 +100,6 @@ class LMFitBaseTab(Tab):
         self.update_chi2_label(weight_sum_data)
 
     def refresh_all(self):
-
         self.refresh_sliced_plot()
         self.refresh_selected_plot()
         kmap = self.refresh_sum_plot()
@@ -106,15 +107,18 @@ class LMFitBaseTab(Tab):
 
     def update_chi2_label(self, weight_sum_data=None):
         slice_index = self.slider.get_index()
-        reduced_chi2 = self.model.get_reduced_chi2(
-            slice_index, weight_sum_data)
-        self.residual_label.setText('Residual (red. Chi^2: %.3E)'
-                                    % reduced_chi2)
+        reduced_chi2 = self.model.get_reduced_chi2(slice_index, weight_sum_data)
+        self.residual_label.setText("Residual (red. Chi^2: %.3E)" % reduced_chi2)
 
     def display_in_matplotlib(self):
         windows = []
 
-        for plot in [self.residual_plot, self.sum_plot, self.sliced_plot, self.selected_plot]:
+        for plot in [
+            self.residual_plot,
+            self.sum_plot,
+            self.sliced_plot,
+            self.selected_plot,
+        ]:
             data = plot.model.plot_data
             LUT = plot.get_LUT()
             windows.append(MatplotlibImageWindow(data, LUT=LUT))
@@ -144,11 +148,10 @@ class LMFitBaseTab(Tab):
     def _setup(self):
         self.slider = DataSlider(self.model.sliced_data)
         self.crosshair = CrosshairAnnulus(self.residual_plot)
-        self.colormap = Colormap(
-            [self.sliced_plot, self.selected_plot, self.sum_plot])
+        self.colormap = Colormap([self.sliced_plot, self.selected_plot, self.sum_plot])
         residual_colormap = Colormap(self.residual_plot)
 
-        residual_colormap.set_colormap('blueAndRed')
+        residual_colormap.set_colormap("blueAndRed")
 
     def _connect(self):
         self.crosshair.crosshair_changed.connect(self.crosshair.update_label)
@@ -169,11 +172,11 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
         self.sliced_tab = sliced_tab
         self.orbital_tab = orbital_tab
         if max_orbitals != -1:
-            self.model = LMFitModel(sliced_tab.get_data(),
-                                    orbital_tab.get_orbitals()[:max_orbitals])
+            self.model = LMFitModel(
+                sliced_tab.get_data(), orbital_tab.get_orbitals()[:max_orbitals]
+            )
         else:
-            self.model = LMFitModel(sliced_tab.get_data(),
-                                    orbital_tab.get_orbitals())
+            self.model = LMFitModel(sliced_tab.get_data(), orbital_tab.get_orbitals())
 
         # Setup GUI
         super(LMFitTab, self).__init__()
@@ -186,29 +189,29 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
 
     @classmethod
     def init_from_save(cls, save, dependencies, tab_widget):
-        sliced_tab = tab_widget.get_tab_by_ID(dependencies['sliced_tab'])
-        orbital_tab = tab_widget.get_tab_by_ID(dependencies['orbital_tab'])
+        sliced_tab = tab_widget.get_tab_by_ID(dependencies["sliced_tab"])
+        orbital_tab = tab_widget.get_tab_by_ID(dependencies["orbital_tab"])
         # max orbitals: If orbitals were loaded after lmfit was created they
         # will not be reflected in the results -> not load them
-        self = cls(sliced_tab, orbital_tab, max_orbitals=len(save['tree'])-2)
+        self = cls(sliced_tab, orbital_tab, max_orbitals=len(save["tree"]) - 2)
 
         self.locked_tabs = [sliced_tab, orbital_tab]
-        self.title = save['title']
-        self.tree.restore_state(save['tree'])
-        self.interpolation.restore_state(save['interpolation']),
-        self.lmfit_options.restore_state(save['lmfit_options'])
-        self.orbital_options.restore_state(save['orbital_options']),
-        self.slider.restore_state(save['slider'])
-        self.colormap.restore_state(save['colormap'])
-        self.crosshair.restore_state(save['crosshair'])
-        self.sliced_plot.set_colormap(save['colorscales']['sliced'])
-        self.sliced_plot.set_levels(save['levels']['sliced'])
-        self.sum_plot.set_colormap(save['colorscales']['sum'])
-        self.sum_plot.set_levels(save['levels']['sum'])
-        self.residual_plot.set_levels(save['levels']['residual'])
-        self.residual_plot.set_colormap(save['colorscales']['residual'])
-        self.selected_plot.set_levels(save['levels']['selected'])
-        self.selected_plot.set_colormap(save['colorscales']['selected'])
+        self.title = save["title"]
+        self.tree.restore_state(save["tree"])
+        self.interpolation.restore_state(save["interpolation"]),
+        self.lmfit_options.restore_state(save["lmfit_options"])
+        self.orbital_options.restore_state(save["orbital_options"]),
+        self.slider.restore_state(save["slider"])
+        self.colormap.restore_state(save["colormap"])
+        self.crosshair.restore_state(save["crosshair"])
+        self.sliced_plot.set_colormap(save["colorscales"]["sliced"])
+        self.sliced_plot.set_levels(save["levels"]["sliced"])
+        self.sum_plot.set_colormap(save["colorscales"]["sum"])
+        self.sum_plot.set_levels(save["levels"]["sum"])
+        self.residual_plot.set_levels(save["levels"]["residual"])
+        self.residual_plot.set_colormap(save["colorscales"]["residual"])
+        self.selected_plot.set_levels(save["levels"]["selected"])
+        self.selected_plot.set_colormap(save["colorscales"]["selected"])
 
         return self
 
@@ -222,12 +225,12 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
         try:
             new_results = self.model.fit()
         except ValueError as e:
-            logging.getLogger('kmap').warning(str(e))
+            logging.getLogger("kmap").warning(str(e))
             self.lmfit_options.update_fit_button()
 
             return
-        
-        if not hasattr(self, 'results'):
+
+        if not hasattr(self, "results"):
             self.results = new_results
 
         else:
@@ -235,7 +238,7 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
             new_results_dict = dict(new_results)
             results_dict.update(new_results_dict)
             self.results = sorted(list(results_dict.items()), key=lambda x: x[0])
-        
+
         settings = self.model.get_settings()
 
         self.fit_finished.emit(self.results, settings)
@@ -243,12 +246,10 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
     def change_slice(self):
         axis_index = self.slider.get_axis()
         slice_policy = self.lmfit_options.get_slice_policy()
-        combined = True if slice_policy == 'all combined' else False
-        slice_indices = (self.slider.get_index()
-                         if slice_policy == 'only one' else 'all')
+        combined = True if slice_policy == "all combined" else False
+        slice_indices = self.slider.get_index() if slice_policy == "only one" else "all"
 
-        self.model.set_slices(
-            slice_indices, axis_index=axis_index, combined=combined)
+        self.model.set_slices(slice_indices, axis_index=axis_index, combined=combined)
 
         self.refresh_sliced_plot()
         self.refresh_residual_plot()
@@ -260,47 +261,49 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
         self.refresh_all()
 
     def save_state(self):
-
         save, dependencies = super().save_state()
 
-        save.update({'orbital_options': self.orbital_options.save_state(),
-                     'interpolation': self.interpolation.save_state(),
-                     'lmfit_options': self.lmfit_options.save_state(),
-                     'tree': self.tree.save_state()})
-        
-        dependencies.update({'sliced_tab': self.sliced_tab.ID,
-                             'orbital_tab': self.orbital_tab.ID})
+        save.update(
+            {
+                "orbital_options": self.orbital_options.save_state(),
+                "interpolation": self.interpolation.save_state(),
+                "lmfit_options": self.lmfit_options.save_state(),
+                "tree": self.tree.save_state(),
+            }
+        )
+
+        dependencies.update(
+            {"sliced_tab": self.sliced_tab.ID, "orbital_tab": self.orbital_tab.ID}
+        )
 
         return save, dependencies
 
     def _change_slice_policy(self, slice_policy):
         axis = self.slider.get_axis()
 
-        if slice_policy == 'all':
-            self.model.set_slices('all', axis_index=axis, combined=False)
+        if slice_policy == "all":
+            self.model.set_slices("all", axis_index=axis, combined=False)
 
-        elif slice_policy == 'only one':
+        elif slice_policy == "only one":
             index = self.slider.get_index()
             self.model.set_slices([index], axis_index=axis, combined=False)
 
-        elif slice_policy == 'all combined':
-            self.model.set_slices('all', axis_index=axis, combined=True)
-        
+        elif slice_policy == "all combined":
+            self.model.set_slices("all", axis_index=axis, combined=True)
+
         else:
-            indices = [int(e) for e in slice_policy.split(' ')]
+            indices = [int(e) for e in slice_policy.split(" ")]
             self.model.set_slices(indices, axis_index=axis, combined=False)
 
     def _change_method(self, method):
-
-        self._change_to_matrix_state(method == 'matrix_inversion')
+        self._change_to_matrix_state(method == "matrix_inversion")
 
         self.model.set_fit_method(method)
 
     def _change_to_matrix_state(self, state):
-
         if state:
             variables = self.model.background_equation[1]
-            if 'c' not in variables:
+            if "c" not in variables:
                 self.lmfit_options._pre_factor_background()
 
         self.tree._change_to_matrix_state(state)
@@ -311,7 +314,6 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
         self.refresh_all()
 
     def _change_background(self, *args):
-
         new_variables = self.model.set_background_equation(*args)
         for variable in new_variables:
             self.tree.add_equation_parameter(variable)
@@ -354,25 +356,21 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
         self.lmfit_options.background_changed.connect(self._change_background)
         self.lmfit_options.fit_triggered.connect(self.trigger_fit)
         self.lmfit_options.method_changed.connect(self._change_method)
-        self.lmfit_options.slice_policy_changed.connect(
-            self._change_slice_policy)
+        self.lmfit_options.slice_policy_changed.connect(self._change_slice_policy)
         self.lmfit_options.region_changed.connect(self._change_region)
 
         self.orbital_options.symmetrization_changed.connect(
-            self.model.set_symmetrization)
-        self.orbital_options.symmetrization_changed.connect(
-            self._refresh_orbital_plots)
-        self.orbital_options.polarization_changed.connect(
-            self.model.set_polarization)
-        self.orbital_options.polarization_changed.connect(
-            self._refresh_orbital_plots)
+            self.model.set_symmetrization
+        )
+        self.orbital_options.symmetrization_changed.connect(self._refresh_orbital_plots)
+        self.orbital_options.polarization_changed.connect(self.model.set_polarization)
+        self.orbital_options.polarization_changed.connect(self._refresh_orbital_plots)
 
 
 class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
     open_plot_tab = pyqtSignal(list, list, Axis, list, list)
 
     def __init__(self, lmfit_tab, results, settings):
-        
         self.results = results
         self.lmfit_tab = lmfit_tab
         self.current_result = self.results[0]
@@ -391,22 +389,22 @@ class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
 
     @classmethod
     def init_from_save(cls, save, dependencies, tab_widget):
-        results = save['results']
-        settings = save['settings']
-        tab = tab_widget.get_tab_by_ID(dependencies['lmfittab'])
-        
+        results = save["results"]
+        settings = save["settings"]
+        tab = tab_widget.get_tab_by_ID(dependencies["lmfittab"])
+
         self = LMFitResultTab(tab, results, settings)
-        self.slider.restore_state(save['slider'])
-        self.crosshair.restore_state(save['crosshair'])
-        self.colormap.restore_state(save['colormap'])
-        self.sliced_plot.set_colormap(save['colorscales']['sliced'])
-        self.sliced_plot.set_levels(save['levels']['sliced'])
-        self.sum_plot.set_colormap(save['colorscales']['sum'])
-        self.sum_plot.set_levels(save['levels']['sum'])
-        self.residual_plot.set_levels(save['levels']['residual'])
-        self.residual_plot.set_colormap(save['colorscales']['residual'])
-        self.selected_plot.set_levels(save['levels']['selected'])
-        self.selected_plot.set_colormap(save['colorscales']['selected'])
+        self.slider.restore_state(save["slider"])
+        self.crosshair.restore_state(save["crosshair"])
+        self.colormap.restore_state(save["colormap"])
+        self.sliced_plot.set_colormap(save["colorscales"]["sliced"])
+        self.sliced_plot.set_levels(save["levels"]["sliced"])
+        self.sum_plot.set_colormap(save["colorscales"]["sum"])
+        self.sum_plot.set_levels(save["levels"]["sum"])
+        self.residual_plot.set_levels(save["levels"]["residual"])
+        self.residual_plot.set_colormap(save["colorscales"]["residual"])
+        self.selected_plot.set_levels(save["levels"]["selected"])
+        self.selected_plot.set_colormap(save["colorscales"]["selected"])
 
         self.locked_tabs = [tab]
 
@@ -415,24 +413,28 @@ class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
     def save_state(self):
         save, dependencies = super().save_state()
 
-        save.update({'title': self.title,
-                'crosshair': self.crosshair.save_state(),
-                'slider': self.slider.save_state(),
-                'colormap': self.colormap.save_state(),
-                'results': self.results,
-                'settings': self.settings})
-        
-        dependencies.update({'lmfittab': self.lmfit_tab.ID})
+        save.update(
+            {
+                "title": self.title,
+                "crosshair": self.crosshair.save_state(),
+                "slider": self.slider.save_state(),
+                "colormap": self.colormap.save_state(),
+                "results": self.results,
+                "settings": self.settings,
+            }
+        )
+
+        dependencies.update({"lmfittab": self.lmfit_tab.ID})
 
         return save, dependencies
 
     def get_title(self):
-        return 'Results'
+        return "Results"
 
     def change_slice(self):
         index = self.slider.get_index()
         slices = [result[0] for result in self.results]
-        
+
         if len(self.results) == 1:
             self.current_result = self.results[-1]
 
@@ -443,7 +445,7 @@ class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
             self.current_result = self.results[-1]
 
         else:
-            self.current_result = self.results[index-slices[0]]
+            self.current_result = self.results[index - slices[0]]
 
         self.update_tree()
         self.result.result = self.current_result[1]
@@ -487,24 +489,25 @@ class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
         axis = axis.sublist(indices)
         kmaps = abs(self.get_residual_kmaps())
         residuals = list(np.nansum(np.nansum(kmaps, axis=1), axis=1))
-        
-        self.open_plot_tab.emit(results, orbitals, axis, residuals,
-                                self.model.background_equation[1])
+
+        self.open_plot_tab.emit(
+            results, orbitals, axis, residuals, self.model.background_equation[1]
+        )
 
     def export_to_hdf5(self):
-        path = config.get_key('paths', 'hdf5_export_start')
-        if path == 'None':
-            file_name, _ = QFileDialog.getSaveFileName(
-                None, 'Save .hdf5 File (*.hdf5)')
+        path = config.get_key("paths", "hdf5_export_start")
+        if path == "None":
+            file_name, _ = QFileDialog.getSaveFileName(None, "Save .hdf5 File (*.hdf5)")
         else:
             start_path = str(__directory__ / path)
             file_name, _ = QFileDialog.getSaveFileName(
-                None, 'Save .hdf5 File (*.hdf5)', str(start_path))
+                None, "Save .hdf5 File (*.hdf5)", str(start_path)
+            )
 
         if not file_name:
             return
         else:
-            h5file = h5py.File(file_name, 'w')
+            h5file = h5py.File(file_name, "w")
 
         kmaps = self.get_residual_kmaps()
 
@@ -512,18 +515,19 @@ class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
         x_axis = self.slider.data.axes[1]
         y_axis = self.slider.data.axes[2]
 
-        h5file.create_dataset('name', data='Residual')
-        h5file.create_dataset('axis_1_label', data=slice_axis.label)
-        h5file.create_dataset('axis_2_label', data=x_axis.label)
-        h5file.create_dataset('axis_3_label', data=y_axis.label)
-        h5file.create_dataset('axis_1_units', data=slice_axis.units)
-        h5file.create_dataset('axis_2_units', data=x_axis.units)
-        h5file.create_dataset('axis_3_units', data=y_axis.units)
-        h5file.create_dataset('axis_1_range', data=slice_axis.range)
-        h5file.create_dataset('axis_2_range', data=x_axis.range)
-        h5file.create_dataset('axis_3_range', data=y_axis.range)
-        h5file.create_dataset('data', data=kmaps, dtype='f8',
-                              compression='gzip', compression_opts=9)
+        h5file.create_dataset("name", data="Residual")
+        h5file.create_dataset("axis_1_label", data=slice_axis.label)
+        h5file.create_dataset("axis_2_label", data=x_axis.label)
+        h5file.create_dataset("axis_3_label", data=y_axis.label)
+        h5file.create_dataset("axis_1_units", data=slice_axis.units)
+        h5file.create_dataset("axis_2_units", data=x_axis.units)
+        h5file.create_dataset("axis_3_units", data=y_axis.units)
+        h5file.create_dataset("axis_1_range", data=slice_axis.range)
+        h5file.create_dataset("axis_2_range", data=x_axis.range)
+        h5file.create_dataset("axis_3_range", data=y_axis.range)
+        h5file.create_dataset(
+            "data", data=kmaps, dtype="f8", compression="gzip", compression_opts=9
+        )
         h5file.close()
 
     def get_residual_kmaps(self):
@@ -540,8 +544,10 @@ class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
 
         self.result = LMFitResult(self.current_result[1], self.model)
         self.tree = LMFitResultTree(
-            self.model.orbitals, self.current_result[1].params,
-            self.model.background_equation[1])
+            self.model.orbitals,
+            self.current_result[1].params,
+            self.model.background_equation[1],
+        )
         self.crosshair._set_model(self.model.crosshair)
 
         layout = QVBoxLayout()

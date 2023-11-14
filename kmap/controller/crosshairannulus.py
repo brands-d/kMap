@@ -1,38 +1,28 @@
-# Python Imports
 import numpy as np
 import pyqtgraph as pg
+from PySide6 import uic
 
-# PyQt5 Imports
-from PyQt5 import uic
-
-# Own Imports
 from kmap import __directory__
 from kmap.config.config import config
-from kmap.library.misc import normalize
-from kmap.model.crosshair_model import CrosshairAnnulusModel
 from kmap.controller.crosshairroi import CrosshairROIBase
+from kmap.model.crosshair_model import CrosshairAnnulusModel
 
 # Load .ui File
-UI_file = __directory__ / 'ui/crosshairannulus.ui'
+UI_file = __directory__ / "ui/crosshairannulus.ui"
 CrosshairAnnulus_UI, _ = uic.loadUiType(UI_file)
 
 
 class CrosshairAnnulusBase(CrosshairROIBase):
-
     def __init__(self, plot_item):
-
         super().__init__(plot_item)
 
     def enable_annulus(self, enable):
-
         self.annulus.setVisible(enable)
 
     def dragging_annulus(self):
-
         self.dragging_annulus = True
 
     def resize_annulus_from_drag(self):
-
         # There is no signal for finished dragging, but starting it
         if not self.dragging_annulus:
             return
@@ -49,7 +39,6 @@ class CrosshairAnnulusBase(CrosshairROIBase):
         self.update()
 
     def resize_annulus_from_spinbox(self):
-
         width = self.width_spinbox.value()
 
         if width <= 0:
@@ -60,7 +49,6 @@ class CrosshairAnnulusBase(CrosshairROIBase):
         self.update()
 
     def move_crosshair_from_spinbox(self):
-
         update = super().move_crosshair_from_spinbox()
 
         if update:
@@ -73,13 +61,11 @@ class CrosshairAnnulusBase(CrosshairROIBase):
             return False
 
     def change_color(self, index):
-
         CrosshairROIBase.change_color(self, index)
 
         self.annulus.setPen(self.colors[index])
 
     def update(self):
-
         x, y = self.model.x, self.model.y
         radius, width = self.model.radius, self.model.width
         large_radius = radius + width
@@ -95,7 +81,6 @@ class CrosshairAnnulusBase(CrosshairROIBase):
         super().update()
 
     def update_label(self):
-
         plot_data = self.plot_item.get_plot_data()
 
         super().update_label()
@@ -105,39 +90,42 @@ class CrosshairAnnulusBase(CrosshairROIBase):
             area = np.nan
 
         else:
-            cut = self.model.cut_from_data(plot_data, region='ring')
-            area = cut.data[~np.isnan(cut.data)].size * plot_data.step_size[0] * plot_data.step_size[1]
+            cut = self.model.cut_from_data(plot_data, region="ring")
+            area = (
+                cut.data[~np.isnan(cut.data)].size
+                * plot_data.step_size[0]
+                * plot_data.step_size[1]
+            )
             intensity = np.nansum(cut.data)
 
             # Normalize by dividing by area
-            if config.get_key('crosshair', 'normalized_intensity') == 'True':
+            if config.get_key("crosshair", "normalized_intensity") == "True":
                 intensity /= area
-        
-        decimals = int(config.get_key('crosshair', 'decimal_places'))
-        self.ring_value_label.setText(f'{intensity:.{decimals}e}')
-        self.ann_area_value.setText(f'{area:.{decimals}e}')
+
+        decimals = int(config.get_key("crosshair", "decimal_places"))
+        self.ring_value_label.setText(f"{intensity:.{decimals}e}")
+        self.ann_area_value.setText(f"{area:.{decimals}e}")
 
     def save_state(self):
-
-        save_ = {'spinbox_width': self.width_spinbox.value(),
-                'checkbox_annulus': self.enable_annulus_checkbox.checkState()}
+        save_ = {
+            "spinbox_width": self.width_spinbox.value(),
+            "checkbox_annulus": self.enable_annulus_checkbox.checkState(),
+        }
         save = super().save_state()
         save.update(save_)
 
         return save
 
     def restore_state(self, save):
-
         super().restore_state(save)
-        
-        self.enable_annulus_checkbox.setCheckState(save['checkbox_annulus'])
-        self.width_spinbox.setValue(save['spinbox_width'])
-        
+
+        self.enable_annulus_checkbox.setCheckState(save["checkbox_annulus"])
+        self.width_spinbox.setValue(save["spinbox_width"])
+
         self.move_crosshair_from_spinbox()
         self.update_label()
 
     def _set_model(self, model=None):
-
         if model is None:
             self.model = CrosshairAnnulusModel(x=0, y=0, radius=0.2, width=0.1)
 
@@ -145,36 +133,33 @@ class CrosshairAnnulusBase(CrosshairROIBase):
             self.model = model
 
     def _setup(self):
-
         CrosshairROIBase._setup(self)
 
         x, y = self.model.x, self.model.y
         radius, width = self.model.radius, self.model.width
         large_radius = radius + width
-        self.annulus = pg.CircleROI([x - large_radius, y - large_radius],
-                                    size=[2 * large_radius, 2 * large_radius],
-                                    movable=False,
-                                    rotatable=False,
-                                    resizable=True,
-                                    removable=False,
-                                    pen='k')
+        self.annulus = pg.CircleROI(
+            [x - large_radius, y - large_radius],
+            size=[2 * large_radius, 2 * large_radius],
+            movable=False,
+            rotatable=False,
+            resizable=True,
+            removable=False,
+            pen="k",
+        )
         self.plot_item.addItem(self.annulus)
 
     def _connect(self):
-
         CrosshairROIBase._connect(self)
 
         self.enable_annulus_checkbox.stateChanged.connect(self.enable_annulus)
 
-        self.width_spinbox.valueChanged.connect(
-            self.resize_annulus_from_spinbox)
-        self.annulus.sigRegionChangeFinished.connect(
-            self.resize_annulus_from_drag)
+        self.width_spinbox.valueChanged.connect(self.resize_annulus_from_spinbox)
+        self.annulus.sigRegionChangeFinished.connect(self.resize_annulus_from_drag)
         self.annulus.sigRegionChangeStarted.connect(self.dragging_annulus)
 
 
 class CrosshairAnnulus(CrosshairAnnulusBase, CrosshairAnnulus_UI):
-
     def __init__(self, plot_item):
         # Setup GUI
         super(CrosshairAnnulus, self).__init__(plot_item)

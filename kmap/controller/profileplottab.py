@@ -1,28 +1,22 @@
-# Python Imports
 from itertools import chain
 
-# PyQt5 Imports
-from PyQt5 import uic
-from PyQt5.QtWidgets import QWidget, QFileDialog
-
-# Third Party Imports
 import numpy as np
+from PySide6 import uic
+from PySide6.QtWidgets import QFileDialog
 
-# Own Imports
 from kmap import __directory__
 from kmap.config.config import config
-from kmap.library.qwidgetsub import Tab
-from kmap.controller.sliceddatatab import SlicedDataTab
-from kmap.controller.orbitaldatatab import OrbitalDataTab
 from kmap.controller.matplotlibwindow import MatplotlibLineWindow
+from kmap.controller.orbitaldatatab import OrbitalDataTab
+from kmap.controller.sliceddatatab import SlicedDataTab
+from kmap.library.qwidgetsub import Tab
 
 # Load .ui File
-UI_file = __directory__ / 'ui/profileplottab.ui'
+UI_file = __directory__ / "ui/profileplottab.ui"
 ProfilePlotTab_UI, _ = uic.loadUiType(UI_file)
 
 
 class ProfilePlotTab(Tab, ProfilePlotTab_UI):
-
     def __init__(self, tab_widget, title, *args, **kwargs):
         # Setup GUI
         super(ProfilePlotTab, self).__init__(*args, **kwargs)
@@ -41,49 +35,49 @@ class ProfilePlotTab(Tab, ProfilePlotTab_UI):
         self._connect(tab_widget)
 
         self.load_tabs(tab_widget)
-   
+
     @classmethod
     def init_from_save(cls, save, dependencies, tab_widget=None):
-        self = cls(tab_widget, save['title'])
+        self = cls(tab_widget, save["title"])
 
-        if save['type'] == 'circle':
+        if save["type"] == "circle":
             self.circle_radiobutton.setChecked(True)
-        
-        elif save['type'] == 'line':
+
+        elif save["type"] == "line":
             self.line_radiobutton.setChecked(True)
 
         else:
             self.slice_radiobutton.setChecked(True)
 
-        self.center_checkbox.setCheckState(save['states']['center'])
-        self.x_checkbox.setCheckState(save['states']['x'])
-        self.y_checkbox.setCheckState(save['states']['y'])
-        self.roi_checkbox.setCheckState(save['states']['roi'])
-        self.border_checkbox.setCheckState(save['states']['border'])
-        self.annulus_checkbox.setCheckState(save['states']['annulus'])
-        
-        self.phi_sample_spinbox.setValue(save['sample_rate']['phi'])
-        self.line_sample_spinbox.setValue(save['sample_rate']['line'])
+        self.center_checkbox.setCheckState(save["states"]["center"])
+        self.x_checkbox.setCheckState(save["states"]["x"])
+        self.y_checkbox.setCheckState(save["states"]["y"])
+        self.roi_checkbox.setCheckState(save["states"]["roi"])
+        self.border_checkbox.setCheckState(save["states"]["border"])
+        self.annulus_checkbox.setCheckState(save["states"]["annulus"])
 
-        self.normalize_checkbox.setCheckState(save['normalized'])
+        self.phi_sample_spinbox.setValue(save["sample_rate"]["phi"])
+        self.line_sample_spinbox.setValue(save["sample_rate"]["line"])
+
+        self.normalize_checkbox.setCheckState(save["normalized"])
         self.refresh_plot()
 
         return self
 
     def export_to_numpy(self):
-        path = config.get_key('paths', 'numpy_export_start')
-        if path == 'None':
-            file_name, _ = QFileDialog.getSaveFileName(
-                None, 'Save .npy File (*.npy)')
+        path = config.get_key("paths", "numpy_export_start")
+        if path == "None":
+            file_name, _ = QFileDialog.getSaveFileName(None, "Save .npy File (*.npy)")
         else:
             start_path = str(__directory__ / path)
             file_name, _ = QFileDialog.getSaveFileName(
-                None, 'Save .npy File (*.npy)', str(start_path))
+                None, "Save .npy File (*.npy)", str(start_path)
+            )
 
         if not file_name:
             return
 
-        data = [(d['x'], d['y']) for d in self.plot_item.get_data()]
+        data = [(d["x"], d["y"]) for d in self.plot_item.get_data()]
         data = np.asanyarray(data, dtype=object)
         np.savez(file_name, data=data)
 
@@ -93,16 +87,16 @@ class ProfilePlotTab(Tab, ProfilePlotTab_UI):
         phi_sample = self.phi_sample_spinbox.value()
         line_sample = self.line_sample_spinbox.value()
         normalized = self.normalize_checkbox.isChecked()
-        x_label = 'None'
+        x_label = "None"
         self.plot_item.clear()
 
         if is_slice_plot:
-            regions = np.array(['center', 'x', 'y', 'roi', 'border',
-                                'ring'])[
-                self.show_options[self.tab_combobox.currentIndex()]]
+            regions = np.array(["center", "x", "y", "roi", "border", "ring"])[
+                self.show_options[self.tab_combobox.currentIndex()]
+            ]
 
             if self.center_checkbox.isChecked():
-                np.insert(regions, 0, 'center')
+                np.insert(regions, 0, "center")
 
             if not list(regions):
                 return
@@ -116,13 +110,17 @@ class ProfilePlotTab(Tab, ProfilePlotTab_UI):
                 data = [tab.get_data(), axis]
                 crosshair = tab.get_crosshair().model
                 title = tab.get_title()
-                self.plot_item.plot(data, title, crosshair,
-                                    region=region,
-                                    phi_sample=phi_sample,
-                                    line_sample=line_sample,
-                                    normalized=normalized)
+                self.plot_item.plot(
+                    data,
+                    title,
+                    crosshair,
+                    region=region,
+                    phi_sample=phi_sample,
+                    line_sample=line_sample,
+                    normalized=normalized,
+                )
                 axis = tab.get_data().axes[axis]
-                x_label = '%s [%s]' % (axis.label, axis.units)
+                x_label = "%s [%s]" % (axis.label, axis.units)
 
         else:
             for tab, show_options in zip(self.tabs, self.show_options):
@@ -130,75 +128,101 @@ class ProfilePlotTab(Tab, ProfilePlotTab_UI):
                 bottom_label, left_label = tab.get_plot_labels()
                 crosshair = tab.get_crosshair().model
                 title = tab.get_title()
-                x_label = ''
+                x_label = ""
 
                 if is_line_plot and show_options[1]:
-                    self.plot_item.plot(data, title, crosshair,
-                                        region='x',
-                                        phi_sample=phi_sample,
-                                        line_sample=line_sample,
-                                        normalized=normalized)
+                    self.plot_item.plot(
+                        data,
+                        title,
+                        crosshair,
+                        region="x",
+                        phi_sample=phi_sample,
+                        line_sample=line_sample,
+                        normalized=normalized,
+                    )
                     x_label = left_label
 
                 if is_line_plot and show_options[2]:
-                    self.plot_item.plot(data, title, crosshair,
-                                        region='y',
-                                        phi_sample=phi_sample,
-                                        line_sample=line_sample,
-                                        normalized=normalized)
+                    self.plot_item.plot(
+                        data,
+                        title,
+                        crosshair,
+                        region="y",
+                        phi_sample=phi_sample,
+                        line_sample=line_sample,
+                        normalized=normalized,
+                    )
                     x_label = bottom_label
 
                 if not is_line_plot and show_options[3]:
-                    self.plot_item.plot(data, title, crosshair,
-                                        region='roi',
-                                        phi_sample=phi_sample,
-                                        line_sample=line_sample,
-                                        normalized=normalized)
-                    x_label = 'Angle Phi [°]'
+                    self.plot_item.plot(
+                        data,
+                        title,
+                        crosshair,
+                        region="roi",
+                        phi_sample=phi_sample,
+                        line_sample=line_sample,
+                        normalized=normalized,
+                    )
+                    x_label = "Angle Phi [°]"
 
                 if not is_line_plot and show_options[4]:
-                    self.plot_item.plot(data, title, crosshair,
-                                        region='border',
-                                        phi_sample=phi_sample,
-                                        line_sample=line_sample,
-                                        normalized=normalized)
-                    x_label = 'Angle Phi [°]'
+                    self.plot_item.plot(
+                        data,
+                        title,
+                        crosshair,
+                        region="border",
+                        phi_sample=phi_sample,
+                        line_sample=line_sample,
+                        normalized=normalized,
+                    )
+                    x_label = "Angle Phi [°]"
 
                 if not is_line_plot and show_options[5]:
-                    self.plot_item.plot(data, title, crosshair,
-                                        region='ring',
-                                        phi_sample=phi_sample,
-                                        line_sample=line_sample,
-                                        normalized=normalized)
-                    x_label = 'Angle Phi [°]'
+                    self.plot_item.plot(
+                        data,
+                        title,
+                        crosshair,
+                        region="ring",
+                        phi_sample=phi_sample,
+                        line_sample=line_sample,
+                        normalized=normalized,
+                    )
+                    x_label = "Angle Phi [°]"
 
-        self.plot_item.set_label(x_label, 'Intensity [a.u.]')
+        self.plot_item.set_label(x_label, "Intensity [a.u.]")
 
     def save_state(self):
         if self.circle_radiobutton.isChecked():
-            type_ = 'circle'
+            type_ = "circle"
 
         elif self.line_radiobutton.isChecked():
-            type_ = 'line'
+            type_ = "line"
 
         else:
-            type_ = 'slice'
+            type_ = "slice"
 
-        states = {'center': self.center_checkbox.checkState(),
-                  'x': self.x_checkbox.checkState(),
-                  'y': self.y_checkbox.checkState(),
-                  'roi': self.roi_checkbox.checkState(),
-                  'border': self.border_checkbox.checkState(),
-                  'annulus': self.annulus_checkbox.checkState()}
-        sample_rate = {'phi': self.phi_sample_spinbox.value(),
-                       'line': self.line_sample_spinbox.value()}
+        states = {
+            "center": self.center_checkbox.checkState(),
+            "x": self.x_checkbox.checkState(),
+            "y": self.y_checkbox.checkState(),
+            "roi": self.roi_checkbox.checkState(),
+            "border": self.border_checkbox.checkState(),
+            "annulus": self.annulus_checkbox.checkState(),
+        }
+        sample_rate = {
+            "phi": self.phi_sample_spinbox.value(),
+            "line": self.line_sample_spinbox.value(),
+        }
 
-        save = {'title': self.title,
-                'type': type_,
-                'normalized': self.normalize_checkbox.checkState(),
-                'tab_index': self.tab_combobox.currentIndex(),
-                'states': states,
-                'sample_rate': sample_rate}
+        save = {
+            "title": self.title,
+            "type": type_,
+            "normalized": self.normalize_checkbox.checkState(),
+            "tab_index": self.tab_combobox.currentIndex(),
+            "states": states,
+            "sample_rate": sample_rate,
+        }
         return save, []
 
     def load_tabs(self, tab_widget):
@@ -217,16 +241,16 @@ class ProfilePlotTab(Tab, ProfilePlotTab_UI):
     def export_to_txt(self):
         data = self.plot_item.get_data()
 
-        text = ''
+        text = ""
 
         for data_set in data:
-            name = data_set['name']
-            x = data_set['x']
-            y = data_set['y']
-            text += '# ' + name + '\n'
+            name = data_set["name"]
+            x = data_set["x"]
+            y = data_set["y"]
+            text += "# " + name + "\n"
             for xi, yi in zip(x, y):
-                text += '%g  %g \n' % (xi, yi)
-            text += '\n'
+                text += "%g  %g \n" % (xi, yi)
+            text += "\n"
 
         return text
 
@@ -263,14 +287,19 @@ class ProfilePlotTab(Tab, ProfilePlotTab_UI):
         # Widgets associated with line-like plotting (e.g. x/y - Line)
         line_widgets = [self.x_checkbox, self.y_checkbox]
         # Widgets associated with ring-like plotting (e.g. ROI, Annulus)
-        circle_widgets = [self.annulus_checkbox,
-                          self.border_checkbox, self.roi_checkbox]
+        circle_widgets = [
+            self.annulus_checkbox,
+            self.border_checkbox,
+            self.roi_checkbox,
+        ]
 
         show_slice_bool = self.slice_radiobutton.isChecked()
-        show_line_bool = True if self.line_radiobutton.isChecked(
-        ) or show_slice_bool else False
-        show_circle_bool = True if self.circle_radiobutton.isChecked(
-        ) or show_slice_bool else False
+        show_line_bool = (
+            True if self.line_radiobutton.isChecked() or show_slice_bool else False
+        )
+        show_circle_bool = (
+            True if self.circle_radiobutton.isChecked() or show_slice_bool else False
+        )
 
         for widget in chain(line_widgets, circle_widgets):
             widget.blockSignals(True)
@@ -285,8 +314,12 @@ class ProfilePlotTab(Tab, ProfilePlotTab_UI):
 
         self.center_checkbox.setVisible(show_slice_bool)
 
-        other_widgets = [self.phi_sample_label, self.phi_sample_spinbox,
-                         self.line_sample_label, self.line_sample_spinbox]
+        other_widgets = [
+            self.phi_sample_label,
+            self.phi_sample_spinbox,
+            self.line_sample_label,
+            self.line_sample_spinbox,
+        ]
 
         for widget in other_widgets:
             widget.setVisible(not show_slice_bool)
@@ -301,10 +334,14 @@ class ProfilePlotTab(Tab, ProfilePlotTab_UI):
             if self.slice_radiobutton.isChecked():
                 self.line_radiobutton.setChecked(True)
 
-        checkboxes = [self.center_checkbox,
-                      self.x_checkbox, self.y_checkbox,
-                      self.roi_checkbox, self.border_checkbox,
-                      self.annulus_checkbox]
+        checkboxes = [
+            self.center_checkbox,
+            self.x_checkbox,
+            self.y_checkbox,
+            self.roi_checkbox,
+            self.border_checkbox,
+            self.annulus_checkbox,
+        ]
 
         for checkbox, show in zip(checkboxes, self.show_options[index]):
             checkbox.blockSignals(True)
@@ -313,10 +350,14 @@ class ProfilePlotTab(Tab, ProfilePlotTab_UI):
 
     def _change_checkbox(self):
         checkbox = self.sender()
-        checkboxes = [self.center_checkbox,
-                      self.x_checkbox, self.y_checkbox,
-                      self.roi_checkbox, self.border_checkbox,
-                      self.annulus_checkbox]
+        checkboxes = [
+            self.center_checkbox,
+            self.x_checkbox,
+            self.y_checkbox,
+            self.roi_checkbox,
+            self.border_checkbox,
+            self.annulus_checkbox,
+        ]
 
         tab_index = self.tab_combobox.currentIndex()
         if tab_index != -1:

@@ -1,22 +1,26 @@
-# PyQt5 Imports
-from PyQt5 import uic
-from PyQt5.QtWidgets import QWidget
+from PySide6 import uic
 
-# Own Imports
 from kmap import __directory__
-from kmap.library.qwidgetsub import Tab
 from kmap.controller.matplotlibwindow import MatplotlibLineWindow
+from kmap.library.qwidgetsub import Tab
 
 # Load .ui File
-UI_file = __directory__ / 'ui/lmfitplottab.ui'
+UI_file = __directory__ / "ui/lmfitplottab.ui"
 LMFitPlotTab_UI, _ = uic.loadUiType(UI_file)
 
 
 class LMFitPlotTab(Tab, LMFitPlotTab_UI):
-
-    def __init__(self, results, orbitals, axis, residuals,
-                 background_parameters, result_tab, *args,
-                 **kwargs):
+    def __init__(
+        self,
+        results,
+        orbitals,
+        axis,
+        residuals,
+        background_parameters,
+        result_tab,
+        *args,
+        **kwargs,
+    ):
         self.results = results
         self.result_tab = result_tab
         self.orbitals = orbitals
@@ -35,73 +39,75 @@ class LMFitPlotTab(Tab, LMFitPlotTab_UI):
 
     @classmethod
     def init_from_save(cls, save, dependencies, tab_widget):
-        results = save['results']
-        axis = save['axis']
-        residuals = save['residuals'] if 'residuals' in save else None
-        result_tab = tab_widget.get_tab_by_ID(dependencies['lmfitresulttab'])
+        results = save["results"]
+        axis = save["axis"]
+        residuals = save["residuals"] if "residuals" in save else None
+        result_tab = tab_widget.get_tab_by_ID(dependencies["lmfitresulttab"])
         orbitals = result_tab.get_orbitals()
-        background_param = save['background_param']
+        background_param = save["background_param"]
 
-        tab = LMFitPlotTab(results, orbitals, axis, residuals,
-                background_param, result_tab)
-        
-        tab.parameter_combobox.setCurrentIndex(save['combobox'])
+        tab = LMFitPlotTab(
+            results, orbitals, axis, residuals, background_param, result_tab
+        )
+
+        tab.parameter_combobox.setCurrentIndex(save["combobox"])
         tab.locked_tabs = [result_tab]
         tab.refresh_plot()
 
         return tab
 
     def save_state(self):
-        save = {'title': self.title,
-                'results': self.results,
-                'axis': self.x_axis,
-                'background_param': self.background_parameters,
-                'residuals': self.residuals,
-                'combobox': self.parameter_combobox.currentIndex()}
-        
-        dependencies = {'lmfitresulttab': self.result_tab.ID}
+        save = {
+            "title": self.title,
+            "results": self.results,
+            "axis": self.x_axis,
+            "background_param": self.background_parameters,
+            "residuals": self.residuals,
+            "combobox": self.parameter_combobox.currentIndex(),
+        }
+
+        dependencies = {"lmfitresulttab": self.result_tab.ID}
 
         return save, dependencies
 
     def export_to_txt(self):
         data = self.plot_item.get_data()
 
-        text = ''
+        text = ""
 
         for data_set in data:
-            name = data_set['name']
-            x = data_set['x']
-            y = data_set['y']
-            text += '# ' + name + '\n'
+            name = data_set["name"]
+            x = data_set["x"]
+            y = data_set["y"]
+            text += "# " + name + "\n"
             for xi, yi in zip(x, y):
-                text += '%g  %g \n' % (xi, yi)
-            text += '\n'
+                text += "%g  %g \n" % (xi, yi)
+            text += "\n"
 
         return text
 
     def refresh_plot(self):
         x = self.x_axis.axis
-        x_label = '%s [%s]' % (self.x_axis.label, self.x_axis.units)
+        x_label = "%s [%s]" % (self.x_axis.label, self.x_axis.units)
         self.plot_item.clear()
 
         option = self.parameter_combobox.currentIndex()
         if option == 4:
             # Residual
-            title = 'Residual'
+            title = "Residual"
             y = self.residuals
             self.plot_item.plot(x, y, title)
-            y_label = '|Residual|'
+            y_label = "|Residual|"
 
         elif option in list(range(4)):
             # Orbital parameters
-            possible_params = ['w_', 'phi_', 'theta_', 'psi_']
-            possible_labels = ['Weight [1]', 'Phi [°]', 'Theta [°]', 'Psi [°]']
+            possible_params = ["w_", "phi_", "theta_", "psi_"]
+            possible_labels = ["Weight [1]", "Phi [°]", "Theta [°]", "Psi [°]"]
             param = possible_params[option]
             y_label = possible_labels[option]
 
             for orbital in self.orbitals:
-                y = [result.params[param + str(orbital.ID)]
-                     for result in self.results]
+                y = [result.params[param + str(orbital.ID)] for result in self.results]
                 title = orbital.name
 
                 self.plot_item.plot(x, y, title)
@@ -109,7 +115,7 @@ class LMFitPlotTab(Tab, LMFitPlotTab_UI):
         else:
             # Background parameters
             parameter = self.background_parameters[option - 5]
-            y_label = f'{parameter} [a.U.]'
+            y_label = f"{parameter} [a.U.]"
             y = [result.params[parameter] for result in self.results]
             title = parameter
 

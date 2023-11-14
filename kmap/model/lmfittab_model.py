@@ -1,10 +1,7 @@
 import numpy as np
 
-from kmap.config.config import config
 
-
-class LMFitTabModel():
-
+class LMFitTabModel:
     def __init__(self, sliced_data, orbitals):
         self.sliced = sliced_data
         self.orbitals = orbitals
@@ -24,7 +21,7 @@ class LMFitTabModel():
     def get_orbital_kmap_by_ID(self, ID, parameters):
         orbital = self.ID_to_orbital(ID)
         if orbital is None:
-            raise IndexError('wrong ID')
+            raise IndexError("wrong ID")
 
         weight, *parameters = parameters
 

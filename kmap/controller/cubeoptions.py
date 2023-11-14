@@ -1,16 +1,11 @@
-# Python Imports
-import logging
+from PySide6 import uic
+from PySide6.QtCore import pyqtSignal
+from PySide6.QtWidgets import QWidget
 
-# PyQt5 Imports
-from PyQt5 import uic
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QWidget
-
-# Own Imports
 from kmap import __directory__
 
 # Load .ui File
-UI_file = __directory__ / 'ui/cubeoptions.ui'
+UI_file = __directory__ / "ui/cubeoptions.ui"
 CubeOptions_UI, _ = uic.loadUiType(UI_file)
 
 
@@ -33,15 +28,20 @@ class CubeOptions(QWidget, CubeOptions_UI):
         resolution = self.resolution_spinbox.value()
         symmetry = self.symmetrize_combobox.currentIndex()
 
-        save = {'E_kin': E_kin, 'resolution': resolution, 'symmetry': symmetry, 'V0': V0}
+        save = {
+            "E_kin": E_kin,
+            "resolution": resolution,
+            "symmetry": symmetry,
+            "V0": V0,
+        }
 
         return save
 
     def restore_state(self, save):
-        E_kin = save['E_kin']
-        V0 = save['V0']
-        resolution = save['resolution']
-        symmetry = save['symmetry']
+        E_kin = save["E_kin"]
+        V0 = save["V0"]
+        resolution = save["resolution"]
+        symmetry = save["symmetry"]
 
         self.energy_spinbox.setValue(E_kin)
         self.inner_potential_spinbox.setValue(V0)
@@ -66,17 +66,23 @@ class CubeOptions(QWidget, CubeOptions_UI):
 
     def _get_symmetry(self):
         index = self.symmetrize_combobox.currentIndex()
-        available_symmetries = ['no', '2-fold', '2-fold+mirror',
-                                '3-fold', '3-fold+mirror', '4-fold',
-                                '4-fold+mirror']
+        available_symmetries = [
+            "no",
+            "2-fold",
+            "2-fold+mirror",
+            "3-fold",
+            "3-fold+mirror",
+            "4-fold",
+            "4-fold+mirror",
+        ]
 
         return available_symmetries[index]
 
     def _connect(self):
         self.energy_spinbox.valueChanged.connect(self.energy_changed.emit)
         self.inner_potential_spinbox.valueChanged.connect(self.V0_changed.emit)
-        self.resolution_spinbox.valueChanged.connect(
-            self.resolution_changed.emit)
+        self.resolution_spinbox.valueChanged.connect(self.resolution_changed.emit)
         self.symmetrize_combobox.currentIndexChanged.connect(
-            self.symmetrization_changed.emit)
+            self.symmetrization_changed.emit
+        )
         self.match_button.clicked.connect(self.get_match_energy.emit)

@@ -1,38 +1,28 @@
-# Python Imports
 import numpy as np
 import pyqtgraph as pg
+from PySide6 import uic
 
-# PyQt5 Imports
-from PyQt5 import uic
-
-# Own Imports
 from kmap import __directory__
 from kmap.config.config import config
-from kmap.library.misc import normalize
-from kmap.model.crosshair_model import CrosshairROIModel
 from kmap.controller.crosshair import CrosshairBase
+from kmap.model.crosshair_model import CrosshairROIModel
 
 # Load .ui File
-UI_file = __directory__ / 'ui/crosshairroi.ui'
+UI_file = __directory__ / "ui/crosshairroi.ui"
 CrosshairROI_UI, _ = uic.loadUiType(UI_file)
 
 
 class CrosshairROIBase(CrosshairBase):
-
     def __init__(self, plot_item):
-
         super().__init__(plot_item)
 
     def enable_roi(self, enable):
-
         self.roi.setVisible(enable)
 
     def dragging_roi(self):
-
         self.dragging_roi = True
 
     def resize_roi_from_drag(self):
-
         # There is no signal for finished dragging, but starting it
         if not self.dragging_roi:
             return
@@ -49,7 +39,6 @@ class CrosshairROIBase(CrosshairBase):
         self.update()
 
     def resize_roi_from_spinbox(self):
-
         radius = self.roi_spinbox.value()
 
         if radius <= 0:
@@ -60,7 +49,6 @@ class CrosshairROIBase(CrosshairBase):
         self.update()
 
     def move_crosshair_from_spinbox(self):
-
         update = super().move_crosshair_from_spinbox()
 
         if update:
@@ -73,13 +61,11 @@ class CrosshairROIBase(CrosshairBase):
             return False
 
     def change_color(self, index):
-
         CrosshairBase.change_color(self, index)
 
         self.roi.setPen(self.colors[index])
 
     def update(self):
-
         x, y, radius = self.model.x, self.model.y, self.model.radius
 
         # Update Spinboxes silently
@@ -94,7 +80,6 @@ class CrosshairROIBase(CrosshairBase):
         super().update()
 
     def update_label(self):
-
         super().update_label()
 
         plot_data = self.plot_item.get_plot_data()
@@ -104,40 +89,42 @@ class CrosshairROIBase(CrosshairBase):
             area = np.nan
 
         else:
-            cut = self.model.cut_from_data(plot_data, region='roi')
-            area = cut.data[~np.isnan(cut.data)].size * plot_data.step_size[0] * plot_data.step_size[1]
+            cut = self.model.cut_from_data(plot_data, region="roi")
+            area = (
+                cut.data[~np.isnan(cut.data)].size
+                * plot_data.step_size[0]
+                * plot_data.step_size[1]
+            )
             intensity = np.nansum(cut.data)
 
             # Normalize by dividing by the area
-            if config.get_key('crosshair', 'normalized_intensity') == 'True':
+            if config.get_key("crosshair", "normalized_intensity") == "True":
                 intensity /= area
 
-        
-        decimals = int(config.get_key('crosshair', 'decimal_places'))
-        self.area_value_label.setText(f'{intensity:.{decimals}e}')
-        self.roi_area_value.setText(f'{area:.{decimals}e}')
+        decimals = int(config.get_key("crosshair", "decimal_places"))
+        self.area_value_label.setText(f"{intensity:.{decimals}e}")
+        self.roi_area_value.setText(f"{area:.{decimals}e}")
 
     def save_state(self):
-        
-        save_ = {'spinbox_radius': self.roi_spinbox.value(),
-                'checkbox_roi': self.enable_roi_checkbox.checkState()}
+        save_ = {
+            "spinbox_radius": self.roi_spinbox.value(),
+            "checkbox_roi": self.enable_roi_checkbox.checkState(),
+        }
         save = super().save_state()
         save.update(save_)
 
         return save
 
     def restore_state(self, save):
-
         super().restore_state(save)
 
-        self.enable_roi_checkbox.setCheckState(save['checkbox_roi'])
-        self.roi_spinbox.setValue(save['spinbox_radius'])
+        self.enable_roi_checkbox.setCheckState(save["checkbox_roi"])
+        self.roi_spinbox.setValue(save["spinbox_radius"])
 
         self.move_crosshair_from_spinbox()
         self.update_label()
 
     def _set_model(self, model=None):
-
         if model is None:
             self.model = CrosshairROIModel(x=0, y=0, radius=0.2)
 
@@ -145,22 +132,22 @@ class CrosshairROIBase(CrosshairBase):
             self.model = model
 
     def _setup(self):
-
         CrosshairBase._setup(self)
 
         x, y, radius = self.model.x, self.model.y, self.model.radius
 
-        self.roi = pg.CircleROI([x - radius, y - radius],
-                                size=[2 * radius, 2 * radius],
-                                movable=False,
-                                rotatable=False,
-                                resizable=True,
-                                removable=False,
-                                pen='k')
+        self.roi = pg.CircleROI(
+            [x - radius, y - radius],
+            size=[2 * radius, 2 * radius],
+            movable=False,
+            rotatable=False,
+            resizable=True,
+            removable=False,
+            pen="k",
+        )
         self.plot_item.addItem(self.roi)
 
     def _connect(self):
-
         CrosshairBase._connect(self)
 
         self.enable_roi_checkbox.stateChanged.connect(self.enable_roi)
@@ -171,7 +158,6 @@ class CrosshairROIBase(CrosshairBase):
 
 
 class CrosshairROI(CrosshairROIBase, CrosshairROI_UI):
-
     def __init__(self, plot_item):
         # Setup GUI
         super(CrosshairROI, self).__init__(plot_item)

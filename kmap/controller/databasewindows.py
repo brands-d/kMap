@@ -1,24 +1,19 @@
-# Python Imports
-import logging
+from PySide6 import uic
+from PySide6.QtCore import Qt, pyqtSignal
+from PySide6.QtWidgets import QHeaderView, QMainWindow, QTreeWidgetItem
 
-# PyQt5 Imports
-from PyQt5 import uic
-from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import QMainWindow, QTreeWidgetItem, QHeaderView
-
-# Own Imports
 from kmap import __directory__
-from kmap.library.database import Database
+from kmap.config.config import config
+from kmap.controller.slicedcubefileoptions import SlicedCubefileOptions
 from kmap.controller.sliceddatabaseoptions import SlicedDataBaseOptions
 from kmap.controller.sliceddatabaseoptions2 import SlicedDataBaseOptions2
-from kmap.controller.slicedcubefileoptions import SlicedCubefileOptions
-from kmap.config.config import config
+from kmap.library.database import Database
 
 # Load .ui File for SlicedDataDatabase
-UI_file = __directory__ / 'ui/databasewindow.ui'
+UI_file = __directory__ / "ui/databasewindow.ui"
 DatabaseWindow_UI, _ = uic.loadUiType(UI_file)
 # Load .ui File for OrbitalDatabase
-UI_file = __directory__ / 'ui/sliceddatabasewindow.ui'
+UI_file = __directory__ / "ui/sliceddatabasewindow.ui"
 SlicedDatabaseWindow_UI, _ = uic.loadUiType(UI_file)
 
 
@@ -26,13 +21,11 @@ class DatabaseWindowBase(QMainWindow):
     files_chosen = pyqtSignal(list)
 
     def __init__(self):
-
         # Setup GUI
         super(DatabaseWindowBase, self).__init__()
         self.setAttribute(Qt.WA_DeleteOnClose, True)
 
     def fill_tree(self):
-
         self.tree.clear()
 
         for molecule in self.database.molecules:
@@ -40,17 +33,18 @@ class DatabaseWindowBase(QMainWindow):
                 item = self.add_molecule(molecule)
 
     def add_molecule(self, molecule):
-
         molecule_item = MoleculeTreeWidgetItem(molecule)
 
         # Add the entries in the respective column
-        entries = ['%i' % molecule.ID,
-                   molecule.full_name,
-                   molecule.formula,
-                   '%i' % molecule.charge,
-                   '%.3f' % molecule.magnetic_moment,
-                   molecule.XC_functional,
-                   '']
+        entries = [
+            "%i" % molecule.ID,
+            molecule.full_name,
+            molecule.formula,
+            "%i" % molecule.charge,
+            "%.3f" % molecule.magnetic_moment,
+            molecule.XC_functional,
+            "",
+        ]
 
         for col, entry in enumerate(entries):
             molecule_item.setText(col, entry)
@@ -64,12 +58,18 @@ class DatabaseWindowBase(QMainWindow):
             self.add_orbital(orbital, molecule_item)
 
     def add_orbital(self, orbital, molecule_item):
-
         orbital_item = OrbitalTreeWidgetItem(orbital)
 
         # Add the entries in the respective column
-        entries = ['%i' % orbital.ID, orbital.name, '', '',
-                   '', '', '%.3f' % orbital.energy]
+        entries = [
+            "%i" % orbital.ID,
+            orbital.name,
+            "",
+            "",
+            "",
+            "",
+            "%.3f" % orbital.energy,
+        ]
 
         for col, entry in enumerate(entries):
             orbital_item.setText(col, entry)
@@ -79,14 +79,12 @@ class DatabaseWindowBase(QMainWindow):
         molecule_item.addChild(orbital_item)
 
     def find(self):
-
         search_text = self.line_edit.text()
 
         if not search_text:
             return
 
-        items = self.tree.findItems(search_text,
-                                    Qt.MatchFlag.MatchContains, 1)
+        items = self.tree.findItems(search_text, Qt.MatchFlag.MatchContains, 1)
 
         if not items:
             return
@@ -103,7 +101,6 @@ class DatabaseWindowBase(QMainWindow):
         self.tree.setCurrentItem(next_item)
 
     def load_database(self):
-
         orbitals_chosen = self._get_chosen_orbitals()
 
         for orbital in orbitals_chosen:
@@ -114,15 +111,20 @@ class DatabaseWindowBase(QMainWindow):
         self.close()
 
     def closeEvent(self, event):
-
         self.files_chosen.emit(self.URLs)
         self.deleteLater()
         event.accept()
 
     def _setup_tree(self):
-
-        header_labels = ['ID', 'Name', 'Formula', 'Charge',
-                         'Mag. Moment', 'XC-Funktional', 'Energy']
+        header_labels = [
+            "ID",
+            "Name",
+            "Formula",
+            "Charge",
+            "Mag. Moment",
+            "XC-Funktional",
+            "Energy",
+        ]
         self.tree.setHeaderLabels(header_labels)
         self.tree.setColumnWidth(0, 100)
         self.tree.setColumnWidth(2, 150)
@@ -136,17 +138,15 @@ class DatabaseWindowBase(QMainWindow):
         self.tree.sortItems(0, Qt.SortOrder.AscendingOrder)
 
     def _fit_filter(self, molecule):
-
         filter_ = self.combobox.currentText()
 
-        if filter_ == 'No Filter' or molecule.XC_functional == filter_:
+        if filter_ == "No Filter" or molecule.XC_functional == filter_:
             return True
 
         else:
             return False
 
     def _get_chosen_orbitals(self):
-
         orbitals = []
 
         selected_items = self.tree.selectedItems()
@@ -167,7 +167,6 @@ class DatabaseWindowBase(QMainWindow):
         return set(orbitals)
 
     def _connect(self):
-
         self.combobox.currentTextChanged.connect(self.fill_tree)
 
         self.database_load_button.clicked.connect(self.load_database)
@@ -175,16 +174,14 @@ class DatabaseWindowBase(QMainWindow):
 
 
 class OrbitalDatabase(DatabaseWindowBase, DatabaseWindow_UI):
-
     def __init__(self, *args, **kwargs):
-
         super(OrbitalDatabase, self).__init__(*args, **kwargs)
         self.setupUi(self)
         self._setup_tree()
         self._connect()
 
         # Setup database
-        path = __directory__ / config.get_key('paths', 'database')
+        path = __directory__ / config.get_key("paths", "database")
         self.database = Database(path)
 
         # URLs (with extra information if available) chosen
@@ -195,7 +192,6 @@ class OrbitalDatabase(DatabaseWindowBase, DatabaseWindow_UI):
         self.show()
 
     def load_urls(self):
-
         text = self.text_edit.toPlainText()
 
         # Nothing entered
@@ -203,8 +199,8 @@ class OrbitalDatabase(DatabaseWindowBase, DatabaseWindow_UI):
             self.URLs = []
 
         # Multiple URLs entered
-        elif '\n' in text:
-            self.URLs = text.split('\n')
+        elif "\n" in text:
+            self.URLs = text.split("\n")
 
         # Only one URL entered
         else:
@@ -213,33 +209,30 @@ class OrbitalDatabase(DatabaseWindowBase, DatabaseWindow_UI):
         self.close()
 
     def _connect(self):
-
         DatabaseWindowBase._connect(self)
 
         self.url_load_button.clicked.connect(self.load_urls)
 
 
 class SlicedDatabaseWindow(DatabaseWindowBase, SlicedDatabaseWindow_UI):
-
     def __init__(self, mode, *args, **kwargs):
-
         super(SlicedDatabaseWindow, self).__init__(*args, **kwargs)
         self.setupUi(self)
         self._setup_tree()
         self._connect()
 
         # Setup database
-        path = __directory__ / config.get_key('paths', 'database')
+        path = __directory__ / config.get_key("paths", "database")
         self.database = Database(str(path))
 
         # Open Options Window
-        if mode == 'binding-energy':
+        if mode == "binding-energy":
             self.options = SlicedDataBaseOptions()
 
-        elif mode == 'photon-energy':
+        elif mode == "photon-energy":
             self.options = SlicedDataBaseOptions2()
 
-        elif mode == 'cubefile':
+        elif mode == "cubefile":
             self.options = SlicedCubefileOptions()
 
         # URLs (with extra information if available) chosen
@@ -251,7 +244,6 @@ class SlicedDatabaseWindow(DatabaseWindowBase, SlicedDatabaseWindow_UI):
         self.options.show()
 
     def load_database(self):
-
         orbitals_chosen = self._get_chosen_orbitals()
 
         for orbital in orbitals_chosen:
@@ -265,7 +257,6 @@ class SlicedDatabaseWindow(DatabaseWindowBase, SlicedDatabaseWindow_UI):
         self.close()
 
     def closeEvent(self, event):
-
         DatabaseWindowBase.closeEvent(self, event)
 
         try:
@@ -276,9 +267,7 @@ class SlicedDatabaseWindow(DatabaseWindowBase, SlicedDatabaseWindow_UI):
 
 
 class TreeWidgetItem(QTreeWidgetItem):
-
     def __lt__(self, other):
-
         column = self.treeWidget().sortColumn()
 
         self_string = self.text(column).lower()
@@ -292,7 +281,6 @@ class TreeWidgetItem(QTreeWidgetItem):
 
 
 class MoleculeTreeWidgetItem(TreeWidgetItem):
-
     def __init__(self, molecule, *args, **kwargs):
         self.molecule = molecule
 
@@ -300,7 +288,6 @@ class MoleculeTreeWidgetItem(TreeWidgetItem):
 
 
 class OrbitalTreeWidgetItem(TreeWidgetItem):
-
     def __init__(self, orbital, *args, **kwargs):
         self.orbital = orbital
 

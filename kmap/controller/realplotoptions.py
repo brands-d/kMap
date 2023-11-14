@@ -1,13 +1,11 @@
-# PyQt5 Imports
-from PyQt5 import uic
-from PyQt5.QtWidgets import QWidget
-from PyQt5.QtCore import pyqtSignal
+from PySide6 import uic
+from PySide6.QtCore import pyqtSignal
+from PySide6.QtWidgets import QWidget
 
-# Own Imports
 from kmap import __directory__
 
 # Load .ui File
-UI_file = __directory__ / 'ui/realplotoptions.ui'
+UI_file = __directory__ / "ui/realplotoptions.ui"
 RealPlotOptions_UI, _ = uic.loadUiType(UI_file)
 
 
@@ -29,29 +27,33 @@ class RealPlotOptions(QWidget, RealPlotOptions_UI):
 
     def save_state(self):
         iso_val = self.get_iso_val()
-        checkboxes = [self.show_grid_checkbox,
-                      self.show_isosurface_checkbox,
-                      self.show_bond_checkbox,
-                      self.show_photon_checkbox,
-                      self.show_hemisphere_checkbox,
-                      self.show_axis_checkbox]
+        checkboxes = [
+            self.show_grid_checkbox,
+            self.show_isosurface_checkbox,
+            self.show_bond_checkbox,
+            self.show_photon_checkbox,
+            self.show_hemisphere_checkbox,
+            self.show_axis_checkbox,
+        ]
         booleans = [checkbox.checkState() for checkbox in checkboxes]
 
-        save = {'iso_val': iso_val, 'booleans': booleans}
+        save = {"iso_val": iso_val, "booleans": booleans}
 
         return save
 
     def restore_state(self, save):
-        iso_val = save['iso_val']
+        iso_val = save["iso_val"]
         self.iso_spinbox.setValue(iso_val)
 
-        checkboxes = [self.show_grid_checkbox,
-                      self.show_isosurface_checkbox,
-                      self.show_bond_checkbox,
-                      self.show_photon_checkbox,
-                      self.show_hemisphere_checkbox,
-                      self.show_axis_checkbox]
-        for checkbox, state in zip(checkboxes, save['booleans']):
+        checkboxes = [
+            self.show_grid_checkbox,
+            self.show_isosurface_checkbox,
+            self.show_bond_checkbox,
+            self.show_photon_checkbox,
+            self.show_hemisphere_checkbox,
+            self.show_axis_checkbox,
+        ]
+        for checkbox, state in zip(checkboxes, save["booleans"]):
             checkbox.setCheckState(state)
 
     def reset_camera(self):
@@ -105,13 +107,9 @@ class RealPlotOptions(QWidget, RealPlotOptions_UI):
     def _connect(self):
         self.reset_camera_button.clicked.connect(self.reset_camera)
         self.show_bond_checkbox.stateChanged.connect(self._change_bonds_show)
-        self.show_photon_checkbox.stateChanged.connect(
-            self._change_photon_show)
+        self.show_photon_checkbox.stateChanged.connect(self._change_photon_show)
         self.show_grid_checkbox.stateChanged.connect(self._change_grid_show)
-        self.show_hemisphere_checkbox.stateChanged.connect(
-            self._change_hemisphere_show)
-        self.show_isosurface_checkbox.stateChanged.connect(
-            self._change_mesh_show)
-        self.show_axis_checkbox.stateChanged.connect(
-            self._change_axis_show)
+        self.show_hemisphere_checkbox.stateChanged.connect(self._change_hemisphere_show)
+        self.show_isosurface_checkbox.stateChanged.connect(self._change_mesh_show)
+        self.show_axis_checkbox.stateChanged.connect(self._change_axis_show)
         self.iso_spinbox.valueChanged.connect(self._change_iso_val)

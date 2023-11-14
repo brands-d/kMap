@@ -1,33 +1,23 @@
-# Python Imports
-import logging
 from pathlib import Path
 
-# Third Party Imports
 import h5py
 import numpy as np
+from PySide6 import uic
+from PySide6.QtCore import pyqtSignal
+from PySide6.QtWidgets import QFileDialog
 
-# PyQt5 Imports
-from PyQt5 import uic
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QFileDialog
-
-# Own Imports
 from kmap import __directory__
-from kmap.library.qwidgetsub import Tab
-from kmap.model.orbitaldatatab_model import OrbitalDataTabModel
-from kmap.controller.matplotlibwindow import MatplotlibImageWindow
-from kmap.controller.crosshairannulus import CrosshairAnnulus
-from kmap.controller.colormap import Colormap
-from kmap.controller.cubeoptions import CubeOptions
-from kmap.controller.orbitaltable import OrbitalTable
-from kmap.controller.interpolation import Interpolation
-from kmap.controller.pyqtgraphplot import PyQtGraphPlot
-from kmap.controller.polarization import Polarization
-from kmap.library.sliceddata import Axis
 from kmap.config.config import config
+from kmap.controller.colormap import Colormap
+from kmap.controller.crosshairannulus import CrosshairAnnulus
+from kmap.controller.interpolation import Interpolation
+from kmap.controller.matplotlibwindow import MatplotlibImageWindow
+from kmap.library.qwidgetsub import Tab
+from kmap.library.sliceddata import Axis
+from kmap.model.orbitaldatatab_model import OrbitalDataTabModel
 
 # Load .ui File
-UI_file = __directory__ / 'ui/orbitaldatatab.ui'
+UI_file = __directory__ / "ui/orbitaldatatab.ui"
 OrbitalDataTab_UI, _ = uic.loadUiType(UI_file)
 
 
@@ -44,30 +34,31 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         self._connect()
 
         self.model = OrbitalDataTabModel(self)
-    
+
     @classmethod
     def init_from_save(cls, save, dependencies, tab_widget=None):
         self = cls()
-        
-        for orbital in save['orbitals']:
-            if orbital['load_type'] == 'path':
-                self.add_orbital_from_filepath(orbital['load_args'],
-                        orbital['ID'])
 
-            elif orbital['load_type'] == 'url':
-                self.add_orbital_from_online(orbital['load_args'],
-                        meta_data=orbital['meta_data'],
-                        ID=orbital['ID'])
+        for orbital in save["orbitals"]:
+            if orbital["load_type"] == "path":
+                self.add_orbital_from_filepath(orbital["load_args"], orbital["ID"])
 
-        self.interpolation.restore_state(save['interpolation'])
-        self.table.restore_state(save['table'])
-        self.polarization.restore_state(save['polarization'])
-        self.cube_options.restore_state(save['cube_options'])
-        self.real_space_options.restore_state(save['real_space_options'])
-        self.crosshair.restore_state(save['crosshair'])
-        self.colormap.restore_state(save['colormap'])
-        self.plot_item.set_levels(save['levels'])
-        self.plot_item.set_colormap(save['colorscale'])
+            elif orbital["load_type"] == "url":
+                self.add_orbital_from_online(
+                    orbital["load_args"],
+                    meta_data=orbital["meta_data"],
+                    ID=orbital["ID"],
+                )
+
+        self.interpolation.restore_state(save["interpolation"])
+        self.table.restore_state(save["table"])
+        self.polarization.restore_state(save["polarization"])
+        self.cube_options.restore_state(save["cube_options"])
+        self.real_space_options.restore_state(save["real_space_options"])
+        self.crosshair.restore_state(save["crosshair"])
+        self.colormap.restore_state(save["colormap"])
+        self.plot_item.set_levels(save["levels"])
+        self.plot_item.set_colormap(save["colorscale"])
 
         return self
 
@@ -89,11 +80,11 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         return orbitals
 
     def add_orbital(self, orbital):
-        if 'orientation' in orbital.meta_data:
-            orientation = orbital.meta_data['orientation']
+        if "orientation" in orbital.meta_data:
+            orientation = orbital.meta_data["orientation"]
 
         else:
-            orientation = 'xy'
+            orientation = "xy"
 
         self.table.add_orbital(orbital, orientation)
 
@@ -127,8 +118,7 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         self.mini_real_plot.rotate_orbital(phi, theta, psi)
 
     def refresh_mini_plot_polarization(self):
-        polarization, alpha, beta, _, s_share = self.polarization.get_parameters()[
-            1:]
+        polarization, alpha, beta, _, s_share = self.polarization.get_parameters()[1:]
 
         self.mini_real_plot.rotate_photon(polarization, alpha, beta, s_share)
 
@@ -141,8 +131,16 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         weight, *orientation = parameters
         *polarization, s_share = self.polarization.get_parameters()
 
-        return (weight, kinetic_energy, dk,
-                *orientation, *polarization, symmetry, s_share, V0)
+        return (
+            weight,
+            kinetic_energy,
+            dk,
+            *orientation,
+            *polarization,
+            symmetry,
+            s_share,
+            V0,
+        )
 
     def get_use(self, ID):
         return self.table.get_use_by_ID(ID)
@@ -177,14 +175,14 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         self.orbital_removed.emit(ID)
 
     def export_to_numpy(self):
-        path = config.get_key('paths', 'numpy_export_start')
-        if path == 'None':
-            file_name, _ = QFileDialog.getSaveFileName(
-                None, 'Save .npy File (*.npy)')
+        path = config.get_key("paths", "numpy_export_start")
+        if path == "None":
+            file_name, _ = QFileDialog.getSaveFileName(None, "Save .npy File (*.npy)")
         else:
             start_path = str(__directory__ / path)
             file_name, _ = QFileDialog.getSaveFileName(
-                None, 'Save .npy File (*.npy)', str(start_path))
+                None, "Save .npy File (*.npy)", str(start_path)
+            )
 
         if not file_name:
             return
@@ -196,29 +194,31 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
 
     def export_to_hdf5(self):
         if not self.interpolation.interpolation_checkbox.isChecked():
-            print('Only interpolated OrbitalData can be exported.')
+            print("Only interpolated OrbitalData can be exported.")
             return
 
-        path = config.get_key('paths', 'hdf5_export_start')
-        if path == 'None':
-            file_name, _ = QFileDialog.getSaveFileName(
-                None, 'Save .hdf5 File (*.hdf5)')
+        path = config.get_key("paths", "hdf5_export_start")
+        if path == "None":
+            file_name, _ = QFileDialog.getSaveFileName(None, "Save .hdf5 File (*.hdf5)")
         else:
             start_path = str(__directory__ / path)
             file_name, _ = QFileDialog.getSaveFileName(
-                None, 'Save .hdf5 File (*.hdf5)', str(start_path))
+                None, "Save .hdf5 File (*.hdf5)", str(start_path)
+            )
 
         if not file_name:
             return
         else:
-            h5file = h5py.File(file_name, 'w')
+            h5file = h5py.File(file_name, "w")
 
-        export_energies = eval(config.get_key('orbital', 'export_energies'))
+        export_energies = eval(config.get_key("orbital", "export_energies"))
         if isinstance(export_energies, dict):
-            export_energies = np.linspace(export_energies['min'],
-                                          export_energies['max'],
-                                          export_energies['num'],
-                                          endpoint=True)
+            export_energies = np.linspace(
+                export_energies["min"],
+                export_energies["max"],
+                export_energies["num"],
+                endpoint=True,
+            )
 
         kmaps = []
         old_energy = self.cube_options.energy_spinbox.value()
@@ -229,45 +229,49 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         kmaps = np.array(kmaps)
         xrange, yrange = self.get_displayed_plot_data().range
 
-        h5file.create_dataset('name', data='Orbitals')
-        h5file.create_dataset('axis_1_label', data='E_kin')
-        h5file.create_dataset('axis_2_label', data='kx')
-        h5file.create_dataset('axis_3_label', data='ky')
-        h5file.create_dataset('axis_1_units', data='eV')
-        h5file.create_dataset('axis_2_units', data='1/Å')
-        h5file.create_dataset('axis_3_units', data='1/Å')
-        h5file.create_dataset('axis_1_range', data=[export_energies[0],
-                                                    export_energies[-1]])
-        h5file.create_dataset('axis_2_range', data=xrange)
-        h5file.create_dataset('axis_3_range', data=yrange)
-        h5file.create_dataset('data', data=kmaps, dtype='f8',
-                              compression='gzip', compression_opts=9)
+        h5file.create_dataset("name", data="Orbitals")
+        h5file.create_dataset("axis_1_label", data="E_kin")
+        h5file.create_dataset("axis_2_label", data="kx")
+        h5file.create_dataset("axis_3_label", data="ky")
+        h5file.create_dataset("axis_1_units", data="eV")
+        h5file.create_dataset("axis_2_units", data="1/Å")
+        h5file.create_dataset("axis_3_units", data="1/Å")
+        h5file.create_dataset(
+            "axis_1_range", data=[export_energies[0], export_energies[-1]]
+        )
+        h5file.create_dataset("axis_2_range", data=xrange)
+        h5file.create_dataset("axis_3_range", data=yrange)
+        h5file.create_dataset(
+            "data", data=kmaps, dtype="f8", compression="gzip", compression_opts=9
+        )
         h5file.close()
 
     def export_to_txt(self):
         if not self.interpolation.interpolation_checkbox.isChecked():
             # Otherwise maps at different energies would be of different size
-            print('Only interpolated OrbitalData can be exported.')
+            print("Only interpolated OrbitalData can be exported.")
             return
 
-        path = config.get_key('paths', 'txt_export_start')
-        if path == 'None':
-            file_name, _ = QFileDialog.getSaveFileName(
-                None, 'Save .itx File (*.itx)')
+        path = config.get_key("paths", "txt_export_start")
+        if path == "None":
+            file_name, _ = QFileDialog.getSaveFileName(None, "Save .itx File (*.itx)")
         else:
             start_path = str(__directory__ / path)
             file_name, _ = QFileDialog.getSaveFileName(
-                None, 'Save .itx File (*.itx)', str(start_path))
+                None, "Save .itx File (*.itx)", str(start_path)
+            )
 
         if not file_name:
             return
 
-        export_energies = eval(config.get_key('orbital', 'export_energies'))
+        export_energies = eval(config.get_key("orbital", "export_energies"))
         if isinstance(export_energies, dict):
-            export_energies = np.linspace(export_energies['min'],
-                                          export_energies['max'],
-                                          export_energies['num'],
-                                          endpoint=True)
+            export_energies = np.linspace(
+                export_energies["min"],
+                export_energies["max"],
+                export_energies["num"],
+                endpoint=True,
+            )
 
         kmaps = []
         old_energy = self.cube_options.energy_spinbox.value()
@@ -282,17 +286,19 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         yscale = (yrange[1] - yrange[0]) / shape[0]
         name = Path(file_name).stem
 
-        with open(file_name, 'w') as f:
-            f.write('IGOR\n')
-            f.write(f'WAVES/N=({shape[1]},{shape[0]},{len(export_energies)})\t{name}\n')
-            f.write('BEGIN\n')
+        with open(file_name, "w") as f:
+            f.write("IGOR\n")
+            f.write(f"WAVES/N=({shape[1]},{shape[0]},{len(export_energies)})\t{name}\n")
+            f.write("BEGIN\n")
             for data in kmaps:
-                f.write('\t')
-                np.savetxt(f, data.T, newline='\t')
-            f.write('\nEND\n')
+                f.write("\t")
+                np.savetxt(f, data.T, newline="\t")
+            f.write("\nEND\n")
             f.write(f'X SetScale/P x {xrange[0]},{xscale}, "A^-1", {name}; ')
             f.write(f'SetScale/P y {yrange[0]},{yscale}, "A^-1", {name}; ')
-            f.write(f'SetScale/P z {export_energies[0]},{export_energies[1]-export_energies[0]}, "eV", {name}; ')
+            f.write(
+                f'SetScale/P z {export_energies[0]},{export_energies[1]-export_energies[0]}, "eV", {name}; '
+            )
             f.write(f'SetScale d 0,0, "", {name}\n')
 
     def display_in_matplotlib(self):
@@ -312,30 +318,35 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         Tab.closeEvent(self, event)
 
     def get_plot_labels(self):
-        bottom = self.plot_item.get_label('bottom')
-        left = self.plot_item.get_label('left')
+        bottom = self.plot_item.get_label("bottom")
+        left = self.plot_item.get_label("left")
         return bottom, left
 
     def save_state(self):
-        
         orbital_save = []
         for orbital in self.model.orbitals:
-            orbital_save.append({'ID': orbital[4],
-                                 'load_type': orbital[1],
-                                 'load_args': orbital[2],
-                                 'meta_data': orbital[3]})
-        
-        save = {'orbitals': orbital_save,
-                'title': self.title,
-                'table': self.table.save_state(),
-                'interpolation': self.interpolation.save_state(),
-                'colormap': self.colormap.save_state(),
-                'crosshair': self.crosshair.save_state(),
-                'polarization': self.polarization.save_state(),
-                'cube_options': self.cube_options.save_state(),
-                'real_space_options': self.real_space_options.save_state(),
-                'colorscale': self.plot_item.get_colormap(),
-                'levels': self.plot_item.get_levels()}
+            orbital_save.append(
+                {
+                    "ID": orbital[4],
+                    "load_type": orbital[1],
+                    "load_args": orbital[2],
+                    "meta_data": orbital[3],
+                }
+            )
+
+        save = {
+            "orbitals": orbital_save,
+            "title": self.title,
+            "table": self.table.save_state(),
+            "interpolation": self.interpolation.save_state(),
+            "colormap": self.colormap.save_state(),
+            "crosshair": self.crosshair.save_state(),
+            "polarization": self.polarization.save_state(),
+            "cube_options": self.cube_options.save_state(),
+            "real_space_options": self.real_space_options.save_state(),
+            "colorscale": self.plot_item.get_colormap(),
+            "levels": self.plot_item.get_levels(),
+        }
 
         return save, []
 
@@ -353,30 +364,26 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         self.mini_3Dkspace_plot.set_options(self.real_space_options)
 
         # Rough axis values for all orbitals to set labels for interpolation
-        x = Axis('kx', '1/Å', [-3, 3], 200)
-        y = Axis('ky', '1/Å', [-3, 3], 200)
+        x = Axis("kx", "1/Å", [-3, 3], 200)
+        y = Axis("ky", "1/Å", [-3, 3], 200)
         self.interpolation.set_label(x, y)
         self.plot_item.set_labels(x, y)
 
-        self.title = 'Orbitals'
+        self.title = "Orbitals"
 
     def _connect(self):
         self.crosshair.crosshair_changed.connect(self.crosshair_changed)
         self.table.orbital_changed.connect(self.orbitals_changed)
         self.table.orbital_removed.connect(self.remove_orbital_by_ID)
         self.table.orbital_selected.connect(self.refresh_mini_plots)
+        self.polarization.polarization_changed.connect(self.change_parameter)
         self.polarization.polarization_changed.connect(
-            self.change_parameter)
-        self.polarization.polarization_changed.connect(
-            self.refresh_mini_plot_polarization)
-        self.cube_options.symmetrization_changed.connect(
-            self.change_parameter)
-        self.cube_options.energy_changed.connect(
-            self.change_parameter)
-        self.cube_options.V0_changed.connect(
-            self.change_parameter)
-        self.cube_options.resolution_changed.connect(
-            self.change_parameter)
+            self.refresh_mini_plot_polarization
+        )
+        self.cube_options.symmetrization_changed.connect(self.change_parameter)
+        self.cube_options.energy_changed.connect(self.change_parameter)
+        self.cube_options.V0_changed.connect(self.change_parameter)
+        self.cube_options.resolution_changed.connect(self.change_parameter)
         self.cube_options.get_match_energy.connect(self.get_energy.emit)
 
         self.interpolation.smoothing_changed.connect(self.refresh_plot)

@@ -1,34 +1,25 @@
-# Python Imports
-import logging
 from pathlib import Path
 
-
-# Third Party Imports
 import numpy as np
+from PySide6 import uic
+from PySide6.QtWidgets import QFileDialog
 
-# PyQt5 Imports
-from PyQt5 import uic
-from PyQt5.QtWidgets import QFileDialog
-
-# Own Imports
 from kmap import __directory__
+from kmap.config.config import config
+from kmap.controller.colormap import Colormap
+from kmap.controller.crosshairannulus import CrosshairAnnulus
+from kmap.controller.dataslider import DataSlider
+from kmap.controller.interpolation import Interpolation
+from kmap.controller.matplotlibwindow import MatplotlibImageWindow
 from kmap.library.qwidgetsub import Tab
 from kmap.model.sliceddatatab_model import SlicedDataTabModel
-from kmap.controller.matplotlibwindow import MatplotlibImageWindow
-from kmap.controller.interpolation import Interpolation
-from kmap.controller.dataslider import DataSlider
-from kmap.controller.crosshairannulus import CrosshairAnnulus
-from kmap.controller.pyqtgraphplot import PyQtGraphPlot
-from kmap.controller.colormap import Colormap
-from kmap.config.config import config
 
 # Load .ui File
-UI_file = __directory__ / 'ui/sliceddatatab.ui'
+UI_file = __directory__ / "ui/sliceddatatab.ui"
 SlicedDataTab_UI, _ = uic.loadUiType(UI_file)
 
 
 class SlicedDataTab(Tab, SlicedDataTab_UI):
-
     def __init__(self, model):
         self.model = model
         # Setup GUI
@@ -71,27 +62,29 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
     @classmethod
     def init_from_save(cls, save, dependencies, tab_widget=None):
         model = SlicedDataTabModel()
-        model.restore_state(save['model'])
+        model.restore_state(save["model"])
         self = cls(model)
 
-        self.slider.restore_state(save['slider'])
-        self.interpolation.restore_state(save['interpolation'])
-        self.crosshair.restore_state(save['crosshair'])
-        self.colormap.restore_state(save['colormap'])
-        self.plot_item.set_levels(save['levels'])
-        self.plot_item.set_colormap(save['colorscale'])
+        self.slider.restore_state(save["slider"])
+        self.interpolation.restore_state(save["interpolation"])
+        self.crosshair.restore_state(save["crosshair"])
+        self.colormap.restore_state(save["colormap"])
+        self.plot_item.set_levels(save["levels"])
+        self.plot_item.set_colormap(save["colorscale"])
 
-        return self 
+        return self
 
     def save_state(self):
-        save = {'title': self.title,
-                'colorscale': self.plot_item.get_colormap(),
-                'levels': self.plot_item.get_levels(),
-                'model': self.model.save_state(),
-                'slider': self.slider.save_state(),
-                'crosshair': self.crosshair.save_state(),
-                'interpolation': self.interpolation.save_state(),
-                'colormap': self.colormap.save_state()}
+        save = {
+            "title": self.title,
+            "colorscale": self.plot_item.get_colormap(),
+            "levels": self.plot_item.get_levels(),
+            "model": self.model.save_state(),
+            "slider": self.slider.save_state(),
+            "crosshair": self.crosshair.save_state(),
+            "interpolation": self.interpolation.save_state(),
+            "colormap": self.colormap.save_state(),
+        }
 
         return save, []
 
@@ -99,14 +92,14 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
         return self.model.data
 
     def export_to_numpy(self):
-        path = config.get_key('paths', 'numpy_export_start')
-        if path == 'None':
-            file_name, _ = QFileDialog.getSaveFileName(
-                None, 'Save .npy File (*.npy)')
+        path = config.get_key("paths", "numpy_export_start")
+        if path == "None":
+            file_name, _ = QFileDialog.getSaveFileName(None, "Save .npy File (*.npy)")
         else:
             start_path = str(__directory__ / path)
             file_name, _ = QFileDialog.getSaveFileName(
-                None, 'Save .npy File (*.npy)', str(start_path))
+                None, "Save .npy File (*.npy)", str(start_path)
+            )
 
         if not file_name:
             return
@@ -115,23 +108,27 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
         axis_1 = self.model.data.axes[0].axis
         axis_2 = self.get_displayed_plot_data().x_axis
         axis_3 = self.get_displayed_plot_data().y_axis
-        data = np.zeros((self.model.data.axes[self.get_axis()].num,
-            *self.get_displayed_plot_data().data.shape))
+        data = np.zeros(
+            (
+                self.model.data.axes[self.get_axis()].num,
+                *self.get_displayed_plot_data().data.shape,
+            )
+        )
         for i in list(range((int(self.model.data.axes[self.get_axis()].num)))):
             self.change_slice(i)
-            data[i,:,:] = self.get_displayed_plot_data().data
+            data[i, :, :] = self.get_displayed_plot_data().data
         np.savez(file_name, axis_1=axis_1, axis_2=axis_2, axis_3=axis_3, slices=data)
         self.change_slice(old_index)
 
     def export_to_txt(self):
-        path = config.get_key('paths', 'txt_export_start')
-        if path == 'None':
-            file_name, _ = QFileDialog.getSaveFileName(
-                None, 'Save .txt File (*.txt)')
+        path = config.get_key("paths", "txt_export_start")
+        if path == "None":
+            file_name, _ = QFileDialog.getSaveFileName(None, "Save .txt File (*.txt)")
         else:
             start_path = str(__directory__ / path)
             file_name, _ = QFileDialog.getSaveFileName(
-                None, 'Save .txt File (*.txt)', str(start_path))
+                None, "Save .txt File (*.txt)", str(start_path)
+            )
 
         if not file_name:
             return
@@ -146,16 +143,18 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
         indicies = list(range((int(z.num))))
         name = Path(file_name).stem
 
-        with open(file_name, 'w') as f:
-            f.write('IGOR\n')
-            f.write(f'WAVES/N=({shape[1]},{shape[0]},{len(indicies)})\t{name}\n')
-            f.write('BEGIN\n')
+        with open(file_name, "w") as f:
+            f.write("IGOR\n")
+            f.write(f"WAVES/N=({shape[1]},{shape[0]},{len(indicies)})\t{name}\n")
+            f.write("BEGIN\n")
             for i in indicies:
-                f.write('\t')
+                f.write("\t")
                 self.change_slice(i)
-                np.savetxt(f, self.get_displayed_plot_data().data.T.flatten(), newline='\t')
+                np.savetxt(
+                    f, self.get_displayed_plot_data().data.T.flatten(), newline="\t"
+                )
 
-            f.write('\nEND\n')
+            f.write("\nEND\n")
             f.write(f'X SetScale/P x {xrange[0]},{xscale}, "{x.units}", {name}; ')
             f.write(f'SetScale/P y {yrange[0]},{yscale}, "{y.units}", {name}; ')
             f.write(f'SetScale/P z {z.range[0]},{z.stepsize}, "{z.units}", {name}; ')
@@ -219,8 +218,8 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
         return self.crosshair
 
     def get_plot_labels(self):
-        bottom = self.plot_item.get_label('bottom')
-        left = self.plot_item.get_label('left')
+        bottom = self.plot_item.get_label("bottom")
+        left = self.plot_item.get_label("left")
         return bottom, left
 
     def transpose(self, axis_order):
@@ -249,15 +248,15 @@ class SlicedDataTab(Tab, SlicedDataTab_UI):
         if data:
             id_ = data.ID
 
-            if 'alias' in data.meta_data:
-                text = data.meta_data['alias']
+            if "alias" in data.meta_data:
+                text = data.meta_data["alias"]
             else:
                 text = data.name
 
-            self.title = '%s (%i)' % (text, id_)
+            self.title = "%s (%i)" % (text, id_)
 
         else:
-            self.title = 'NO DATA'
+            self.title = "NO DATA"
 
     def _connect(self):
         self.crosshair.crosshair_changed.connect(self.crosshair_changed)

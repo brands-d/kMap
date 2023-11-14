@@ -1,14 +1,9 @@
-# Third Party Imports
 import numpy as np
+from PySide6 import uic
+from PySide6.QtCore import pyqtSignal
+from PySide6.QtWidgets import QWidget
 
-# PyQt5 Imports
-from PyQt5 import uic
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QWidget
-
-# Own Imports
 from kmap import __directory__
-from kmap.config.config import config
 from kmap.library.misc import transpose_axis_order
 
 
@@ -29,10 +24,10 @@ class DataSliderBase(QWidget):
         # If spinbox or slider called, index will be the slice index
         # and the other widget has to be updated. As default use slider
         # position as index
-        if sender == 'spinbox':
+        if sender == "spinbox":
             self._update_slider_silently(index)
 
-        elif sender == 'slider':
+        elif sender == "slider":
             self._update_spinbox_silently(index)
 
         else:
@@ -52,7 +47,7 @@ class DataSliderBase(QWidget):
         self.axis_changed.emit(axis)
 
     def change_symmetry(self, index):
-        symmetries = ('no', '2-fold', '3-fold', '4-fold')
+        symmetries = ("no", "2-fold", "3-fold", "4-fold")
         symmetry = symmetries[int(np.ceil(index / 2))]
         mirror = True if index in (2, 4, 6) else False
         self.symmetry_changed.emit(symmetry, mirror)
@@ -68,23 +63,25 @@ class DataSliderBase(QWidget):
         return axis
 
     def save_state(self):
-        save = {'slice': self.get_index(), 
-                'axis': self.get_axis(),
-                'symmetry': self.symmetrize_combobox.currentIndex()}
+        save = {
+            "slice": self.get_index(),
+            "axis": self.get_axis(),
+            "symmetry": self.symmetrize_combobox.currentIndex(),
+        }
 
         return save
 
     def restore_state(self, save):
-        self.combobox.setCurrentIndex(save['axis'])
-        self.slider.setValue(save['slice'])
-        self.symmetrize_combobox.setCurrentIndex(save['symmetry'])
+        self.combobox.setCurrentIndex(save["axis"])
+        self.slider.setValue(save["slice"])
+        self.symmetrize_combobox.setCurrentIndex(save["symmetry"])
 
     def _update_slice_label(self):
         index = self.slider.sliderPosition()
         axis = self.data.axes[self.combobox.currentIndex()]
         value = axis.axis[index]
 
-        text = '%.2f  %s' % (value, axis.units)
+        text = "%.2f  %s" % (value, axis.units)
         self.value_label.setText(text)
 
     def _update_slider_silently(self, index):
@@ -121,12 +118,11 @@ class DataSliderBase(QWidget):
         self.slider.valueChanged.connect(self.change_slice)
         self.spinbox.valueChanged.connect(self.change_slice)
         self.combobox.currentIndexChanged.connect(self.change_axis)
-        self.symmetrize_combobox.currentIndexChanged.connect(
-            self.change_symmetry)
+        self.symmetrize_combobox.currentIndexChanged.connect(self.change_symmetry)
 
 
 # Load .ui File
-UI_file = __directory__ / 'ui/dataslidernotranspose.ui'
+UI_file = __directory__ / "ui/dataslidernotranspose.ui"
 DataSliderNoTranspose_UI, _ = uic.loadUiType(UI_file)
 
 
@@ -140,7 +136,7 @@ class DataSliderNoTranspose(DataSliderBase, DataSliderNoTranspose_UI):
 
 
 # Load .ui File
-UI_file = __directory__ / 'ui/dataslider.ui'
+UI_file = __directory__ / "ui/dataslider.ui"
 DataSlider_UI, _ = uic.loadUiType(UI_file)
 
 
@@ -158,9 +154,8 @@ class DataSlider(DataSliderBase, DataSlider_UI):
         self._connect()
 
     def trigger_transpose(self, axis_order=None):
-        
         index = self.slider.sliderPosition()
-        
+
         if axis_order and axis_order is not None:
             self.axis_order = axis_order
         else:
@@ -174,21 +169,20 @@ class DataSlider(DataSliderBase, DataSlider_UI):
         self._update_slice_label()
         self._update_slider_silently(index)
         self._update_spinbox_silently(index)
-    
+
     def save_state(self):
-        
-        save_ = {'transpose': self.axis_order}
+        save_ = {"transpose": self.axis_order}
         save = super().save_state()
         save.update(save_)
 
         return save
-    
+
     def restore_state(self, save):
         super().restore_state(save)
-        if self.axis_order == save['transpose']:
+        if self.axis_order == save["transpose"]:
             return
         else:
-            self.trigger_transpose(save['transpose'])
+            self.trigger_transpose(save["transpose"])
 
     def _connect(self):
         super()._connect()

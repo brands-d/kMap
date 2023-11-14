@@ -1,14 +1,10 @@
-# Third Party Imports
 import numpy as np
+from PySide6 import uic
+from PySide6.QtCore import pyqtSignal
+from PySide6.QtWidgets import QWidget
 
-# PyQt5 Imports
-from PyQt5 import uic
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QWidget
-
-# Own Imports
 from kmap import __directory__
-from kmap.library.misc import step_size_to_num, axis_from_range
+from kmap.library.misc import axis_from_range, step_size_to_num
 
 
 class InterpolationBase(QWidget):
@@ -31,11 +27,12 @@ class InterpolationBase(QWidget):
     def get_axes(self):
         range_ = self.get_range()
         resolution = self.get_resolution()
-        num = [step_size_to_num(range_[0], resolution[0]),
-               step_size_to_num(range_[1], resolution[1])]
+        num = [
+            step_size_to_num(range_[0], resolution[0]),
+            step_size_to_num(range_[1], resolution[1]),
+        ]
 
-        axes = [axis_from_range(range_[0], num[0]),
-                axis_from_range(range_[1], num[1])]
+        axes = [axis_from_range(range_[0], num[0]), axis_from_range(range_[1], num[1])]
 
         return axes
 
@@ -44,7 +41,7 @@ class InterpolationBase(QWidget):
 
 
 # Load .ui File
-UI_file = __directory__ / 'ui/interpolation.ui'
+UI_file = __directory__ / "ui/interpolation.ui"
 Interpolation_UI, _ = uic.loadUiType(UI_file)
 
 
@@ -100,18 +97,18 @@ class Interpolation(InterpolationBase, Interpolation_UI):
 
     def set_label(self, x, y):
         # Set Label
-        self.x_label.setText('%s:' % x.label)
-        self.y_label.setText('%s:' % y.label)
+        self.x_label.setText("%s:" % x.label)
+        self.y_label.setText("%s:" % y.label)
 
         # Set Unit
-        self.x_resolution_spinbox.setSuffix('  %s' % x.units)
-        self.sigma_x_spinbox.setSuffix('  %s' % x.units)
-        self.y_resolution_spinbox.setSuffix('  %s' % y.units)
-        self.sigma_y_spinbox.setSuffix('  %s' % y.units)
-        self.x_min_spinbox.setSuffix('  %s' % x.units)
-        self.x_max_spinbox.setSuffix('  %s' % x.units)
-        self.y_min_spinbox.setSuffix('  %s' % y.units)
-        self.y_max_spinbox.setSuffix('  %s' % y.units)
+        self.x_resolution_spinbox.setSuffix("  %s" % x.units)
+        self.sigma_x_spinbox.setSuffix("  %s" % x.units)
+        self.y_resolution_spinbox.setSuffix("  %s" % y.units)
+        self.sigma_y_spinbox.setSuffix("  %s" % y.units)
+        self.x_min_spinbox.setSuffix("  %s" % x.units)
+        self.x_max_spinbox.setSuffix("  %s" % x.units)
+        self.y_min_spinbox.setSuffix("  %s" % y.units)
+        self.y_max_spinbox.setSuffix("  %s" % y.units)
 
         # Set Range
         self.sigma_x_spinbox.setMinimum(0)
@@ -135,25 +132,25 @@ class Interpolation(InterpolationBase, Interpolation_UI):
         self._update_dynamic_range_spinboxes()
 
     def save_state(self):
-        
-        save = {'sigma': self.get_sigma(),
-                'range': self.get_range(),
-                'resolution': self.get_resolution(),
-                'checkbox_smoothing': self.smoothing_checkbox.checkState(),
-                'checkbox_interpolation': self.interpolation_checkbox.checkState(),
-                'fill_value': self.fill_combobox.currentIndex()}
+        save = {
+            "sigma": self.get_sigma(),
+            "range": self.get_range(),
+            "resolution": self.get_resolution(),
+            "checkbox_smoothing": self.smoothing_checkbox.checkState(),
+            "checkbox_interpolation": self.interpolation_checkbox.checkState(),
+            "fill_value": self.fill_combobox.currentIndex(),
+        }
 
         return save
 
     def restore_state(self, save):
+        self.set_sigma(save["sigma"])
+        self.set_range(save["range"])
+        self.set_resolution(save["resolution"])
+        self.fill_combobox.setCurrentIndex(save["fill_value"])
+        self.interpolation_checkbox.setCheckState(save["checkbox_interpolation"])
+        self.smoothing_checkbox.setCheckState(save["checkbox_smoothing"])
 
-        self.set_sigma(save['sigma'])
-        self.set_range(save['range'])
-        self.set_resolution(save['resolution'])
-        self.fill_combobox.setCurrentIndex(save['fill_value'])
-        self.interpolation_checkbox.setCheckState(save['checkbox_interpolation'])
-        self.smoothing_checkbox.setCheckState(save['checkbox_smoothing'])
-        
         self._change_interpolation()
         self._change_smoothing()
 
@@ -184,39 +181,31 @@ class Interpolation(InterpolationBase, Interpolation_UI):
     def _connect(self):
         self.sigma_x_spinbox.valueChanged.connect(self._change_smoothing)
         self.sigma_y_spinbox.valueChanged.connect(self._change_smoothing)
-        self.smoothing_checkbox.stateChanged.connect(
-            self._change_smoothing)
+        self.smoothing_checkbox.stateChanged.connect(self._change_smoothing)
 
-        self.x_min_spinbox.valueChanged.connect(
-            self._update_dynamic_range_spinboxes)
-        self.x_max_spinbox.valueChanged.connect(
-            self._update_dynamic_range_spinboxes)
-        self.y_min_spinbox.valueChanged.connect(
-            self._update_dynamic_range_spinboxes)
-        self.y_max_spinbox.valueChanged.connect(
-            self._update_dynamic_range_spinboxes)
+        self.x_min_spinbox.valueChanged.connect(self._update_dynamic_range_spinboxes)
+        self.x_max_spinbox.valueChanged.connect(self._update_dynamic_range_spinboxes)
+        self.y_min_spinbox.valueChanged.connect(self._update_dynamic_range_spinboxes)
+        self.y_max_spinbox.valueChanged.connect(self._update_dynamic_range_spinboxes)
 
         self.x_min_spinbox.valueChanged.connect(self._change_interpolation)
         self.x_max_spinbox.valueChanged.connect(self._change_interpolation)
         self.y_min_spinbox.valueChanged.connect(self._change_interpolation)
         self.y_max_spinbox.valueChanged.connect(self._change_interpolation)
-        self.interpolation_checkbox.stateChanged.connect(
-            self._change_interpolation)
+        self.interpolation_checkbox.stateChanged.connect(self._change_interpolation)
 
-        self.x_resolution_spinbox.valueChanged.connect(
-            self._change_interpolation)
-        self.y_resolution_spinbox.valueChanged.connect(
-            self._change_interpolation)
-        
+        self.x_resolution_spinbox.valueChanged.connect(self._change_interpolation)
+        self.y_resolution_spinbox.valueChanged.connect(self._change_interpolation)
+
         self.fill_combobox.currentIndexChanged.connect(self._change_interpolation)
 
+
 # Load .ui File
-UI_file = __directory__ / 'ui/lmfitinterpolation.ui'
+UI_file = __directory__ / "ui/lmfitinterpolation.ui"
 LMFitInterpolation_UI, _ = uic.loadUiType(UI_file)
 
 
 class LMFitInterpolation(InterpolationBase, LMFitInterpolation_UI):
-
     def __init__(self):
         # Setup GUI
         super(LMFitInterpolation, self).__init__()
@@ -224,14 +213,13 @@ class LMFitInterpolation(InterpolationBase, LMFitInterpolation_UI):
         self._connect()
 
     def save_state(self):
-        save = {'range': self.get_range(),
-                'resolution': self.get_resolution()}
+        save = {"range": self.get_range(), "resolution": self.get_resolution()}
 
         return save
 
     def restore_state(self, save):
-        self.set_range(save['range'])
-        self.set_resolution(save['resolution'])
+        self.set_range(save["range"])
+        self.set_resolution(save["resolution"])
 
     def set_range(self, range_):
         self.min_spinbox.setValue(range_[0][0])
@@ -253,12 +241,12 @@ class LMFitInterpolation(InterpolationBase, LMFitInterpolation_UI):
 
     def set_label(self, x, y):
         # Set Label
-        self.label.setText('%s:' % x.label)
+        self.label.setText("%s:" % x.label)
 
         # Set Unit
-        self.resolution_spinbox.setSuffix('  %s' % x.units)
-        self.min_spinbox.setSuffix('  %s' % x.units)
-        self.max_spinbox.setSuffix('  %s' % x.units)
+        self.resolution_spinbox.setSuffix("  %s" % x.units)
+        self.min_spinbox.setSuffix("  %s" % x.units)
+        self.max_spinbox.setSuffix("  %s" % x.units)
 
         # Set min/max of min/max spinbox to twice the range
         self.min_spinbox.setMinimum(x.range[0] - abs(x.range[0]))
@@ -281,13 +269,10 @@ class LMFitInterpolation(InterpolationBase, LMFitInterpolation_UI):
         self.max_spinbox.setMinimum(self.min_spinbox.value() + 1)
 
     def _connect(self):
-        self.min_spinbox.valueChanged.connect(
-            self._update_dynamic_range_spinboxes)
-        self.max_spinbox.valueChanged.connect(
-            self._update_dynamic_range_spinboxes)
+        self.min_spinbox.valueChanged.connect(self._update_dynamic_range_spinboxes)
+        self.max_spinbox.valueChanged.connect(self._update_dynamic_range_spinboxes)
 
         self.min_spinbox.valueChanged.connect(self._change_interpolation)
         self.max_spinbox.valueChanged.connect(self._change_interpolation)
 
-        self.resolution_spinbox.valueChanged.connect(
-            self._change_interpolation)
+        self.resolution_spinbox.valueChanged.connect(self._change_interpolation)

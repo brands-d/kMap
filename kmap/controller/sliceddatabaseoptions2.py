@@ -1,29 +1,24 @@
-# PyQt5 Imports
-from PyQt5 import uic
-from PyQt5.QtWidgets import QWidget
-from PyQt5.QtCore import Qt
+from PySide6 import uic
+from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QWidget
 
-# Own Imports
 from kmap import __directory__
 
 # Load .ui File
-UI_file = __directory__ / 'ui/sliceddatabaseoptions2.ui'
+UI_file = __directory__ / "ui/sliceddatabaseoptions2.ui"
 SlicedDataBaseOptions_UI, _ = uic.loadUiType(UI_file)
 
 
 class SlicedDataBaseOptions2(QWidget, SlicedDataBaseOptions_UI):
-
     def __init__(self, *args, **kwargs):
-
         # Setup GUI
         super(SlicedDataBaseOptions2, self).__init__(*args, **kwargs)
         self.setupUi(self)
         self._setup()
 
     def get_parameters(self):
-
         name = self.line_edit.text()
-        name = name if name else 'no name given'
+        name = name if name else "no name given"
         polarization = self._get_polarization()
         symmetry = self._get_symmetry()
         orientation = self._get_orientation()
@@ -32,7 +27,6 @@ class SlicedDataBaseOptions2(QWidget, SlicedDataBaseOptions_UI):
         return (name, *other, *orientation, *polarization, symmetry)
 
     def _get_orientation(self):
-
         phi = self.phi_spinbox.value()
         theta = self.theta_spinbox.value()
         psi = self.psi_spinbox.value()
@@ -40,7 +34,6 @@ class SlicedDataBaseOptions2(QWidget, SlicedDataBaseOptions_UI):
         return phi, theta, psi
 
     def _get_other(self):
-
         photon_min = self.photon_min_spinbox.value()
         photon_max = self.photon_max_spinbox.value()
         photon_step = self.photon_step_spinbox.value()
@@ -50,53 +43,55 @@ class SlicedDataBaseOptions2(QWidget, SlicedDataBaseOptions_UI):
         return photon_min, photon_max, photon_step, fermi, dk
 
     def _get_polarization(self):
-
         Ak_index = self.polarization_combobox.currentIndex()
-        polarization = 'p'
+        polarization = "p"
         if Ak_index == 0:
-            Ak_type = 'no'
+            Ak_type = "no"
 
         elif Ak_index == 1:
-            Ak_type = 'toroid'
+            Ak_type = "toroid"
 
         else:
-            Ak_type = 'NanoESCA'
+            Ak_type = "NanoESCA"
 
             if Ak_index == 3:
-                polarization = 's'
+                polarization = "s"
 
             elif Ak_index == 4:
-                polarization = 'unpolarized'
+                polarization = "unpolarized"
 
             elif Ak_index == 5:
-                polarization = 'C+'
+                polarization = "C+"
 
             elif Ak_index == 6:
-                polarization = 'C-'
+                polarization = "C-"
 
             elif Ak_index == 7:
-                polarization = 'CDAD'
+                polarization = "CDAD"
 
         alpha = self.alpha_spinbox.value()
         beta = self.beta_spinbox.value()
-        gamma = 'auto'
+        gamma = "auto"
 
         return Ak_type, polarization, alpha, beta, gamma
 
     def closeEvent(self, event):
-
         self.deleteLater()
         event.accept()
 
     def _get_symmetry(self):
-
         index = self.symmetrization_combobox.currentIndex()
-        available_symmetries = ['no', '2-fold', '2-fold+mirror',
-                                '3-fold', '3-fold+mirror', '4-fold',
-                                '4-fold+mirror']
+        available_symmetries = [
+            "no",
+            "2-fold",
+            "2-fold+mirror",
+            "3-fold",
+            "3-fold+mirror",
+            "4-fold",
+            "4-fold+mirror",
+        ]
 
         return available_symmetries[index]
 
     def _setup(self):
-
         self.setWindowFlags(Qt.CustomizeWindowHint | Qt.WindowTitleHint)

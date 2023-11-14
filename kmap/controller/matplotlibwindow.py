@@ -1,31 +1,24 @@
-# Python Imports
 from math import ceil, floor
 
-# PyQt5 Imports
-from PyQt5 import uic
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QWidget
-from matplotlib.backends.backend_qt5agg import (FigureCanvas,
-                                                NavigationToolbar2QT)
+from matplotlib.backends.backend_qt5agg import FigureCanvas, NavigationToolbar2QT
 from matplotlib.colors import ListedColormap
 from matplotlib.figure import Figure
-# Third party Imports
 from matplotlib.ticker import AutoMinorLocator
+from PySide6 import uic
+from PySide6.QtCore import pyqtSignal
+from PySide6.QtWidgets import QHBoxLayout, QMainWindow, QWidget
 
-# Own Imports
 from kmap import __directory__
-from kmap.library.qwidgetsub import AspectWidget
 from kmap.config.config import config
-from kmap.model.matplotlibwindow_model import (MatplotlibImageModel,
-                                               MatplotlibLineModel)
+from kmap.library.qwidgetsub import AspectWidget
+from kmap.model.matplotlibwindow_model import MatplotlibImageModel, MatplotlibLineModel
 
 # Load .ui File
-UI_file = __directory__ / 'ui/matplotlibwindow.ui'
+UI_file = __directory__ / "ui/matplotlibwindow.ui"
 MatplotlibWindow_UI, _ = uic.loadUiType(UI_file)
 
 
 class MatplotlibWindow(QMainWindow):
-
     def __init__(self):
         super(MatplotlibWindow, self).__init__()
 
@@ -42,16 +35,16 @@ class MatplotlibWindow(QMainWindow):
 
         self.update_canvas()
 
-    def add_grid(self, which='No Grid'):
-        if which == 'No Grid':
-            self.axes.grid(False, which='both')
+    def add_grid(self, which="No Grid"):
+        if which == "No Grid":
+            self.axes.grid(False, which="both")
 
-        elif which == 'Major Only':
-            self.axes.grid(True, which='major')
-            self.axes.grid(False, which='minor')
+        elif which == "Major Only":
+            self.axes.grid(True, which="major")
+            self.axes.grid(False, which="minor")
 
-        elif which == 'Major and Minor':
-            self.axes.grid(True, which='both')
+        elif which == "Major and Minor":
+            self.axes.grid(True, which="both")
 
         self.update_canvas()
 
@@ -94,10 +87,9 @@ class MatplotlibWindow(QMainWindow):
 
 
 class MatplotlibImageWindow(MatplotlibWindow, MatplotlibWindow_UI):
-
     def __init__(self, plot_data, LUT=None):
         self.model = MatplotlibImageModel(plot_data)
-        self.LUT = ListedColormap(LUT, 'cm_user')
+        self.LUT = ListedColormap(LUT, "cm_user")
 
         super(MatplotlibImageWindow, self).__init__()
         self.setupUi(self)
@@ -122,10 +114,8 @@ class MatplotlibImageWindow(MatplotlibWindow, MatplotlibWindow_UI):
         # New Limits. Round to second decimal place to always fit entire
         # image
         x, y = self.model.x, self.model.y
-        x_limit = [floor(min(x) * 100) / 100,
-                   ceil(max(x) * 100) / 100]
-        y_limit = [floor(min(y) * 100) / 100,
-                   ceil(max(y) * 100) / 100]
+        x_limit = [floor(min(x) * 100) / 100, ceil(max(x) * 100) / 100]
+        y_limit = [floor(min(y) * 100) / 100, ceil(max(y) * 100) / 100]
 
         self.options.set_x_range(x_limit)
         self.options.set_y_range(y_limit)
@@ -156,8 +146,8 @@ class MatplotlibImageWindow(MatplotlibWindow, MatplotlibWindow_UI):
         layout = QHBoxLayout()
         layout.addWidget(canvas)
 
-        aux = config.get_key('matplotlib', 'ratio')
-        ratio = 0 if aux == 'None' else float(aux)
+        aux = config.get_key("matplotlib", "ratio")
+        ratio = 0 if aux == "None" else float(aux)
         self.central_widget = AspectWidget(ratio=ratio)
         self.central_widget.setLayout(layout)
 
@@ -178,7 +168,6 @@ class MatplotlibImageWindow(MatplotlibWindow, MatplotlibWindow_UI):
 
 
 class MatplotlibLineWindow(MatplotlibWindow, MatplotlibWindow_UI):
-
     def __init__(self, plot_data):
         self.model = MatplotlibLineModel(plot_data)
 
@@ -199,17 +188,23 @@ class MatplotlibLineWindow(MatplotlibWindow, MatplotlibWindow_UI):
         data = self.model.data
 
         for data_set in data:
-            name = data_set['name']
-            x = data_set['x']
-            y = data_set['y']
-            color = [c / 255 for c in data_set['color']]
-            marker = data_set['marker']
-            marker = '*' if marker == 'star' else marker
-            line_width = data_set['line width']
-            marker_size = data_set['marker size']
-            self.plot = self.axes.plot(x, y, color=color, marker=marker,
-                                       linewidth=line_width,
-                                       markersize=marker_size, label=name)
+            name = data_set["name"]
+            x = data_set["x"]
+            y = data_set["y"]
+            color = [c / 255 for c in data_set["color"]]
+            marker = data_set["marker"]
+            marker = "*" if marker == "star" else marker
+            line_width = data_set["line width"]
+            marker_size = data_set["marker size"]
+            self.plot = self.axes.plot(
+                x,
+                y,
+                color=color,
+                marker=marker,
+                linewidth=line_width,
+                markersize=marker_size,
+                label=name,
+            )
 
         self.axes.legend()
 
@@ -349,7 +344,7 @@ class MatplotlibOptions(QWidget):
 
 
 # Load .ui File
-UI_file = __directory__ / 'ui/matplotlibimageoptions.ui'
+UI_file = __directory__ / "ui/matplotlibimageoptions.ui"
 MatplotlibImageOptions_UI, _ = uic.loadUiType(UI_file)
 
 
@@ -377,12 +372,11 @@ class MatplotlibImageOptions(MatplotlibOptions, MatplotlibImageOptions_UI):
 
 
 # Load .ui File
-UI_file = __directory__ / 'ui/matplotliblineoptions.ui'
+UI_file = __directory__ / "ui/matplotliblineoptions.ui"
 MatplotlibLineOptions_UI, _ = uic.loadUiType(UI_file)
 
 
 class MatplotlibLineOptions(MatplotlibOptions, MatplotlibLineOptions_UI):
-
     def __init__(self):
         # Setup GUI
         super(MatplotlibLineOptions, self).__init__()

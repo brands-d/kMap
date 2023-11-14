@@ -1,32 +1,25 @@
-# Python Imports
-import logging
-
-# Third Party Imports
 import numpy as np
-
-# PyQt5 Imports
-from PyQt5 import uic
-from PyQt5.QtWidgets import QVBoxLayout, QFileDialog
+from PySide6 import uic
+from PySide6.QtWidgets import QFileDialog
 
 # Own Imports
 from kmap import __directory__
-from kmap.library.qwidgetsub import Tab
-from kmap.model.splitview_model import SplitViewTabModel
-from kmap.controller.dataslider import DataSliderNoTranspose
+from kmap.config.config import config
 from kmap.controller.colormap import Colormap
 from kmap.controller.crosshairannulus import CrosshairAnnulus
+from kmap.controller.dataslider import DataSliderNoTranspose
 from kmap.controller.interpolation import Interpolation
-from kmap.controller.splitviewoptions import SplitViewOptions
 from kmap.controller.matplotlibwindow import MatplotlibImageWindow
-from kmap.config.config import config
+from kmap.controller.splitviewoptions import SplitViewOptions
+from kmap.library.qwidgetsub import Tab
+from kmap.model.splitview_model import SplitViewTabModel
 
 # Load .ui File
-UI_file = __directory__ / 'ui/splitviewtab.ui'
+UI_file = __directory__ / "ui/splitviewtab.ui"
 SplitViewTab_UI, _ = uic.loadUiType(UI_file)
 
 
 class SplitViewTab(Tab, SplitViewTab_UI):
-
     def __init__(self, sliced_tab, orbital_tab):
         self.sliced_tab = sliced_tab
         self.orbital_tab = orbital_tab
@@ -43,45 +36,49 @@ class SplitViewTab(Tab, SplitViewTab_UI):
 
     @classmethod
     def init_from_save(cls, save, dependencies, tab_widget):
-        sliced_tab = tab_widget.get_tab_by_ID(dependencies['sliced_tab'])
-        orbital_tab = tab_widget.get_tab_by_ID(dependencies['orbital_tab'])
+        sliced_tab = tab_widget.get_tab_by_ID(dependencies["sliced_tab"])
+        orbital_tab = tab_widget.get_tab_by_ID(dependencies["orbital_tab"])
         tab = SplitViewTab(sliced_tab, orbital_tab)
         tab.locked_tabs = [sliced_tab, orbital_tab]
 
-        tab.slider.restore_state(save['slider']),
-        tab.crosshair.restore_state(save['crosshair']),
-        tab.interpolation.restore_state(save['interpolation']),
-        tab.split_options.restore_state(save['split_options'])
-        tab.colormap.restore_state(save['colormap'])
-        tab.plot_item.set_colormap(save['colorscale'])
-        tab.plot_item.set_levels(save['levels'])
+        tab.slider.restore_state(save["slider"]),
+        tab.crosshair.restore_state(save["crosshair"]),
+        tab.interpolation.restore_state(save["interpolation"]),
+        tab.split_options.restore_state(save["split_options"])
+        tab.colormap.restore_state(save["colormap"])
+        tab.plot_item.set_colormap(save["colorscale"])
+        tab.plot_item.set_levels(save["levels"])
 
         return tab
 
     def save_state(self):
-        save = {'title': self.title,
-                'slider': self.slider.save_state(),
-                'crosshair': self.crosshair.save_state(),
-                'colorscale': self.plot_item.get_colormap(),
-                'levels': self.plot_item.get_levels(),
-                'interpolation': self.interpolation.save_state(),
-                'split_options': self.split_options.save_state(),
-                'colormap': self.colormap.save_state()}
+        save = {
+            "title": self.title,
+            "slider": self.slider.save_state(),
+            "crosshair": self.crosshair.save_state(),
+            "colorscale": self.plot_item.get_colormap(),
+            "levels": self.plot_item.get_levels(),
+            "interpolation": self.interpolation.save_state(),
+            "split_options": self.split_options.save_state(),
+            "colormap": self.colormap.save_state(),
+        }
 
-        dependencies = {'sliced_tab': self.sliced_tab.ID,
-                'orbital_tab': self.orbital_tab.ID}
+        dependencies = {
+            "sliced_tab": self.sliced_tab.ID,
+            "orbital_tab": self.orbital_tab.ID,
+        }
 
         return save, dependencies
 
     def export_to_numpy(self):
-        path = config.get_key('paths', 'numpy_export_start')
-        if path == 'None':
-            file_name, _ = QFileDialog.getSaveFileName(
-                None, 'Save .npy File (*.npy)')
+        path = config.get_key("paths", "numpy_export_start")
+        if path == "None":
+            file_name, _ = QFileDialog.getSaveFileName(None, "Save .npy File (*.npy)")
         else:
             start_path = str(__directory__ / path)
             file_name, _ = QFileDialog.getSaveFileName(
-                None, 'Save .npy File (*.npy)', str(start_path))
+                None, "Save .npy File (*.npy)", str(start_path)
+            )
 
         if not file_name:
             return
@@ -112,8 +109,7 @@ class SplitViewTab(Tab, SplitViewTab_UI):
 
     def change_axis(self, axis):
         # 'axes' is a copy of all axes except the one with index 'axis'
-        axes = [a for i, a in enumerate(self.model.get_sliced_data().axes) if
-                i != axis]
+        axes = [a for i, a in enumerate(self.model.get_sliced_data().axes) if i != axis]
         index = self.get_slice()
         data = self.model.update_displayed_plot_data(index, axis)
 
@@ -147,13 +143,14 @@ class SplitViewTab(Tab, SplitViewTab_UI):
         Tab.closeEvent(self, event)
 
     def _setup(self):
-        self.title = 'Split View'
+        self.title = "Split View"
         self.crosshair = CrosshairAnnulus(self.plot_item)
         self.colormap = Colormap(self.plot_item)
         self.interpolation = Interpolation()
         self.interpolation.set_force_interpolation(True)
-        self.model = SplitViewTabModel(self.sliced_tab, self.orbital_tab,
-                                       self.interpolation)
+        self.model = SplitViewTabModel(
+            self.sliced_tab, self.orbital_tab, self.interpolation
+        )
         self.split_options = SplitViewOptions()
 
         self.slider = DataSliderNoTranspose(self.model.get_sliced_data())

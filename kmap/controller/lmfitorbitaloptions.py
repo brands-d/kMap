@@ -1,14 +1,12 @@
-# PyQt5 Imports
-from PyQt5 import uic
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QWidget
+from PySide6 import uic
+from PySide6.QtCore import pyqtSignal
+from PySide6.QtWidgets import QWidget
 
-# Own Imports
 from kmap import __directory__
 from kmap.config.config import config
 
 # Load .ui File
-UI_file = __directory__ / 'ui/lmfitorbitaloptions.ui'
+UI_file = __directory__ / "ui/lmfitorbitaloptions.ui"
 LMFitOrbitalOptions_UI, _ = uic.loadUiType(UI_file)
 
 
@@ -24,24 +22,32 @@ class LMFitOrbitalOptions(QWidget, LMFitOrbitalOptions_UI):
         self._connect()
 
     def save_state(self):
-        save = {'Ak': self.ak_combobox.currentIndex(),
-                'polarization': self.polarization_combobox.currentIndex(),
-                'symmetry': self.symmetrize_combobox.currentIndex(),
-                's_share': self.get_s_share()}
+        save = {
+            "Ak": self.ak_combobox.currentIndex(),
+            "polarization": self.polarization_combobox.currentIndex(),
+            "symmetry": self.symmetrize_combobox.currentIndex(),
+            "s_share": self.get_s_share(),
+        }
 
         return save
 
     def restore_state(self, save):
-        self.ak_combobox.setCurrentIndex(save['Ak'])
-        self.polarization_combobox.setCurrentIndex(save['polarization'])
-        self.symmetrize_combobox.setCurrentIndex(save['symmetry'])
-        self.s_share_spinbox.setValue(save['s_share'])
-        
+        self.ak_combobox.setCurrentIndex(save["Ak"])
+        self.polarization_combobox.setCurrentIndex(save["polarization"])
+        self.symmetrize_combobox.setCurrentIndex(save["symmetry"])
+        self.s_share_spinbox.setValue(save["s_share"])
+
     def get_symmetrization(self):
         index = self.symmetrize_combobox.currentIndex()
-        available_symmetries = ['no', '2-fold', '2-fold+mirror',
-                                '3-fold', '3-fold+mirror', '4-fold',
-                                '4-fold+mirror']
+        available_symmetries = [
+            "no",
+            "2-fold",
+            "2-fold+mirror",
+            "3-fold",
+            "3-fold+mirror",
+            "4-fold",
+            "4-fold+mirror",
+        ]
 
         return available_symmetries[index]
 
@@ -49,32 +55,32 @@ class LMFitOrbitalOptions(QWidget, LMFitOrbitalOptions_UI):
         Ak_index = self.polarization_combobox.currentIndex()
 
         if Ak_index == 0:
-            Ak_type = 'toroid'
-            polarization = 'p'
+            Ak_type = "toroid"
+            polarization = "p"
 
         else:
-            Ak_type = 'NanoESCA'
+            Ak_type = "NanoESCA"
 
             if Ak_index == 1:
-                polarization = 'p'
+                polarization = "p"
 
             elif Ak_index == 2:
-                polarization = 's'
+                polarization = "s"
 
             elif Ak_index == 3:
-                polarization = 'unpolarized'
+                polarization = "unpolarized"
 
             elif Ak_index == 4:
-                polarization = 'C+'
+                polarization = "C+"
 
             elif Ak_index == 5:
-                polarization = 'C-'
+                polarization = "C-"
 
             elif Ak_index == 6:
-                polarization = 'CDAD'
+                polarization = "CDAD"
 
         factor = self._get_factor()
-        Ak_type = factor if factor == 'no' else factor + Ak_type
+        Ak_type = factor if factor == "no" else factor + Ak_type
 
         return Ak_type, polarization
 
@@ -82,13 +88,13 @@ class LMFitOrbitalOptions(QWidget, LMFitOrbitalOptions_UI):
         Ak_index = self.ak_combobox.currentIndex()
 
         if Ak_index == 0:
-            Ak_type = 'no'
+            Ak_type = "no"
 
         elif Ak_index == 1:
-            Ak_type = 'only-'
+            Ak_type = "only-"
 
         else:
-            Ak_type = ''
+            Ak_type = ""
 
         return Ak_type
 
@@ -101,8 +107,8 @@ class LMFitOrbitalOptions(QWidget, LMFitOrbitalOptions_UI):
         Ak_type, polarization = self.get_polarization()
         s_share = self.get_s_share()
 
-        self.s_share_label.setVisible(polarization == 'unpolarized')
-        self.s_share_spinbox.setVisible(polarization == 'unpolarized')
+        self.s_share_label.setVisible(polarization == "unpolarized")
+        self.s_share_spinbox.setVisible(polarization == "unpolarized")
 
         self.polarization_changed.emit(Ak_type, polarization, s_share)
 
@@ -110,7 +116,7 @@ class LMFitOrbitalOptions(QWidget, LMFitOrbitalOptions_UI):
         return self.s_share_spinbox.value()
 
     def _setup(self):
-        s_share = config.get_key('orbital', 's_share_default')
+        s_share = config.get_key("orbital", "s_share_default")
         self.s_share_spinbox.setValue(float(s_share))
 
         self.s_share_label.setVisible(False)
@@ -118,8 +124,10 @@ class LMFitOrbitalOptions(QWidget, LMFitOrbitalOptions_UI):
 
     def _connect(self):
         self.polarization_combobox.currentIndexChanged.connect(
-            self._change_polarization)
+            self._change_polarization
+        )
         self.ak_combobox.currentIndexChanged.connect(self._change_polarization)
         self.symmetrize_combobox.currentIndexChanged.connect(
-            self._change_symmetrization)
+            self._change_symmetrization
+        )
         self.s_share_spinbox.valueChanged.connect(self._change_polarization)
