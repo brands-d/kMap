@@ -6,20 +6,17 @@ well as some other useful properties. It also comes with interpolations
 and Gaussian filter methods.
 """
 
-# Python Imports
+import itertools as it
 from numbers import Number
 
-# Third Party Imports
 import numpy as np
-import itertools as it
-from scipy.ndimage import gaussian_filter, rotate
 from scipy.interpolate import RegularGridInterpolator as RGI
+from scipy.ndimage import gaussian_filter, rotate
 
-# Own Imports
 from kmap.library.misc import axis_from_range, range_from_axes
 
 
-class PlotData():
+class PlotData:
     """
     Basic data class holding necessary information for plotting.
 
@@ -48,22 +45,23 @@ class PlotData():
         # Set data
         self.data = np.array(data, dtype=np.float64)
 
-        if (self.data.ndim != 2 or len(self.data) < 2 or
-                len(self.data[0]) < 2):
-            raise TypeError('data has to be 2D array with at least 2 ' +
-                            'elements in each dimension')
+        if self.data.ndim != 2 or len(self.data) < 2 or len(self.data[0]) < 2:
+            raise TypeError(
+                "data has to be 2D array with at least 2 "
+                + "elements in each dimension"
+            )
 
         else:
-            self.data[~ np.isfinite(self.data)] = np.nan
+            self.data[~np.isfinite(self.data)] = np.nan
 
         # Set range
         self.range = np.array(range_, dtype=np.float64)
 
         if self.range.shape != (2, 2):
-            raise TypeError('range has to be of shape (2, 2)')
+            raise TypeError("range has to be of shape (2, 2)")
 
         if not np.isfinite(self.range).all():
-            raise ValueError('range can only have finite values')
+            raise ValueError("range can only have finite values")
 
         # Set axes
         self.x_axis = axis_from_range(self.range[0], self.data.shape[1])
@@ -90,10 +88,10 @@ class PlotData():
         """
 
         points = np.array(list(it.product(y_axis, x_axis)))
-        new_data = self.interpolate_points(
-            points[:, 1], points[:, 0], **kwargs)
+        new_data = self.interpolate_points(points[:, 1], points[:, 0], **kwargs)
         new_data = np.array(new_data, dtype=np.float64).reshape(
-            len(y_axis), len(x_axis))
+            len(y_axis), len(x_axis)
+        )
 
         if update:
             self.data, self.x_axis, self.y_axis = new_data, x_axis, y_axis
@@ -107,8 +105,9 @@ class PlotData():
 
             return new_plot_data
 
-    def interpolate_points(self, x, y, interpolator='rgi',
-                           bounds_error=False, **kwargs):
+    def interpolate_points(
+        self, x, y, interpolator="rgi", bounds_error=False, **kwargs
+    ):
         """Interpolates the current data at the points
             [(x_1,y_1), (x_2,y_2),...].
 
@@ -130,19 +129,23 @@ class PlotData():
 
         """
 
-        if interpolator == 'rgi':
+        if interpolator == "rgi":
             points = np.transpose([y, x])
-            rgi = RGI((self.y_axis, self.x_axis), self.data,
-                      bounds_error=bounds_error, **kwargs)
+            rgi = RGI(
+                (self.y_axis, self.x_axis),
+                self.data,
+                bounds_error=bounds_error,
+                **kwargs
+            )
 
             intensities = np.array(rgi(points), dtype=np.float64)
 
         else:
-            NotImplementedError('Chosen interpolator is unknown')
+            NotImplementedError("Chosen interpolator is unknown")
 
         return intensities
 
-    def symmetrise(self, symmetry='no', mirror=False, update=False):
+    def symmetrise(self, symmetry="no", mirror=False, update=False):
         """Symmetrises the data set. Optional mirroring available.
 
         Args:
@@ -162,7 +165,7 @@ class PlotData():
 
         new_data = self.data
 
-        if symmetry == '2-fold':
+        if symmetry == "2-fold":
             new_data += rotate(np.nan_to_num(new_data), 180, reshape=False)
 
             if mirror:
@@ -171,8 +174,7 @@ class PlotData():
 
             new_data /= 2
 
-
-        elif symmetry == '3-fold':
+        elif symmetry == "3-fold":
             aux_1 = rotate(np.nan_to_num(new_data), 120, reshape=False)
             aux_2 = rotate(np.nan_to_num(new_data), 240, reshape=False)
             new_data += aux_1 + aux_2
@@ -183,7 +185,7 @@ class PlotData():
 
             new_data /= 3
 
-        elif symmetry == '4-fold':
+        elif symmetry == "4-fold":
             aux_1 = rotate(np.nan_to_num(new_data), 90, reshape=False)
             aux_2 = rotate(np.nan_to_num(new_data), 180, reshape=False)
             aux_3 = rotate(np.nan_to_num(new_data), 270, reshape=False)
@@ -206,10 +208,17 @@ class PlotData():
 
             return new_plot_data
 
-    def smooth(self, sigma_x, sigma_y, mode='nearest',
-               update=False, fill_value=np.nan, **kwargs):
+    def smooth(
+        self,
+        sigma_x,
+        sigma_y,
+        mode="nearest",
+        update=False,
+        fill_value=np.nan,
+        **kwargs
+    ):
         """Applies a 2D Gaussian filter to the current data. Wrapper
-            method for the "gaussian_filter" method from them 
+            method for the "gaussian_filter" method from them
             "scipy.ndimage" module.
 
         Args:
@@ -243,8 +252,7 @@ class PlotData():
         fill_mask[np.isnan(self.data)] = True
         self.data[fill_mask] = fill_value
 
-        new_data = gaussian_filter(
-            self.data, [sigma_y, sigma_x], mode=mode, **kwargs)
+        new_data = gaussian_filter(self.data, [sigma_y, sigma_x], mode=mode, **kwargs)
         new_data[fill_mask] = np.nan
 
         if update:
@@ -264,12 +272,13 @@ class PlotData():
 
     def __add__(self, other):
         if isinstance(other, self.__class__):
-            if ((self.x_axis == other.x_axis).all() and
-                    (self.y_axis == other.y_axis).all()):
+            if (self.x_axis == other.x_axis).all() and (
+                self.y_axis == other.y_axis
+            ).all():
                 return PlotData(self.data + other.data, self.range)
 
             else:
-                raise ValueError('Axes need to be equal')
+                raise ValueError("Axes need to be equal")
 
         elif isinstance(other, np.ndarray):
             return PlotData(self.data + other, self.range)
@@ -278,16 +287,17 @@ class PlotData():
             return PlotData(self.data + other, self.range)
 
         else:
-            raise TypeError('Can not add \'%s\' to PlotData' % other.__class__)
+            raise TypeError("Can not add '%s' to PlotData" % other.__class__)
 
     def __sub__(self, other):
         if isinstance(other, self.__class__):
-            if ((self.x_axis == other.x_axis).all() and
-                    (self.y_axis == other.y_axis).all()):
+            if (self.x_axis == other.x_axis).all() and (
+                self.y_axis == other.y_axis
+            ).all():
                 return PlotData(self.data - other.data, self.range)
 
             else:
-                raise ValueError('Axes need to be equal')
+                raise ValueError("Axes need to be equal")
 
         elif isinstance(other, np.ndarray):
             return PlotData(self.data - other, self.range)
@@ -296,45 +306,43 @@ class PlotData():
             return PlotData(self.data - other, self.range)
 
         else:
-            raise TypeError('Can not subtract \'%s\' to PlotData' %
-                            other.__class__)
+            raise TypeError("Can not subtract '%s' to PlotData" % other.__class__)
 
     def __mul__(self, other):
         if isinstance(other, self.__class__):
-            if ((self.x_axis == other.x_axis).all() and
-                    (self.y_axis == other.y_axis).all()):
+            if (self.x_axis == other.x_axis).all() and (
+                self.y_axis == other.y_axis
+            ).all():
                 return PlotData(self.data * other.data, self.range)
 
             else:
-                raise ValueError('Axes need to be equal')
+                raise ValueError("Axes need to be equal")
 
         elif isinstance(other, float) or isinstance(other, int):
             return PlotData(self.data * other, self.range)
 
         else:
-            raise TypeError('Can not multiply \'%s\' to PlotData' %
-                            other.__class__)
+            raise TypeError("Can not multiply '%s' to PlotData" % other.__class__)
 
     def __rmul__(self, other):
         if isinstance(other, self.__class__):
-            if ((self.x_axis == other.x_axis).all() and
-                    (self.y_axis == other.y_axis).all()):
+            if (self.x_axis == other.x_axis).all() and (
+                self.y_axis == other.y_axis
+            ).all():
                 return PlotData(self.data * other.data, self.range)
 
             else:
-                raise ValueError('Axes need to be equal')
+                raise ValueError("Axes need to be equal")
 
         elif isinstance(other, float) or isinstance(other, int):
             return PlotData(self.data * other, self.range)
 
         else:
-            raise TypeError('Can not multiply \'%s\' to PlotData' %
-                            other.__class__)
+            raise TypeError("Can not multiply '%s' to PlotData" % other.__class__)
 
     def __pow__(self, other):
         if isinstance(other, float) or isinstance(other, int):
             return PlotData(self.data * self.data, self.range)
 
         else:
-            raise TypeError(
-                'Can take PlotData to the power of \'%s\'' % other.__class__)
+            raise TypeError("Can take PlotData to the power of '%s'" % other.__class__)

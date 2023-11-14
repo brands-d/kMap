@@ -5,13 +5,9 @@ of kMap.py. Those methods are intended for use throughout kMap.py to
 reduce the amount of copy-paste code.
 """
 
-# Python Imports
-import re
-from math import isclose
-from urllib import request
 import json
+from urllib import request
 
-# Third Party Imports
 import numpy as np
 
 
@@ -52,7 +48,8 @@ def idx_closest_value(axis, value, decimals=5, bounds_error=True):
     try:
         # Round to fifth decimal place because machine error
         idx = list(np.around(axis, decimals=decimals)).index(
-            np.around(mapped_value, decimals=decimals))
+            np.around(mapped_value, decimals=decimals)
+        )
 
     except ValueError:
         # Value not found in list -> larger (smaller) than max (min)
@@ -146,9 +143,9 @@ def orientation_to_euler_angle(orientation):
             following order: Phi, Theta, Psi
     """
 
-    phi = 0 if orientation in ['xy', 'xz', 'zx'] else 90
-    theta = 0 if orientation in ['xy', 'yx'] else 90
-    psi = 0 if orientation in ['xy', 'yx', 'yz', 'xz'] else 90
+    phi = 0 if orientation in ["xy", "xz", "zx"] else 90
+    theta = 0 if orientation in ["xy", "yx"] else 90
+    psi = 0 if orientation in ["xy", "yx", "yz", "xz"] else 90
 
     return phi, theta, psi
 
@@ -166,8 +163,7 @@ def axis_from_range(range_, num):
 
     """
 
-    return np.linspace(range_[0], range_[1], num=num, endpoint=True,
-                       dtype=np.float64)
+    return np.linspace(range_[0], range_[1], num=num, endpoint=True, dtype=np.float64)
 
 
 def range_from_axes(*args):
@@ -220,7 +216,7 @@ def get_rotation_axes(phi, theta):
 
     Returns:
         (list): List of axes (3D list). First is always unchanged
-        z-axis. Second is the new x'-axis and third new z''-axis. 
+        z-axis. Second is the new x'-axis and third new z''-axis.
     """
 
     cos_phi = np.cos(np.radians(phi))
@@ -233,8 +229,7 @@ def get_rotation_axes(phi, theta):
     # x'-axis
     axis2 = [cos_phi, sin_phi, 0]
     # z''-axis
-    axis3 = [sin_phi * sin_theta, -cos_phi *
-             sin_theta, cos_theta]
+    axis3 = [sin_phi * sin_theta, -cos_phi * sin_theta, cos_theta]
 
     return [axis1, axis2, axis3]
 
@@ -312,7 +307,7 @@ def get_reduced_chi2(data, n):
     """
 
     N = np.count_nonzero(~np.isnan(data))
-    reduced_chi2 = np.nansum(np.array(data)**2) / (N - n)
+    reduced_chi2 = np.nansum(np.array(data) ** 2) / (N - n)
 
     return reduced_chi2
 
@@ -333,138 +328,144 @@ def transpose_axis_order(constant_axis):
 def split_view(data_1, data_2, type_, scale=1):
     data = data_1.copy()
 
-    if type_ == 'Top Bottom':
+    if type_ == "Top Bottom":
         half_idx = int(np.ceil(data.data.shape[0] / 2))
         data.data[:half_idx] = scale * data_2.data[:half_idx]
 
-    elif type_ == 'Bottom Top':
+    elif type_ == "Bottom Top":
         half_idx = int(np.ceil(data.data.shape[0] / 2))
         data.data[half_idx:] = scale * data_2.data[half_idx:]
 
-    elif type_ == 'Right Left':
+    elif type_ == "Right Left":
         half_idx = int(np.ceil(data.data.shape[1] / 2))
         data.data.T[:half_idx] = scale * data_2.data.T[:half_idx]
 
-    elif type_ == 'Left Right':
+    elif type_ == "Left Right":
         half_idx = int(np.ceil(data.data.shape[1] / 2))
         data.data.T[half_idx:] = scale * data_2.data.T[half_idx:]
 
     return data
 
+
 def get_remote_hdf5_orbital(server, port, ID, orbital_number):
+    url = "http://" + server + ":" + str(port)
+    filename = "ID%05i" % ID
 
-    url = 'http://' + server + ':' + str(port)
-    filename = 'ID%05i'%ID
-
-    req = request.Request(url + '/groups', headers={'Host': filename + '.hdfgroup.org'})
+    req = request.Request(url + "/groups", headers={"Host": filename + ".hdfgroup.org"})
     with request.urlopen(req) as response:
         body = json.loads(response.read())
 
-    group_uuid = body['groups'][orbital_number]
+    group_uuid = body["groups"][orbital_number]
 
     psi = {}
-    fields = ['x', 'y', 'z', 'data', 'name']
+    fields = ["x", "y", "z", "data", "name"]
     for field in fields:
-        req = request.Request(url + '/groups/' + group_uuid + '/links/'+field, 
-                  headers={'Host': filename + '.hdfgroup.org'})
+        req = request.Request(
+            url + "/groups/" + group_uuid + "/links/" + field,
+            headers={"Host": filename + ".hdfgroup.org"},
+        )
         with request.urlopen(req) as response:
             body = json.loads(response.read())
 
-        for href in body['hrefs']:
-            if href['rel'] == 'target':
-                uuid = href['href'].split('/')[-1]
+        for href in body["hrefs"]:
+            if href["rel"] == "target":
+                uuid = href["href"].split("/")[-1]
 
-        req = request.Request(url + '/datasets/' + uuid + '/value', 
-                  headers={'Host': filename + '.hdfgroup.org'})
+        req = request.Request(
+            url + "/datasets/" + uuid + "/value",
+            headers={"Host": filename + ".hdfgroup.org"},
+        )
 
         with request.urlopen(req) as response:
-                body = json.loads(response.read())  
+            body = json.loads(response.read())
 
-        if field == 'name':
-            psi[field] = body['value']
+        if field == "name":
+            psi[field] = body["value"]
         else:
-            psi[field] = np.array(body['value'])
+            psi[field] = np.array(body["value"])
 
-    psi['nx'] = len(psi['x'])
-    psi['ny'] = len(psi['y'])
-    psi['nz'] = len(psi['z'])
-    psi['dx'] = psi['x'][1] - psi['x'][0]
-    psi['dy'] = psi['y'][1] - psi['y'][0]
-    psi['dz'] = psi['z'][1] - psi['z'][0]
+    psi["nx"] = len(psi["x"])
+    psi["ny"] = len(psi["y"])
+    psi["nz"] = len(psi["z"])
+    psi["dx"] = psi["x"][1] - psi["x"][0]
+    psi["dy"] = psi["y"][1] - psi["y"][0]
+    psi["dz"] = psi["z"][1] - psi["z"][0]
 
-
-    req = request.Request(url, headers={'Host': filename + '.hdfgroup.org'})
+    req = request.Request(url, headers={"Host": filename + ".hdfgroup.org"})
     with request.urlopen(req) as response:
         body = json.loads(response.read())
 
-    uuid = body['root']
+    uuid = body["root"]
 
-    fields = ['num_atom', 'chemical_numbers', 'atomic_coordinates']
+    fields = ["num_atom", "chemical_numbers", "atomic_coordinates"]
     molecule = {}
     for field in fields:
-        req = request.Request(url + '/groups/' + uuid + '/links/' + field, 
-                  headers={'Host': filename + '.hdfgroup.org'})
+        req = request.Request(
+            url + "/groups/" + uuid + "/links/" + field,
+            headers={"Host": filename + ".hdfgroup.org"},
+        )
         with request.urlopen(req) as response:
             body = json.loads(response.read())
 
-        for href in body['hrefs']:
-            if href['rel'] == 'target':
-                uuid_field = href['href'].split('/')[-1]
+        for href in body["hrefs"]:
+            if href["rel"] == "target":
+                uuid_field = href["href"].split("/")[-1]
 
-        req = request.Request(url + '/datasets/' + uuid_field + '/value', 
-                  headers={'Host': filename + '.hdfgroup.org'})
+        req = request.Request(
+            url + "/datasets/" + uuid_field + "/value",
+            headers={"Host": filename + ".hdfgroup.org"},
+        )
 
         with request.urlopen(req) as response:
-            body = json.loads(response.read())  
+            body = json.loads(response.read())
 
-        molecule[field] = body['value']
+        molecule[field] = body["value"]
 
     return molecule, psi
 
+
 def write_cube(psi, molecule, filename):
-    """ Write real space orbital data as cube file"""
+    """Write real space orbital data as cube file"""
 
     b2a = 0.529177105787531
-    x0 = psi['x'][0]/b2a
-    y0 = psi['y'][0]/b2a
-    z0 = psi['z'][0]/b2a
-    dx = psi['dx']/b2a
-    dy = psi['dy']/b2a
-    dz = psi['dz']/b2a
-    nx = psi['nx']
-    ny = psi['ny']
-    nz = psi['nz']
-    num_atom = molecule['num_atom']
+    x0 = psi["x"][0] / b2a
+    y0 = psi["y"][0] / b2a
+    z0 = psi["z"][0] / b2a
+    dx = psi["dx"] / b2a
+    dy = psi["dy"] / b2a
+    dz = psi["dz"] / b2a
+    nx = psi["nx"]
+    ny = psi["ny"]
+    nz = psi["nz"]
+    num_atom = molecule["num_atom"]
 
-    # define output format for volume data as 6 columns          
-    form     = ''
+    # define output format for volume data as 6 columns
+    form = ""
     ncolumns = 6
     count = 0
     for k in range(nz):
-        form  += ' %10.6e '
+        form += " %10.6e "
         count += 1
         if count == ncolumns:
-            form += '\n'
+            form += "\n"
             count = 0
-    form += '\n'
+    form += "\n"
 
-    with open(filename, 'w') as file:
-        print('Cube file generated by Orbital class of kMap.py', file=file)
-        print(psi['name'], file=file)
-        print('%5i %10.6f  %10.6f  %10.6f'%(num_atom, x0, y0, z0), file=file)
-        print('%5i %10.6f  %10.6f  %10.6f'%(nx, dx, 0, 0), file=file)
-        print('%5i %10.6f  %10.6f  %10.6f'%(ny, 0, dy, 0), file=file)
-        print('%5i %10.6f  %10.6f  %10.6f'%(nz, 0, 0, dz), file=file)
+    with open(filename, "w") as file:
+        print("Cube file generated by Orbital class of kMap.py", file=file)
+        print(psi["name"], file=file)
+        print("%5i %10.6f  %10.6f  %10.6f" % (num_atom, x0, y0, z0), file=file)
+        print("%5i %10.6f  %10.6f  %10.6f" % (nx, dx, 0, 0), file=file)
+        print("%5i %10.6f  %10.6f  %10.6f" % (ny, 0, dy, 0), file=file)
+        print("%5i %10.6f  %10.6f  %10.6f" % (nz, 0, 0, dz), file=file)
         for i in range(num_atom):
-            Z = molecule['chemical_numbers'][i]
-            x = molecule['atomic_coordinates'][i][0]/b2a
-            y = molecule['atomic_coordinates'][i][1]/b2a
-            z = molecule['atomic_coordinates'][i][2]/b2a
-            print('%5i %10.6f  %10.6f  %10.6f  %10.6f'%(Z, Z, x, y, z), file=file)    
-    
+            Z = molecule["chemical_numbers"][i]
+            x = molecule["atomic_coordinates"][i][0] / b2a
+            y = molecule["atomic_coordinates"][i][1] / b2a
+            z = molecule["atomic_coordinates"][i][2] / b2a
+            print("%5i %10.6f  %10.6f  %10.6f  %10.6f" % (Z, Z, x, y, z), file=file)
+
         # now write out the volume data
         for i in range(nx):
             for j in range(ny):
-                file.write(form%tuple(psi['data'][i,j,:]))
-
-
+                file.write(form % tuple(psi["data"][i, j, :]))

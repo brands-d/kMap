@@ -1,21 +1,14 @@
-# Python Imports
-from abc import abstractmethod
-
-# PyQt5 Imports
-from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import (QLabel, QCheckBox, QDoubleSpinBox, QWidget,
-                             QTabWidget)
+from PySide6.QtCore import Qt, pyqtSignal
+from PySide6.QtWidgets import QCheckBox, QDoubleSpinBox, QLabel, QTabWidget, QWidget
 
 
 class CenteredLabel(QLabel):
-
     def __init__(self, *args, **kwargs):
         super(CenteredLabel, self).__init__(*args, **kwargs)
         self.setAlignment(Qt.AlignCenter)
 
 
 class UseCheckBox(QCheckBox):
-
     def __init__(self, *args, **kwargs):
         super(UseCheckBox, self).__init__(*args, **kwargs)
 
@@ -23,11 +16,10 @@ class UseCheckBox(QCheckBox):
 
 
 class AngleSpinBox(QDoubleSpinBox):
-
     def __init__(self, value, objectname, *args, **kwargs):
         super(AngleSpinBox, self).__init__(*args, **kwargs)
 
-        self.setSuffix('°')
+        self.setSuffix("°")
         self.setMinimum(-90)
         self.setMaximum(90)
         self.setValue(value)
@@ -39,7 +31,6 @@ class AngleSpinBox(QDoubleSpinBox):
 
 
 class WeightSpinBox(QDoubleSpinBox):
-
     def __init__(self, *args, value=1, **kwargs):
         super(WeightSpinBox, self).__init__(*args, **kwargs)
 
@@ -50,11 +41,10 @@ class WeightSpinBox(QDoubleSpinBox):
         self.setSingleStep(0.1)
         self.setKeyboardTracking(False)
         self.setAlignment(Qt.AlignHCenter)
-        self.setObjectName('weight')
+        self.setObjectName("weight")
 
 
 class BackgroundSpinBox(QDoubleSpinBox):
-
     def __init__(self, *args, value=0, **kwargs):
         super(BackgroundSpinBox, self).__init__(*args, **kwargs)
 
@@ -65,15 +55,14 @@ class BackgroundSpinBox(QDoubleSpinBox):
         self.setSingleStep(0.1)
         self.setKeyboardTracking(False)
         self.setAlignment(Qt.AlignHCenter)
-        self.setObjectName('background')
+        self.setObjectName("background")
 
 
 class EnergySpinBox(QDoubleSpinBox):
-
     def __init__(self, *args, value=30, **kwargs):
         super(EnergySpinBox, self).__init__(*args, **kwargs)
 
-        self.setSuffix('  eV')
+        self.setSuffix("  eV")
         self.setMinimum(5)
         self.setMaximum(150)
         self.setValue(value)
@@ -81,14 +70,14 @@ class EnergySpinBox(QDoubleSpinBox):
         self.setSingleStep(0.1)
         self.setKeyboardTracking(False)
         self.setAlignment(Qt.AlignHCenter)
-        self.setObjectName('energy')
+        self.setObjectName("energy")
+
 
 class InnerPotentialSpinBox(QDoubleSpinBox):
-
     def __init__(self, *args, value=0, **kwargs):
         super(InnerPotentialSpinBox, self).__init__(*args, **kwargs)
 
-        self.setSuffix('  eV')
+        self.setSuffix("  eV")
         self.setMinimum(-5)
         self.setMaximum(30)
         self.setValue(value)
@@ -96,11 +85,10 @@ class InnerPotentialSpinBox(QDoubleSpinBox):
         self.setSingleStep(0.5)
         self.setKeyboardTracking(False)
         self.setAlignment(Qt.AlignHCenter)
-        self.setObjectName('energy')
+        self.setObjectName("energy")
 
 
 class FixedSizeWidget(QWidget):
-
     def __init__(self, width, ratio, *args, **kwargs):
         super(FixedSizeWidget, self).__init__()
 
@@ -111,7 +99,6 @@ class FixedSizeWidget(QWidget):
 
 
 class AspectWidget(QWidget):
-
     def __init__(self, *args, ratio=0, **kwargs):
         self.ratio = ratio
 
@@ -127,9 +114,9 @@ class AspectWidget(QWidget):
         return int(height * self.ratio)
 
     def resizeEvent(self, event):
-        '''BUG: For unknown reasons the resizeEvent is called multiple
+        """BUG: For unknown reasons the resizeEvent is called multiple
         times with outdated sizes, thus if the user lowers the side that
-        is too large, it will not update correctly.'''
+        is too large, it will not update correctly."""
         event.ignore()
 
         if self.ratio == 0:

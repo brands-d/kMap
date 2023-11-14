@@ -21,6 +21,7 @@ setup(
         "pyopengl",
         "lmfit",
         "pyqtgraph",
+        "scikit-image",
     ],
     include_package_data=True,
 )
