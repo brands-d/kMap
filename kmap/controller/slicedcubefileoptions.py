@@ -1,12 +1,7 @@
-from PySide6 import uic
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QWidget
 
-from kmap import __directory__
-
-# Load .ui File
-UI_file = __directory__ / "ui/slicedcubefileoptions.ui"
-SlicedDataBaseOptions_UI, _ = uic.loadUiType(UI_file)
+from kmap.ui.slicedcubefileoptions import Ui_window as SlicedDataBaseOptions_UI
 
 
 class SlicedCubefileOptions(QWidget, SlicedDataBaseOptions_UI):

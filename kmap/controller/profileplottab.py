@@ -1,7 +1,6 @@
 from itertools import chain
 
 import numpy as np
-from PySide6 import uic
 from PySide6.QtWidgets import QFileDialog
 
 from kmap import __directory__
@@ -10,10 +9,7 @@ from kmap.controller.matplotlibwindow import MatplotlibLineWindow
 from kmap.controller.orbitaldatatab import OrbitalDataTab
 from kmap.controller.sliceddatatab import SlicedDataTab
 from kmap.library.qwidgetsub import Tab
-
-# Load .ui File
-UI_file = __directory__ / "ui/profileplottab.ui"
-ProfilePlotTab_UI, _ = uic.loadUiType(UI_file)
+from kmap.ui.profileplottab import Ui_profileplottab as ProfilePlotTab_UI
 
 
 class ProfilePlotTab(Tab, ProfilePlotTab_UI):

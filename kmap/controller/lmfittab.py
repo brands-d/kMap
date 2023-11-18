@@ -8,11 +8,9 @@ import logging
 
 import h5py
 import numpy as np
-from PySide6 import uic
-from PySide6.QtCore import pyqtSignal
+from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QFileDialog, QVBoxLayout
 
-# Own Imports
 from kmap import __directory__
 from kmap.config.config import config
 from kmap.controller.colormap import Colormap
@@ -27,10 +25,7 @@ from kmap.controller.matplotlibwindow import MatplotlibImageWindow
 from kmap.library.axis import Axis
 from kmap.library.qwidgetsub import Tab
 from kmap.model.lmfit_model import LMFitModel
-
-# Load .ui File
-UI_file = __directory__ / "ui/lmfittab.ui"
-LMFitTab_UI, _ = uic.loadUiType(UI_file)
+from kmap.ui.lmfittab import Ui_lmfittab as LMFitTab_UI
 
 
 class LMFitBaseTab(Tab):
@@ -166,7 +161,7 @@ class LMFitBaseTab(Tab):
 
 
 class LMFitTab(LMFitBaseTab, LMFitTab_UI):
-    fit_finished = pyqtSignal(list, dict)
+    fit_finished = Signal(list, dict)
 
     def __init__(self, sliced_tab, orbital_tab, max_orbitals=-1):
         self.sliced_tab = sliced_tab
@@ -368,7 +363,7 @@ class LMFitTab(LMFitBaseTab, LMFitTab_UI):
 
 
 class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
-    open_plot_tab = pyqtSignal(list, list, Axis, list, list)
+    open_plot_tab = Signal(list, list, Axis, list, list)
 
     def __init__(self, lmfit_tab, results, settings):
         self.results = results

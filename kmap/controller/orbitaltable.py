@@ -1,19 +1,14 @@
-from PySide6 import uic
-from PySide6.QtCore import Qt, pyqtSignal
+from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QHBoxLayout, QHeaderView, QWidget
 
-from kmap import __directory__
 from kmap.controller.orbitaltablerow import OrbitalTableRow
-
-# Load .ui File
-UI_file = __directory__ / "ui/orbitaltable.ui"
-OrbitalTable_UI, _ = uic.loadUiType(UI_file)
+from kmap.ui.orbitaltable import Ui_orbitaltable as OrbitalTable_UI
 
 
 class OrbitalTable(QWidget, OrbitalTable_UI):
-    orbital_changed = pyqtSignal(int)
-    orbital_removed = pyqtSignal(int)
-    orbital_selected = pyqtSignal(int)
+    orbital_changed = Signal(int)
+    orbital_removed = Signal(int)
+    orbital_selected = Signal(int)
 
     def __init__(self, *args, **kwargs):
         # Setup GUI

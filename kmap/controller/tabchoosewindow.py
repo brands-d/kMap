@@ -1,16 +1,11 @@
-from PySide6 import uic
-from PySide6.QtCore import Qt, pyqtSignal
+from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QMainWindow
 
-from kmap import __directory__
-
-# Load .ui File
-UI_file = __directory__ / "ui/tabchoosewindow.ui"
-TabChooseWindow_UI, _ = uic.loadUiType(UI_file)
+from kmap.ui.tabchoosewindow import Ui_tabchoosewindow as TabChooseWindow_UI
 
 
 class TabChooseWindow(QMainWindow, TabChooseWindow_UI):
-    tabs_chosen = pyqtSignal(list)
+    tabs_chosen = Signal(list)
 
     def __init__(self, sliced_tabs, orbital_tabs, *args, **kwargs):
         self.sliced_tabs = sliced_tabs

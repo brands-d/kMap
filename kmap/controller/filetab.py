@@ -1,8 +1,8 @@
-from PySide6 import uic
 from PySide6.QtGui import QTextDocument
 
-from kmap import __directory__
 from kmap.library.qwidgetsub import Tab
+from kmap.ui.fileeditortab import Ui_fileeditortab as FileEditorTab_UI
+from kmap.ui.fileviewertab import Ui_fileviewertab as FileViewerTab_UI
 
 
 class FileTab(Tab):
@@ -62,11 +62,6 @@ class FileTab(Tab):
         self.reload_button.clicked.connect(self.reload_text)
 
 
-# Load .ui File
-UI_file = __directory__ / "ui/fileviewertab.ui"
-FileViewerTab_UI, _ = uic.loadUiType(UI_file)
-
-
 class FileViewerTab(FileTab, FileViewerTab_UI):
     def __init__(self, path, title, richText=False):
         # Setup GUI
@@ -76,11 +71,6 @@ class FileViewerTab(FileTab, FileViewerTab_UI):
 
         self._setup()
         self.reload_text()
-
-
-# Load .ui File
-UI_file = __directory__ / "ui/fileeditortab.ui"
-FileEditorTab_UI, _ = uic.loadUiType(UI_file)
 
 
 class FileEditorTab(FileTab, FileEditorTab_UI):

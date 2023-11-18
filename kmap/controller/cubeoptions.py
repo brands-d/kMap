@@ -1,20 +1,15 @@
-from PySide6 import uic
-from PySide6.QtCore import pyqtSignal
+from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget
 
-from kmap import __directory__
-
-# Load .ui File
-UI_file = __directory__ / "ui/cubeoptions.ui"
-CubeOptions_UI, _ = uic.loadUiType(UI_file)
+from kmap.ui.cubeoptions import Ui_cubeoptions as CubeOptions_UI
 
 
 class CubeOptions(QWidget, CubeOptions_UI):
-    energy_changed = pyqtSignal()
-    V0_changed = pyqtSignal()
-    resolution_changed = pyqtSignal()
-    symmetrization_changed = pyqtSignal()
-    get_match_energy = pyqtSignal()
+    energy_changed = Signal()
+    V0_changed = Signal()
+    resolution_changed = Signal()
+    symmetrization_changed = Signal()
+    get_match_energy = Signal()
 
     def __init__(self, *args, **kwargs):
         # Setup GUI

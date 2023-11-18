@@ -1,14 +1,14 @@
 import numpy as np
-from PySide6 import uic
-from PySide6.QtCore import pyqtSignal
+from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget
 
-from kmap import __directory__
 from kmap.library.misc import axis_from_range, step_size_to_num
+from kmap.ui.interpolation import Ui_interpolation as Interpolation_UI
+from kmap.ui.lmfitinterpolation import Ui_lmfitinterpolation as LMFitInterpolation_UI
 
 
 class InterpolationBase(QWidget):
-    interpolation_changed = pyqtSignal()
+    interpolation_changed = Signal()
 
     def __init__(self):
         # Setup GUI
@@ -40,13 +40,8 @@ class InterpolationBase(QWidget):
         self.interpolation_changed.emit()
 
 
-# Load .ui File
-UI_file = __directory__ / "ui/interpolation.ui"
-Interpolation_UI, _ = uic.loadUiType(UI_file)
-
-
 class Interpolation(InterpolationBase, Interpolation_UI):
-    smoothing_changed = pyqtSignal()
+    smoothing_changed = Signal()
 
     def __init__(self):
         # Setup GUI
@@ -198,11 +193,6 @@ class Interpolation(InterpolationBase, Interpolation_UI):
         self.y_resolution_spinbox.valueChanged.connect(self._change_interpolation)
 
         self.fill_combobox.currentIndexChanged.connect(self._change_interpolation)
-
-
-# Load .ui File
-UI_file = __directory__ / "ui/lmfitinterpolation.ui"
-LMFitInterpolation_UI, _ = uic.loadUiType(UI_file)
 
 
 class LMFitInterpolation(InterpolationBase, LMFitInterpolation_UI):

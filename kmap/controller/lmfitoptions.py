@@ -1,23 +1,19 @@
 import os
 
-from PySide6 import uic
-from PySide6.QtCore import pyqtSignal
+from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget
 
 from kmap import __directory__
 from kmap.config.config import config
-
-# Load .ui File
-UI_file = __directory__ / "ui/lmfitoptions.ui"
-LMFitOptions_UI, _ = uic.loadUiType(UI_file)
+from kmap.ui.lmfitoptions import Ui_lmfit as LMFitOptions_UI
 
 
 class LMFitOptions(QWidget, LMFitOptions_UI):
-    fit_triggered = pyqtSignal()
-    region_changed = pyqtSignal(str, bool)
-    background_changed = pyqtSignal(str)
-    method_changed = pyqtSignal(str)
-    slice_policy_changed = pyqtSignal(str)
+    fit_triggered = Signal()
+    region_changed = Signal(str, bool)
+    background_changed = Signal(str)
+    method_changed = Signal(str)
+    slice_policy_changed = Signal(str)
 
     def __init__(self, parent):
         # Setup GUI

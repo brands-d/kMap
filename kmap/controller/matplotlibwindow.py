@@ -4,18 +4,16 @@ from matplotlib.backends.backend_qt5agg import FigureCanvas, NavigationToolbar2Q
 from matplotlib.colors import ListedColormap
 from matplotlib.figure import Figure
 from matplotlib.ticker import AutoMinorLocator
-from PySide6 import uic
-from PySide6.QtCore import pyqtSignal
+from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QHBoxLayout, QMainWindow, QWidget
 
 from kmap import __directory__
 from kmap.config.config import config
 from kmap.library.qwidgetsub import AspectWidget
 from kmap.model.matplotlibwindow_model import MatplotlibImageModel, MatplotlibLineModel
-
-# Load .ui File
-UI_file = __directory__ / "ui/matplotlibwindow.ui"
-MatplotlibWindow_UI, _ = uic.loadUiType(UI_file)
+from kmap.ui.matplotlibimageoptions import Ui_options as MatplotlibImageOptions_UI
+from kmap.ui.matplotliblineoptions import Ui_options as MatplotlibLineOptions_UI
+from kmap.ui.matplotlibwindow import Ui_matplotlibwindow as MatplotlibWindow_UI
 
 
 class MatplotlibWindow(QMainWindow):
@@ -238,13 +236,13 @@ class MatplotlibLineWindow(MatplotlibWindow, MatplotlibWindow_UI):
 
 
 class MatplotlibOptions(QWidget):
-    grid_changed = pyqtSignal(str)
-    ticks_changed = pyqtSignal(int)
-    title_changed = pyqtSignal(str)
-    x_label_changed = pyqtSignal(str)
-    y_label_changed = pyqtSignal(str)
-    x_range_changed = pyqtSignal(list)
-    y_range_changed = pyqtSignal(list)
+    grid_changed = Signal(str)
+    ticks_changed = Signal(int)
+    title_changed = Signal(str)
+    x_label_changed = Signal(str)
+    y_label_changed = Signal(str)
+    x_range_changed = Signal(list)
+    y_range_changed = Signal(list)
 
     def __init__(self):
         # Setup GUI
@@ -343,14 +341,9 @@ class MatplotlibOptions(QWidget):
         self.y_max_spinbox.valueChanged.connect(self.change_y_range)
 
 
-# Load .ui File
-UI_file = __directory__ / "ui/matplotlibimageoptions.ui"
-MatplotlibImageOptions_UI, _ = uic.loadUiType(UI_file)
-
-
 class MatplotlibImageOptions(MatplotlibOptions, MatplotlibImageOptions_UI):
-    colorbar_changed = pyqtSignal(int)
-    fit_axis_triggered = pyqtSignal()
+    colorbar_changed = Signal(int)
+    fit_axis_triggered = Signal()
 
     def __init__(self):
         # Setup GUI
@@ -369,11 +362,6 @@ class MatplotlibImageOptions(MatplotlibOptions, MatplotlibImageOptions_UI):
         super()._connect()
         self.colorbar_checkbox.stateChanged.connect(self.add_colorbar)
         self.fit_button.clicked.connect(self.fit_axis)
-
-
-# Load .ui File
-UI_file = __directory__ / "ui/matplotliblineoptions.ui"
-MatplotlibLineOptions_UI, _ = uic.loadUiType(UI_file)
 
 
 class MatplotlibLineOptions(MatplotlibOptions, MatplotlibLineOptions_UI):

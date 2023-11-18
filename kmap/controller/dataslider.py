@@ -1,16 +1,16 @@
 import numpy as np
-from PySide6 import uic
-from PySide6.QtCore import pyqtSignal
+from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget
 
-from kmap import __directory__
 from kmap.library.misc import transpose_axis_order
+from kmap.ui.dataslider import Ui_dataslider as DataSlider_UI
+from kmap.ui.dataslidernotranspose import Ui_dataslider as DataSliderNoTranspose_UI
 
 
 class DataSliderBase(QWidget):
-    slice_changed = pyqtSignal(int)
-    axis_changed = pyqtSignal(int)
-    symmetry_changed = pyqtSignal(str, bool)
+    slice_changed = Signal(int)
+    axis_changed = Signal(int)
+    symmetry_changed = Signal(str, bool)
 
     def __init__(self, data, *args, **kwargs):
         self.data = data
@@ -121,11 +121,6 @@ class DataSliderBase(QWidget):
         self.symmetrize_combobox.currentIndexChanged.connect(self.change_symmetry)
 
 
-# Load .ui File
-UI_file = __directory__ / "ui/dataslidernotranspose.ui"
-DataSliderNoTranspose_UI, _ = uic.loadUiType(UI_file)
-
-
 class DataSliderNoTranspose(DataSliderBase, DataSliderNoTranspose_UI):
     def __init__(self, *args, **kwargs):
         # Setup GUI
@@ -135,14 +130,9 @@ class DataSliderNoTranspose(DataSliderBase, DataSliderNoTranspose_UI):
         self._connect()
 
 
-# Load .ui File
-UI_file = __directory__ / "ui/dataslider.ui"
-DataSlider_UI, _ = uic.loadUiType(UI_file)
-
-
 class DataSlider(DataSliderBase, DataSlider_UI):
-    tranpose_triggered = pyqtSignal(tuple)
-    symmetry_changed = pyqtSignal(str, bool)
+    tranpose_triggered = Signal(tuple)
+    symmetry_changed = Signal(str, bool)
 
     def __init__(self, *args, **kwargs):
         self.axis_order = (0, 1, 2)

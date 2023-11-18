@@ -1,15 +1,10 @@
 import numpy as np
 import pyqtgraph as pg
-from PySide6 import uic
 
-from kmap import __directory__
 from kmap.config.config import config
 from kmap.controller.crosshairroi import CrosshairROIBase
 from kmap.model.crosshair_model import CrosshairAnnulusModel
-
-# Load .ui File
-UI_file = __directory__ / "ui/crosshairannulus.ui"
-CrosshairAnnulus_UI, _ = uic.loadUiType(UI_file)
+from kmap.ui.crosshairannulus import Ui_crosshairannulus as CrosshairAnnulus_UI
 
 
 class CrosshairAnnulusBase(CrosshairROIBase):

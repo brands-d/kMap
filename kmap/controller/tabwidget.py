@@ -3,11 +3,9 @@ import logging
 import traceback
 
 import numpy as np
-from PySide6 import uic
-from PySide6.QtCore import pyqtSignal
+from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget
 
-from kmap import __directory__
 from kmap.config.config import config
 from kmap.controller.filetab import FileEditorTab, FileViewerTab
 from kmap.controller.lmfitplottab import LMFitPlotTab
@@ -18,14 +16,11 @@ from kmap.controller.renametabwindow import RenameTabWindow
 from kmap.controller.sliceddatatab import SlicedDataTab
 from kmap.controller.splitviewtab import SplitViewTab
 from kmap.library.qwidgetsub import Tab
-
-# Load .ui File
-UI_file = __directory__ / "ui/tabwidget.ui"
-TabWidget_UI, _ = uic.loadUiType(UI_file)
+from kmap.ui.tabwidget import Ui_tabwidget as TabWidget_UI
 
 
 class TabWidget(QWidget, TabWidget_UI):
-    tab_added = pyqtSignal(Tab)
+    tab_added = Signal(Tab)
 
     def __init__(self, *args, **kwargs):
         self.ID_counter = -1

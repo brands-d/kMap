@@ -1,8 +1,6 @@
 import numpy as np
-from PySide6 import uic
 from PySide6.QtWidgets import QFileDialog
 
-# Own Imports
 from kmap import __directory__
 from kmap.config.config import config
 from kmap.controller.colormap import Colormap
@@ -13,10 +11,7 @@ from kmap.controller.matplotlibwindow import MatplotlibImageWindow
 from kmap.controller.splitviewoptions import SplitViewOptions
 from kmap.library.qwidgetsub import Tab
 from kmap.model.splitview_model import SplitViewTabModel
-
-# Load .ui File
-UI_file = __directory__ / "ui/splitviewtab.ui"
-SplitViewTab_UI, _ = uic.loadUiType(UI_file)
+from kmap.ui.splitviewtab import Ui_splitviewtab as SplitViewTab_UI
 
 
 class SplitViewTab(Tab, SplitViewTab_UI):

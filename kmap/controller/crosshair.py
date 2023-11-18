@@ -1,20 +1,15 @@
 import numpy as np
 import pyqtgraph as pg
-from PySide6 import uic
-from PySide6.QtCore import pyqtSignal
+from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget
 
-from kmap import __directory__
 from kmap.config.config import config
 from kmap.model.crosshair_model import CrosshairModel
-
-# Load .ui File
-UI_file = __directory__ / "ui/crosshair.ui"
-Crosshair_UI, _ = uic.loadUiType(UI_file)
+from kmap.ui.crosshair import Ui_crosshair as Crosshair_UI
 
 
 class CrosshairBase(QWidget):
-    crosshair_changed = pyqtSignal()
+    crosshair_changed = Signal()
 
     def __init__(self, plot_item):
         super(CrosshairBase, self).__init__()

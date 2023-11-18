@@ -1,16 +1,11 @@
-from PySide6 import uic
-from PySide6.QtCore import pyqtSignal
+from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget
 
-from kmap import __directory__
-
-# Load .ui File
-UI_file = __directory__ / "ui/splitviewoptions.ui"
-SplitViewOptions_UI, _ = uic.loadUiType(UI_file)
+from kmap.ui.splitviewoptions import Ui_cubeoptions as SplitViewOptions_UI
 
 
 class SplitViewOptions(QWidget, SplitViewOptions_UI):
-    values_changed = pyqtSignal(float, str)
+    values_changed = Signal(float, str)
 
     def __init__(self, *args, **kwargs):
         # Setup GUI

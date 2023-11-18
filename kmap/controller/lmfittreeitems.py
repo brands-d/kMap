@@ -1,4 +1,4 @@
-from PySide6.QtCore import QObject, Qt, pyqtSignal
+from PySide6.QtCore import QObject, Qt, Signal
 from PySide6.QtWidgets import (
     QCheckBox,
     QHBoxLayout,
@@ -18,10 +18,10 @@ from kmap.library.qwidgetsub import (
 
 
 class SignalObject(QObject):
-    value_changed = pyqtSignal()
-    boundary_changed = pyqtSignal()
-    expression_changed = pyqtSignal()
-    vary_changed = pyqtSignal()
+    value_changed = Signal()
+    boundary_changed = Signal()
+    expression_changed = Signal()
+    vary_changed = Signal()
 
 
 class LMFitTreeItem(QTreeWidgetItem):

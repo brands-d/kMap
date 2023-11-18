@@ -1,4 +1,5 @@
 import logging
+import logging.config
 
 import matplotlib as plt
 import pyqtgraph as pg

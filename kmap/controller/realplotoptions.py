@@ -1,23 +1,18 @@
-from PySide6 import uic
-from PySide6.QtCore import pyqtSignal
+from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget
 
-from kmap import __directory__
-
-# Load .ui File
-UI_file = __directory__ / "ui/realplotoptions.ui"
-RealPlotOptions_UI, _ = uic.loadUiType(UI_file)
+from kmap.ui.realplotoptions import Ui_Form as RealPlotOptions_UI
 
 
 class RealPlotOptions(QWidget, RealPlotOptions_UI):
-    set_camera = pyqtSignal(int, int, int)
-    show_grid_changed = pyqtSignal(int)
-    show_mesh_changed = pyqtSignal(int)
-    show_bonds_changed = pyqtSignal(int)
-    show_photon_changed = pyqtSignal(int)
-    show_hemisphere_changed = pyqtSignal(int)
-    show_axis_changed = pyqtSignal(int)
-    iso_val_changed = pyqtSignal()
+    set_camera = Signal(int, int, int)
+    show_grid_changed = Signal(int)
+    show_mesh_changed = Signal(int)
+    show_bonds_changed = Signal(int)
+    show_photon_changed = Signal(int)
+    show_hemisphere_changed = Signal(int)
+    show_axis_changed = Signal(int)
+    iso_val_changed = Signal()
 
     def __init__(self, plot_item):
         # Setup GUI

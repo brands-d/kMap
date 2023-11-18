@@ -1,4 +1,4 @@
-from PySide6.QtCore import pyqtSignal
+from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QPushButton, QWidget
 
 from kmap.library.misc import orientation_to_euler_angle
@@ -11,9 +11,9 @@ from kmap.library.qwidgetsub import (
 
 
 class OrbitalTableRow(QWidget):
-    row_removed = pyqtSignal(int)
-    parameter_changed = pyqtSignal(int, str, float)
-    use_changed = pyqtSignal(int)
+    row_removed = Signal(int)
+    parameter_changed = Signal(int, str, float)
+    use_changed = Signal(int)
 
     def __init__(self, orbital, orientation, *args, **kwargs):
         self.ID = orbital.ID

@@ -3,7 +3,6 @@ import logging
 from pathlib import Path
 
 import _pickle as pickle
-from PySide6 import uic
 from PySide6.QtGui import QIcon, QKeySequence
 from PySide6.QtWidgets import QFileDialog, QMainWindow, QMessageBox
 
@@ -14,10 +13,7 @@ from kmap.controller.orbitaldatatab import OrbitalDataTab
 from kmap.controller.sliceddatatab import SlicedDataTab
 from kmap.controller.tabchoosewindow import TabChooseWindow
 from kmap.model.mainwindow_model import MainWindowModel
-
-# Load .ui File
-UI_file = __directory__ / "ui/mainwindow.ui"
-MainWindow_UI, _ = uic.loadUiType(UI_file)
+from kmap.ui.mainwindow import Ui_mainwindow as MainWindow_UI
 
 
 class MainWindow(QMainWindow, MainWindow_UI):

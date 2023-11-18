@@ -3,16 +3,12 @@ import os
 import traceback
 from shutil import copy
 
-from PySide6 import uic
 from PySide6.QtWidgets import QWidget
 
 from kmap import __directory__
 from kmap.config.config import config
 from kmap.model.colormap_model import ColormapModel
-
-# Load .ui File
-UI_file = __directory__ / "ui/colormap.ui"
-Colormap_UI, _ = uic.loadUiType(UI_file)
+from kmap.ui.colormap import Ui_colormap as Colormap_UI
 
 
 class Colormap(QWidget, Colormap_UI):

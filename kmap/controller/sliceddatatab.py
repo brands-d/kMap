@@ -1,7 +1,6 @@
 from pathlib import Path
 
 import numpy as np
-from PySide6 import uic
 from PySide6.QtWidgets import QFileDialog
 
 from kmap import __directory__
@@ -13,10 +12,7 @@ from kmap.controller.interpolation import Interpolation
 from kmap.controller.matplotlibwindow import MatplotlibImageWindow
 from kmap.library.qwidgetsub import Tab
 from kmap.model.sliceddatatab_model import SlicedDataTabModel
-
-# Load .ui File
-UI_file = __directory__ / "ui/sliceddatatab.ui"
-SlicedDataTab_UI, _ = uic.loadUiType(UI_file)
+from kmap.ui.sliceddatatab import Ui_sliceddatatab as SlicedDataTab_UI
 
 
 class SlicedDataTab(Tab, SlicedDataTab_UI):

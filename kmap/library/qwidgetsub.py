@@ -1,4 +1,4 @@
-from PySide6.QtCore import Qt, pyqtSignal
+from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QCheckBox, QDoubleSpinBox, QLabel, QTabWidget, QWidget
 
 
@@ -161,7 +161,7 @@ class AspectWidget(QWidget):
 
 
 class Tab(QTabWidget):
-    close_requested = pyqtSignal()
+    close_requested = Signal()
 
     def __init__(self, *args, **kwargs):
         self.ID = None

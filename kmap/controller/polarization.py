@@ -1,17 +1,12 @@
-from PySide6 import uic
-from PySide6.QtCore import pyqtSignal
+from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget
 
-from kmap import __directory__
 from kmap.config.config import config
-
-# Load .ui File
-UI_file = __directory__ / "ui/polarization.ui"
-Polarization_UI, _ = uic.loadUiType(UI_file)
+from kmap.ui.polarization import Ui_polarization as Polarization_UI
 
 
 class Polarization(QWidget, Polarization_UI):
-    polarization_changed = pyqtSignal()
+    polarization_changed = Signal()
 
     def __init__(self, *args, **kwargs):
         # Setup GUI

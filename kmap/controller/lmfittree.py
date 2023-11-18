@@ -1,7 +1,4 @@
-# Python Imports
-
-from PySide6 import uic
-from PySide6.QtCore import Qt, pyqtSignal
+from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QHeaderView, QWidget
 
 from kmap import __directory__
@@ -15,14 +12,12 @@ from kmap.controller.lmfittreeitems import (
     OrbitalResultTreeItem,
     OrbitalTreeItem,
 )
-
-# Load .ui File
-UI_file = __directory__ / "ui/lmfittree.ui"
-LMFitTree_UI, _ = uic.loadUiType(UI_file)
+from kmap.ui.lmfitresulttree import Ui_lmfitresulttree as LMFitResultTree_UI
+from kmap.ui.lmfittree import Ui_lmfittree as LMFitTree_UI
 
 
 class LMFitBaseTree(QWidget):
-    item_selected = pyqtSignal()
+    item_selected = Signal()
 
     def get_selected_orbital_ID(self):
         selected_items = self.tree.selectedItems()
@@ -49,8 +44,8 @@ class LMFitBaseTree(QWidget):
 
 
 class LMFitTree(LMFitBaseTree, LMFitTree_UI):
-    value_changed = pyqtSignal()
-    vary_changed = pyqtSignal()
+    value_changed = Signal()
+    vary_changed = Signal()
 
     def __init__(self, orbitals, parameters, *args, **kwargs):
         # Setup GUI
@@ -101,11 +96,6 @@ class LMFitTree(LMFitBaseTree, LMFitTree_UI):
             item = self.tree.topLevelItem(i)
             item.signals.value_changed.connect(self.value_changed.emit)
             item.signals.vary_changed.connect(self.vary_changed.emit)
-
-
-# Load .ui File
-UI_file = __directory__ / "ui/lmfitresulttree.ui"
-LMFitResultTree_UI, _ = uic.loadUiType(UI_file)
 
 
 class LMFitResultTree(LMFitBaseTree, LMFitResultTree_UI):

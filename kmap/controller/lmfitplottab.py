@@ -1,12 +1,6 @@
-from PySide6 import uic
-
-from kmap import __directory__
 from kmap.controller.matplotlibwindow import MatplotlibLineWindow
 from kmap.library.qwidgetsub import Tab
-
-# Load .ui File
-UI_file = __directory__ / "ui/lmfitplottab.ui"
-LMFitPlotTab_UI, _ = uic.loadUiType(UI_file)
+from kmap.ui.lmfitplottab import Ui_lmfitplottab as LMFitPlotTab_UI
 
 
 class LMFitPlotTab(Tab, LMFitPlotTab_UI):

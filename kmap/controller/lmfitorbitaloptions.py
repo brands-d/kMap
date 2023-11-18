@@ -1,18 +1,13 @@
-from PySide6 import uic
-from PySide6.QtCore import pyqtSignal
+from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget
 
-from kmap import __directory__
 from kmap.config.config import config
-
-# Load .ui File
-UI_file = __directory__ / "ui/lmfitorbitaloptions.ui"
-LMFitOrbitalOptions_UI, _ = uic.loadUiType(UI_file)
+from kmap.ui.lmfitorbitaloptions import Ui_lmfitother as LMFitOrbitalOptions_UI
 
 
 class LMFitOrbitalOptions(QWidget, LMFitOrbitalOptions_UI):
-    symmetrization_changed = pyqtSignal(str)
-    polarization_changed = pyqtSignal(str, str, float)
+    symmetrization_changed = Signal(str)
+    polarization_changed = Signal(str, str, float)
 
     def __init__(self, *args, **kwargs):
         # Setup GUI

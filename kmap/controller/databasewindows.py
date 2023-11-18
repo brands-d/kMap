@@ -1,5 +1,4 @@
-from PySide6 import uic
-from PySide6.QtCore import Qt, pyqtSignal
+from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QHeaderView, QMainWindow, QTreeWidgetItem
 
 from kmap import __directory__
@@ -8,17 +7,12 @@ from kmap.controller.slicedcubefileoptions import SlicedCubefileOptions
 from kmap.controller.sliceddatabaseoptions import SlicedDataBaseOptions
 from kmap.controller.sliceddatabaseoptions2 import SlicedDataBaseOptions2
 from kmap.library.database import Database
-
-# Load .ui File for SlicedDataDatabase
-UI_file = __directory__ / "ui/databasewindow.ui"
-DatabaseWindow_UI, _ = uic.loadUiType(UI_file)
-# Load .ui File for OrbitalDatabase
-UI_file = __directory__ / "ui/sliceddatabasewindow.ui"
-SlicedDatabaseWindow_UI, _ = uic.loadUiType(UI_file)
+from kmap.ui.databasewindow import Ui_main_window as DatabaseWindow_UI
+from kmap.ui.sliceddatabasewindow import Ui_main_window as SlicedDatabaseWindow_UI
 
 
 class DatabaseWindowBase(QMainWindow):
-    files_chosen = pyqtSignal(list)
+    files_chosen = Signal(list)
 
     def __init__(self):
         # Setup GUI

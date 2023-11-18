@@ -2,8 +2,7 @@ from pathlib import Path
 
 import h5py
 import numpy as np
-from PySide6 import uic
-from PySide6.QtCore import pyqtSignal
+from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QFileDialog
 
 from kmap import __directory__
@@ -15,16 +14,13 @@ from kmap.controller.matplotlibwindow import MatplotlibImageWindow
 from kmap.library.qwidgetsub import Tab
 from kmap.library.sliceddata import Axis
 from kmap.model.orbitaldatatab_model import OrbitalDataTabModel
-
-# Load .ui File
-UI_file = __directory__ / "ui/orbitaldatatab.ui"
-OrbitalDataTab_UI, _ = uic.loadUiType(UI_file)
+from kmap.ui.orbitaldatatab import Ui_orbitaldatatab as OrbitalDataTab_UI
 
 
 class OrbitalDataTab(Tab, OrbitalDataTab_UI):
-    orbital_removed = pyqtSignal(int)
-    orbital_added = pyqtSignal(int)
-    get_energy = pyqtSignal()
+    orbital_removed = Signal(int)
+    orbital_added = Signal(int)
+    get_energy = Signal()
 
     def __init__(self):
         # Setup GUI
