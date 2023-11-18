@@ -352,8 +352,8 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         self.interpolation = Interpolation()
 
         layout = self.scroll_area.widget().layout()
-        layout.insertWidget(4, self.interpolation)
         layout.insertWidget(3, self.colormap)
+        layout.insertWidget(4, self.interpolation)
         layout.insertWidget(5, self.crosshair)
 
         self.mini_real_plot.set_options(self.real_space_options)

@@ -20,7 +20,7 @@ setup(
         "numpy",
         "pyopengl",
         "lmfit",
-        "pyqtgraph",
+        "pyqtgraph>=0.13.3",
         "scikit-image",
     ],
     include_package_data=True,
