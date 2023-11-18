@@ -11,7 +11,7 @@ GitHub Page: https://github.com/brands-d/kMap
 
 ## Authors
 - Peter Puschnig, Assoz. Prof. Dipl.-Ing. Dr. (peter.puschnig@uni-graz.at)
-- Dominik Brandstetter, BSc. (dominik.brandstetter@edu.uni-graz.at)
+- Dominik Brandstetter, MSc. (dominik.brandstetter@uni-graz.at)
 
 
 ## Quick-Start
@@ -31,12 +31,10 @@ To use this version of kMap, please unzuip the file, enter the resulting folder 
 
 ## Detailed installation guide from source
 
-kMap.py was predominantly developed on and for Linux. There are currently (19.09.2020) no issues on Windows, however, MacOS stands untested so far.
-
 The installation is mostly done via make commands. Because Windows does not support Makefiles natively, this installation guide will differ between Linux and Windows at multiple points. Please follow the part corresponding to your operating system. For Mac users: As MacOS natively support bash, the Linux guide should work fine.
 
 ### 1. Install Python
-Before installing kMap.py, please make sure you have a python version of 3.8 or higher installed. If not, you can get one here
+Before installing kMap.py, please make sure you have a python version of 3.9 or higher installed. If not, you can get one here
 
     https://www.python.org/downloads/
 
@@ -136,7 +134,7 @@ To start kMap.py simply run
 Tutorial videos demonstrating the most important features of kMap.py can be found here: https://www.youtube.com/playlist?list=PLAoZOqtibC5ypO57SU4emdelPzSGQRO8c 
 
 ## Updating
-Major releases for kMap.py are distributaed via the PyPI Server (pip install). The source code and all minor updates with it are hosted on GitHub (https://github.com/brands-d/kMap). If you cloned the project using git executing
+Major releases for kMap.py are distributed via the PyPI Server (pip install). The source code and all minor updates with it are hosted on GitHub (https://github.com/brands-d/kMap). If you cloned the project using git executing
 
     git pull origin master
 
@@ -150,7 +148,7 @@ Bug reports are highly appreciated. Please first run the
 
     make report
 
-command (only Linux, no equivalent for Windows currently). This will create a report.tar.gz file containing relevant files like the log files and your settings. Please add this file to any bug report! (Windows: Until an easy solution is added please attach at the log file (default.log) to your bug report). Please note that this process might take a while since all test will be run.
+command (only Linux, no equivalent for Windows currently). This will create a report.tar.gz file containing relevant files like the log files and your settings. Please add this file to any bug report! (Windows: Until an easy solution is added please attach the log file (default.log) to your bug report). Please note that this process might take a while since all tests will be run.
 
 Simply send this file via E-mail to one of the authors
 (dominik.brandstetter@edu.uni-graz.at).

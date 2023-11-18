@@ -9,7 +9,7 @@
 <h2 id="authors">Authors</h2>
 <ul>
 <li>Peter Puschnig  (peter.puschnig@uni-graz.at)</li>
-<li>Dominik Brandstetter (dominik.brandstetter@edu.uni-graz.at)</li>
+<li>Dominik Brandstetter (dominik.brandstetter@uni-graz.at)</li>
 </ul>
 <p>Download Code from GitHub Page: <a href="https://github.com/brands-d/kMap">https://github.com/brands-d/kMap</a></p>
 
