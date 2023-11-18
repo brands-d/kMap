@@ -79,7 +79,7 @@ class LMFitTree(LMFitBaseTree, LMFitTree_UI):
         for col, width in enumerate(widths):
             self.tree.setColumnWidth(col, width)
 
-        self.tree.header().setResizeMode(1, QHeaderView.Stretch)
+        self.tree.header().setSectionResizeMode(1, QHeaderView.Stretch)
         self.tree.header().setDefaultAlignment(Qt.AlignCenter)
 
         # Add TreeItems
@@ -117,7 +117,7 @@ class LMFitResultTree(LMFitBaseTree, LMFitResultTree_UI):
         for col, width in enumerate(widths):
             self.tree.setColumnWidth(col, width)
 
-        self.tree.header().setResizeMode(1, QHeaderView.Stretch)
+        self.tree.header().setSectionResizeMode(1, QHeaderView.Stretch)
         self.tree.header().setDefaultAlignment(Qt.AlignCenter)
 
         # Add TreeItems
