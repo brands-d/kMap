@@ -113,7 +113,7 @@ Only available for &quot;All Slices Individually&quot; fits.</string>
         <item>
          <widget class="QPushButton" name="correlation_button">
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="font">
            <font>
@@ -122,7 +122,7 @@ Only available for &quot;All Slices Individually&quot; fits.</string>
            </font>
           </property>
           <property name="toolTip">
-           <string>NOT IMPLEMENTED</string>
+           <string>Prints the correlation coefficients of the covariance matrix to standard output.</string>
           </property>
           <property name="text">
            <string>Print Correlation</string>

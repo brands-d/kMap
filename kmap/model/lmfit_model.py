@@ -337,6 +337,7 @@ class LMFitModel:
         initials.append(self.parameters["c"].value)
 
         weights = []
+        covariance = []
         for index in self.slice_policy[1]:
             sliced_plot_data = self.get_sliced_kmap(index)
             sliced_kmap = self._cut_region(sliced_plot_data).data
@@ -373,7 +374,8 @@ class LMFitModel:
                 result[vary_vector] = np.linalg.solve(
                     A[np.ix_(vary_vector, vary_vector)], y[vary_vector]
                 )
-
+                C = np.linalg.inv(A[np.ix_(vary_vector, vary_vector)])
+                r = C / np.sqrt(np.diag(C) * np.array([np.diag(C)]).T)
             except np.linalg.LinAlgError as err:
                 if "Singular matrix" in str(err):
                     result = np.zeros(y.shape)
@@ -389,8 +391,9 @@ class LMFitModel:
                 result = np.append(result, 0)
 
             weights.append([index, result])
+            covariance.append(r)
 
-        return self._construct_minimizer_result(weights)
+        return self._construct_minimizer_result(weights, covariance=covariance)
 
     def fit(self):
         """Calling this method will trigger a lmfit with the current
@@ -440,6 +443,9 @@ class LMFitModel:
                 **self.method
             )
 
+            result.covar = result.covar / np.sqrt(
+                np.diag(result.covar) * np.array([np.diag(result.covar)]).T
+            )
             results.append([index, result])
 
         return results
@@ -657,11 +663,12 @@ class LMFitModel:
         self.parameters.add("alpha", value=45, min=0, max=90, vary=False, expr=None)
         self.parameters.add("beta", value=0, min=-180, max=180, vary=False, expr=None)
 
-    def _construct_minimizer_result(self, results):
+    def _construct_minimizer_result(self, results, covariance):
         out = []
         for index, result in results:
             minimizer_result = MinimizerResult()
             minimizer_result.params = self.parameters.copy()
+            minimizer_result.covar = covariance[index]
 
             for weight, orbital in zip(result[:-1], self.orbitals):
                 ID = orbital.ID

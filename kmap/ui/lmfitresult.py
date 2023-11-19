@@ -71,7 +71,7 @@ class Ui_lmfitresult(object):
 
         self.correlation_button = QPushButton(self.group_box)
         self.correlation_button.setObjectName(u"correlation_button")
-        self.correlation_button.setEnabled(False)
+        self.correlation_button.setEnabled(True)
         self.correlation_button.setFont(font1)
 
         self.layout.addWidget(self.correlation_button)
@@ -101,7 +101,7 @@ class Ui_lmfitresult(object):
 #endif // QT_CONFIG(tooltip)
         self.plot_button.setText(QCoreApplication.translate("lmfitresult", u"Open Plot", None))
 #if QT_CONFIG(tooltip)
-        self.correlation_button.setToolTip(QCoreApplication.translate("lmfitresult", u"NOT IMPLEMENTED", None))
+        self.correlation_button.setToolTip(QCoreApplication.translate("lmfitresult", u"Prints the correlation coefficients of the covariance matrix to standard output.", None))
 #endif // QT_CONFIG(tooltip)
         self.correlation_button.setText(QCoreApplication.translate("lmfitresult", u"Print Correlation", None))
     # retranslateUi
