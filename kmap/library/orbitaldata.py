@@ -54,7 +54,7 @@ class OrbitalData(Orbital, AbstractData):
     def init_from_online(cls, url, ID, meta_data={}):
         log = logging.getLogger("kmap")
         cache_dir = Path(config.get_key("paths", "cache"))
-        cache_file = url.split("OrganicMolecule/")[1].replace("/", "_")
+        cache_file = url.split("cubefiles/")[1].replace("/", "_")
         cache_file = str(cache_dir / cache_file)
 
         if os.path.isfile(cache_file):
@@ -71,8 +71,8 @@ class OrbitalData(Orbital, AbstractData):
             try:
                 log.info(f'Loading from ID{meta_data["ID"]:05d} hdf5 file....')
                 molecule, psi = get_remote_hdf5_orbital(
-                    "143.50.77.12",
-                    "5002",
+                    "143.50.187.12",
+                    "80",
                     int(float(meta_data["database ID"])),
                     int(meta_data["ID"]) - 1,
                 )

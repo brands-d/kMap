@@ -349,9 +349,9 @@ def split_view(data_1, data_2, type_, scale=1):
 
 def get_remote_hdf5_orbital(server, port, ID, orbital_number):
     url = "http://" + server + ":" + str(port)
-    filename = "ID%05i" % ID
+    filename = "%05i.hdf5" % ID
 
-    req = request.Request(url + "/groups", headers={"Host": filename + ".hdfgroup.org"})
+    req = request.Request(url + "/hdf5", headers={"Host": filename + ".hdfgroup.org"})
     with request.urlopen(req) as response:
         body = json.loads(response.read())
 

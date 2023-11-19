@@ -461,7 +461,7 @@ class SlicedData(AbstractData):
         log = logging.getLogger("kmap")
         url = orbital[0]
         cache_dir = Path(config.get_key("paths", "cache"))
-        cache_file = url.split("OrganicMolecule/")[1].replace("/", "_")
+        cache_file = url.split("cubefiles/")[1].replace("/", "_")
         cache_file = str(cache_dir / cache_file)
 
         if os.path.isfile(cache_file):
@@ -474,8 +474,8 @@ class SlicedData(AbstractData):
             try:
                 log.info(f'Loading from ID{orbital[1]["ID"]:05d} hdf5 file....')
                 molecule, psi = get_remote_hdf5_orbital(
-                    "143.50.77.12",
-                    "5002",
+                    "143.50.187.12",
+                    "80",
                     int(float(orbital[1]["database ID"])),
                     int(orbital[1]["ID"]) - 1,
                 )
