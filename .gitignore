@@ -144,7 +144,3 @@ example/testing
 report.tar
 test_results.txt
 cache/*
-dist/*a*.tar.gz
-dist/*b*.tar.gz
-dist/*a*.whl
-dist/*b*.whl
