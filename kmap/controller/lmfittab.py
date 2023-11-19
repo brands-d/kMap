@@ -549,8 +549,8 @@ class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
         self.scroll_area.widget().setLayout(layout)
         layout.insertWidget(0, self.slider)
         layout.insertWidget(1, self.result)
-        layout.insertWidget(3, self.colormap)
-        layout.insertWidget(4, self.crosshair)
+        layout.insertWidget(2, self.colormap)
+        layout.insertWidget(3, self.crosshair)
 
         self.layout.insertWidget(1, self.tree)
 
