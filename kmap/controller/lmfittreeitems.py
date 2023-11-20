@@ -341,9 +341,9 @@ class WeightTreeItem(LMFitDataTreeItem):
 
     def _change_to_matrix_state(self, state):
         super()._change_to_matrix_state(state)
-        self.min_spinbox.setMinimum(-12345 if state else 0)
-        self.min_spinbox.setValue(-12345 if state else 0)
-        self.initial_spinbox.setMinimum(-12345 if state else 0)
+        self.min_spinbox.setMinimum(-99999 if state else 0)
+        self.min_spinbox.setValue(-99999 if state else 0)
+        self.initial_spinbox.setMinimum(-99999 if state else 0)
         self.vary.setEnabled(True)
 
     def _setup(self, tree, name):
