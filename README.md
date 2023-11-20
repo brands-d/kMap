@@ -26,7 +26,7 @@ Usage:
 
 ## Pre-packaged distribution (Windows 10 only)
 
-A built distribution for Windows 10 in form of a .zip file is available on request. For this, please send an email to peter.puschnig(at)uni-graz.at.
+A built distribution for an old kMap verison is available on request for Windows 10 in form of a .zip file. For this, please send an email to peter.puschnig(at)uni-graz.at.
 To use this version of kMap, please unzuip the file, enter the resulting folder and double click the kMap.exe file.
 
 ## Detailed installation guide from source
@@ -34,7 +34,7 @@ To use this version of kMap, please unzuip the file, enter the resulting folder 
 The installation is mostly done via make commands. Because Windows does not support Makefiles natively, this installation guide will differ between Linux and Windows at multiple points. Please follow the part corresponding to your operating system. For Mac users: As MacOS natively support bash, the Linux guide should work fine.
 
 ### 1. Install Python
-Before installing kMap.py, please make sure you have a python version of 3.9 or higher installed. If not, you can get one here
+Before installing kMap.py, please make sure you have a python version of 3.8 or higher installed. If not, you can get one here
 
     https://www.python.org/downloads/
 
@@ -161,8 +161,13 @@ A list of problems users had before and how they solved it:
 #### ImportError: /lib/x86_64-linux-gnu/libQt5Core.so.5: version 'Qt_5.15' not found
     pip install pyqt5 --force-reinstall --no-cache
 
-### Windows
+### Anaconda
+#### No frame on the MainWindow or libEGL warning: MESA-LOADER: failed to open iris: /usr/lib/dri/iris_dri.so: cannot open shared object file: No such file or directory (search paths /usr/lib/x86_64-linux-gnu/dri:\$${ORIGIN}/dri:/usr/lib/dri, suffix _dri)
+(see [here](https://stackoverflow.com/questions/71010343/cannot-load-swrast-and-iris-drivers-in-fedora-35/72200748#72200748))
+    
+    export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6
 
+### Windows
 #### ImportError: DLL load failed while importing QtGui: The specified procedure could not be found.
 Origin is not clear. Make sure you have python 3.8.x installed (not 3.7) and force reinstall PyQt5 in your enviroment:
     pip uninstall pyqt5
