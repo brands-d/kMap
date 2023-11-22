@@ -476,6 +476,25 @@ class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
     def get_orbitals(self):
         return self.model.orbitals
 
+    def export_to_txt(self):
+        text = f"{'Slice':<20s}"
+        for param in self.results[0][1].params:
+            if self.results[0][1].params[param].vary:
+                text += f"{param:<20}"
+        text += f"{'Red. Chi^2':<20}"
+
+        for i, result in enumerate(self.results):
+            text += f"\n{i:<20d}"
+            for param in result[1].params:
+                if result[1].params[param].vary:
+                    text += f"{result[1].params[param].value:<20.2f}"
+
+            weight_sum_data = super().refresh_sum_plot(result[1].params)
+            chi2 = self.model.get_reduced_chi2(i, weight_sum_data)
+            text += f"{chi2:<20.2f}"
+
+        return text + "\n"
+
     def plot(self):
         indices = [result[0] for result in self.results]
         results = [result[1] for result in self.results]

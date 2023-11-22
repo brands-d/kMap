@@ -668,6 +668,8 @@ class LMFitModel:
         for index, result in results:
             minimizer_result = MinimizerResult()
             minimizer_result.params = self.parameters.copy()
+            minimizer_result.method = "matrix_inversion"
+            minimizer_result.errorbars = False
             minimizer_result.covar = covariance[index]
 
             for weight, orbital in zip(result[:-1], self.orbitals):
