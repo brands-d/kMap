@@ -106,6 +106,12 @@ class LMFitPlotTab(Tab, LMFitPlotTab_UI):
 
                 self.plot_item.plot(x, y, title)
 
+            if option == 0:
+                try:
+                    y = [result.params["c"] for result in self.results]
+                    self.plot_item.plot(x, y, "Background")
+                except:
+                    pass
         else:
             # Background parameters
             parameter = self.background_parameters[option - 5]
