@@ -470,8 +470,24 @@ class LMFitResultTab(LMFitBaseTab, LMFitTab_UI):
 
     def print_covariance_matrix(self):
         cov_matrix = self.result.get_covariance_matrix()
+        name_list = []
+        for name, param in self.result.result.params.items():
+            if param.vary:
+                name_list.append(name)
 
-        print(cov_matrix)
+        text = 9 * " "
+        for name in name_list:
+            text += f"{name:^8}"
+        text += "\n" + 10 * len(name_list) * "-"
+        for name, row in zip(name_list, cov_matrix):
+            text += f"\n{name:^8s}|"
+            for column in row:
+                if column > 0:
+                    text += f" {column:^7.3f}"
+                else:
+                    text += f"{column:^8.3f}"
+
+        print(text)
 
     def get_orbitals(self):
         return self.model.orbitals
