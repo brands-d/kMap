@@ -338,6 +338,7 @@ class LMFitModel:
 
         weights = []
         covariance = []
+        sigma = []
         for index in self.slice_policy[1]:
             sliced_plot_data = self.get_sliced_kmap(index)
             sliced_kmap = self._cut_region(sliced_plot_data).data
@@ -361,13 +362,24 @@ class LMFitModel:
                 if not vary_vector[i]:
                     sliced_kmap -= initial * kmap
 
+            #            variance of experimental data (=sliced_kmap) is set to 1
+            #            N = len(aux)
+            #            A = np.zeros((N, N))
+            #            y = np.zeros(N)
+            #            for i in range(N):
+            #                y[i] = np.nansum(sliced_kmap * aux[i])
+            #                for j in range(N):
+            #                    A[i, j] = np.nansum(aux[i] * aux[j])
+
+            # experimental data is assumed to follow a Poisson distribution
+            # hence the variance (=sigma^2) is equal to the mean value (=sliced_kmap)
             N = len(aux)
             A = np.zeros((N, N))
             y = np.zeros(N)
             for i in range(N):
-                y[i] = np.nansum(sliced_kmap * aux[i])
+                y[i] = np.nansum(aux[i])
                 for j in range(N):
-                    A[i, j] = np.nansum(aux[i] * aux[j])
+                    A[i, j] = np.nansum(aux[i] * aux[j] / sliced_kmap)
 
             result = np.array(initials)
             try:
@@ -375,6 +387,7 @@ class LMFitModel:
                     A[np.ix_(vary_vector, vary_vector)], y[vary_vector]
                 )
                 C = np.linalg.inv(A[np.ix_(vary_vector, vary_vector)])
+                s = np.sqrt(np.diag(C))
                 r = C / np.sqrt(np.diag(C) * np.array([np.diag(C)]).T)
             except np.linalg.LinAlgError as err:
                 if "Singular matrix" in str(err):
@@ -392,8 +405,11 @@ class LMFitModel:
 
             weights.append([index, result])
             covariance.append(r)
+            sigma.append(s)
 
-        return self._construct_minimizer_result(weights, covariance=covariance)
+        return self._construct_minimizer_result(
+            weights, covariance=covariance, sigma=sigma
+        )
 
     def fit(self):
         """Calling this method will trigger a lmfit with the current
@@ -663,7 +679,7 @@ class LMFitModel:
         self.parameters.add("alpha", value=45, min=0, max=90, vary=False, expr=None)
         self.parameters.add("beta", value=0, min=-180, max=180, vary=False, expr=None)
 
-    def _construct_minimizer_result(self, results, covariance):
+    def _construct_minimizer_result(self, results, covariance, sigma):
         out = []
         for index, result in results:
             minimizer_result = MinimizerResult()
@@ -671,12 +687,15 @@ class LMFitModel:
             minimizer_result.method = "matrix_inversion"
             minimizer_result.errorbars = False
             minimizer_result.covar = covariance[index]
+            minimizer_result.sigma = sigma[index]
 
-            for weight, orbital in zip(result[:-1], self.orbitals):
+            for i, (weight, orbital) in enumerate(zip(result[:-1], self.orbitals)):
                 ID = orbital.ID
                 minimizer_result.params["w_" + str(ID)].value = weight
+                minimizer_result.params["w_" + str(ID)].stderr = sigma[index][i]
 
             minimizer_result.params["c"].value = result[-1]
+            minimizer_result.params["c"].stderr = sigma[index][-1]
             out.append([index, minimizer_result])
 
         return out

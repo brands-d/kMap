@@ -469,6 +469,7 @@ class DataResultTreeItem(LMFitResultTreeItem):
     def _update_text(self):
         value = self.parameter.value
         stderr = self.parameter.stderr
+
         alias = self.parameter.name
 
         value = "%.{0}f%s".format(self.decimals) % (value, self.units)
