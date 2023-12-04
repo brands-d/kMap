@@ -1,4 +1,5 @@
-from pyqtgraph import PlotWidget, mkBrush, mkPen
+from numpy import array
+from pyqtgraph import FillBetweenItem, PlotDataItem, PlotWidget, mkBrush, mkPen
 
 from kmap.config.config import config
 
@@ -40,6 +41,7 @@ class LMFitPlot(PlotWidget):
     def plot(self, x, y, title):
         index = len(self.plot_item.listDataItems())
         colors = config.get_key("profile_plot", "colors")
+        transparency = config.get_key("profile_plot", "transparency")
         colors = colors.split(",")
         color = colors[index % len(colors)]
         line_width = int(config.get_key("profile_plot", "line_width"))
@@ -48,6 +50,15 @@ class LMFitPlot(PlotWidget):
         symbol = symbols[index % len(symbols)]
         symbol_size = int(config.get_key("profile_plot", "symbol_size"))
 
+        stderr = array([aux.stderr for aux in y])
+        y = array([aux.value for aux in y])
+
+        band = FillBetweenItem(
+            PlotDataItem(x, y + stderr),
+            PlotDataItem(x, y - stderr),
+            brush=mkBrush(color + transparency),
+        )
+        self.plot_item.addItem(band)
         self.plot_item.plot(
             x,
             y,
