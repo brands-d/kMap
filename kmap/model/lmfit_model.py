@@ -689,10 +689,13 @@ class LMFitModel:
             minimizer_result.covar = covariance[index]
             minimizer_result.sigma = sigma[index]
 
-            for i, (weight, orbital) in enumerate(zip(result[:-1], self.orbitals)):
+            i = 0
+            for weight, orbital in zip(result[:-1], self.orbitals):
                 ID = orbital.ID
-                minimizer_result.params["w_" + str(ID)].value = weight
-                minimizer_result.params["w_" + str(ID)].stderr = sigma[index][i]
+                if minimizer_result.params["w_" + str(ID)].vary:
+                    minimizer_result.params["w_" + str(ID)].value = weight
+                    minimizer_result.params["w_" + str(ID)].stderr = sigma[index][i]
+                    i = i + 1
 
             minimizer_result.params["c"].value = result[-1]
             minimizer_result.params["c"].stderr = sigma[index][-1]
