@@ -1,4 +1,5 @@
 .SILENT: ;
+.PHONY: build
 
 setup:
 	rm -rf venv build dist *.egg-info
