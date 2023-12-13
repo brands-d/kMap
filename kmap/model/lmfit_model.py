@@ -696,6 +696,8 @@ class LMFitModel:
                     minimizer_result.params["w_" + str(ID)].value = weight
                     minimizer_result.params["w_" + str(ID)].stderr = sigma[index][i]
                     i = i + 1
+                else:
+                    minimizer_result.params["w_" + str(ID)].stderr = 0
 
             minimizer_result.params["c"].value = result[-1]
             minimizer_result.params["c"].stderr = sigma[index][-1]
