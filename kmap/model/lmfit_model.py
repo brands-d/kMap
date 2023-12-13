@@ -336,9 +336,7 @@ class LMFitModel:
         ]
         initials.append(self.parameters["c"].value)
 
-        weights = []
-        covariance = []
-        sigma = []
+        results = []
         for index in self.slice_policy[1]:
             sliced_plot_data = self.get_sliced_kmap(index)
             sliced_kmap = self._cut_region(sliced_plot_data).data
@@ -403,13 +401,9 @@ class LMFitModel:
                 # == No background
                 result = np.append(result, 0)
 
-            weights.append([index, result])
-            covariance.append(r)
-            sigma.append(s)
+            results.append([index, result, r, s])
 
-        return self._construct_minimizer_result(
-            weights, covariance=covariance, sigma=sigma
-        )
+        return self._construct_minimizer_result(results)
 
     def fit(self):
         """Calling this method will trigger a lmfit with the current
@@ -679,28 +673,28 @@ class LMFitModel:
         self.parameters.add("alpha", value=45, min=0, max=90, vary=False, expr=None)
         self.parameters.add("beta", value=0, min=-180, max=180, vary=False, expr=None)
 
-    def _construct_minimizer_result(self, results, covariance, sigma):
+    def _construct_minimizer_result(self, results):
         out = []
-        for index, result in results:
+        for index, result, covariance, sigma in results:
             minimizer_result = MinimizerResult()
             minimizer_result.params = self.parameters.copy()
             minimizer_result.method = "matrix_inversion"
             minimizer_result.errorbars = False
-            minimizer_result.covar = covariance[index]
-            minimizer_result.sigma = sigma[index]
+            minimizer_result.covar = covariance
+            minimizer_result.sigma = sigma
 
             i = 0
             for weight, orbital in zip(result[:-1], self.orbitals):
                 ID = orbital.ID
                 if minimizer_result.params["w_" + str(ID)].vary:
                     minimizer_result.params["w_" + str(ID)].value = weight
-                    minimizer_result.params["w_" + str(ID)].stderr = sigma[index][i]
+                    minimizer_result.params["w_" + str(ID)].stderr = sigma[i]
                     i = i + 1
                 else:
                     minimizer_result.params["w_" + str(ID)].stderr = 0
 
             minimizer_result.params["c"].value = result[-1]
-            minimizer_result.params["c"].stderr = sigma[index][-1]
+            minimizer_result.params["c"].stderr = sigma[-1]
             out.append([index, minimizer_result])
 
         return out
