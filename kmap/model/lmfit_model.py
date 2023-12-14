@@ -460,6 +460,67 @@ class LMFitModel:
 
         return results
 
+    def fit_Gaussian(self, verbose=False):
+        """Calling this method will trigger an lmfit with the current
+        settings using a linear combination of Gaussians for each orbital used
+        for the dconvolution.
+
+        Returns:
+            a single MinimizerResult (all slices are taken into account in the fit)
+        """
+
+        lmfit_padding = float(config.get_key("lmfit", "padding"))
+
+        any_parameter_vary = False
+        for parameter in self.parameters.values():
+            if parameter.vary:
+                any_parameter_vary = True
+                break
+
+        if not any_parameter_vary and self.method["method"] not in [
+            "leastsq",
+            "least_squares",
+        ]:
+            raise ValueError(
+                "Only leastsq and least_squares can fit if no parameter is set to vary."
+            )
+
+        for parameter in self.parameters.values():
+            if parameter.vary and parameter.value <= parameter.min:
+                padded_value = parameter.min + lmfit_padding
+                print(
+                    "WARNING: Initial value for parameter '%s' had to be corrected to %f (was %f)"
+                    % (parameter.name, padded_value, parameter.value)
+                )
+                parameter.value = padded_value
+
+        # pre-calculate theoretical kmaps of all orbitals
+        theoretical_kmaps = {}
+        for orbital in self.orbitals:
+            ID = orbital.ID
+            kmap = self.get_orbital_kmap(ID, self.parameters)
+            theoretical_kmaps[ID] = kmap
+
+        slices_ = self.slice_policy[1]
+
+        result = minimize(
+            self._chi2_Gaussian,
+            copy.deepcopy(self.parameters),
+            kws={
+                "slices_": slices_,
+                "theoretical_kmaps": theoretical_kmaps,
+                "verbose": verbose,
+            },
+            nan_policy="omit",
+            **self.method
+        )
+
+        # result.covar = result.covar / np.sqrt(
+        #        np.diag(result.covar) * np.array([np.diag(result.covar)]).T
+        #    )
+
+        return result
+
     def transpose(self, axis_order):
         self.axis_order = constant_axis
         self.sliced_data.transpose(self.axis_order)
@@ -601,6 +662,62 @@ class LMFitModel:
 
         return residual.data
 
+    def _chi2_Gaussian(
+        self, param=None, slices_=[], theoretical_kmaps={}, verbose=False
+    ):
+        if param is None:
+            param = self.parameters
+
+        E_start = self.sliced_data.axes[0].range[0]
+        E_end = self.sliced_data.axes[0].range[1]
+        num_E = self.sliced_data.axes[0].num
+        E_grid = np.linspace(E_start, E_end, num_E)
+
+        for i, slice_ in enumerate(slices_):  # loop over energy slices
+            exp_kmap = self.get_sliced_kmap(
+                slice_
+            )  # experimental kmap at given energy slice_
+            E = E_grid[slice_]
+            for orbital in self.orbitals:
+                ID = orbital.ID
+                w_i = param["w_" + str(ID)].value
+                E_i = param["E_" + str(ID)].value
+                dE_i = param["dE_" + str(ID)].value
+                gaussian = (
+                    w_i
+                    / (dE_i * np.sqrt(2 * np.pi))
+                    * np.exp(-0.5 * ((E - E_i) / dE_i) ** 2)
+                )
+                # gaussian = w_i/(np.sqrt(2*np.pi))*np.exp(-0.5*((E - E_i)/dE_i)**2)
+                # print(ID, E, w_i, E_i, dE_i, gaussian)
+                exp_kmap -= gaussian * theoretical_kmaps[ID]
+
+            exp_kmap -= param["c"].value
+
+            exp_sigma = np.sqrt(self.get_sliced_kmap(slice_).data)
+            exp_kmap.data /= exp_sigma
+
+            if i == 0:
+                residual = exp_kmap.data**2
+            else:
+                residual += exp_kmap.data**2
+
+        if verbose:
+            for orbital in self.orbitals:
+                ID = orbital.ID
+                w_i = param["w_" + str(ID)].value
+                E_i = param["E_" + str(ID)].value
+                dE_i = param["dE_" + str(ID)].value
+                print(
+                    "w_%02i=%6.1f  E_%02i=%6.2f  dE_%02i=%6.2f"
+                    % (ID, w_i, ID, E_i, ID, dE_i)
+                )
+            print("c=%6.2f" % (param["c"].value))
+            print("residual = ", np.nansum(residual))
+            print()
+        # quit()
+        return residual
+
     def _get_degrees_of_freedom(self):
         n = 0
         for parameter in self.parameters.values():
@@ -663,6 +780,12 @@ class LMFitModel:
                 self.parameters.add(
                     angle + str(ID), value=0, min=90, max=-90, vary=False, expr=None
                 )
+
+            # the parameters "E_i" and "dE_i" are used in the fit_Gaussians() method
+            # as mean valaue and standard deviation, respectively, of the Gaussian
+            # for orbital i
+            self.parameters.add("E_" + str(ID), value=1, min=0, vary=False, expr=None)
+            self.parameters.add("dE_" + str(ID), value=1, min=0, vary=False, expr=None)
 
         # LMFit doesn't work when the initial value is exactly the same
         # as the minimum value. For this reason the initial value will
