@@ -105,18 +105,18 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
 
         if orbital_changed:
             orbital = self.model.ID_to_orbital(ID)
-            self.mini_3Dkspace_plot.set_orbital(orbital, ID)
-            self.mini_real_plot.set_orbital(orbital)
+            # self.mini_3Dkspace_plot.set_orbital(orbital, ID)
+            # self.mini_real_plot.set_orbital(orbital)
 
-        self.mini_3Dkspace_plot.change_energy(E_kin)
-        self.mini_3Dkspace_plot.change_inner_potential(V0)
-        self.mini_3Dkspace_plot.rotate_orbital(phi, theta, psi)
-        self.mini_real_plot.rotate_orbital(phi, theta, psi)
+        # self.mini_3Dkspace_plot.change_energy(E_kin)
+        # self.mini_3Dkspace_plot.change_inner_potential(V0)
+        # self.mini_3Dkspace_plot.rotate_orbital(phi, theta, psi)
+        # self.mini_real_plot.rotate_orbital(phi, theta, psi)
 
     def refresh_mini_plot_polarization(self):
         polarization, alpha, beta, _, s_share = self.polarization.get_parameters()[1:]
 
-        self.mini_real_plot.rotate_photon(polarization, alpha, beta, s_share)
+        # self.mini_real_plot.rotate_photon(polarization, alpha, beta, s_share)
 
     def get_crosshair(self):
         return self.crosshair
@@ -150,9 +150,9 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
     def change_parameter(self):
         self.refresh_plot()
 
-        ID = self.mini_3Dkspace_plot.ID
-        if ID is not None:
-            self.refresh_mini_plots(ID, orbital_changed=False)
+        # ID = self.mini_3Dkspace_plot.ID
+        # if ID is not None:
+        #    self.refresh_mini_plots(ID, orbital_changed=False)
 
     def orbitals_changed(self, ID):
         self.refresh_plot()
@@ -165,8 +165,8 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         self.model.remove_orbital_by_ID(ID)
 
         self.refresh_plot()
-        self.mini_3Dkspace_plot.set_orbital(None, ID)
-        self.mini_real_plot.set_orbital(None)
+        # self.mini_3Dkspace_plot.set_orbital(None, ID)
+        # self.mini_real_plot.set_orbital(None)
 
         self.orbital_removed.emit(ID)
 
@@ -356,8 +356,8 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         layout.insertWidget(4, self.interpolation)
         layout.insertWidget(5, self.crosshair)
 
-        self.mini_real_plot.set_options(self.real_space_options)
-        self.mini_3Dkspace_plot.set_options(self.real_space_options)
+        # self.mini_real_plot.set_options(self.real_space_options)
+        # self.mini_3Dkspace_plot.set_options(self.real_space_options)
 
         # Rough axis values for all orbitals to set labels for interpolation
         x = Axis("kx", "1/Å", [-3, 3], 200)

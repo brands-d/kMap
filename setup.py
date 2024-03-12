@@ -18,7 +18,7 @@ setup(
         "matplotlib",
         "pyside6",
         "numpy",
-        "pyopengl",
+        # "pyopengl",
         "lmfit",
         "pyqtgraph>=0.13.3",
         "scikit-image",
