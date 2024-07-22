@@ -450,12 +450,13 @@ class LMFitModel:
                 copy.deepcopy(self.parameters),
                 kws={"slice_": slice_},
                 nan_policy="omit",
-                **self.method
+                **self.method,
             )
 
-            result.covar = result.covar / np.sqrt(
-                np.diag(result.covar) * np.array([np.diag(result.covar)]).T
-            )
+            if result.covar is not None:
+                result.covar = result.covar / np.sqrt(
+                    np.diag(result.covar) * np.array([np.diag(result.covar)]).T
+                )
             results.append([index, result])
 
         return results
@@ -512,7 +513,7 @@ class LMFitModel:
                 "verbose": verbose,
             },
             nan_policy="omit",
-            **self.method
+            **self.method,
         )
 
         # result.covar = result.covar / np.sqrt(
@@ -776,6 +777,7 @@ class LMFitModel:
             ID = orbital.ID
 
             self.parameters.add("w_" + str(ID), value=1, min=0, vary=False, expr=None)
+            self.parameters.add("s_" + str(ID), value=1, min=0, vary=False, expr=None)
             for angle in ["phi_", "theta_", "psi_"]:
                 self.parameters.add(
                     angle + str(ID), value=0, min=90, max=-90, vary=False, expr=None
