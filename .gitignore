@@ -145,3 +145,4 @@ report.tar
 test_results.txt
 cache/*
 .vscode/launch.json
+.DS_Store
