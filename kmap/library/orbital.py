@@ -271,11 +271,7 @@ class Orbital:
         krange = ((kxi[0], kxi[-1]), (kyi[0], kyi[-1]))
         KX, KY = np.meshgrid(kxi, kyi, indexing="xy")
         # KZ = np.sqrt(kmax**2 - KX**2 - KY**2)
-        KZ = np.sqrt(
-            k_V**2
-            - (k_V**2 / kmax**2) * KX**2
-            - (k_V**2 / kmax**2) * KY**2
-        )
+        KZ = np.sqrt(k_V**2 - (k_V**2 / kmax**2) * KX**2 - (k_V**2 / kmax**2) * KY**2)
         kxkykz = list(
             map(lambda a, b, c: (a, b, c), KX.flatten(), KY.flatten(), KZ.flatten())
         )
@@ -667,6 +663,12 @@ class Orbital:
         # Read atomic coordinates
         # Number of atoms from line 3
         num_atom = int(lines[2].split()[0])
+        if num_atom < 0:
+            dset_ids = True
+            num_atom = abs(num_atom)
+        else:
+            dset_ids = False
+
         chemical_numbers = []
         atomic_coordinates = []
         for line in lines[6 : 6 + num_atom]:
@@ -684,10 +686,20 @@ class Orbital:
         atomic_coordinates[:, 0] += shiftx
         atomic_coordinates[:, 1] += shifty
         atomic_coordinates[:, 2] += shiftz
+        # Read dset_ids if present
+        if dset_ids:
+            dset_ids_num = 0
+            for line in lines[6 + num_atom :]:
+                words = line.split()
+                if "." in words[0]:
+                    break
+                else:
+                    dset_ids_num += 1
+        print(dset_ids_num)
 
         # Now read cube data
         data = []
-        for line in lines[(6 + num_atom) :]:
+        for line in lines[(6 + num_atom + dset_ids_num) :]:
             words = line.split()
             for word in words:
                 data.append(float(word))
