@@ -42,7 +42,7 @@ class Ui_orbitaldatatab(object):
         self.scroll_area.setMinimumSize(QSize(750, 0))
         self.scroll_area.setBaseSize(QSize(650, 0))
         self.scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
-        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.scroll_area.setWidgetResizable(True)
         self.layout = QWidget()
         self.layout.setObjectName(u"layout")
