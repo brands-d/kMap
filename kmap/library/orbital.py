@@ -687,15 +687,14 @@ class Orbital:
         atomic_coordinates[:, 1] += shifty
         atomic_coordinates[:, 2] += shiftz
         # Read dset_ids if present
+        dset_ids_num = 0
         if dset_ids:
-            dset_ids_num = 0
             for line in lines[6 + num_atom :]:
                 words = line.split()
                 if "." in words[0]:
                     break
                 else:
                     dset_ids_num += 1
-        print(dset_ids_num)
 
         # Now read cube data
         data = []
