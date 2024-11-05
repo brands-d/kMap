@@ -233,7 +233,7 @@ class SlicedData(AbstractData):
             k_max = energy_to_k(E_kin)
             out = np.sqrt(KX**2 + KY**2) > k_max
             tmp = data[i, :, :]
-            tmp[out] = np.NaN
+            tmp[out] = np.nan
             data[i, :, :] = tmp
 
         # define meta-data for tool-tip display
