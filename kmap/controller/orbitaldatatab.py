@@ -114,9 +114,11 @@ class OrbitalDataTab(Tab, OrbitalDataTab_UI):
         self.mini_real_plot.rotate_orbital(phi, theta, psi)
 
     def refresh_mini_plot_polarization(self):
-        polarization, alpha, beta, _, s_share = self.polarization.get_parameters()[1:]
+        polarization, angle, azimuth, _, s_share = self.polarization.get_parameters()[
+            1:
+        ]
 
-        self.mini_real_plot.rotate_photon(polarization, alpha, beta, s_share)
+        self.mini_real_plot.rotate_photon(polarization, angle, azimuth, s_share)
 
     def get_crosshair(self):
         return self.crosshair

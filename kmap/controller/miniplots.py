@@ -78,12 +78,12 @@ class MiniRealSpacePlot(GLViewWidget):
 
         self.orientation = [phi, theta, psi]
 
-    def rotate_photon(self, polarization="p", alpha=0, beta=0, s_share=0.694):
+    def rotate_photon(self, polarization="p", angle=0, azimuth=0, s_share=0.694):
         if self.photon is not None:
             self.removeItem(self.photon)
             self.photon = None
 
-        self.photon_parameters = [polarization, alpha, beta, s_share]
+        self.photon_parameters = [polarization, angle, azimuth, s_share]
         self._refresh_photon()
 
     def refresh_plot(self):
@@ -174,7 +174,7 @@ class MiniRealSpacePlot(GLViewWidget):
             self.removeItem(self.photon)
             self.photon = None
 
-        polarization, alpha, beta, s_share = self.photon_parameters
+        polarization, angle, azimuth, s_share = self.photon_parameters
 
         if self.orbital is None or not self.options.is_show_photon():
             return
@@ -185,12 +185,12 @@ class MiniRealSpacePlot(GLViewWidget):
         wavelength = 5  # wavelength of oscillation
         n_points = 200  # number of points along wavy light ray
 
-        alpha = alpha * np.pi / 180
-        beta = (180 + beta) * np.pi / 180
+        angle = angle * np.pi / 180
+        azimuth = (180 + azimuth) * np.pi / 180
         direction = [
-            np.sin(alpha) * np.cos(beta),
-            np.sin(alpha) * np.sin(beta),
-            np.cos(alpha),
+            np.sin(angle) * np.cos(azimuth),
+            np.sin(angle) * np.sin(azimuth),
+            np.cos(angle),
         ]
 
         x0 = np.linspace(0, ray_length * direction[0], n_points)
@@ -199,15 +199,15 @@ class MiniRealSpacePlot(GLViewWidget):
         t = np.linspace(0, ray_length, n_points)
 
         if polarization == "s":
-            pol_1 = [np.sin(beta), -np.cos(beta), 0]
+            pol_1 = [np.sin(azimuth), -np.cos(azimuth), 0]
             pol_2 = [0, 0, 0]
 
         elif polarization == "p":
             pol_1 = [0, 0, 0]
             pol_2 = [
-                np.cos(alpha) * np.cos(beta),
-                np.cos(alpha) * np.sin(beta),
-                -np.sin(alpha),
+                np.cos(angle) * np.cos(azimuth),
+                np.cos(angle) * np.sin(azimuth),
+                -np.sin(angle),
             ]
 
         # ... to be updated ...
@@ -215,34 +215,34 @@ class MiniRealSpacePlot(GLViewWidget):
             pol_1 = [0, 0, 0]
             p_share = 1 - s_share
             pol_2 = [
-                s_share * np.sin(beta) + p_share * np.cos(alpha) * np.cos(beta),
-                -s_share * np.cos(beta) + p_share * np.cos(alpha) * np.sin(beta),
-                -p_share * np.sin(alpha),
+                s_share * np.sin(azimuth) + p_share * np.cos(angle) * np.cos(azimuth),
+                -s_share * np.cos(azimuth) + p_share * np.cos(angle) * np.sin(azimuth),
+                -p_share * np.sin(angle),
             ]
 
         elif polarization == "C+":
-            pol_1 = [np.sin(beta), -np.cos(beta), 0]
+            pol_1 = [np.sin(azimuth), -np.cos(azimuth), 0]
             pol_2 = [
-                np.cos(alpha) * np.cos(beta),
-                np.cos(alpha) * np.sin(beta),
-                -np.sin(alpha),
+                np.cos(angle) * np.cos(azimuth),
+                np.cos(angle) * np.sin(azimuth),
+                -np.sin(angle),
             ]
 
         elif polarization == "C-":
-            pol_1 = [np.sin(beta), -np.cos(beta), 0]
+            pol_1 = [np.sin(azimuth), -np.cos(azimuth), 0]
             pol_2 = [
-                -np.cos(alpha) * np.cos(beta),
-                -np.cos(alpha) * np.sin(beta),
-                +np.sin(alpha),
+                -np.cos(angle) * np.cos(azimuth),
+                -np.cos(angle) * np.sin(azimuth),
+                +np.sin(angle),
             ]
 
         # show C+ spiral ... until I have a better idea ...
         elif polarization == "CDAD":
-            pol_1 = [np.sin(beta), -np.cos(beta), 0]
+            pol_1 = [np.sin(azimuth), -np.cos(azimuth), 0]
             pol_2 = [
-                np.cos(alpha) * np.cos(beta),
-                np.cos(alpha) * np.sin(beta),
-                -np.sin(alpha),
+                np.cos(angle) * np.cos(azimuth),
+                np.cos(angle) * np.sin(azimuth),
+                -np.sin(angle),
             ]
 
         dx = amplitude * pol_1[0] * np.cos(

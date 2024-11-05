@@ -88,8 +88,8 @@ class Orbital:
         psi=0,
         Ak_type="no",
         polarization="p",
-        alpha=60,
-        beta=90,
+        angle=60,
+        azimuth=90,
         gamma=0,
         symmetrization="no",
         s_share=0.694,
@@ -107,8 +107,8 @@ class Orbital:
                 'toroid', 'NanoESCA', 'only-toroid' or 'only-NanoESCA'.
             polarization (string): Either 'p', 's', 'unpolarized',
                 'C+', 'C-' or 'CDAD'.
-            alpha (float): Angle of incidence plane in degree.
-            beta (float): Azimuth of incidence plane in degree.
+            angle (float): Angle of incidence plane in degree.
+            azimuth (float): Azimuth of incidence plane in degree.
             gamma (float/str): Damping factor for final state in
                 Angstroem^-1. str = 'auto' sets gamms automatically
             symmetrization (str): either 'no', '2-fold', '2-fold+mirror',
@@ -136,9 +136,11 @@ class Orbital:
             self.set_symmetry(symmetrization)
 
         # Compute polarization factor if parameters have changed
-        new_Ak = self.check_new_Ak(Ak_type, polarization, alpha, beta, gamma, s_share)
+        new_Ak = self.check_new_Ak(
+            Ak_type, polarization, angle, azimuth, gamma, s_share
+        )
         if new_cut or new_Ak:
-            self.set_polarization(Ak_type, polarization, alpha, beta, gamma, s_share)
+            self.set_polarization(Ak_type, polarization, angle, azimuth, gamma, s_share)
 
         if Ak_type == "only-toroid" or Ak_type == "only-NanoESCA":
             return PlotData(self.Ak["data"], self.kmap["krange"])
@@ -147,9 +149,15 @@ class Orbital:
             return PlotData(self.Ak["data"] * self.kmap["data"], self.kmap["krange"])
 
     def change_polarization(
-        self, Ak_type="no", polarization="p", alpha=60, beta=90, gamma=0, s_share=0.694
+        self,
+        Ak_type="no",
+        polarization="p",
+        angle=60,
+        azimuth=90,
+        gamma=0,
+        s_share=0.694,
     ):
-        self.set_polarization(Ak_type, polarization, alpha, beta, gamma, s_share)
+        self.set_polarization(Ak_type, polarization, angle, azimuth, gamma, s_share)
         return PlotData(self.Ak["data"] * self.kmap["data"], self.kmap["krange"])
 
     def compute_3DFT(self, dk3D, E_kin_max, value):
@@ -385,13 +393,13 @@ class Orbital:
 
         return new_orientation
 
-    def set_polarization(self, Ak_type, polarization, alpha, beta, gamma, s_share):
+    def set_polarization(self, Ak_type, polarization, angle, azimuth, gamma, s_share):
         if Ak_type == "no":  # Set |A.k|^2 to 1
             self.Ak = {
                 "Ak_type": Ak_type,
                 "polarization": polarization,
-                "alpha": alpha,
-                "beta": beta,
+                "angle": angle,
+                "azimuth": azimuth,
                 "gamma": gamma,
                 "s_share": s_share,
                 "data": np.ones_like(self.kmap["data"]),
@@ -400,8 +408,8 @@ class Orbital:
             return
 
         # Convert angles to rad and compute sin and cos for later use
-        a = np.radians(alpha)
-        b = np.radians(beta)
+        a = np.radians(angle)
+        b = np.radians(azimuth)
         sin_a = np.sin(a)
         cos_a = np.cos(a)
         sin_b = np.sin(b)
@@ -500,20 +508,20 @@ class Orbital:
         self.Ak = {
             "Ak_type": Ak_type,
             "polarization": polarization,
-            "alpha": alpha,
-            "beta": beta,
+            "angle": angle,
+            "azimuth": azimuth,
             "gamma": gamma,
             "s_share": s_share,
             "data": Ak,
         }
 
-    def check_new_Ak(self, Ak_type, polarization, alpha, beta, gamma, s_share):
+    def check_new_Ak(self, Ak_type, polarization, angle, azimuth, gamma, s_share):
         if "Ak_type" in self.Ak:
             if (
                 self.Ak["Ak_type"] != Ak_type
                 or self.Ak["polarization"] != polarization
-                or self.Ak["alpha"] != alpha
-                or self.Ak["beta"] != beta
+                or self.Ak["angle"] != angle
+                or self.Ak["azimuth"] != azimuth
                 or self.Ak["gamma"] != gamma
                 or self.Ak["s_share"] != s_share
             ):

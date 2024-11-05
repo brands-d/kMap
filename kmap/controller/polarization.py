@@ -95,11 +95,11 @@ class Polarization(QWidget, Polarization_UI):
         return Ak_type, polarization
 
     def _get_angles(self):
-        alpha = self.angle_spinbox.value()
-        beta = self.azimuth_spinbox.value()
+        angle = self.angle_spinbox.value()
+        azimuth = self.azimuth_spinbox.value()
         gamma = "auto"
 
-        return alpha, beta, gamma
+        return angle, azimuth, gamma
 
     def _get_s_share(self):
         return self.s_share_spinbox.value()

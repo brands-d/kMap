@@ -587,8 +587,8 @@ class LMFitModel:
             phi=param["phi_" + str(ID)].value,
             theta=param["theta_" + str(ID)].value,
             psi=param["psi_" + str(ID)].value,
-            alpha=param["alpha"].value,
-            beta=param["beta"].value,
+            angle=param["angle"].value,
+            azimuth=param["azimuth"].value,
             Ak_type=self.Ak_type,
             polarization=self.polarization,
             symmetrization=self.symmetrization,
@@ -795,8 +795,10 @@ class LMFitModel:
         self.parameters.add("c", value=0, min=0, vary=False, expr=None)
         self.parameters.add("E_kin", value=30, min=5, max=150, vary=False, expr=None)
         self.parameters.add("V0", value=0, min=-5, max=30, vary=False, expr=None)
-        self.parameters.add("alpha", value=45, min=0, max=90, vary=False, expr=None)
-        self.parameters.add("beta", value=0, min=-180, max=180, vary=False, expr=None)
+        self.parameters.add("angle", value=45, min=0, max=90, vary=False, expr=None)
+        self.parameters.add(
+            "azimuth", value=0, min=-180, max=180, vary=False, expr=None
+        )
 
     def _construct_minimizer_result(self, results):
         out = []

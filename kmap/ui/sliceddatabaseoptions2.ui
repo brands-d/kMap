@@ -518,7 +518,7 @@
        </widget>
       </item>
       <item row="1" column="0">
-       <widget class="QLabel" name="alpha_label">
+       <widget class="QLabel" name="angle_label">
         <property name="font">
          <font>
           <weight>50</weight>
@@ -531,7 +531,7 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QDoubleSpinBox" name="alpha_spinbox">
+       <widget class="QDoubleSpinBox" name="angle_spinbox">
         <property name="font">
          <font>
           <weight>50</weight>
@@ -559,7 +559,7 @@
        </widget>
       </item>
       <item row="2" column="0">
-       <widget class="QLabel" name="beta_label">
+       <widget class="QLabel" name="azimuth_label">
         <property name="font">
          <font>
           <weight>50</weight>
@@ -572,7 +572,7 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QDoubleSpinBox" name="beta_spinbox">
+       <widget class="QDoubleSpinBox" name="azimuth_spinbox">
         <property name="font">
          <font>
           <weight>50</weight>

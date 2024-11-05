@@ -64,11 +64,11 @@ class SlicedDataBaseOptions2(QWidget, SlicedDataBaseOptions_UI):
             elif Ak_index == 7:
                 polarization = "CDAD"
 
-        alpha = self.alpha_spinbox.value()
-        beta = self.beta_spinbox.value()
+        angle = self.angle_spinbox.value()
+        azimuth = self.azimuth_spinbox.value()
         gamma = "auto"
 
-        return Ak_type, polarization, alpha, beta, gamma
+        return Ak_type, polarization, angle, azimuth, gamma
 
     def closeEvent(self, event):
         self.deleteLater()

@@ -127,13 +127,13 @@ class OrbitalOptionsTreeItem(LMFitTreeTopLevelItem):
     def _setup(self, tree, parameters):
         super()._setup(tree, "Orbital Options")
 
-        alpha = AngleTreeItem(self, tree, parameters["alpha"], "Alpha")
-        beta = AngleTreeItem(self, tree, parameters["beta"], "Beta")
+        angle = AngleTreeItem(self, tree, parameters["angle"], "Angle")
+        azimuth = AngleTreeItem(self, tree, parameters["azimuth"], "Azimuth")
         energy = EnergyTreeItem(self, tree, parameters["E_kin"], "Kinetic Energy")
         V0 = InnerPotentialTreeItem(self, tree, parameters["V0"], "Inner Potential")
 
-        self.children = [alpha, beta, energy, V0]
-        self.parameters = ["alpha", "beta", "E_kin", "V0"]
+        self.children = [angle, azimuth, energy, V0]
+        self.parameters = ["angle", "azimuth", "E_kin", "V0"]
 
 
 class OrbitalTreeItem(LMFitTreeTopLevelItem):
@@ -404,11 +404,11 @@ class OrbitalOptionsResultTreeItem(LMFitResultTreeItem):
     def _setup(self, tree, result):
         super()._setup(tree, "Orbital Options")
 
-        alpha = DataResultTreeItem(
-            self, tree, result["alpha"], "Alpha", units="°", decimals=3
+        angle = DataResultTreeItem(
+            self, tree, result["angle"], "Angle", units="°", decimals=3
         )
-        beta = DataResultTreeItem(
-            self, tree, result["beta"], "Beta", units="°", decimals=3
+        azimuth = DataResultTreeItem(
+            self, tree, result["azimuth"], "Azimuth", units="°", decimals=3
         )
         energy = DataResultTreeItem(
             self, tree, result["E_kin"], "Kinetic Engery", units="  eV", decimals=2
@@ -417,8 +417,8 @@ class OrbitalOptionsResultTreeItem(LMFitResultTreeItem):
             self, tree, result["V0"], "Inner Potential", units="  eV", decimals=2
         )
 
-        self.parameters = ["alpha", "beta", "E_kin", "V0"]
-        self.children = [alpha, beta, energy, V0]
+        self.parameters = ["angle", "azimuth", "E_kin", "V0"]
+        self.children = [angle, azimuth, energy, V0]
 
 
 class OrbitalResultTreeItem(LMFitResultTreeItem):

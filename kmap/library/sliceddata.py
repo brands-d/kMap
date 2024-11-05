@@ -135,8 +135,8 @@ class SlicedData(AbstractData):
                         'toroid' or 'NanoESCA'.
                 polarization (string): Either 'p', 's', 'unpolarized', C+', 'C-' or
                         'CDAD'.
-                alpha (float): Angle of incidence plane in degree.
-                beta (float): Azimuth of incidence plane in degree.
+                angle (float): Angle of incidence plane in degree.
+                azimuth (float): Azimuth of incidence plane in degree.
                 gamma (float/str): Damping factor for final state in
                         Angstroem^-1. str = 'auto' sets gamma automatically
                 symmetrization (str): either 'no', '2-fold', '2-fold+mirror',
@@ -155,7 +155,7 @@ class SlicedData(AbstractData):
         phi, theta, psi = parameters[4], parameters[5], parameters[6]
         Ak_type = parameters[7]
         polarization = parameters[8]
-        alpha, beta, gamma = parameters[9], parameters[10], parameters[11]
+        angle, azimuth, gamma = parameters[9], parameters[10], parameters[11]
         symmetrization = parameters[12]
 
         # determine axis_1 from minimal and maximal binding energy
@@ -215,8 +215,8 @@ class SlicedData(AbstractData):
                 psi,
                 Ak_type,
                 polarization,
-                alpha,
-                beta,
+                angle,
+                azimuth,
                 gamma,
                 symmetrization,
                 s_share=s_share,
@@ -248,7 +248,7 @@ class SlicedData(AbstractData):
             "Molecular orientation": (phi, theta, psi),
             "|A.k|^2 factor": Ak_type,
             "Polarization": polarization,
-            "Incidence direction": (alpha, beta),
+            "Incidence direction": (angle, azimuth),
             "Symmetrization": symmetrization,
             "Orbital Info": orbital_info,
         }
@@ -360,8 +360,8 @@ class SlicedData(AbstractData):
                         'toroid' or 'NanoESCA'.
                 polarization (string): Either 'p', 's', 'unpolarized', C+', 'C-' or
                         'CDAD'.
-                alpha (float): Angle of incidence plane in degree.
-                beta (float): Azimuth of incidence plane in degree.
+                angle (float): Angle of incidence plane in degree.
+                azimuth (float): Azimuth of incidence plane in degree.
                 gamma (float/str): Damping factor for final state in
                         Angstroem^-1. str = 'auto' sets gamma automatically
                 symmetrization (str): either 'no', '2-fold', '2-fold+mirror',
@@ -383,7 +383,7 @@ class SlicedData(AbstractData):
         phi, theta, psi = parameters[5], parameters[6], parameters[7]
         Ak_type = parameters[8]
         polarization = parameters[9]
-        alpha, beta, gamma = parameters[10], parameters[11], parameters[12]
+        angle, azimuth, gamma = parameters[10], parameters[11], parameters[12]
         symmetrization = parameters[13]
 
         # binding energy of orbital and work function
@@ -432,8 +432,8 @@ class SlicedData(AbstractData):
                 psi,
                 Ak_type,
                 polarization,
-                alpha,
-                beta,
+                angle,
+                azimuth,
                 gamma,
                 symmetrization,
                 s_share=s_share,
@@ -449,7 +449,7 @@ class SlicedData(AbstractData):
             "Molecular orientation": (phi, theta, psi),
             "|A.k|^2 factor": Ak_type,
             "Polarization": polarization,
-            "Incidence direction": (alpha, beta),
+            "Incidence direction": (angle, azimuth),
             "Symmetrization": symmetrization,
             "Orbital Info": orbital_info,
         }
