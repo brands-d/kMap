@@ -6,7 +6,7 @@ do
     elif [[ $file == ".." ]]
     then
         echo ""
-    elif [[ $file == "aux.sh" ]]
+    elif [[ $file == "compile_interface.sh" ]]
     then
         echo ""
     elif [[ $file == "__pycache__" ]]
