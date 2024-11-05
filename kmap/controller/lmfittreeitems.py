@@ -244,9 +244,9 @@ class AngleTreeItem(LMFitDataTreeItem):
         min_ = self.parameter.min
         max_ = self.parameter.max
 
-        self.initial_spinbox = AngleSpinBox(initial, "initial_spinbox")
-        self.min_spinbox = AngleSpinBox(min_, "min_spinbox")
-        self.max_spinbox = AngleSpinBox(max_, "max_spinbox")
+        self.initial_spinbox = AngleSpinBox(initial, "initial_spinbox", min_, max_)
+        self.min_spinbox = AngleSpinBox(min_, "min_spinbox", min_, max_)
+        self.max_spinbox = AngleSpinBox(max_, "max_spinbox", min_, max_)
 
         super()._setup(tree, name)
 
