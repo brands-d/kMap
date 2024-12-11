@@ -1,12 +1,15 @@
+import re
 import bz2
 import logging
+from urllib.request import urlopen
+from urllib.error import URLError
 from pathlib import Path
 
 import _pickle as pickle
 from PySide6.QtGui import QIcon, QKeySequence
 from PySide6.QtWidgets import QFileDialog, QMainWindow, QMessageBox
 
-from kmap import __directory__
+from kmap import __directory__, __version__
 from kmap.config.config import config
 from kmap.controller.databasewindows import OrbitalDatabase, SlicedDatabaseWindow
 from kmap.controller.orbitaldatatab import OrbitalDataTab
@@ -29,6 +32,47 @@ class MainWindow(QMainWindow, MainWindow_UI):
         self.model = MainWindowModel(self)
 
         self.open_welcome()
+        self.check_for_updates()
+        self.update_database()
+
+    def check_for_updates(self):
+        log = logging.getLogger("kmap")
+        log.info("Checking for updates...")
+        if config.get_key("app", "check_for_updates") == "True":
+            url = "https://raw.githubusercontent.com/brands-d/kMap/refs/heads/master/kmap/__init__.py"
+            try:
+                with urlopen(url) as response:
+                    content = response.read().decode("utf-8")
+                    match = re.search(
+                        r"^__version__ *= *\"(\d*)\.(\d*)\.(\d*)\"$",
+                        content,
+                        re.MULTILINE,
+                    )
+                    if not match:
+                        log.info("Could not determine the latest version.")
+                        return
+            except URLError:
+                log.info("Could not determine the latest version.")
+
+            latest_version = tuple(map(int, match.groups()))
+            current_version = tuple(map(int, __version__.split(".")))
+            latest_version_str = ".".join(map(str, latest_version))
+            current_version_str = ".".join(map(str, current_version))
+
+            if latest_version > current_version:
+                log.info("There is a new version available.")
+                message = (
+                    f"<p>You are currently using <b>version {current_version_str}</b> of kMap.py.</p>"
+                    f"<p>The latest version available on GitHub is <b>{latest_version_str}</b>.</p>"
+                    "<p>You can disable the automatic update check in the settings.</p>"
+                )
+                QMessageBox.information(self, "Update Available", message)
+            else:
+                log.info("You are using the latest version.")
+
+    def update_database(self):
+        if config.get_key("app", "auto_update_database") == "True":
+            print("Updating database...")
 
     def load_hdf5_files(self):
         # Load one or more new hdf5 files
