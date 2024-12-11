@@ -1,3 +1,6 @@
+import re
+
+
 class Database:
     def __init__(self, path):
         self.molecules = []
@@ -39,19 +42,21 @@ class Molecule:
     def __init__(self, lines, URL=""):
         self.ID = int(lines[0].split("=")[1])
         self.URL = URL + lines[2].split("=")[2][:-1]
-
-        parts = lines[1].split(",")
-
-        self.short_name = parts[0].split("=")[1]
-        self.full_name = parts[1].split("=")[1]
-        self.formula = parts[2].split("=")[1]
-        self.orientation = parts[3].split("=")[1]
-        self.charge = int(parts[4].split("=")[1])
-        self.magnetic_moment = float(parts[5].split("=")[1])
-        self.IP = float(parts[6].split("=")[1])
-        self.EA = float(parts[7].split("=")[1])
-        self.basis_set = parts[8].split("=")[1]
-        self.XC_functional = parts[9].split("=")[1][:-1]
+        match = re.match(
+            "^ShortName=(.*?), FullName=(.*?), Formula=(.*?), Orientation=(.*?), Charge=(.*?), MagneticMoment=(.*?), IP=(.*?), EA=(.*?), BasisSet=(.*?), XC-functional=(.*?)$",
+            lines[1],
+            re.MULTILINE,
+        )
+        self.short_name = match.group(1)
+        self.full_name = match.group(2)
+        self.formula = match.group(3)
+        self.orientation = match.group(4)
+        self.charge = int(match.group(5))
+        self.magnetic_moment = float(match.group(6))
+        self.IP = float(match.group(7))
+        self.EA = float(match.group(8))
+        self.basis_set = match.group(9)
+        self.XC_functional = match.group(10)
 
         self.orbitals = []
         for index, line in enumerate(lines[3:], 1):
@@ -96,12 +101,16 @@ class Orbital:
     def __init__(self, ID, molecule_ID, line, URL="", orientation="xy", shortname=""):
         self.ID = ID
         self.database_ID = "%i.%i" % (molecule_ID, ID)
-        parts = line.split(",")
-        self.URL = URL + parts[0].split("=")[1]
-        self.name = shortname + " " + parts[1].split("=")[1]
-        self.energy = float(parts[2].split("=")[1])
-        self.occupation = int(parts[3].split("=")[1])
-        self.symmetry = parts[4].split("=")[1][:-1]
+        match = re.match(
+            "^CubeName=(.*?), OrbitalName=(.*?), OrbitalEnergy=(.*?), Occupation=(.*?), Symmetry=(.*?)$",
+            line,
+            re.MULTILINE,
+        )
+        self.URL = URL + match.group(1)
+        self.name = shortname + " " + match.group(2)
+        self.energy = float(match.group(3))
+        self.occupation = int(match.group(4))
+        self.symmetry = match.group(5)
         self.orientation = orientation
 
     def to_string(self):

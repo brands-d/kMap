@@ -36,43 +36,63 @@ class MainWindow(QMainWindow, MainWindow_UI):
         self.update_database()
 
     def check_for_updates(self):
+        if config.get_key("app", "check_for_updates") != "True":
+            return
         log = logging.getLogger("kmap")
         log.info("Checking for updates...")
-        if config.get_key("app", "check_for_updates") == "True":
-            url = "https://raw.githubusercontent.com/brands-d/kMap/refs/heads/master/kmap/__init__.py"
-            try:
-                with urlopen(url) as response:
-                    content = response.read().decode("utf-8")
-                    match = re.search(
-                        r"^__version__ *= *\"(\d*)\.(\d*)\.(\d*)\"$",
-                        content,
-                        re.MULTILINE,
-                    )
-                    if not match:
-                        log.info("Could not determine the latest version.")
-                        return
-            except URLError:
-                log.info("Could not determine the latest version.")
-
-            latest_version = tuple(map(int, match.groups()))
-            current_version = tuple(map(int, __version__.split(".")))
-            latest_version_str = ".".join(map(str, latest_version))
-            current_version_str = ".".join(map(str, current_version))
-
-            if latest_version > current_version:
-                log.info("There is a new version available.")
-                message = (
-                    f"<p>You are currently using <b>version {current_version_str}</b> of kMap.py.</p>"
-                    f"<p>The latest version available on GitHub is <b>{latest_version_str}</b>.</p>"
-                    "<p>You can disable the automatic update check in the settings.</p>"
+        url = "https://raw.githubusercontent.com/brands-d/kMap/refs/heads/master/kmap/__init__.py"
+        try:
+            with urlopen(url) as response:
+                content = response.read().decode("utf-8")
+                match = re.search(
+                    r"^__version__ *= *\"(\d*)\.(\d*)\.(\d*)\"$",
+                    content,
+                    re.MULTILINE,
                 )
-                QMessageBox.information(self, "Update Available", message)
-            else:
-                log.info("You are using the latest version.")
+                if not match:
+                    log.info("Could not determine the latest version.")
+                    return
+        except URLError:
+            log.info("Could not determine the latest version.")
+
+        latest_version = tuple(map(int, match.groups()))
+        current_version = tuple(map(int, __version__.split(".")))
+        latest_version_str = ".".join(map(str, latest_version))
+        current_version_str = ".".join(map(str, current_version))
+
+        if latest_version > current_version:
+            log.info("There is a new version available.")
+            message = (
+                f"<p>You are currently using <b>version {current_version_str}</b> of kMap.py.</p>"
+                f"<p>The latest version available on GitHub is <b>{latest_version_str}</b>.</p>"
+                "<p>You can disable the automatic update check in the settings.</p>"
+            )
+            QMessageBox.information(self, "Update Available", message)
+        else:
+            log.info("You are using the latest version.")
 
     def update_database(self):
-        if config.get_key("app", "auto_update_database") == "True":
-            print("Updating database...")
+        if config.get_key("app", "auto_update_database") != "True":
+            return
+
+        log = logging.getLogger("kmap")
+        log.info("Download new database file...")
+        url = "http://physikmdb.uni-graz.at/molecule_database_as_txt/MolecularOrbitals.txt"
+        try:
+            with urlopen(url) as response:
+                content = response.read().decode("utf-8")
+        except URLError:
+            log.info("Could not download new database file.")
+            return
+
+        database_path = __directory__ / config.get_key("paths", "database")
+        with open(database_path, "w") as file:
+            try:
+                file.write(content)
+                log.info("New database file written successfully.")
+            except Exception as e:
+                log.error(f"Could not write new database file: {e}")
+                return
 
     def load_hdf5_files(self):
         # Load one or more new hdf5 files
