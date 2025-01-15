@@ -32,8 +32,15 @@ class MainWindow(QMainWindow, MainWindow_UI):
         self.model = MainWindowModel(self)
 
         self.open_welcome()
-        self.check_for_updates()
-        self.update_database()
+
+        try:
+            self.check_for_updates()
+        except:
+            logging.getLogger("kmap").info("Could not determine the latest version.")
+        try:
+            self.update_database()
+        except:
+            logging.getLogger("kmap").info("Could not determine the latest version.")
 
     def check_for_updates(self):
         if config.get_key("app", "check_for_updates") != "True":
@@ -54,6 +61,7 @@ class MainWindow(QMainWindow, MainWindow_UI):
                     return
         except URLError:
             log.info("Could not determine the latest version.")
+            return
 
         latest_version = tuple(map(int, match.groups()))
         current_version = tuple(map(int, __version__.split(".")))
