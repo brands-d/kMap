@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 from kmap import __version__
 
 setup(
-    name="kMap",
+    name="kmap",
     version=__version__,
     description="Display, modify and analyse ARPES experiments and DFT \
       simulations.",
