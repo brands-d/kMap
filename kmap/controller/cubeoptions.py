@@ -63,6 +63,10 @@ class CubeOptions(QWidget, CubeOptions_UI):
         # DO NOT USE! Only wrapper for the signal emitted to remove argument.
         self.energy_changed.emit()
 
+    def _change_symmetry(self, value):
+        # DO NOT USE! Only wrapper for the signal emitted to remove argument.
+        self.symmetrization_changed.emit()
+
     def _get_symmetry(self):
         index = self.symmetrize_combobox.currentIndex()
         available_symmetries = [
@@ -81,7 +85,5 @@ class CubeOptions(QWidget, CubeOptions_UI):
         self.energy_spinbox.valueChanged.connect(self._change_energy)
         self.inner_potential_spinbox.valueChanged.connect(self.V0_changed.emit)
         self.resolution_spinbox.valueChanged.connect(self.resolution_changed.emit)
-        self.symmetrize_combobox.currentIndexChanged.connect(
-            self.symmetrization_changed.emit
-        )
+        self.symmetrize_combobox.currentIndexChanged.connect(self._change_symmetry)
         self.match_button.clicked.connect(self.get_match_energy.emit)
