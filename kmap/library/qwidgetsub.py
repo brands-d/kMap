@@ -16,7 +16,7 @@ class UseCheckBox(QCheckBox):
 
 
 class AngleSpinBox(QDoubleSpinBox):
-    def __init__(self, value, objectname, min_=-90, max_=90, *args, **kwargs):
+    def __init__(self, value, objectname, min_=-180, max_=180, *args, **kwargs):
         super(AngleSpinBox, self).__init__(*args, **kwargs)
 
         self.setSuffix("°")
