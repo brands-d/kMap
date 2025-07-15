@@ -16,7 +16,7 @@ setup(
         "h5py",
         "scipy",
         "matplotlib",
-        "pyside6",
+        "pyside6!=6.9.*",
         "numpy",
         "pyopengl",
         "lmfit",

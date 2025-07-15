@@ -14774,3 +14774,216 @@ CubeName=cubefiles/000704/9,10-dicyanoanthracene_MO_60.cube, OrbitalName=LUMO, O
 CubeName=cubefiles/000704/9,10-dicyanoanthracene_MO_61.cube, OrbitalName=LUMO+1, OrbitalEnergy=-1.455, Occupation=0, Symmetry=au
 CubeName=cubefiles/000704/9,10-dicyanoanthracene_MO_62.cube, OrbitalName=LUMO+2, OrbitalEnergy=-0.905, Occupation=0, Symmetry=b1u
 CubeName=cubefiles/000704/9,10-dicyanoanthracene_MO_63.cube, OrbitalName=LUMO+3, OrbitalEnergy=-0.814, Occupation=0, Symmetry=b3g
+moleculeID=706
+ShortName=1P_F, FullName=hexafluorbenzol, Formula=C6F6, Orientation=xy, Charge=0, MagneticMoment=0, IP=7.84, EA=0.83, BasisSet=cc-pvtz, XC-functional=PBE0
+NumberOfOrbitals=10, PathToCubefiles=
+CubeName=cubefiles/000706/hexafluorbenzol_MO_40.cube, OrbitalName=HOMO-5, OrbitalEnergy=-12.089, Occupation=2, Symmetry=e2g
+CubeName=cubefiles/000706/hexafluorbenzol_MO_41.cube, OrbitalName=HOMO-4, OrbitalEnergy=-12.089, Occupation=2, Symmetry=e2g
+CubeName=cubefiles/000706/hexafluorbenzol_MO_42.cube, OrbitalName=HOMO-3, OrbitalEnergy=-11.257, Occupation=2, Symmetry=b2u
+CubeName=cubefiles/000706/hexafluorbenzol_MO_43.cube, OrbitalName=HOMO-2, OrbitalEnergy=-10.501, Occupation=2, Symmetry=a2u
+CubeName=cubefiles/000706/hexafluorbenzol_MO_44.cube, OrbitalName=HOMO-1, OrbitalEnergy=-7.835, Occupation=2, Symmetry=e1g
+CubeName=cubefiles/000706/hexafluorbenzol_MO_45.cube, OrbitalName=HOMO, OrbitalEnergy=-7.835, Occupation=2, Symmetry=e1g
+CubeName=cubefiles/000706/hexafluorbenzol_MO_46.cube, OrbitalName=LUMO, OrbitalEnergy=-0.828, Occupation=0, Symmetry=e2u
+CubeName=cubefiles/000706/hexafluorbenzol_MO_47.cube, OrbitalName=LUMO+1, OrbitalEnergy=-0.828, Occupation=0, Symmetry=e2u
+CubeName=cubefiles/000706/hexafluorbenzol_MO_48.cube, OrbitalName=LUMO+2, OrbitalEnergy=-0.688, Occupation=0, Symmetry=a1g
+CubeName=cubefiles/000706/hexafluorbenzol_MO_49.cube, OrbitalName=LUMO+3, OrbitalEnergy=2.212, Occupation=0, Symmetry=e1u
+moleculeID=707
+ShortName=2A_F, FullName=octafluornaphthalin, Formula=C10F8, Orientation=yx, Charge=0, MagneticMoment=0, IP=6.93, EA=1.98, BasisSet=cc-pvtz, XC-functional=PBE0
+NumberOfOrbitals=10, PathToCubefiles=
+CubeName=cubefiles/000707/octafluornaphthalin_MO_61.cube, OrbitalName=HOMO-5, OrbitalEnergy=-11.221, Occupation=2, Symmetry=b1g
+CubeName=cubefiles/000707/octafluornaphthalin_MO_62.cube, OrbitalName=HOMO-4, OrbitalEnergy=-11.219, Occupation=2, Symmetry=b2u
+CubeName=cubefiles/000707/octafluornaphthalin_MO_63.cube, OrbitalName=HOMO-3, OrbitalEnergy=-9.684, Occupation=2, Symmetry=b3g
+CubeName=cubefiles/000707/octafluornaphthalin_MO_64.cube, OrbitalName=HOMO-2, OrbitalEnergy=-8.800, Occupation=2, Symmetry=b2g
+CubeName=cubefiles/000707/octafluornaphthalin_MO_65.cube, OrbitalName=HOMO-1, OrbitalEnergy=-8.012, Occupation=2, Symmetry=b1u
+CubeName=cubefiles/000707/octafluornaphthalin_MO_66.cube, OrbitalName=HOMO, OrbitalEnergy=-6.927, Occupation=2, Symmetry=au
+CubeName=cubefiles/000707/octafluornaphthalin_MO_67.cube, OrbitalName=LUMO, OrbitalEnergy=-1.979, Occupation=0, Symmetry=b3g
+CubeName=cubefiles/000707/octafluornaphthalin_MO_68.cube, OrbitalName=LUMO+1, OrbitalEnergy=-1.479, Occupation=0, Symmetry=b2g
+CubeName=cubefiles/000707/octafluornaphthalin_MO_69.cube, OrbitalName=LUMO+2, OrbitalEnergy=-0.006, Occupation=0, Symmetry=ag
+CubeName=cubefiles/000707/octafluornaphthalin_MO_70.cube, OrbitalName=LUMO+3, OrbitalEnergy=0.178, Occupation=0, Symmetry=b1u
+moleculeID=708
+ShortName=3A_F, FullName=perfluoroanthracene, Formula=C14F10, Orientation=yx, Charge=0, MagneticMoment=0, IP=6.39, EA=2.73, BasisSet=cc-pvtz, XC-functional=PBE0
+NumberOfOrbitals=10, PathToCubefiles=
+CubeName=cubefiles/000708/perfluoroanthracene_MO_82.cube, OrbitalName=HOMO-5, OrbitalEnergy=-10.754, Occupation=2, Symmetry=b1g
+CubeName=cubefiles/000708/perfluoroanthracene_MO_83.cube, OrbitalName=HOMO-4, OrbitalEnergy=-9.237, Occupation=2, Symmetry=b1u
+CubeName=cubefiles/000708/perfluoroanthracene_MO_84.cube, OrbitalName=HOMO-3, OrbitalEnergy=-9.093, Occupation=2, Symmetry=b2g
+CubeName=cubefiles/000708/perfluoroanthracene_MO_85.cube, OrbitalName=HOMO-2, OrbitalEnergy=-8.106, Occupation=2, Symmetry=b3g
+CubeName=cubefiles/000708/perfluoroanthracene_MO_86.cube, OrbitalName=HOMO-1, OrbitalEnergy=-8.055, Occupation=2, Symmetry=au
+CubeName=cubefiles/000708/perfluoroanthracene_MO_87.cube, OrbitalName=HOMO, OrbitalEnergy=-6.388, Occupation=2, Symmetry=b2g
+CubeName=cubefiles/000708/perfluoroanthracene_MO_88.cube, OrbitalName=LUMO, OrbitalEnergy=-2.732, Occupation=0, Symmetry=b1u
+CubeName=cubefiles/000708/perfluoroanthracene_MO_89.cube, OrbitalName=LUMO+1, OrbitalEnergy=-1.797, Occupation=0, Symmetry=au
+CubeName=cubefiles/000708/perfluoroanthracene_MO_90.cube, OrbitalName=LUMO+2, OrbitalEnergy=-0.671, Occupation=0, Symmetry=b3g
+CubeName=cubefiles/000708/perfluoroanthracene_MO_91.cube, OrbitalName=LUMO+3, OrbitalEnergy=0.117, Occupation=0, Symmetry=ag
+moleculeID=709
+ShortName=4A_F, FullName=dodecafluortetracene, Formula=C18F12, Orientation=yx, Charge=0, MagneticMoment=0, IP=6.04, EA=3.23, BasisSet=cc-pvtz, XC-functional=PBE0
+NumberOfOrbitals=10, PathToCubefiles=
+CubeName=cubefiles/000709/dodecafluortetracene_MO_103.cube, OrbitalName=HOMO-5, OrbitalEnergy=-9.222, Occupation=2, Symmetry=b2g
+CubeName=cubefiles/000709/dodecafluortetracene_MO_104.cube, OrbitalName=HOMO-4, OrbitalEnergy=-8.964, Occupation=2, Symmetry=b3g
+CubeName=cubefiles/000709/dodecafluortetracene_MO_105.cube, OrbitalName=HOMO-3, OrbitalEnergy=-8.586, Occupation=2, Symmetry=au
+CubeName=cubefiles/000709/dodecafluortetracene_MO_106.cube, OrbitalName=HOMO-2, OrbitalEnergy=-8.164, Occupation=2, Symmetry=b1u
+CubeName=cubefiles/000709/dodecafluortetracene_MO_107.cube, OrbitalName=HOMO-1, OrbitalEnergy=-7.478, Occupation=2, Symmetry=b2g
+CubeName=cubefiles/000709/dodecafluortetracene_MO_108.cube, OrbitalName=HOMO, OrbitalEnergy=-6.037, Occupation=2, Symmetry=au
+CubeName=cubefiles/000709/dodecafluortetracene_MO_109.cube, OrbitalName=LUMO, OrbitalEnergy=-3.225, Occupation=0, Symmetry=b3g
+CubeName=cubefiles/000709/dodecafluortetracene_MO_110.cube, OrbitalName=LUMO+1, OrbitalEnergy=-1.983, Occupation=0, Symmetry=b2g
+CubeName=cubefiles/000709/dodecafluortetracene_MO_111.cube, OrbitalName=LUMO+2, OrbitalEnergy=-1.411, Occupation=0, Symmetry=b1u
+CubeName=cubefiles/000709/dodecafluortetracene_MO_112.cube, OrbitalName=LUMO+3, OrbitalEnergy=-0.029, Occupation=0, Symmetry=b3g
+moleculeID=710
+ShortName=5A_F, FullName=perfluoropentacene, Formula=C22F14, Orientation=yx, Charge=0, MagneticMoment=0, IP=5.79, EA=3.56, BasisSet=cc-pvtz, XC-functional=PBE0
+NumberOfOrbitals=10, PathToCubefiles=
+CubeName=cubefiles/000710/perfluoropentacene_MO_124.cube, OrbitalName=HOMO-5, OrbitalEnergy=-8.861, Occupation=2, Symmetry=au
+CubeName=cubefiles/000710/perfluoropentacene_MO_125.cube, OrbitalName=HOMO-4, OrbitalEnergy=-8.786, Occupation=2, Symmetry=b1u
+CubeName=cubefiles/000710/perfluoropentacene_MO_126.cube, OrbitalName=HOMO-3, OrbitalEnergy=-8.202, Occupation=2, Symmetry=b3g
+CubeName=cubefiles/000710/perfluoropentacene_MO_127.cube, OrbitalName=HOMO-2, OrbitalEnergy=-8.108, Occupation=2, Symmetry=b2g
+CubeName=cubefiles/000710/perfluoropentacene_MO_128.cube, OrbitalName=HOMO-1, OrbitalEnergy=-7.046, Occupation=2, Symmetry=au
+CubeName=cubefiles/000710/perfluoropentacene_MO_129.cube, OrbitalName=HOMO, OrbitalEnergy=-5.791, Occupation=2, Symmetry=b2g
+CubeName=cubefiles/000710/perfluoropentacene_MO_130.cube, OrbitalName=LUMO, OrbitalEnergy=-3.562, Occupation=0, Symmetry=b1u
+CubeName=cubefiles/000710/perfluoropentacene_MO_131.cube, OrbitalName=LUMO+1, OrbitalEnergy=-2.107, Occupation=0, Symmetry=au
+CubeName=cubefiles/000710/perfluoropentacene_MO_132.cube, OrbitalName=LUMO+2, OrbitalEnergy=-1.998, Occupation=0, Symmetry=b3g
+CubeName=cubefiles/000710/perfluoropentacene_MO_133.cube, OrbitalName=LUMO+3, OrbitalEnergy=-0.628, Occupation=0, Symmetry=b1u
+moleculeID=711
+ShortName=6A_F, FullName=perfluorohexacene, Formula=C26F16, Orientation=yx, Charge=0, MagneticMoment=0, IP=5.61, EA=3.80, BasisSet=cc-pvtz, XC-functional=PBE0
+NumberOfOrbitals=10, PathToCubefiles=
+CubeName=cubefiles/000711/perfluorohexacene_MO_145.cube, OrbitalName=HOMO-5, OrbitalEnergy=-8.662, Occupation=2, Symmetry=b3g
+CubeName=cubefiles/000711/perfluorohexacene_MO_146.cube, OrbitalName=HOMO-4, OrbitalEnergy=-8.483, Occupation=2, Symmetry=b2g
+CubeName=cubefiles/000711/perfluorohexacene_MO_147.cube, OrbitalName=HOMO-3, OrbitalEnergy=-8.229, Occupation=2, Symmetry=b1u
+CubeName=cubefiles/000711/perfluorohexacene_MO_148.cube, OrbitalName=HOMO-2, OrbitalEnergy=-7.705, Occupation=2, Symmetry=au
+CubeName=cubefiles/000711/perfluorohexacene_MO_149.cube, OrbitalName=HOMO-1, OrbitalEnergy=-6.715, Occupation=2, Symmetry=b2g
+CubeName=cubefiles/000711/perfluorohexacene_MO_150.cube, OrbitalName=HOMO, OrbitalEnergy=-5.610, Occupation=2, Symmetry=au
+CubeName=cubefiles/000711/perfluorohexacene_MO_151.cube, OrbitalName=LUMO, OrbitalEnergy=-3.803, Occupation=0, Symmetry=b3g
+CubeName=cubefiles/000711/perfluorohexacene_MO_152.cube, OrbitalName=LUMO+1, OrbitalEnergy=-2.454, Occupation=0, Symmetry=b1u
+CubeName=cubefiles/000711/perfluorohexacene_MO_153.cube, OrbitalName=LUMO+2, OrbitalEnergy=-2.194, Occupation=0, Symmetry=b2g
+CubeName=cubefiles/000711/perfluorohexacene_MO_154.cube, OrbitalName=LUMO+3, OrbitalEnergy=-1.169, Occupation=0, Symmetry=b3g
+moleculeID=712
+ShortName=TPA, FullName=terephthalic-acid, Formula=C8H6O4, Orientation=yx, Charge=0, MagneticMoment=0, IP=7.39, EA=2.12, BasisSet=6-31G*, XC-functional=B3LYP
+NumberOfOrbitals=10, PathToCubefiles=
+CubeName=cubefiles/000712/terephthalic-acid_MO_38.cube, OrbitalName=HOMO-5, OrbitalEnergy=-8.958, Occupation=2, Symmetry=bg
+CubeName=cubefiles/000712/terephthalic-acid_MO_39.cube, OrbitalName=HOMO-4, OrbitalEnergy=-8.874, Occupation=2, Symmetry=au
+CubeName=cubefiles/000712/terephthalic-acid_MO_40.cube, OrbitalName=HOMO-3, OrbitalEnergy=-7.818, Occupation=2, Symmetry=ag
+CubeName=cubefiles/000712/terephthalic-acid_MO_41.cube, OrbitalName=HOMO-2, OrbitalEnergy=-7.772, Occupation=2, Symmetry=bu
+CubeName=cubefiles/000712/terephthalic-acid_MO_42.cube, OrbitalName=HOMO-1, OrbitalEnergy=-7.496, Occupation=2, Symmetry=bg
+CubeName=cubefiles/000712/terephthalic-acid_MO_43.cube, OrbitalName=HOMO, OrbitalEnergy=-7.387, Occupation=2, Symmetry=bg
+CubeName=cubefiles/000712/terephthalic-acid_MO_44.cube, OrbitalName=LUMO, OrbitalEnergy=-2.125, Occupation=0, Symmetry=au
+CubeName=cubefiles/000712/terephthalic-acid_MO_45.cube, OrbitalName=LUMO+1, OrbitalEnergy=-0.531, Occupation=0, Symmetry=au
+CubeName=cubefiles/000712/terephthalic-acid_MO_46.cube, OrbitalName=LUMO+2, OrbitalEnergy=0.134, Occupation=0, Symmetry=bg
+CubeName=cubefiles/000712/terephthalic-acid_MO_47.cube, OrbitalName=LUMO+3, OrbitalEnergy=1.769, Occupation=0, Symmetry=ag
+moleculeID=713
+ShortName=TPA, FullName=terephthalic-acid, Formula=C8H6O4, Orientation=yx, Charge=0, MagneticMoment=0, IP=6.31, EA=2.74, BasisSet=6-31G*, XC-functional=PBE
+NumberOfOrbitals=10, PathToCubefiles=
+CubeName=cubefiles/000713/terephthalic-acid_MO_38.cube, OrbitalName=HOMO-5, OrbitalEnergy=-7.619, Occupation=2, Symmetry=bg
+CubeName=cubefiles/000713/terephthalic-acid_MO_39.cube, OrbitalName=HOMO-4, OrbitalEnergy=-7.550, Occupation=2, Symmetry=au
+CubeName=cubefiles/000713/terephthalic-acid_MO_40.cube, OrbitalName=HOMO-3, OrbitalEnergy=-6.684, Occupation=2, Symmetry=bg
+CubeName=cubefiles/000713/terephthalic-acid_MO_41.cube, OrbitalName=HOMO-2, OrbitalEnergy=-6.582, Occupation=2, Symmetry=bg
+CubeName=cubefiles/000713/terephthalic-acid_MO_42.cube, OrbitalName=HOMO-1, OrbitalEnergy=-6.364, Occupation=2, Symmetry=ag
+CubeName=cubefiles/000713/terephthalic-acid_MO_43.cube, OrbitalName=HOMO, OrbitalEnergy=-6.306, Occupation=2, Symmetry=bu
+CubeName=cubefiles/000713/terephthalic-acid_MO_44.cube, OrbitalName=LUMO, OrbitalEnergy=-2.736, Occupation=0, Symmetry=au
+CubeName=cubefiles/000713/terephthalic-acid_MO_45.cube, OrbitalName=LUMO+1, OrbitalEnergy=-1.297, Occupation=0, Symmetry=au
+CubeName=cubefiles/000713/terephthalic-acid_MO_46.cube, OrbitalName=LUMO+2, OrbitalEnergy=-0.744, Occupation=0, Symmetry=bg
+CubeName=cubefiles/000713/terephthalic-acid_MO_47.cube, OrbitalName=LUMO+3, OrbitalEnergy=1.096, Occupation=0, Symmetry=ag
+moleculeID=714
+ShortName=TPA, FullName=terephthalic-acid, Formula=C8H6O4, Orientation=yx, Charge=0, MagneticMoment=0, IP=7.28, EA=2.39, BasisSet=6-31G*, XC-functional=HSE
+NumberOfOrbitals=10, PathToCubefiles=
+CubeName=cubefiles/000714/terephthalic-acid_MO_38.cube, OrbitalName=HOMO-5, OrbitalEnergy=-8.907, Occupation=2, Symmetry=bg
+CubeName=cubefiles/000714/terephthalic-acid_MO_39.cube, OrbitalName=HOMO-4, OrbitalEnergy=-8.821, Occupation=2, Symmetry=au
+CubeName=cubefiles/000714/terephthalic-acid_MO_40.cube, OrbitalName=HOMO-3, OrbitalEnergy=-7.759, Occupation=2, Symmetry=ag
+CubeName=cubefiles/000714/terephthalic-acid_MO_41.cube, OrbitalName=HOMO-2, OrbitalEnergy=-7.719, Occupation=2, Symmetry=bu
+CubeName=cubefiles/000714/terephthalic-acid_MO_42.cube, OrbitalName=HOMO-1, OrbitalEnergy=-7.397, Occupation=2, Symmetry=bg
+CubeName=cubefiles/000714/terephthalic-acid_MO_43.cube, OrbitalName=HOMO, OrbitalEnergy=-7.282, Occupation=2, Symmetry=bg
+CubeName=cubefiles/000714/terephthalic-acid_MO_44.cube, OrbitalName=LUMO, OrbitalEnergy=-2.389, Occupation=0, Symmetry=au
+CubeName=cubefiles/000714/terephthalic-acid_MO_45.cube, OrbitalName=LUMO+1, OrbitalEnergy=-0.779, Occupation=0, Symmetry=au
+CubeName=cubefiles/000714/terephthalic-acid_MO_46.cube, OrbitalName=LUMO+2, OrbitalEnergy=-0.051, Occupation=0, Symmetry=bg
+CubeName=cubefiles/000714/terephthalic-acid_MO_47.cube, OrbitalName=LUMO+3, OrbitalEnergy=1.755, Occupation=0, Symmetry=ag
+moleculeID=715
+ShortName=dehydroTPA, FullName=dehydrogenated-terephthalic-acid, Formula=C8H4O4, Orientation=yx, Charge=-2, MagneticMoment=0, IP=-2.16, EA=-6.97, BasisSet=6-31G*, XC-functional=B3LYP
+NumberOfOrbitals=10, PathToCubefiles=
+CubeName=cubefiles/000715/dehydrogenated-terephthalic-acid_MO_38.cube, OrbitalName=HOMO-5, OrbitalEnergy=1.655, Occupation=2, Symmetry=au
+CubeName=cubefiles/000715/dehydrogenated-terephthalic-acid_MO_39.cube, OrbitalName=HOMO-4, OrbitalEnergy=1.697, Occupation=2, Symmetry=b2g
+CubeName=cubefiles/000715/dehydrogenated-terephthalic-acid_MO_40.cube, OrbitalName=HOMO-3, OrbitalEnergy=1.797, Occupation=2, Symmetry=ag
+CubeName=cubefiles/000715/dehydrogenated-terephthalic-acid_MO_41.cube, OrbitalName=HOMO-2, OrbitalEnergy=1.867, Occupation=2, Symmetry=b2u
+CubeName=cubefiles/000715/dehydrogenated-terephthalic-acid_MO_42.cube, OrbitalName=HOMO-1, OrbitalEnergy=2.058, Occupation=2, Symmetry=b1g
+CubeName=cubefiles/000715/dehydrogenated-terephthalic-acid_MO_43.cube, OrbitalName=HOMO, OrbitalEnergy=2.162, Occupation=2, Symmetry=b3u
+CubeName=cubefiles/000715/dehydrogenated-terephthalic-acid_MO_44.cube, OrbitalName=LUMO, OrbitalEnergy=6.966, Occupation=0, Symmetry=b1u
+CubeName=cubefiles/000715/dehydrogenated-terephthalic-acid_MO_45.cube, OrbitalName=LUMO+1, OrbitalEnergy=7.559, Occupation=0, Symmetry=au
+CubeName=cubefiles/000715/dehydrogenated-terephthalic-acid_MO_46.cube, OrbitalName=LUMO+2, OrbitalEnergy=9.684, Occupation=0, Symmetry=b3g
+CubeName=cubefiles/000715/dehydrogenated-terephthalic-acid_MO_47.cube, OrbitalName=LUMO+3, OrbitalEnergy=10.436, Occupation=0, Symmetry=ag
+moleculeID=716
+ShortName=dehydroTPA, FullName=dehydrogenated-terephthalic-acid, Formula=C8H4O4, Orientation=yx, Charge=-2, MagneticMoment=0, IP=-3.63, EA=-6.38, BasisSet=6-31G*, XC-functional=PBE
+NumberOfOrbitals=10, PathToCubefiles=
+CubeName=cubefiles/000716/dehydrogenated-terephthalic-acid_MO_38.cube, OrbitalName=HOMO-5, OrbitalEnergy=2.839, Occupation=2, Symmetry=au
+CubeName=cubefiles/000716/dehydrogenated-terephthalic-acid_MO_39.cube, OrbitalName=HOMO-4, OrbitalEnergy=2.874, Occupation=2, Symmetry=b2g
+CubeName=cubefiles/000716/dehydrogenated-terephthalic-acid_MO_40.cube, OrbitalName=HOMO-3, OrbitalEnergy=3.188, Occupation=2, Symmetry=ag
+CubeName=cubefiles/000716/dehydrogenated-terephthalic-acid_MO_41.cube, OrbitalName=HOMO-2, OrbitalEnergy=3.273, Occupation=2, Symmetry=b2u
+CubeName=cubefiles/000716/dehydrogenated-terephthalic-acid_MO_42.cube, OrbitalName=HOMO-1, OrbitalEnergy=3.519, Occupation=2, Symmetry=b1g
+CubeName=cubefiles/000716/dehydrogenated-terephthalic-acid_MO_43.cube, OrbitalName=HOMO, OrbitalEnergy=3.626, Occupation=2, Symmetry=b3u
+CubeName=cubefiles/000716/dehydrogenated-terephthalic-acid_MO_44.cube, OrbitalName=LUMO, OrbitalEnergy=6.377, Occupation=0, Symmetry=b1u
+CubeName=cubefiles/000716/dehydrogenated-terephthalic-acid_MO_45.cube, OrbitalName=LUMO+1, OrbitalEnergy=6.886, Occupation=0, Symmetry=au
+CubeName=cubefiles/000716/dehydrogenated-terephthalic-acid_MO_46.cube, OrbitalName=LUMO+2, OrbitalEnergy=8.822, Occupation=0, Symmetry=b3g
+CubeName=cubefiles/000716/dehydrogenated-terephthalic-acid_MO_47.cube, OrbitalName=LUMO+3, OrbitalEnergy=9.814, Occupation=0, Symmetry=ag
+moleculeID=717
+ShortName=dehydroTPA, FullName=dehydrogenated-terephthalic-acid, Formula=C8H4O4, Orientation=yx, Charge=-2, MagneticMoment=0, IP=-2.18, EA=-6.67, BasisSet=6-31G*, XC-functional=HSE
+NumberOfOrbitals=10, PathToCubefiles=
+CubeName=cubefiles/000717/dehydrogenated-terephthalic-acid_MO_38.cube, OrbitalName=HOMO-5, OrbitalEnergy=1.698, Occupation=2, Symmetry=au
+CubeName=cubefiles/000717/dehydrogenated-terephthalic-acid_MO_39.cube, OrbitalName=HOMO-4, OrbitalEnergy=1.739, Occupation=2, Symmetry=b2g
+CubeName=cubefiles/000717/dehydrogenated-terephthalic-acid_MO_40.cube, OrbitalName=HOMO-3, OrbitalEnergy=1.844, Occupation=2, Symmetry=ag
+CubeName=cubefiles/000717/dehydrogenated-terephthalic-acid_MO_41.cube, OrbitalName=HOMO-2, OrbitalEnergy=1.907, Occupation=2, Symmetry=b2u
+CubeName=cubefiles/000717/dehydrogenated-terephthalic-acid_MO_42.cube, OrbitalName=HOMO-1, OrbitalEnergy=2.073, Occupation=2, Symmetry=b1g
+CubeName=cubefiles/000717/dehydrogenated-terephthalic-acid_MO_43.cube, OrbitalName=HOMO, OrbitalEnergy=2.179, Occupation=2, Symmetry=b3u
+CubeName=cubefiles/000717/dehydrogenated-terephthalic-acid_MO_44.cube, OrbitalName=LUMO, OrbitalEnergy=6.669, Occupation=0, Symmetry=b1u
+CubeName=cubefiles/000717/dehydrogenated-terephthalic-acid_MO_45.cube, OrbitalName=LUMO+1, OrbitalEnergy=7.282, Occupation=0, Symmetry=au
+CubeName=cubefiles/000717/dehydrogenated-terephthalic-acid_MO_46.cube, OrbitalName=LUMO+2, OrbitalEnergy=9.470, Occupation=0, Symmetry=b3g
+CubeName=cubefiles/000717/dehydrogenated-terephthalic-acid_MO_47.cube, OrbitalName=LUMO+3, OrbitalEnergy=10.303, Occupation=0, Symmetry=ag
+moleculeID=718
+ShortName=dehydroTPA, FullName=dehydrogenated-terephthalic-acid, Formula=C8H4O4, Orientation=yx, Charge=-2, MagneticMoment=0, IP=-2.16, EA=-6.97, BasisSet=6-31G*, XC-functional=B3LYP
+NumberOfOrbitals=16, PathToCubefiles=
+CubeName=cubefiles/000718/dehydrogenated-terephthalic-acid_MO_32.cube, OrbitalName=HOMO-11, OrbitalEnergy=-2.303, Occupation=2, Symmetry=b3u
+CubeName=cubefiles/000718/dehydrogenated-terephthalic-acid_MO_33.cube, OrbitalName=HOMO-10, OrbitalEnergy=-2.149, Occupation=2, Symmetry=ag
+CubeName=cubefiles/000718/dehydrogenated-terephthalic-acid_MO_34.cube, OrbitalName=HOMO-9, OrbitalEnergy=-1.489, Occupation=2, Symmetry=b1u
+CubeName=cubefiles/000718/dehydrogenated-terephthalic-acid_MO_35.cube, OrbitalName=HOMO-8, OrbitalEnergy=-1.316, Occupation=2, Symmetry=b1g
+CubeName=cubefiles/000718/dehydrogenated-terephthalic-acid_MO_36.cube, OrbitalName=HOMO-7, OrbitalEnergy=0.690, Occupation=2, Symmetry=b2g
+CubeName=cubefiles/000718/dehydrogenated-terephthalic-acid_MO_37.cube, OrbitalName=HOMO-6, OrbitalEnergy=1.145, Occupation=2, Symmetry=b3g
+CubeName=cubefiles/000718/dehydrogenated-terephthalic-acid_MO_38.cube, OrbitalName=HOMO-5, OrbitalEnergy=1.655, Occupation=2, Symmetry=au
+CubeName=cubefiles/000718/dehydrogenated-terephthalic-acid_MO_39.cube, OrbitalName=HOMO-4, OrbitalEnergy=1.697, Occupation=2, Symmetry=b2g
+CubeName=cubefiles/000718/dehydrogenated-terephthalic-acid_MO_40.cube, OrbitalName=HOMO-3, OrbitalEnergy=1.797, Occupation=2, Symmetry=ag
+CubeName=cubefiles/000718/dehydrogenated-terephthalic-acid_MO_41.cube, OrbitalName=HOMO-2, OrbitalEnergy=1.867, Occupation=2, Symmetry=b2u
+CubeName=cubefiles/000718/dehydrogenated-terephthalic-acid_MO_42.cube, OrbitalName=HOMO-1, OrbitalEnergy=2.058, Occupation=2, Symmetry=b1g
+CubeName=cubefiles/000718/dehydrogenated-terephthalic-acid_MO_43.cube, OrbitalName=HOMO, OrbitalEnergy=2.162, Occupation=2, Symmetry=b3u
+CubeName=cubefiles/000718/dehydrogenated-terephthalic-acid_MO_44.cube, OrbitalName=LUMO, OrbitalEnergy=6.966, Occupation=0, Symmetry=b1u
+CubeName=cubefiles/000718/dehydrogenated-terephthalic-acid_MO_45.cube, OrbitalName=LUMO+1, OrbitalEnergy=7.559, Occupation=0, Symmetry=au
+CubeName=cubefiles/000718/dehydrogenated-terephthalic-acid_MO_46.cube, OrbitalName=LUMO+2, OrbitalEnergy=9.684, Occupation=0, Symmetry=b3g
+CubeName=cubefiles/000718/dehydrogenated-terephthalic-acid_MO_47.cube, OrbitalName=LUMO+3, OrbitalEnergy=10.436, Occupation=0, Symmetry=ag
+moleculeID=719
+ShortName=dehydroTPA, FullName=dehydrogenated-terephthalic-acid, Formula=C8H4O4, Orientation=yx, Charge=-2, MagneticMoment=0, IP=-3.63, EA=-6.38, BasisSet=6-31G*, XC-functional=PBE
+NumberOfOrbitals=16, PathToCubefiles=
+CubeName=cubefiles/000719/dehydrogenated-terephthalic-acid_MO_32.cube, OrbitalName=HOMO-11, OrbitalEnergy=-0.731, Occupation=2, Symmetry=b3u
+CubeName=cubefiles/000719/dehydrogenated-terephthalic-acid_MO_33.cube, OrbitalName=HOMO-10, OrbitalEnergy=-0.660, Occupation=2, Symmetry=ag
+CubeName=cubefiles/000719/dehydrogenated-terephthalic-acid_MO_34.cube, OrbitalName=HOMO-9, OrbitalEnergy=-0.229, Occupation=2, Symmetry=b1u
+CubeName=cubefiles/000719/dehydrogenated-terephthalic-acid_MO_35.cube, OrbitalName=HOMO-8, OrbitalEnergy=0.085, Occupation=2, Symmetry=b1g
+CubeName=cubefiles/000719/dehydrogenated-terephthalic-acid_MO_36.cube, OrbitalName=HOMO-7, OrbitalEnergy=1.578, Occupation=2, Symmetry=b2g
+CubeName=cubefiles/000719/dehydrogenated-terephthalic-acid_MO_37.cube, OrbitalName=HOMO-6, OrbitalEnergy=2.019, Occupation=2, Symmetry=b3g
+CubeName=cubefiles/000719/dehydrogenated-terephthalic-acid_MO_38.cube, OrbitalName=HOMO-5, OrbitalEnergy=2.839, Occupation=2, Symmetry=au
+CubeName=cubefiles/000719/dehydrogenated-terephthalic-acid_MO_39.cube, OrbitalName=HOMO-4, OrbitalEnergy=2.874, Occupation=2, Symmetry=b2g
+CubeName=cubefiles/000719/dehydrogenated-terephthalic-acid_MO_40.cube, OrbitalName=HOMO-3, OrbitalEnergy=3.188, Occupation=2, Symmetry=ag
+CubeName=cubefiles/000719/dehydrogenated-terephthalic-acid_MO_41.cube, OrbitalName=HOMO-2, OrbitalEnergy=3.273, Occupation=2, Symmetry=b2u
+CubeName=cubefiles/000719/dehydrogenated-terephthalic-acid_MO_42.cube, OrbitalName=HOMO-1, OrbitalEnergy=3.519, Occupation=2, Symmetry=b1g
+CubeName=cubefiles/000719/dehydrogenated-terephthalic-acid_MO_43.cube, OrbitalName=HOMO, OrbitalEnergy=3.626, Occupation=2, Symmetry=b3u
+CubeName=cubefiles/000719/dehydrogenated-terephthalic-acid_MO_44.cube, OrbitalName=LUMO, OrbitalEnergy=6.377, Occupation=0, Symmetry=b1u
+CubeName=cubefiles/000719/dehydrogenated-terephthalic-acid_MO_45.cube, OrbitalName=LUMO+1, OrbitalEnergy=6.886, Occupation=0, Symmetry=au
+CubeName=cubefiles/000719/dehydrogenated-terephthalic-acid_MO_46.cube, OrbitalName=LUMO+2, OrbitalEnergy=8.822, Occupation=0, Symmetry=b3g
+CubeName=cubefiles/000719/dehydrogenated-terephthalic-acid_MO_47.cube, OrbitalName=LUMO+3, OrbitalEnergy=9.814, Occupation=0, Symmetry=ag
+moleculeID=720
+ShortName=dehydroTPA, FullName=dehydrogenated-terephthalic-acid, Formula=C8H4O4, Orientation=yx, Charge=-2, MagneticMoment=0, IP=-2.18, EA=-6.67, BasisSet=6-31G*, XC-functional=HSE
+NumberOfOrbitals=16, PathToCubefiles=
+CubeName=cubefiles/000720/dehydrogenated-terephthalic-acid_MO_32.cube, OrbitalName=HOMO-11, OrbitalEnergy=-2.337, Occupation=2, Symmetry=b3u
+CubeName=cubefiles/000720/dehydrogenated-terephthalic-acid_MO_33.cube, OrbitalName=HOMO-10, OrbitalEnergy=-2.132, Occupation=2, Symmetry=ag
+CubeName=cubefiles/000720/dehydrogenated-terephthalic-acid_MO_34.cube, OrbitalName=HOMO-9, OrbitalEnergy=-1.489, Occupation=2, Symmetry=b1u
+CubeName=cubefiles/000720/dehydrogenated-terephthalic-acid_MO_35.cube, OrbitalName=HOMO-8, OrbitalEnergy=-1.222, Occupation=2, Symmetry=b1g
+CubeName=cubefiles/000720/dehydrogenated-terephthalic-acid_MO_36.cube, OrbitalName=HOMO-7, OrbitalEnergy=0.767, Occupation=2, Symmetry=b2g
+CubeName=cubefiles/000720/dehydrogenated-terephthalic-acid_MO_37.cube, OrbitalName=HOMO-6, OrbitalEnergy=1.216, Occupation=2, Symmetry=b3g
+CubeName=cubefiles/000720/dehydrogenated-terephthalic-acid_MO_38.cube, OrbitalName=HOMO-5, OrbitalEnergy=1.698, Occupation=2, Symmetry=au
+CubeName=cubefiles/000720/dehydrogenated-terephthalic-acid_MO_39.cube, OrbitalName=HOMO-4, OrbitalEnergy=1.739, Occupation=2, Symmetry=b2g
+CubeName=cubefiles/000720/dehydrogenated-terephthalic-acid_MO_40.cube, OrbitalName=HOMO-3, OrbitalEnergy=1.844, Occupation=2, Symmetry=ag
+CubeName=cubefiles/000720/dehydrogenated-terephthalic-acid_MO_41.cube, OrbitalName=HOMO-2, OrbitalEnergy=1.907, Occupation=2, Symmetry=b2u
+CubeName=cubefiles/000720/dehydrogenated-terephthalic-acid_MO_42.cube, OrbitalName=HOMO-1, OrbitalEnergy=2.073, Occupation=2, Symmetry=b1g
+CubeName=cubefiles/000720/dehydrogenated-terephthalic-acid_MO_43.cube, OrbitalName=HOMO, OrbitalEnergy=2.179, Occupation=2, Symmetry=b3u
+CubeName=cubefiles/000720/dehydrogenated-terephthalic-acid_MO_44.cube, OrbitalName=LUMO, OrbitalEnergy=6.669, Occupation=0, Symmetry=b1u
+CubeName=cubefiles/000720/dehydrogenated-terephthalic-acid_MO_45.cube, OrbitalName=LUMO+1, OrbitalEnergy=7.282, Occupation=0, Symmetry=au
+CubeName=cubefiles/000720/dehydrogenated-terephthalic-acid_MO_46.cube, OrbitalName=LUMO+2, OrbitalEnergy=9.470, Occupation=0, Symmetry=b3g
+CubeName=cubefiles/000720/dehydrogenated-terephthalic-acid_MO_47.cube, OrbitalName=LUMO+3, OrbitalEnergy=10.303, Occupation=0, Symmetry=ag
