@@ -22,8 +22,10 @@ class Orbital:
     calculate and slice data from cube files.
 
     Args:
-        file (string): Entire cube file to be loaded as one string.
-        file_format (string): Currently only cube files are supported.
+        file (string): Entire cube file to be loaded as one string. For
+            the 'hdf5' and 'psi' formats an open hdf5 file and a
+            (psi, molecule) pair of dictionaries respectively.
+        file_format (string): Either 'cube', 'hdf5' or 'psi'.
         dk3D (float): Desired resolution for 3D-Fourier-Transform.
             Single number.
         E_kin_max (float): maximum kinetic energy in eV is used to
@@ -49,6 +51,11 @@ class Orbital:
 
         elif file_format == "hdf5":
             self._read_local_hdf5(file, orbital_name)
+
+        elif file_format == "psi":
+            # Already on a grid: the (psi, molecule) pair computed from the
+            # coefficients the online database serves.
+            self.psi, self.molecule = file
 
         self.compute_3DFT(dk3D, E_kin_max, value)
         self.kmap = {}

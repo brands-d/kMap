@@ -1,8 +1,7 @@
 from PySide6.QtCore import Qt, Signal
+from PySide6.QtGui import QGuiApplication
 from PySide6.QtWidgets import QHeaderView, QMainWindow, QTreeWidgetItem
 
-from kmap import __directory__
-from kmap.config.config import config
 from kmap.controller.slicedcubefileoptions import SlicedCubefileOptions
 from kmap.controller.sliceddatabaseoptions import SlicedDataBaseOptions
 from kmap.controller.sliceddatabaseoptions2 import SlicedDataBaseOptions2
@@ -24,7 +23,7 @@ class DatabaseWindowBase(QMainWindow):
 
         for molecule in self.database.molecules:
             if self._fit_filter(molecule):
-                item = self.add_molecule(molecule)
+                self.add_molecule(molecule)
 
     def add_molecule(self, molecule):
         molecule_item = MoleculeTreeWidgetItem(molecule)
@@ -47,9 +46,29 @@ class DatabaseWindowBase(QMainWindow):
         # Add item to tree
         self.tree.addTopLevelItem(molecule_item)
 
-        # Add orbitals of molecule to tree
-        for orbital in molecule.orbitals:
+        # The orbitals are fetched from the database when the molecule is
+        # expanded. A placeholder child gives the item its expand arrow.
+        molecule_item.addChild(QTreeWidgetItem(["..."]))
+
+    def expand_molecule(self, molecule_item):
+        # Only molecules have orbitals to load and only the first expansion
+        # has to load them.
+        if molecule_item.parent() or molecule_item.orbitals_loaded:
+            return
+
+        QGuiApplication.setOverrideCursor(Qt.WaitCursor)
+
+        try:
+            orbitals = molecule_item.molecule.orbitals
+
+        finally:
+            QGuiApplication.restoreOverrideCursor()
+
+        molecule_item.takeChildren()
+        for orbital in orbitals:
             self.add_orbital(orbital, molecule_item)
+
+        molecule_item.orbitals_loaded = True
 
     def add_orbital(self, orbital, molecule_item):
         orbital_item = OrbitalTreeWidgetItem(orbital)
@@ -140,6 +159,11 @@ class DatabaseWindowBase(QMainWindow):
         else:
             return False
 
+    def _fill_combobox(self):
+        self.combobox.clear()
+        self.combobox.addItem("No Filter")
+        self.combobox.addItems(self.database.get_XC_functionals())
+
     def _get_chosen_orbitals(self):
         orbitals = []
 
@@ -162,6 +186,7 @@ class DatabaseWindowBase(QMainWindow):
 
     def _connect(self):
         self.combobox.currentTextChanged.connect(self.fill_tree)
+        self.tree.itemExpanded.connect(self.expand_molecule)
 
         self.database_load_button.clicked.connect(self.load_database)
         self.find_button.clicked.connect(self.find)
@@ -172,11 +197,12 @@ class OrbitalDatabase(DatabaseWindowBase, DatabaseWindow_UI):
         super(OrbitalDatabase, self).__init__(*args, **kwargs)
         self.setupUi(self)
         self._setup_tree()
-        self._connect()
 
         # Setup database
-        path = __directory__ / config.get_key("paths", "database")
-        self.database = Database(path)
+        self.database = Database()
+        self._fill_combobox()
+
+        self._connect()
 
         # URLs (with extra information if available) chosen
         self.URLs = []
@@ -213,11 +239,12 @@ class SlicedDatabaseWindow(DatabaseWindowBase, SlicedDatabaseWindow_UI):
         super(SlicedDatabaseWindow, self).__init__(*args, **kwargs)
         self.setupUi(self)
         self._setup_tree()
-        self._connect()
 
         # Setup database
-        path = __directory__ / config.get_key("paths", "database")
-        self.database = Database(str(path))
+        self.database = Database()
+        self._fill_combobox()
+
+        self._connect()
 
         # Open Options Window
         if mode == "binding-energy":
@@ -277,6 +304,7 @@ class TreeWidgetItem(QTreeWidgetItem):
 class MoleculeTreeWidgetItem(TreeWidgetItem):
     def __init__(self, molecule, *args, **kwargs):
         self.molecule = molecule
+        self.orbitals_loaded = False
 
         super(MoleculeTreeWidgetItem, self).__init__(*args, **kwargs)
 
