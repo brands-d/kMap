@@ -22,6 +22,7 @@ setup(
         "lmfit",
         "pyqtgraph>=0.13.3",
         "scikit-image",
+        "physikmdb",
     ],
     include_package_data=True,
 )

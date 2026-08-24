@@ -7,6 +7,7 @@ import h5py
 
 from kmap.config.config import config
 from kmap.library.abstractdata import AbstractData
+from kmap.library.database import cache_name, is_database_url, load_orbital
 from kmap.library.misc import get_remote_hdf5_orbital, write_cube
 from kmap.library.orbital import Orbital
 
@@ -54,8 +55,7 @@ class OrbitalData(Orbital, AbstractData):
     def init_from_online(cls, url, ID, meta_data={}):
         log = logging.getLogger("kmap")
         cache_dir = Path(config.get_key("paths", "cache"))
-        cache_file = url.split("cubefiles/")[1].replace("/", "_")
-        cache_file = str(cache_dir / cache_file)
+        cache_file = str(cache_dir / cache_name(url))
 
         if os.path.isfile(cache_file):
             log.info(f"Found file {url} in cache.")
@@ -66,6 +66,17 @@ class OrbitalData(Orbital, AbstractData):
             name = meta_data["name"] if "name" in meta_data else name
             meta_data.update(keys)
             file_format = "cube"
+
+        elif is_database_url(url):
+            psi, molecule = load_orbital(url)
+
+            if os.path.isdir(cache_dir):
+                log.info(f"Putting {url} into cache {cache_file}")
+                write_cube(psi, molecule, cache_file)
+
+            name = meta_data["name"] if "name" in meta_data else psi["name"]
+            file = (psi, molecule)
+            file_format = "psi"
 
         else:
             try:

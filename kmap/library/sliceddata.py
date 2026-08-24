@@ -9,6 +9,7 @@ import numpy as np
 from kmap.config.config import config
 from kmap.library.abstractdata import AbstractData
 from kmap.library.axis import Axis
+from kmap.library.database import cache_name, is_database_url, load_orbital
 from kmap.library.id import ID as IDD
 from kmap.library.misc import energy_to_k, get_remote_hdf5_orbital, write_cube
 from kmap.library.orbital import Orbital
@@ -461,14 +462,23 @@ class SlicedData(AbstractData):
         log = logging.getLogger("kmap")
         url = orbital[0]
         cache_dir = Path(config.get_key("paths", "cache"))
-        cache_file = url.split("cubefiles/")[1].replace("/", "_")
-        cache_file = str(cache_dir / cache_file)
+        cache_file = str(cache_dir / cache_name(url))
 
         if os.path.isfile(cache_file):
             log.info(f"Found file {url} in cache.")
             with open(cache_file, "r") as f:
                 file = f.read()
             file_format = "cube"
+
+        elif is_database_url(url):
+            psi, molecule = load_orbital(url)
+
+            if os.path.isdir(cache_dir):
+                log.info(f"Putting {url} into cache {cache_file}")
+                write_cube(psi, molecule, cache_file)
+
+            file = (psi, molecule)
+            file_format = "psi"
 
         else:
             try:

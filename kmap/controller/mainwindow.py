@@ -37,10 +37,6 @@ class MainWindow(QMainWindow, MainWindow_UI):
             self.check_for_updates()
         except:
             logging.getLogger("kmap").info("Could not determine the latest version.")
-        try:
-            self.update_database()
-        except:
-            logging.getLogger("kmap").info("Could not determine the latest version.")
 
     def check_for_updates(self):
         if config.get_key("app", "check_for_updates") != "True":
@@ -78,29 +74,6 @@ class MainWindow(QMainWindow, MainWindow_UI):
             QMessageBox.information(self, "Update Available", message)
         else:
             log.info("You are using the latest version.")
-
-    def update_database(self):
-        if config.get_key("app", "auto_update_database") != "True":
-            return
-
-        log = logging.getLogger("kmap")
-        log.info("Download new database file...")
-        url = "http://physikmdb.uni-graz.at/molecule_database_as_txt/MolecularOrbitals.txt"
-        try:
-            with urlopen(url) as response:
-                content = response.read().decode("utf-8")
-        except URLError:
-            log.info("Could not download new database file.")
-            return
-
-        database_path = __directory__ / config.get_key("paths", "database")
-        with open(database_path, "w") as file:
-            try:
-                file.write(content)
-                log.info("New database file written successfully.")
-            except Exception as e:
-                log.error(f"Could not write new database file: {e}")
-                return
 
     def load_hdf5_files(self):
         # Load one or more new hdf5 files
